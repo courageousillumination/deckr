@@ -1,5 +1,4 @@
-from django.conf.urls import patterns, include, url
+from django.conf.urls import patterns, url
 
-urlpatterns = patterns('',
-    url(r'^$', 'deckr.views.index', name='deckr.index'),
-)
+INDEX = url(r'^$', 'deckr.views.index', name='deckr.index')
+urlpatterns = patterns('', INDEX)
