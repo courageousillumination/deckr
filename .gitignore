@@ -55,3 +55,4 @@ target/
 
 /venv
 *.sqlite3
+reports

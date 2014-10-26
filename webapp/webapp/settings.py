@@ -37,8 +37,10 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
+    # Various testing CI things
     'django_nose',
     'django_jenkins',
+    'lettuce.django',
     
     'deckr',
 )
@@ -90,6 +92,10 @@ STATIC_URL = '/static/'
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
 PROJECT_APPS = (
+    'deckr',
+)
+
+LETTUCE_APPS = (
     'deckr',
 )
 
