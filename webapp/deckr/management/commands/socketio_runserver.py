@@ -43,7 +43,13 @@ class Command(BaseCommand):
             default=True,
             help='Do NOT use staticfiles handler.'),
     )
-
+        
+    def __init__(self):
+        super(Command, self).__init__()
+        
+        self.addr = ''
+        self.port = DEFAULT_PORT
+        
     def handle(self, addrport='', *args, **options):
         if not addrport:
             self.addr = ''
@@ -63,30 +69,30 @@ class Command(BaseCommand):
         try:
             bind = (self.addr, int(self.port))
             print 'SocketIOServer running on %s:%s\n\n' % bind
-            handler = self.get_handler(*args, **options)
+            handler = get_handler(**options)
             server = SocketIOServer(
                 bind, handler, resource='socket.io', policy_server=True)
             server.serve_forever()
         except KeyboardInterrupt:
-            for key, sock in six.iteritems(server.sockets):
+            for _, sock in six.iteritems(server.sockets):
                 sock.kill(detach=True)
             server.stop()
             if RELOAD:
                 print 'Reloading...\n\n'
                 restart_with_reloader()
 
-    def get_handler(self, *args, **options):
-        """
-        Returns the django.contrib.staticfiles handler.
-        """
-        handler = WSGIHandler()
-        try:
-            from django.contrib.staticfiles.handlers import StaticFilesHandler
-        except ImportError:
-            return handler
-        use_static_handler = options.get('use_static_handler')
-        insecure_serving = options.get('insecure_serving', False)
-        if (settings.DEBUG and use_static_handler or
-                (use_static_handler and insecure_serving)):
-            handler = StaticFilesHandler(handler)
+def get_handler(**options):
+    """
+    Returns the django.contrib.staticfiles handler.
+    """
+    handler = WSGIHandler()
+    try:
+        from django.contrib.staticfiles.handlers import StaticFilesHandler
+    except ImportError:
         return handler
+    use_static_handler = options.get('use_static_handler')
+    insecure_serving = options.get('insecure_serving', False)
+    if (settings.DEBUG and use_static_handler or
+            (use_static_handler and insecure_serving)):
+        handler = StaticFilesHandler(handler)
+    return handler
