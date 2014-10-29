@@ -15,7 +15,7 @@ After cloning the repository run the following commands:
   pip install -r requirements.txt
   cd webapp
   python manage.py migrate
-  python manage.py runserver
+  python manage.py socketio_runserver
 ```
   
 At this point the server should be up and running at 127.0.0.1:8000. You can run unittests with 
@@ -24,5 +24,5 @@ python manage.py test
 ```
 and the integration tests with 
 ```
-python manage.py harvest.
+python manage.py harvest -S
 ```

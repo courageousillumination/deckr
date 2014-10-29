@@ -1,4 +1,9 @@
 #!/usr/bin/env python
+
+# Have to monkey patch ASAP
+from gevent import monkey
+monkey.patch_all()
+
 import os
 import sys
 
