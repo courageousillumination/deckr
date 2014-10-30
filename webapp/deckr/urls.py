@@ -1,3 +1,7 @@
+"""
+Configure all of the URL patterns for deckr.
+"""
+
 from django.conf.urls import patterns, url, include
 
 import socketio.sdjango

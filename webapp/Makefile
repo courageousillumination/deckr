@@ -11,6 +11,6 @@ test:
 lint:
 	# Disable R0904 too many public methods since it doesn't
 	# ignore parent classes.
-	(pylint deckr --disable=R0904 --msg-template="{path}:{line}: [{msg_id}({symbol}), {obj}] {msg}" > reports/pylint.report) || true
+	(pylint deckr --rcfile=.pylintrc  > reports/pylint.report) || true
 autolint:
 	autopep8 --aggressive --in-place -r deckr
