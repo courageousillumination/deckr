@@ -1,4 +1,6 @@
 # source: https://github.com/iamjem/socketio_runserver
+import atexit
+import coverage
 
 from optparse import make_option
 from re import match
@@ -17,7 +19,7 @@ from socketio.server import SocketIOServer
 
 
 RELOAD = False
-
+COVERAGE = None
 
 def reload_watcher():
     global RELOAD
@@ -26,8 +28,7 @@ def reload_watcher():
         if RELOAD:
             kill(getpid(), SIGINT)
         sleep(1)
-
-
+        
 class Command(BaseCommand):
     option_list = BaseCommand.option_list + (
         make_option(
@@ -42,6 +43,12 @@ class Command(BaseCommand):
             dest='use_static_handler',
             default=True,
             help='Do NOT use staticfiles handler.'),
+        make_option(
+            '--enable-coverage',
+            action='store_true',
+            dest='enable_coverage',
+            default=False,
+            help='Enable coverage on specified modules.'),
     )
         
     def __init__(self):
@@ -51,9 +58,20 @@ class Command(BaseCommand):
         self.port = DEFAULT_PORT
         
     def handle(self, addrport='', *args, **options):
+        if options.get('enable_coverage'):
+            print "Enabling coverage for socketio server."
+            coverage_omit = ['*/management/*',
+                             '*/migrations/*']
+                                    
+            cov = coverage.coverage(source=['deckr'], 
+                                    omit=coverage_omit,
+                                    data_suffix = True)
+            cov.start()
+            
         if not addrport:
             self.addr = ''
             self.port = DEFAULT_PORT
+            
         else:
             m = match(naiveip_re, addrport)
             if m is None:
@@ -62,7 +80,6 @@ class Command(BaseCommand):
             self.addr, _, _, _, self.port = m.groups()
 
         environ['DJANGO_SOCKETIO_PORT'] = str(self.port)
-
         if options.get('use_reloader'):
             start_new_thread(reload_watcher, ())
 
@@ -74,9 +91,10 @@ class Command(BaseCommand):
                 bind, handler, resource='socket.io', policy_server=True)
             server.serve_forever()
         except KeyboardInterrupt:
-            for _, sock in six.iteritems(server.sockets):
-                sock.kill(detach=True)
             server.stop()
+            if options.get('enable_coverage'):
+                cov.stop()
+                cov.save()
             if RELOAD:
                 print 'Reloading...\n\n'
                 restart_with_reloader()
