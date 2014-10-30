@@ -23,7 +23,6 @@ from socketio.server import SocketIOServer
 
 
 RELOAD = False
-COVERAGE = None
 
 
 def reload_watcher():
