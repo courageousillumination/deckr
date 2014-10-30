@@ -5,6 +5,7 @@ $(".card").onclick(function() {
 
 $(".zone").onclick(function() {
     if (selected_card != null) {
-            do_action("move_card", { selected_card, this.data('game-id'))
+            do_action("move_card", {card: selected_card.data('game-id'),
+                                    zone: this.data('game-id')});
     }
 }
