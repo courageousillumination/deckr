@@ -26,3 +26,8 @@ and the integration tests with
 ```
 python manage.py harvest -S
 ```
+The webapp also includes a Makefile that makes some general tasks easier. For
+example `make verify` will run unittests, integration tests, and compile 
+coverage information (all data will be written into a reports directory).
+`make lint` will run pylint on the code base and generate a report. `make autolint`
+will run autopep8 on the deckr code base to reduce pep8 violations.
