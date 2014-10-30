@@ -3,11 +3,9 @@ import signal
 import os
 
 from lettuce import *
-import coverage
 
 @before.harvest
 def run_server(variables):
-    print variables
     FNULL = open(os.devnull, 'w')
     
     world.server = Popen(["python", 
