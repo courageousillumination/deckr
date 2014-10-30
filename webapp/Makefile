@@ -1,4 +1,5 @@
-all: test lint
+all: 
+verify: test lint
 test:
 	mkdir -p reports;
 	coverage erase;
@@ -8,5 +9,6 @@ test:
 	coverage html --directory=reports/coverage
 	coverage xml -o reports/coverage.xml
 lint:
-	autopep8 --aggressive --in-place -r deckr
 	(pylint deckr --msg-template="{path}:{line}: [{msg_id}({symbol}), {obj}] {msg}" > reports/pylint.report) || true
+autolint:
+	autopep8 --aggressive --in-place -r deckr
