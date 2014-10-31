@@ -32,3 +32,7 @@ div.vertical-fan img {
 	width: 100%;
 	overflow: hidden;
 }
+
+div.stacked img {
+	position: absolute
+}

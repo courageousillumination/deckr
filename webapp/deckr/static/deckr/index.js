@@ -25,13 +25,6 @@ function removeCard(zoneId, cardId) {
 	zone.removeChild(cardId);
 }
 
-var cardDict = {"src" :"static/deckr/cards/13.png", "id":"jack"};
-var cardDict2 = {"src" :"static/deckr/cards/14.png", "id":"queen"};
-$(document).ready(function() {
-	addCard("playarea0",cardDict);	
-	addCard("playarea0",cardDict2);	
-})
-
 function moveCard(fromZoneId, toZoneId, cardId, place) {
 	var card = getElementById(cardId);
 	var fromZone = getElementById(fromZoneId);
