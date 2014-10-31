@@ -36,7 +36,7 @@ class CreateGameTestCase(TestCase):
     def setUp(self):
         self.client = Client()
 
-    @skip
+    @skip("Not yet implemented")
     def test_can_access(self):
         """
         Make sure we can access the page.
@@ -45,7 +45,7 @@ class CreateGameTestCase(TestCase):
         response = self.client.get(reverse('deckr.create_game'))
         self.assertEqual(response.status_code, 200)
 
-    @skip
+    @skip("Not yet implemented")
     def test_submit_form(self):
         """
         Make sure that the form submits, and that it will reject invalid
@@ -78,7 +78,7 @@ class GamePageTestCase(TestCase):
     def setUp(self):
         self.client = Client()
 
-    @skip
+    @skip("Not yet implemented")
     def test_can_access(self):
         """
         Make sure we can access the page.
