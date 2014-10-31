@@ -3,10 +3,7 @@ Test cases for all of our models.
 """
 
 from django.test import TestCase
-from unittest import skip
-
 from deckr.models import GameRoom, Player
-
 
 class GameRoomTestCase(TestCase):
 
@@ -18,7 +15,6 @@ class GameRoomTestCase(TestCase):
         self.game_room = GameRoom.objects.create(room_id=1,
                                                  max_players=2)
 
-    @skip("Not yet implemented")
     def test_string_representation(self):
         """
         Make sure that the string representation of the GameRoom works.
@@ -26,7 +22,6 @@ class GameRoomTestCase(TestCase):
 
         self.assertEqual(self.game_room.__unicode__(), "Game room for game 1")
 
-    @skip("Not yet implemented")
     def test_add_players(self):
         """
         Make sure we can add players if there is room, and that we throw
@@ -45,7 +40,7 @@ class GameRoomTestCase(TestCase):
 
         # Can't have more than max players
         try:
-            Player.objects.create(player_id=2,
+            Player.objects.create(player_id=3,
                                   nickname="Alice",
                                   game_room=self.game_room)
             self.fail()
@@ -55,7 +50,6 @@ class GameRoomTestCase(TestCase):
         player1.delete()
         player2.delete()
 
-    @skip("Not yet implemented")
     def test_duplicate_nicknames(self):
         """
         Make sure that we can't have two players with the same nickname.
@@ -74,6 +68,35 @@ class GameRoomTestCase(TestCase):
 
         player1.delete()
 
+    def test_maximum_occupancy(self):
+        """
+        Make sure a player cannot join a full room
+        """
+        game_room = GameRoom.objects.create(room_id=1,
+                                            max_players=0)
+        self.assertTrue(game_room.maximum_occupancy())
+
+        game_room.max_players = 1
+
+        self.assertFalse(game_room.maximum_occupancy())
+
+        Player.objects.create(player_id=1,
+                              nickname="Bob",
+                              game_room=game_room)
+
+        self.assertTrue(game_room.maximum_occupancy())
+
+    def test_existing_nickname(self):
+        """
+        Make sure nicknames in a room are unique
+        """
+        Player.objects.create(player_id=1,
+                              nickname="Bob",
+                              game_room=self.game_room)
+
+        self.assertTrue(self.game_room.existing_nickname("Bob"))
+        self.assertFalse(self.game_room.existing_nickname("Alice"))
+
 
 class PlayerTestCase(TestCase):
 
@@ -88,7 +111,6 @@ class PlayerTestCase(TestCase):
                                             nickname="Bob",
                                             game_room=self.game_room)
 
-    @skip("Not yet implemented")
     def test_string_representation(self):
         """
         Make sure that the string representation of the GameRoom works.
@@ -96,7 +118,6 @@ class PlayerTestCase(TestCase):
 
         self.assertEqual(self.player.__unicode__(), "Bob")
 
-    @skip("Not yet implemented")
     def test_nickname(self):
         """
         Make sure that the nickname will reject invalid values.
