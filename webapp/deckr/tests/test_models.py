@@ -15,8 +15,8 @@ class GameRoomTestCase(TestCase):
     """
 
     def setUp(self):
-        self.game_room = GameRoom(room_id=1,
-                                  max_players=2)
+        self.game_room = GameRoom.objects.create(room_id=1,
+                                                 max_players=2)
 
     @skip("Not yet implemented")
     def test_string_representation(self):
@@ -84,9 +84,9 @@ class PlayerTestCase(TestCase):
     def setUp(self):
         self.game_room = GameRoom.objects.create(room_id=1,
                                                  max_players=2)
-        self.player = Player(player_id=1,
-                             nickname="Bob",
-                             game_room=self.game_room)
+        self.player = Player.objects.create(player_id=1,
+                                            nickname="Bob",
+                                            game_room=self.game_room)
 
     @skip("Not yet implemented")
     def test_string_representation(self):
