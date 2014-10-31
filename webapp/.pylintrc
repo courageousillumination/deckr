@@ -36,7 +36,12 @@ load-plugins=
 # --enable=similarities". If you want to run only the classes checker, but have
 # no Warning level messages displayed, use"--disable=all --enable=classes
 # --disable=W"
-disable=R0904,I0011
+# R0904: Too many public method; doesn't respect parents => false positives.
+# R0903: Causes a lot of false positives on mocks, etc. We can reenable this
+#        when we're closer to finishing.
+# I0011: Disabled check; yes I know. It's there for a reason.
+# E1103: Possibly missing member; can't do enough inference.
+disable=R0904,I0011,E1103,R0903
 
 
 [REPORTS]
