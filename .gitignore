@@ -52,7 +52,7 @@ docs/_build/
 
 # PyBuilder
 target/
-
+venv/
 /venv
 *.sqlite3
 reports
