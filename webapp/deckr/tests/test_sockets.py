@@ -8,6 +8,7 @@ from socketio.virtsocket import Socket
 from mock import MagicMock
 
 from deckr.sockets import ChatNamespace, GameNamespace
+from deckr.models import Player
 
 
 class MockSocketIOServer(object):
@@ -135,3 +136,29 @@ class GameNamespaceTestCase(SocketTestCase):
 
         self.namespace.on_request_state()
         self.namespace.emit.assert_called_with("state", state)
+
+    @skip("Not yet implemented")
+    def test_connect(self):
+        """
+        Make sure that when we get a socket connection we create a player
+        for that socket.
+        """
+
+        old_count = Player.objects.all().count()
+        self.namespace.on_connect()
+        self.assertEqual(Player.objects.all().count(), old_count + 1)
+
+    @skip("Not yet implemented")
+    def test_disconnect(self):
+        """
+        If a player disconnects from the room we should clean up the player
+        associated with them.
+        """
+
+        old_count = Player.objects.all().count()
+        self.namespace.player = Player.objects.create(
+            game_id=0,
+            nickname="Bob")
+
+        self.namespace.on_disconnect()
+        self.assertEqual(Player.objects.all().count(), old_count)

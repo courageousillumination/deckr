@@ -6,6 +6,7 @@ from django.db import models
 
 
 class GameRoom(models.Model):
+
     """
     Contains attributes and methods for GameRoom class
     """
@@ -20,6 +21,7 @@ class GameRoom(models.Model):
 
 
 class Player(models.Model):
+
     """
     Contains attributes and methods for Player class
     """
