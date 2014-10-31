@@ -1,17 +1,17 @@
 <html>
     <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="index.css">
         <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js"></script>
-        <script type="text/javascript" charset="utf-8">
-            var socket = io.connect("/chat");
-            socket.on('connect', function() {
-                socket.emit('my event', {data: 'I\'m connected!'});
-            });
-            socket.on('chat', function(data) {
-                console.log(data);
-            });
-        </script>
+        <script type="text/javascript" src="index.js"></script>
     </head>
     <body>
-        Hello World!
+        <form action="">
+            <div class="row">
+                <select name="games" class="games"></select>
+                <input type="button" value="Upload new game" class="upload">
+            </div>
+            <input type="submit" value="Play!" class="play">
+        </form>
     </body>
 </html>
