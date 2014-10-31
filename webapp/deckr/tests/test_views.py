@@ -6,6 +6,8 @@ from django.test import TestCase, Client
 from django.core.urlresolvers import reverse
 from unittest import skip
 
+from deckr.models import GameRoom
+
 
 class IndexTestCase(TestCase):
 
@@ -42,6 +44,27 @@ class CreateGameTestCase(TestCase):
 
         response = self.client.get(reverse('deckr.create_game'))
         self.assertEqual(response.status_code, 200)
+
+    @skip
+    def test_submit_form(self):
+        """
+        Make sure that the form submits, and that it will reject invalid
+        input.
+        """
+
+        form_data = {'game_id': 1}
+
+        response = self.client.post(reverse('deckr.create_game'),
+                                    form_data)
+        self.assertTrue(GameRoom.objects.all().count() > 0)
+        game = list(GameRoom.objects.all())[-1]
+        self.assertRedirects(response, reverse('deckr.game', args=(game.id,)))
+
+        # Test invalid form
+        response = self.client.post(reverse('deckr.create_game'),
+                                    {})
+        self.assertFormError(response, 'form', 'game_id',
+                             'This field is required')
 
 
 class GamePageTestCase(TestCase):

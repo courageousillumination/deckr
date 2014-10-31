@@ -41,7 +41,8 @@ load-plugins=
 #        when we're closer to finishing.
 # I0011: Disabled check; yes I know. It's there for a reason.
 # E1103: Possibly missing member; can't do enough inference.
-disable=R0904,I0011,E1103,R0903
+# E1101: Has no member; a lot of the django members are created at runtime.
+disable=R0904,I0011,E1103,R0903,E1101
 
 
 [REPORTS]
