@@ -15,34 +15,29 @@ function addCard(zoneId, cardDict) {
 	var zone = document.getElementById(zoneId);
 	var newCard = document.createElement('img');
 	for (key in cardDict) {
-		$(newCard).data(key,card[key]);
+		$(newCard).attr(key,cardDict[key]);
 	}
-	zone.appendChild(newcard);
+	zone.appendChild(newCard);
 }
 
-function removeCard(zoneId, card) {
-	var zone = document.getElementById(zoneId);
-
+function removeCard(zoneId, cardId) {
+	zone = document.getElementById(zoneId);
+	zone.removeChild(cardId);
 }
 
-var cardDict = {"href":"/home/graham/Desktop/cards/13.png", "id":"jack"};
-addCard("playarea0",cardDict);
+var cardDict = {"src" :"static/deckr/cards/13.png", "id":"jack"};
+var cardDict2 = {"src" :"static/deckr/cards/14.png", "id":"queen"};
+$(document).ready(function() {
+	addCard("playarea0",cardDict);	
+	addCard("playarea0",cardDict2);	
+})
 
 function moveCard(fromZoneId, toZoneId, cardId, place) {
 	var card = getElementById(cardId);
 	var fromZone = getElementById(fromZoneId);
 	var toZone = getElementById(toZoneId);
 
-	fromZone.removeChild(card);
-
-	if (!place) {
-		toZone.appendChild(card);
-	} else {
-
-	}
-
-
-
+	toZone.appendChild()
 } 
 
 /*
@@ -62,4 +57,6 @@ socket.on('existing games', function(data) {
 	}
 
 });
+
+
 */

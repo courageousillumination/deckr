@@ -13,3 +13,22 @@ input.play {
 select.games {
 	width: 20%;
 }
+
+div.vertical-fan img {
+	float: left;
+	position: relative;
+	margin-bottom: -93%;
+}
+
+.vertical-fan {
+	float: left;
+	width: 72px;
+	height: 500px;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+.row {
+	width: 100%;
+	overflow: hidden;
+}
