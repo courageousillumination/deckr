@@ -4,4 +4,11 @@ Contains definitions of all models for deckr.
 
 from django.db import models
 
-# Create your models here.
+
+class GameRoom(models.Model):
+
+    """
+    A simple wrapper around the deckr engine Game.
+    """
+
+    pass
