@@ -6,4 +6,4 @@ from django.contrib import admin
 
 from deckr.models import GameRoom
 
-admin.site.register(GameRoom)
+#admin.site.register(GameRoom)
