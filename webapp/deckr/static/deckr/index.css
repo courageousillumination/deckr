@@ -17,7 +17,7 @@ select.games {
 div.vertical-fan img {
 	float: left;
 	position: relative;
-	margin-bottom: -93%;
+	margin-bottom: -68px;
 }
 
 .vertical-fan {
@@ -35,4 +35,11 @@ div.vertical-fan img {
 
 div.stacked img {
 	position: absolute
+}
+
+.zone {
+	min-height: 100px;
+	min-width: 100px;
+	border: solid;
+	padding-top: 20px;
 }

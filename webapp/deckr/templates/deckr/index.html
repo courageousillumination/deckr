@@ -3,7 +3,7 @@
         <meta charset="utf-8">
         {% load staticfiles %}
         <link rel="stylesheet" href="{% static 'deckr/index.css' %}">
-        <!--<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js"></script>-->
+        <script type="text/javascript" src="{% static 'deckr/socket.io.min.js' %}"></script>
         <script type="text/javascript" src="{% static 'deckr/jquery-2.1.1.min.js' %}"></script>
         <!-- Once running on server use: <script src="/socket.io/socket.io.js"></script> -->
         <script type="text/javascript" src="{% static 'deckr/index.js' %}"></script>
