@@ -24,9 +24,9 @@ class ZoneTestCase(TestCase):
 
         test_zone.add_card(card1)
         self.assertIn(card1, test_zone.get_cards())
-		
-		# No null cards
-		self.assertFalse(test_zone.add_card(None))
+        
+        # No null cards
+        self.assertFalse(test_zone.add_card(None))
         
         test_zone.add_card(card2)
         self.assertIn(card2, test_zone.get_cards())
