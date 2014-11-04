@@ -3,7 +3,9 @@ from unittest import TestCase, skip
 from engine.zone import Zone
 from engine.card import Card
 
+
 class ZoneTestCase(TestCase):
+
     def setUp(self):
         pass
 
@@ -19,7 +21,7 @@ class ZoneTestCase(TestCase):
         card2 = Card()
 
         test_zone = Zone()
-        
+
         test_zone.add_card(card1)
         self.assertIn(card1, test_zone.get_cards())
 
@@ -27,7 +29,7 @@ class ZoneTestCase(TestCase):
         self.assertIn(card2, test_zone.get_cards())
 
         # Make sure we have both
-        self.assertListEqual([card1,card2], test_zone.get_cards())
+        self.assertListEqual([card1, card2], test_zone.get_cards())
 
     @skip("not yet implemented")
     def test_remove_card(self):
@@ -39,11 +41,11 @@ class ZoneTestCase(TestCase):
         card3 = Card()
 
         test_zone = Zone()
-        
+
         test_zone.add_card(card1)
         test_zone.add_card(card2)
-        self.assertListEqual([card1,card2], test_zone.get_cards())
-        
+        self.assertListEqual([card1, card2], test_zone.get_cards())
+
         # Check that the right card is removed, and only that card
         test_zone.remove_card(card1)
 
@@ -62,7 +64,7 @@ class ZoneTestCase(TestCase):
         card2 = Card()
 
         test_zone = Zone()
-        
+
         test_zone.add_card(card1)
         self.assertTrue(card1 in test_zone)
         self.assertFalse(card2 in test_zone)
@@ -82,7 +84,7 @@ class ZoneTestCase(TestCase):
 
         # Make sure cards were shuffled and that we didn't lose any
         self.assertListNotEqual(temp, test_zone.get_cards())
-        self.assertEqual(len(temp),len(test_zone.get_cards()))
+        self.assertEqual(len(temp), len(test_zone.get_cards()))
 
     @skip("not yet implemented")
     def test_get_num_cards(self):
@@ -122,7 +124,7 @@ class ZoneTestCase(TestCase):
         test_zone.push(card3)
         test_zone.push(card2)
 
-        self.assertListEqual([card2,card3,card1], test_zone.get_cards())
+        self.assertListEqual([card2, card3, card1], test_zone.get_cards())
 
     @skip("not yet implemented")
     def test_pop(self):
@@ -140,8 +142,7 @@ class ZoneTestCase(TestCase):
         test_zone.push(card2)
 
         # Make sure we pop the right card
-        self.assertEqual(card2,test_zone.pop())
+        self.assertEqual(card2, test_zone.pop())
 
         # Make sure it is popped
-        self.assertListEqual([card3,card1], test_zone.get_cards())
-
+        self.assertListEqual([card3, card1], test_zone.get_cards())

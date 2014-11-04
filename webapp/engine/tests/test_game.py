@@ -4,8 +4,10 @@ import engine.game_runner
 import engine.game
 import engine.card
 
+
 class GameTestCase(TestCase):
-    #TODO: write these cases
+    # TODO: write these cases
+
     def setUp(self):
         self.game = engine.game.Game()
 
@@ -42,4 +44,3 @@ class GameTestCase(TestCase):
         self.assertFalse(self.game.make_action("restricted_action"))
         self.game.phase = "unrestricted"
         self.assertTrue(self.game.make_action("restricted_action"))
-
