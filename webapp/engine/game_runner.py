@@ -17,6 +17,12 @@ def destroy_game(game_id):
     
     pass
 
+def get_game(game_id):
+"""
+    Returns a game based on the id
+"""
+
+
 def get_state(game_id):
     """
     Returns the state of the given game. 
