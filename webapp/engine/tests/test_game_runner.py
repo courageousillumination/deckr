@@ -2,6 +2,7 @@ from unittest import TestCase, skip
 
 import engine.game_runner
 
+
 class GameRunnerTestCase(TestCase):
 
     def setUp(self):
@@ -11,13 +12,13 @@ class GameRunnerTestCase(TestCase):
         
     def tearDown(self):
         self.game_runner.flush()
-    
+
     #@skip("Not yet implemented")
     def test_create_room(self):
         """
         Test the ability to create a game room.
         """
-        
+
         try:
             self.game_runner.create_game("invalid file")
             self.fail()
@@ -26,7 +27,7 @@ class GameRunnerTestCase(TestCase):
         
         game_id = self.game_runner.create_game(self.valid_game_def)
         self.assertGreaterThan(game_id, 0)
-        
+
         # Make sure IDs are unique
         game_id_1 = self.game_runner.create_game(self.valid_game_def)
         self.assertNotEqual(game_id, game_id_1)
@@ -56,3 +57,4 @@ class GameRunnerTestCase(TestCase):
         self.assertFalse(self.game_runner.make_action("restricted_action"))
         game1.phase = "unrestricted"
         self.assertTrue(self.game_runner.make_action("restricted_action"))
+

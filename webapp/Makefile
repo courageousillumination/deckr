@@ -9,8 +9,7 @@ test:
 	coverage html --directory=reports/coverage
 	coverage xml -o reports/coverage.xml
 lint:
-	# Disable R0904 too many public methods since it doesn't
-	# ignore parent classes.
-	(pylint deckr --rcfile=.pylintrc  > reports/pylint.report) || true
+	(pylint deckr engine --rcfile=.pylintrc  > reports/pylint.report) || true
 autolint:
 	autopep8 --aggressive --in-place -r deckr
+	autopep8 --aggressive --in-place -r engine
