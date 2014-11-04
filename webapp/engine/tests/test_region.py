@@ -7,16 +7,16 @@ class GameRunnerTestCase(TestCase):
     
     @skip("not yet implemented")
     def test_get_add_zones(self):
-    	"""
-    	Test ability to get list of zones. Also tests adding zones.
-    	"""
-    	zone1 = Zone()
-    	zone2 = Zone()
-    	zone3 = Zone()
+        """
+        Test ability to get list of zones. Also tests adding zones.
+        """
+        zone1 = Zone()
+        zone2 = Zone()
+        zone3 = Zone()
 
-    	testregion = Region()
-    	testregion.add_zone(zone1)
-    	testregion.add_zone(zone2)
+        testregion = Region()
+        testregion.add_zone(zone1)
+        testregion.add_zone(zone2)
 
-    	self.assertListEqual([zone1,zone2],testregion.get_zones())
-    	self.assertNotIn(zone3,testregion.get_zones())
+        self.assertListEqual([zone1,zone2],testregion.get_zones())
+        self.assertNotIn(zone3,testregion.get_zones())
