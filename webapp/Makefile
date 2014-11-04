@@ -12,4 +12,4 @@ lint:
 	(pylint deckr engine --rcfile=.pylintrc  > reports/pylint.report) || true
 autolint:
 	autopep8 --aggressive --in-place -r deckr
-        autopep8 --aggressive --in-place -r engine
+	autopep8 --aggressive --in-place -r engine
