@@ -35,9 +35,9 @@ class GameTestCase(TestCase):
     @skip("not yet implemented")
     def test_make_action(self):
         self.game.phase = "restricted"
-        self.assertFalse(self.game.make_action("restricted_action"))
+        self.assertFalse(self.game.make_action("restricted_action", player_id = 1))
         self.game.phase = "unrestricted"
-        self.assertTrue(self.game.make_action("restricted_action"))
+        self.assertTrue(self.game.make_action("restricted_action", player_id = 1))
 
     def test_make_winning_action(self):
         """
