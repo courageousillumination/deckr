@@ -15,6 +15,8 @@ class GameRunnerTestCase(TestCase):
         zone2 = Zone()
         zone3 = Zone()
 
+        self.assertEqual(0, len(testregion.get_zones()))
+
         testregion = Region()
         testregion.add_zone(zone1)
         testregion.add_zone(zone2)
