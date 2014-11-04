@@ -39,6 +39,7 @@ class GameTestCase(TestCase):
         self.game.phase = "unrestricted"
         self.assertTrue(self.game.make_action("restricted_action", player_id = 1))
 
+    @skip("not yet implemented")
     def test_make_winning_action(self):
         """
         Make sure that we can win the game.
@@ -48,7 +49,7 @@ class GameTestCase(TestCase):
         self.assertTrue(self.game.is_over())
         self.assertListEqual([1], self.game.winners())
         
-    
+    @skip("not yet implemented")
     def test_make_losing_action(self):
         """
         Make sure that we can lose

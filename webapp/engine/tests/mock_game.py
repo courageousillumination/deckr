@@ -1,4 +1,4 @@
-from engine.game import Game
+from engine.game import Game, action
 
 
 class MockGame(Game):
@@ -17,6 +17,10 @@ class MockGame(Game):
 
     def winners(self):
         return self.winners
+    
+    # Restricttions
+    def restrictions(self, player_id):
+        self.phase != "restricted"
 
     @action
     def win(self, player_id):
@@ -27,14 +31,12 @@ class MockGame(Game):
     def lose(self, player_id):
         self.over = True
 
-    @action(self.restrictions)
+    @action(restriction = restrictions)
     def restricted_action(self, player_id):
         self.winners.append(player_id)
         self.over = True
 
-    # Restricttions
-    def restrictions(self, player_id):
-        self.phase != "restricted"
+
 
 
 """
