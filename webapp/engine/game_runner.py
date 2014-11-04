@@ -1,4 +1,6 @@
 def create_game(game_definition):
+
+    
     """
     Creates a new game. Returns the game id for the
     new game or throws an exception if there was an
