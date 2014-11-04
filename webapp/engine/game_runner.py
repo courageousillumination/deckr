@@ -17,9 +17,9 @@ def destroy_game(game_id):
     pass
 
 def get_game(game_id):
-"""
+    """
     Returns a game based on the id
-"""
+    """
 
 
 
@@ -55,4 +55,10 @@ def has_game(game_id):
     otherwise.
     """
 
+    pass
+
+def flush():
+    """
+    Destroys all games
+    """
     pass
