@@ -6,7 +6,7 @@ from engine.zone import Zone
 class GameRunnerTestCase(TestCase):
     
     @skip("not yet implemented")
-    def test_get_zones(self):
+    def test_get_add_zones(self):
     	zone1 = Zone()
     	zone2 = Zone()
     	zone3 = Zone()
