@@ -1,10 +1,19 @@
 from unittest import TestCase, skip
 
-import engine.region
+from engine.region import Region
+from engine.zone import Zone
 
 class GameRunnerTestCase(TestCase):
     
+    @skip("not yet implemented")
     def test_get_zones(self):
-    	engine.region.zones.append(zone1)
-    	engine.region.zones.append(zone2)
-    	assertListEqual([zone1,zone2],engine.region.zones)
+    	zone1 = Zone()
+    	zone2 = Zone()
+    	zone3 = Zone()
+
+    	testregion = Region()
+    	testregion.add_zone(zone1)
+    	testregion.add_zone(zone2)
+
+    	self.assertListEqual([zone1,zone2],testregion.get_zones())
+    	self.assertNotIn(zone3,testregion.get_zones())
