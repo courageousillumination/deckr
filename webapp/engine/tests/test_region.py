@@ -7,6 +7,9 @@ class GameRunnerTestCase(TestCase):
     
     @skip("not yet implemented")
     def test_get_add_zones(self):
+    	"""
+    	Test ability to get list of zones. Also tests adding zones.
+    	"""
     	zone1 = Zone()
     	zone2 = Zone()
     	zone3 = Zone()
