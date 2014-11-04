@@ -28,8 +28,15 @@ class GameTestCase(TestCase):
 
     @skip("not yet implemented")
     def test_assign_id(self):
-        self.assertTrue(self.game.assign_id(engine.card.Card(), "1"))
-        self.assertFalse(self.game.assign_id(engine.card.Card(), "1"))
+        card1 = engine.card.Card()
+
+        self.assertTrue(self.game.assign_id(card1, "1"))
+        self.assertEqual(card1.get_id(),1)
+
+        self.assertFalse(self.game.assign_id(card1, "1"))
+        self.assertFalse(self.game.assign_id(card1, ""))
+        self.assertEqual(card1.get_id(),1)
+
         self.assertFalse(self.game.assign_id(None, ""))
 
     @skip("not yet implemented")

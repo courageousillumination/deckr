@@ -24,7 +24,10 @@ class ZoneTestCase(TestCase):
 
         test_zone.add_card(card1)
         self.assertIn(card1, test_zone.get_cards())
-
+		
+		# No null cards
+		self.assertFalse(test_zone.add_card(None))
+        
         test_zone.add_card(card2)
         self.assertIn(card2, test_zone.get_cards())
 
@@ -42,8 +45,10 @@ class ZoneTestCase(TestCase):
 
         test_zone = Zone()
 
+        # Cannot add null cards, but other stuff is fine
         test_zone.add_card(card1)
         test_zone.add_card(card2)
+
         self.assertListEqual([card1, card2], test_zone.get_cards())
 
         # Check that the right card is removed, and only that card
@@ -106,8 +111,8 @@ class ZoneTestCase(TestCase):
         """
         Test getting zone info.
         """
-        # Exact format not yet determined
-        pass
+       	test_zone = Zone()
+       	self.assertDictEqual(dict({"hidden":False,"orientation":1}), test_zone.get_info())
 
     @skip("not yet implemented")
     def test_push(self):
@@ -120,9 +125,12 @@ class ZoneTestCase(TestCase):
 
         test_zone = Zone()
 
-        test_zone.push(card1)
-        test_zone.push(card3)
-        test_zone.push(card2)
+        self.assertTrue(test_zone.push(card1))
+        self.assertTrue(test_zone.push(card3))
+        self.assertTrue(test_zone.push(card2))
+
+        # No null cards
+        self.assertFalse(test_zone.push(None))
 
         self.assertListEqual([card2, card3, card1], test_zone.get_cards())
 
@@ -146,3 +154,10 @@ class ZoneTestCase(TestCase):
 
         # Make sure it is popped
         self.assertListEqual([card3, card1], test_zone.get_cards())
+
+        self.assertEqual(card3, test_zone.pop())
+        self.assertEqual(card1, test_zone.pop())
+
+        # Try to pop when there are no cards left
+        self.assertEqual(0, len(test_zone.get_cards()))
+        self.assertEqual(None, test_zone.pop())
