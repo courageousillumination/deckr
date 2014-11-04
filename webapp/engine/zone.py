@@ -6,6 +6,12 @@ class Zone(object):
 	def remove_card(self, card):
 		pass
 
+	def push(self, card):
+		pass
+
+	def pop(self):
+		pass
+		
 	def get_cards(self):
 		pass
 
