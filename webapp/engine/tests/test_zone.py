@@ -25,8 +25,11 @@ class ZoneTestCase(TestCase):
         test_zone.add_card(card1)
         self.assertIn(card1, test_zone.get_cards())
         
-        # No null cards
+        # No null cards, no duplicates
         self.assertFalse(test_zone.add_card(None))
+        self.assertFalse(test_zone.add_card(card1))
+
+        self.assertListEqual([card1], test_zone.get_cards())
         
         test_zone.add_card(card2)
         self.assertIn(card2, test_zone.get_cards())
@@ -125,7 +128,10 @@ class ZoneTestCase(TestCase):
 
         test_zone = Zone()
 
+        # No duplicates
         self.assertTrue(test_zone.push(card1))
+        self.assertFalse(test_zone.push(card1))
+
         self.assertTrue(test_zone.push(card3))
         self.assertTrue(test_zone.push(card2))
 
