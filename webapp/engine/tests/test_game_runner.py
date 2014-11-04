@@ -34,7 +34,7 @@ class GameRunnerTestCase(TestCase):
     def test_destroy_room(self):
         game_id = engine.game_runner.create_game(self.valid_game_def)
         engine.game_runner.destroy_game(game_id)
-        engine.game_runner.has_game(game_id)
+        self.assertFalse(engine.game_runner.has_game(game_id))
         
     @skip("Not yet implemented")
     def test_get_state(self):
