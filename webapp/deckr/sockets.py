@@ -30,3 +30,23 @@ class ChatNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         """
 
         self.broadcast_event('chat', msg)
+
+
+class GameNamespace(BaseNamespace, RoomsMixin):
+
+    """
+    Handles all communication around the actual game.
+    """
+
+    def on_action(self, *args, **kwargs):
+        """
+        Perform an action in the game.
+        """
+        pass
+
+    def on_request_state(self):
+        """
+        Returns the current game state.
+        """
+
+        pass
