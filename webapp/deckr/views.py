@@ -8,6 +8,7 @@ from django.template import Template
 # We need to import the namespace so the URLs can be discovered.
 from deckr.sockets import ChatNamespace  # pylint: disable=unused-import
 
+
 def index(request):
     """
     Simply return the index page without any context.
@@ -15,7 +16,10 @@ def index(request):
 
     sub_template = Template(open("../samples/solitaire/layout.html").read())
 
-    return render(request, "deckr/index.html", {'games': ['foo', 'bar'], 'sub_template': sub_template})
-    
+    return render(request, "deckr/index.html",
+                  {'games': ['foo', 'bar'], 'sub_template': sub_template})
+
+
 def create_game_room(request):
-	return render(request, "deckr/create_game_room.html", {'games': ['Solitaire', 'TestGame']})
+    return render(request, "deckr/create_game_room.html",
+                  {'games': ['Solitaire', 'TestGame']})

@@ -53,7 +53,7 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         Called whenever the socket recieves a chat message. It
         will then broadcast the message to the rest of the channel.
         """
-        
+
         print "Got socket data", data
         self.emit('move_card', data)
         #self.broadcast_event('chat', msg)
