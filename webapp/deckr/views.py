@@ -18,4 +18,4 @@ def index(request):
     return render(request, "deckr/index.html", {'games': ['foo', 'bar'], 'sub_template': sub_template})
     
 def create_game_room(request):
-	return render(request, "deckr/create_game_room.html", {'games': ['Solitaire']})
+	return render(request, "deckr/create_game_room.html", {'games': ['Solitaire', 'TestGame']})
