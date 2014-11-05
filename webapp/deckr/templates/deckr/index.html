@@ -9,6 +9,7 @@
         <script type="text/javascript" src="{% static 'deckr/index.js' %}"></script>
     </head>
     <body>
+        <a href="{% url "deckr.create_game_room" %}">Create new game room</a>
         <form action="">
             <div class="row">
                 <select name="games" id="games-dropdown">
