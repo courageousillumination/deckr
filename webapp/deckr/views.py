@@ -14,7 +14,7 @@ def index(request):
     Simply return the index page without any context.
     """
 
-    sub_template = Template(open("../samples/solitaire/layout.html").read())
+    sub_template = Template(open("../samples/testgame/layout.html").read())
 
     return render(request, "deckr/index.html",
                   {'games': ['foo', 'bar'], 'sub_template': sub_template})
