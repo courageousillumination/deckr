@@ -53,6 +53,7 @@ class GameNamespace(BaseNamespace, RoomsMixin):
         self.game_room = None
         self.player = None
         self.room = None
+        self.runner = game_runner
 
     def initialize(self):
         """
@@ -60,14 +61,13 @@ class GameNamespace(BaseNamespace, RoomsMixin):
         """
 
         print "Got socket connection."
-        self.runner = game_runner
-        
+
     def recv_disconnect(self):
         """
         When we disconnect make sure we clean up any related
         objects.
         """
-        
+
         if self.player is not None:
             self.player.delete()
 
@@ -118,30 +118,30 @@ class GameNamespace(BaseNamespace, RoomsMixin):
 
         print "Got socket data", data
         self.emit('move_card', data)
-        
+
     def on_request_state(self, data):
         """
         The client will call this whenever they want the entire
         game state.
         """
-        
+
         if self.game_room is None:
             self.emit("error", "Please connect to a game room first.")
             return False
-        
+
         state = self.runner.get_state(self.game_room.room_id)
         self.emit("state", state)
         return True
-    
+
     def flush(self):
         """
         Clear out all internal state. Should only be used
         for testing.
         """
-        
+
         if self.player is not None:
             self.player.delete()
-        
+
         self.player = None
         self.game_room = None
         self.room = None

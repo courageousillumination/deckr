@@ -102,10 +102,11 @@ class GameNamespaceTestCase(SocketTestCase):
         # Mock out the game runner
         self.namespace.runner = MockGameRunner()
         self.namespace.runner.add_player = MagicMock()
-        
+        self.namespace.runner.get_state = MagicMock()
+
         self.game_room = GameRoom.objects.create(room_id=0,
                                                  max_players=1)
-        
+
         self.namespace.on_join(str(self.game_room.pk))
 
     def test_join(self):
@@ -113,9 +114,10 @@ class GameNamespaceTestCase(SocketTestCase):
         Make sure that when we get a socket connection we create a player
         for that socket.
         """
-        
+
+        # Discard the already joined data
         self.namespace.flush()
-        
+
         old_count = Player.objects.all().count()
         self.assertTrue(self.namespace.on_join(str(self.game_room.pk)))
         self.assertEqual(Player.objects.all().count(), old_count + 1)
@@ -138,8 +140,6 @@ class GameNamespaceTestCase(SocketTestCase):
         self.assertEqual(Player.objects.all().count(), old_count + 1)
         self.namespace.emit.assert_called_with("error",
                                                "Room id is not an integer.")
-        
-        
 
     @skip("Not yet implemented")
     def test_invalid_move(self):
@@ -164,23 +164,22 @@ class GameNamespaceTestCase(SocketTestCase):
         self.namespace.on_action(valid_move)
         self.namespace.broadcast_event.assert_called_with("state_transition",
                                                           transitions)
-        
+
     def test_request_state(self):
         """
         If we request the state, we should recieve the state back.
         """
 
         state = {'foo': 'bar'}
-        
+
         # Mock out the runner
         runner = self.namespace.runner
-        runner.get_state = MagicMock()
         runner.get_state.return_value = state
-        
+
         self.namespace.on_request_state({})
         self.namespace.emit.assert_called_with("state", state)
         runner.get_state.assert_called_with(self.game_room.room_id)
-        
+
     def test_disconnect(self):
         """
         If a player disconnects from the room we should clean up the player
@@ -190,9 +189,9 @@ class GameNamespaceTestCase(SocketTestCase):
         old_count = Player.objects.all().count()
         self.namespace.recv_disconnect()
         self.assertEqual(Player.objects.all().count(), old_count - 1)
-        
+
         # Make sure we reconnect.
         self.namespace.player = Player.objects.create(
             game_room=self.game_room,
-            player_id = 0,
+            player_id=0,
             nickname="Bob")
