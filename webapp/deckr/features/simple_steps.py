@@ -2,6 +2,7 @@ from lettuce import *
 from lettuce.django import django_url
 
 from selenium import webdriver
+from selenium.common.exceptions import NoSuchElementException
 
 import lettuce_webdriver.webdriver
 import lettuce_webdriver.django
@@ -70,9 +71,16 @@ def element_exists(step, elementid):
     if not world.browser.find_element_by_id(elementid):
         raise Exception('Element "{}" not found.'.format(elementid))
 
-@step(u'the element with id "([^"]*)" is a child of the element with id "([^"]*)"')
-def is_child_of(step, childid, parentid):
-    world.browser.find_element_by_xpath('//*[@id="{0}"]/*[@id="{1}"]'.format(parentid, childid))
+@step(u'the element with id "([^"]*)" is( not)? a child of the element with id "([^"]*)"')
+def is_child_of(step, childid, negation, parentid):
+    try:
+        world.browser.find_element_by_xpath('//*[@id="{0}"]/*[@id="{1}"]'
+            .format(parentid, childid))
+    except NoSuchElementException:
+        if not negation:
+            raise NoSuchElementException("Could not find {0} as child of {1}"
+                .format(childid, parentid))
+
     
 # The "attributes" is the lesser of two evils. Takes a dict with
 # keys: id, class, src, among other optionals.
@@ -83,7 +91,6 @@ def js_add_card(step, zoneid, card):
 @step(u'javascript moves the card "([^"]*)" to the zone "([^"]*)"')
 def js_move_card(step, cardid, zoneid):
     world.browser.execute_script('moveCard("{0}","{1}")'.format(cardid, zoneid))
-
 
 @step(u'Just testing "([^"]*)"')
 def just_testing(step, other):
