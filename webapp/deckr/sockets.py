@@ -57,4 +57,3 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         print "Got socket data", data
         self.emit('move_card', data)
         #self.broadcast_event('chat', msg)
-

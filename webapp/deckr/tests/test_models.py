@@ -3,7 +3,27 @@ Test cases for all of our models.
 """
 
 from django.test import TestCase
-from deckr.models import GameRoom, Player
+from deckr.models import GameRoom, Player, GameDefinition
+
+
+class GameDefinitionTestCase(TestCase):
+
+    """
+    Test any logic pertaining to the game definition class.
+    """
+
+    def setUp(self):
+        self.definition = GameDefinition.objects.create(name="foo",
+                                                        path="/bar")
+
+    def test_string_representation(self):
+        """
+        Make sure the string representation is valid.
+        """
+
+        self.assertEqual(self.definition.__unicode__(),
+                         "foo located at /bar")
+
 
 class GameRoomTestCase(TestCase):
 

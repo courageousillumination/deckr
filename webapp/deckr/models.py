@@ -7,6 +7,25 @@ from django.db.models.signals import pre_save
 from django.dispatch import receiver
 
 
+class GameDefinition(models.Model):
+
+    """
+    Stores a mapping between a game definition on the
+    server and a display name for the webclient.
+    """
+
+    name = models.CharField(max_length=256)
+    path = models.FilePathField()
+
+    def __unicode__(self):
+        """
+        Unicode representation of a Game Definition.
+        """
+
+        return "{0} located at {1}".format(self.name,
+                                           self.path)
+
+
 class GameRoom(models.Model):
 
     """
