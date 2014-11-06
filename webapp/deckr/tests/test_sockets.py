@@ -8,7 +8,7 @@ from socketio.virtsocket import Socket
 from mock import MagicMock
 
 from deckr.sockets import ChatNamespace, GameNamespace
-from deckr.models import Player
+from deckr.models import Player, GameRoom
 
 
 class MockSocketIOServer(object):
@@ -101,6 +101,45 @@ class GameNamespaceTestCase(SocketTestCase):
         self.namespace.emit = MagicMock()
         # Mock out the game runner
         self.namespace.runner = MockGameRunner()
+        self.namespace.runner.add_player = MagicMock()
+        
+        self.game_room = GameRoom.objects.create(room_id=0,
+                                                 max_players=1)
+        
+        self.namespace.on_join(str(self.game_room.pk))
+
+    def test_join(self):
+        """
+        Make sure that when we get a socket connection we create a player
+        for that socket.
+        """
+        
+        self.namespace.flush()
+        
+        old_count = Player.objects.all().count()
+        self.assertTrue(self.namespace.on_join(str(self.game_room.pk)))
+        self.assertEqual(Player.objects.all().count(), old_count + 1)
+        self.namespace.runner.add_player.assert_called()
+
+        # Make sure we can't join a full room
+        self.assertFalse(self.namespace.on_join(str(self.game_room.pk)))
+        self.assertEqual(Player.objects.all().count(), old_count + 1)
+        self.namespace.emit.assert_called_with("error",
+                                               "Unable to join game room.")
+
+        # Make sure we can't join a bad room id
+        self.assertFalse(self.namespace.on_join("0"))
+        self.assertEqual(Player.objects.all().count(), old_count + 1)
+        self.namespace.emit.assert_called_with("error",
+                                               "Can not find game room")
+
+        # Make sure we can't join a bad room id
+        self.assertFalse(self.namespace.on_join("foo"))
+        self.assertEqual(Player.objects.all().count(), old_count + 1)
+        self.namespace.emit.assert_called_with("error",
+                                               "Room id is not an integer.")
+        
+        
 
     @skip("Not yet implemented")
     def test_invalid_move(self):
@@ -125,30 +164,23 @@ class GameNamespaceTestCase(SocketTestCase):
         self.namespace.on_action(valid_move)
         self.namespace.broadcast_event.assert_called_with("state_transition",
                                                           transitions)
-
-    @skip("Not yet implemented")
+        
     def test_request_state(self):
         """
         If we request the state, we should recieve the state back.
         """
 
         state = {'foo': 'bar'}
-
-        self.namespace.on_request_state()
+        
+        # Mock out the runner
+        runner = self.namespace.runner
+        runner.get_state = MagicMock()
+        runner.get_state.return_value = state
+        
+        self.namespace.on_request_state({})
         self.namespace.emit.assert_called_with("state", state)
-
-    @skip("Not yet implemented")
-    def test_connect(self):
-        """
-        Make sure that when we get a socket connection we create a player
-        for that socket.
-        """
-
-        old_count = Player.objects.all().count()
-        self.namespace.on_connect()
-        self.assertEqual(Player.objects.all().count(), old_count + 1)
-
-    @skip("Not yet implemented")
+        runner.get_state.assert_called_with(self.game_room.room_id)
+        
     def test_disconnect(self):
         """
         If a player disconnects from the room we should clean up the player
@@ -156,9 +188,11 @@ class GameNamespaceTestCase(SocketTestCase):
         """
 
         old_count = Player.objects.all().count()
+        self.namespace.recv_disconnect()
+        self.assertEqual(Player.objects.all().count(), old_count - 1)
+        
+        # Make sure we reconnect.
         self.namespace.player = Player.objects.create(
-            game_id=0,
+            game_room=self.game_room,
+            player_id = 0,
             nickname="Bob")
-
-        self.namespace.on_disconnect()
-        self.assertEqual(Player.objects.all().count(), old_count)
