@@ -60,9 +60,19 @@ class Game(object):
 
         pass
 
-    def assign_id(self, card, card_id):
+    def register(self, objects):
         """
-        This is an internal function to assign an id to a card.
+        This function will register objects in the game. Each object will
+        be given a unique id (unique within its class). Objects that already
+        have an id will not be assigned a new one.
+        """
+
+        pass
+
+    def get_object_with_id(self, klass, game_id):
+        """
+        Gets an internal object of the given class with the given id. If
+        the object isn't found this just return None.
         """
 
         pass

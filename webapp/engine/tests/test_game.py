@@ -4,9 +4,9 @@ This module contains all test for the Game class.
 
 from unittest import TestCase, skip
 
-import engine.card
-
-from engine.tests.mock_game import MockGame
+from engine.card import Card
+from engine.zone import Zone
+from engine.tests.mock_game.game import MockGame
 
 
 class GameTestCase(TestCase):
@@ -31,20 +31,49 @@ class GameTestCase(TestCase):
         self.assertTrue(self.game.is_setup)
 
     @skip("not yet implemented")
-    def test_assign_id(self):
+    def test_registration(self):
         """
         Make sure that assigning IDs works.
         """
 
-        card1 = engine.card.Card()
+        card1 = Card()
+        card2 = Card()
 
-        self.assertTrue(self.game.assign_id(card1, 1))
-        self.assertEqual(card1.get_id(), 1)
+        zone1 = Zone()
+        zone2 = Zone()
 
-        self.assertFalse(self.game.assign_id(card1, 1))
-        self.assertEqual(card1.get_id(), 1)
+        # Make sure we can assign ids to a set of cards
+        self.game.register((card1, card2))
 
-        self.assertFalse(self.game.assign_id(None, ""))
+        self.assertEqual(card1.game_id, 1)
+        self.assertEqual(card2.game_id, 2)
+
+        # Make sure we can access the objects from the game
+        self.assertEqual(self.game.get_object_with_id("Card", 1), card1)
+        self.assertEqual(self.game.get_object_with_id("Card", 2), card2)
+
+        # Make sure that we don't change ids if the id
+        # is already there.
+
+        self.game.register((card2, card1))
+
+        self.assertEqual(card1.game_id, 1)
+        self.assertEqual(card2.game_id, 2)
+
+        # Make sure that we assign different ids to different
+        # classes.
+
+        self.game.register((zone1, zone2))
+
+        self.assertEqual(zone1.game_id, 1)
+        self.assertEqual(zone2.game_id, 2)
+
+        # Make sure we can access the objects from the game
+        self.assertEqual(self.game.get_object_with_id("Zone", 1), zone1)
+        self.assertEqual(self.game.get_object_with_id("Zone", 2), zone2)
+
+        # Make sure we know what to do on edge cases
+        self.game.register([])
 
     @skip("not yet implemented")
     def test_make_action(self):
@@ -79,6 +108,7 @@ class GameTestCase(TestCase):
         self.assertTrue(self.game.is_over())
         self.assertListEqual([], self.game.winners())
 
+    @skip("not yet implemented")
     def test_load_config(self):
         """
         Make sure that we can load the configuration of a game.
@@ -107,3 +137,22 @@ class GameTestCase(TestCase):
 
         # The zones should know about their configuration
         self.assertTrue(self.game.zones["zone1"].stacked)
+
+        # Make sure that all zones were given an id
+        self.assertIsNotNone(self.game.zones["zone1"].game_id)
+
+    @skip("not yet implemented")
+    def test_load_invalid_config(self):
+        """
+        This test makes sure we can process a configuration
+        dict with unexpected fields (these should just be discarded)
+        """
+
+        invalid_configuration = {
+            "bad_id": "foo",
+            "zones": [
+                {"name": "zone1", "invalid_field": True}
+            ]
+        }
+
+        self.game.load_config(invalid_configuration)

@@ -18,6 +18,17 @@ def create_game(game_definition):
     return 0
 
 
+def load_game_definition(game_definition):
+    """
+    Loads a game definition. A definition minimally consists
+    of a game.py that defines the rules and a config.yml that
+    defines the configuration. This will return a tuple of a
+    configuration dictionary and an instance of the game.
+    """
+
+    return (None, {})
+
+
 def destroy_game(game_id):
     """
     Destroys a game and all of its players, zones, cards,

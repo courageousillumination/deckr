@@ -7,7 +7,9 @@ the best way we could think of to implement the singleton pattern).
 
 from unittest import TestCase, skip
 
-import engine.game_runner
+from engine import game_runner
+
+from engine.tests.mock_game.game import MockGame
 
 
 class GameRunnerTestCase(TestCase):
@@ -17,11 +19,25 @@ class GameRunnerTestCase(TestCase):
     """
 
     def setUp(self):
-        self.valid_game_def = "engine/tests/data/simple_game"
-        self.game_id = engine.game_runner.create_game(self.valid_game_def)
+        self.valid_game_def = "engine/tests/mock_game/"
+        self.game_id = game_runner.create_game(self.valid_game_def)
 
     def tearDown(self):
-        engine.game_runner.flush()
+        game_runner.flush()
+
+    @skip("Not yet implemented")
+    def test_load_game_definition(self):
+        """
+        Makes sure we can load a game definition. A definition should
+        minimally consisty of a game.py and a config.yml.
+        """
+
+        game, config = game_runner.load_game_definition(self.valid_game_def)
+        self.assertDictEqual(config, {"max_players": 1})
+        self.assertTrue(isinstance(game, MockGame))
+
+        # Make sure we fail properly if we give it a bad folder
+        self.assertRaises(IOError, game_runner.load_game_definition("foo"))
 
     @skip("Not yet implemented")
     def test_create_room(self):
@@ -30,16 +46,16 @@ class GameRunnerTestCase(TestCase):
         """
 
         try:
-            engine.game_runner.create_game("invalid file")
+            game_runner.create_game("invalid file")
             self.fail()
         except IOError:
             pass
 
-        game_id = engine.game_runner.create_game(self.valid_game_def)
+        game_id = game_runner.create_game(self.valid_game_def)
         self.assertTrue(game_id > 0)
 
         # Make sure IDs are unique
-        game_id_1 = engine.game_runner.create_game(self.valid_game_def)
+        game_id_1 = game_runner.create_game(self.valid_game_def)
         self.assertNotEqual(game_id, game_id_1)
 
     @skip("Not yet implemented")
@@ -48,9 +64,9 @@ class GameRunnerTestCase(TestCase):
         Make sure that we can destroy a game room.
         """
 
-        game_id = engine.game_runner.create_game(self.valid_game_def)
-        engine.game_runner.destroy_game(game_id)
-        self.assertFalse(engine.game_runner.has_game(game_id))
+        game_id = game_runner.create_game(self.valid_game_def)
+        game_runner.destroy_game(game_id)
+        self.assertFalse(game_runner.has_game(game_id))
 
     @skip("Not yet implemented")
     def test_get_state(self):
@@ -65,8 +81,8 @@ class GameRunnerTestCase(TestCase):
             }
         }
 
-        game_id = engine.game_runner.create_game(self.valid_game_def)
-        state = engine.game_runner.get_state(game_id)
+        game_id = game_runner.create_game(self.valid_game_def)
+        state = game_runner.get_state(game_id)
         self.assertEqual(state, expected_state)
 
     @skip("Not yet implemented")
@@ -76,10 +92,10 @@ class GameRunnerTestCase(TestCase):
         id.
         """
 
-        player_id = engine.game_runner.add_player(self.game_id)
+        player_id = game_runner.add_player(self.game_id)
         self.assertTrue(player_id > 0)
         self.assertNotEqual(player_id,
-                            engine.game_runner.add_player(self.game_id))
+                            game_runner.add_player(self.game_id))
 
     @skip("Not yet implemented")
     def test_make_action(self):
@@ -87,8 +103,8 @@ class GameRunnerTestCase(TestCase):
         Make sure that we can make actions through the GameRunner.
         """
 
-        game1 = engine.game_runner.get_game(self.game_id)
+        game1 = game_runner.get_game(self.game_id)
         game1.phase = "restricted"
-        self.assertFalse(engine.game_runner.make_action("restricted_action"))
+        self.assertFalse(game_runner.make_action("restricted_action"))
         game1.phase = "unrestricted"
-        self.assertTrue(engine.game_runner.make_action("restricted_action"))
+        self.assertTrue(game_runner.make_action("restricted_action"))

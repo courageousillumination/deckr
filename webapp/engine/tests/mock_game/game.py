@@ -13,7 +13,7 @@ class MockGame(Game):
     """
 
     def __init__(self):
-        super(MockGame, self).__init__(self)
+        super(MockGame, self).__init__()
 
         self.winners_list = []
         self.over = False

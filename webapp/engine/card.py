@@ -12,11 +12,4 @@ class Card(object):
     """
 
     def __init__(self):
-        pass
-
-    def get_id(self):
-        """
-        Gets the internal id of this card.
-        """
-
-        pass
+        self.game_id = None

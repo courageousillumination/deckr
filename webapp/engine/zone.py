@@ -11,6 +11,9 @@ class Zone(object):
     the zone interacts with the cards.
     """
 
+    def __init__(self):
+        self.game_id = None
+
     def add_card(self, card):
         """
         Add a card to the zone. This is an unorderd operation.
