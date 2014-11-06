@@ -10,7 +10,7 @@ from engine import game_runner
 
 # We need to import the namespace so the URLs can be discovered.
 from deckr.sockets import ChatNamespace  # pylint: disable=unused-import
-from deckr.models import GameRoom, GameDefinition
+from deckr.models import GameRoom
 from deckr.forms import CreateGameRoomForm
 
 
@@ -23,6 +23,10 @@ def index(request):
 
 
 def test_game(request):
+    """
+    TODO: Remove this when we are done testing.
+    """
+
     sub_template = Template(open("../samples/testgame/layout.html").read())
     return render(request, "deckr/test_game.html",
                   {'sub_template': sub_template})
@@ -38,9 +42,6 @@ def game_room_staging_area(request):
     game = request.POST.get('game')
     return render(request, "deckr/game_room_staging_area.html", {'game': game})
 
-def upload_new_game(request):
-    return render(request, "deckr/upload_new_game.html", {})
-
 def game_room(request, game_room_id):
     """
     This view will present the actual game room page for
@@ -50,11 +51,23 @@ def game_room(request, game_room_id):
     game = get_object_or_404(GameRoom, pk=game_room_id)
     return render(request, "deckr/game_room_staging_area.html", {'game': game})
 
+
+def upload_new_game(request):
+    """
+    Returns the view to upload a new game.
+    """
+
+    return render(request, "deckr/upload_new_game.html", {})
+
 def create_game_room(request):
     """
     This will mainly present a CreateGameRoomForm and
     process that form when it is posted.
     """
+
+    # pylint can't detect the constructor for a Django
+    # form. So we disable the no-value-for-parameter here.
+    # pylint: disable=no-value-for-parameter
 
     if request.method == "POST":
         form = CreateGameRoomForm(request.POST)

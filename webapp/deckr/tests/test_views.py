@@ -4,7 +4,6 @@ Test all of the Django views used by deckr.
 
 from django.test import TestCase, Client
 from django.core.urlresolvers import reverse
-from unittest import skip
 
 from deckr.models import GameRoom, GameDefinition
 
@@ -60,13 +59,8 @@ class CreateGameTestCase(TestCase):
                                     form_data)
         self.assertTrue(GameRoom.objects.all().count() > 0)
         game = list(GameRoom.objects.all())[-1]
-        self.assertRedirects(
-            response,
-            reverse(
-                'deckr.game_room',
-                args=(
-                    game.id,
-                )))
+        self.assertRedirects(response,
+                             reverse('deckr.game_room', args=(game.id,)))
 
         # Test invalid form
         response = self.client.post(reverse('deckr.create_game_room'),
@@ -85,18 +79,19 @@ class GamePageTestCase(TestCase):
 
     """
     Test the game page to make sure that it's working as intended.
-    NOTE: This only tests the view functionality; alot of this page
+    NOTE: This only tests the view functionality; a lot of this page
     is in websockets.
     """
 
     def setUp(self):
         self.client = Client()
+        self.game_room = GameRoom.objects.create(room_id=1)
 
-    @skip("Not yet implemented")
     def test_can_access(self):
         """
         Make sure we can access the page.
         """
 
-        response = self.client.get(reverse('deckr.game_room'))
+        response = self.client.get(reverse('deckr.game_room',
+                                           args=(self.game_room.pk,)))
         self.assertEqual(response.status_code, 200)
