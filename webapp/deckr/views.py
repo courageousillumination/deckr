@@ -10,7 +10,6 @@ from engine import game_runner
 
 # We need to import the namespace so the URLs can be discovered.
 from deckr.sockets import ChatNamespace  # pylint: disable=unused-import
-from deckr.config import GAMES
 from deckr.models import GameRoom, GameDefinition
 from deckr.forms import CreateGameRoomForm
 
