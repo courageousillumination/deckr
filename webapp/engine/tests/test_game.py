@@ -12,7 +12,10 @@ from engine.tests.mock_game.game import MockGame
 class GameTestCase(TestCase):
 
     """
-    A simple test case for our game class.
+    A simple test case for our game class. Note that this
+    also tests the only functionality that we care about
+    for the Card and Zone classes since these are mostly
+    data containers and don't contain any functionality.
     """
 
     def setUp(self):
@@ -41,6 +44,11 @@ class GameTestCase(TestCase):
 
         zone1 = Zone()
         zone2 = Zone()
+
+        self.assertIsNone(card1.game_id)
+        self.assertIsNone(card2.game_id)
+        self.assertIsNone(zone1.game_id)
+        self.assertIsNone(zone2.game_id)
 
         # Make sure we can assign ids to a set of cards
         self.game.register((card1, card2))

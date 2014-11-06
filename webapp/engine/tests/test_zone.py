@@ -85,6 +85,7 @@ class ZoneTestCase(TestCase):
         """
         Test shuffling the cards.
         """
+
         test_zone = Zone()
 
         for _ in range(0, 100):
@@ -119,9 +120,9 @@ class ZoneTestCase(TestCase):
         Test getting zone info.
         """
 
+        expected = {"hidden": False, "orientation": 1}
         test_zone = Zone()
-        self.assertDictEqual(
-            dict({"hidden": False, "orientation": 1}), test_zone.get_info())
+        self.assertDictEqual(expected, test_zone.get_info())
 
     @skip("not yet implemented")
     def test_push(self):
