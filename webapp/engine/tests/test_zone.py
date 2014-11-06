@@ -77,7 +77,6 @@ class ZoneTestCase(TestCase):
         self.assertTrue(card1 in test_zone)
         self.assertFalse(card2 in test_zone)
 
-    
     def test_shuffle(self):
         """
         Test shuffling the cards.
@@ -95,7 +94,6 @@ class ZoneTestCase(TestCase):
         self.assertFalse(temp == test_zone.get_cards())
         self.assertEqual(len(temp), len(test_zone.get_cards()))
 
-    
     def test_get_num_cards(self):
         """
         Test getting the number of cards in the zone.

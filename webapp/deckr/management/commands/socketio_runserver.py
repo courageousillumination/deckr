@@ -84,7 +84,7 @@ class Command(BaseCommand):
             coverage_omit = ['*/management/*',
                              '*/migrations/*']
 
-            cov = coverage.coverage(source=['deckr'],
+            cov = coverage.coverage(source=['deckr', 'engine'],
                                     omit=coverage_omit,
                                     data_suffix=True)
             cov.start()

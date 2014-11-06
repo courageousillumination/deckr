@@ -4,6 +4,7 @@ This module provides the Zone class.
 
 import random
 
+
 class Zone(object):
 
     """
@@ -23,7 +24,7 @@ class Zone(object):
 
         if card is None or card in self.cards:
             return False
-        
+
         self.cards.append(card)
         return True
 
@@ -36,7 +37,7 @@ class Zone(object):
         if card in self.cards:
             self.cards.remove(card)
             return True
-        
+
         return False
 
     def push(self, card):
@@ -54,7 +55,7 @@ class Zone(object):
 
         if len(self.cards) > 0:
             return self.cards.pop()
-        
+
         return None
 
     def get_cards(self):

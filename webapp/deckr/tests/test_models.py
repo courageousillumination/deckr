@@ -5,6 +5,7 @@ Test cases for all of our models.
 from django.test import TestCase
 from deckr.models import GameRoom, Player
 
+
 class GameRoomTestCase(TestCase):
 
     """
