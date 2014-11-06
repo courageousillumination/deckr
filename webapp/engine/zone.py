@@ -2,6 +2,7 @@
 This module provides the Zone class.
 """
 
+import random
 
 class Zone(object):
 
@@ -13,13 +14,18 @@ class Zone(object):
 
     def __init__(self):
         self.game_id = None
+        self.cards = []
 
     def add_card(self, card):
         """
         Add a card to the zone. This is an unorderd operation.
         """
 
-        pass
+        if card is None or card in self.cards:
+            return False
+        
+        self.cards.append(card)
+        return True
 
     def remove_card(self, card):
         """
@@ -27,7 +33,11 @@ class Zone(object):
         this will return false. Otherwise it will return true.
         """
 
-        pass
+        if card in self.cards:
+            self.cards.remove(card)
+            return True
+        
+        return False
 
     def push(self, card):
         """
@@ -35,21 +45,24 @@ class Zone(object):
         This is an ordered operation.
         """
 
-        pass
+        return self.add_card(card)
 
     def pop(self):
         """
         Pop a card off of the zone. This is an ordered operation.
         """
 
-        pass
+        if len(self.cards) > 0:
+            return self.cards.pop()
+        
+        return None
 
     def get_cards(self):
         """
         Get a list of all the cards in this zone.
         """
 
-        pass
+        return self.cards
 
     def get_info(self):
         """
@@ -64,18 +77,18 @@ class Zone(object):
         Shuffle the cards in this zone.
         """
 
-        pass
+        random.shuffle(self.cards)
 
     def get_num_cards(self):
         """
         Get the number of cards in this zone.
         """
 
-        pass
+        return len(self.cards)
 
     def __contains__(self, card):
         """
         Check if a card is in this zone.
         """
 
-        pass
+        return card in self.cards
