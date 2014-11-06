@@ -1,3 +1,10 @@
+"""
+This module is the core game_runner. It offers a stateful interface into the
+game engine. Any outside service can access running games by making calls
+into this module.
+"""
+
+
 def create_game(game_definition):
     """
     Creates a new game. Returns the game id for the
@@ -16,13 +23,13 @@ def destroy_game(game_id):
 
     pass
 
+
 def get_game(game_id):
     """
     Returns a game based on the id
     """
-    
-    pass
 
+    pass
 
 
 def get_state(game_id):
@@ -59,8 +66,10 @@ def has_game(game_id):
 
     pass
 
+
 def flush():
     """
     Destroys all games
     """
+
     pass

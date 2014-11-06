@@ -1,3 +1,7 @@
+"""
+This module contains all the code needed to test a Zone.
+"""
+
 from unittest import TestCase, skip
 
 from engine.zone import Zone
@@ -6,11 +10,9 @@ from engine.card import Card
 
 class ZoneTestCase(TestCase):
 
-    def setUp(self):
-        pass
-
-    def tearDown(self):
-        pass
+    """
+    Simple test case around Zones.
+    """
 
     @skip("not yet implemented")
     def test_add_card(self):
@@ -24,13 +26,13 @@ class ZoneTestCase(TestCase):
 
         test_zone.add_card(card1)
         self.assertIn(card1, test_zone.get_cards())
-        
+
         # No null cards, no duplicates
         self.assertFalse(test_zone.add_card(None))
         self.assertFalse(test_zone.add_card(card1))
 
         self.assertListEqual([card1], test_zone.get_cards())
-        
+
         test_zone.add_card(card2)
         self.assertIn(card2, test_zone.get_cards())
 
@@ -68,6 +70,7 @@ class ZoneTestCase(TestCase):
         """
         Test checking if a card is in the zone.
         """
+
         card1 = Card()
         card2 = Card()
 
@@ -84,14 +87,14 @@ class ZoneTestCase(TestCase):
         """
         test_zone = Zone()
 
-        for x in range(0, 100):
+        for _ in range(0, 100):
             test_zone.add_card(Card())
 
         temp = test_zone.get_cards()[:]
         test_zone.shuffle()
 
         # Make sure cards were shuffled and that we didn't lose any
-        self.assertListNotEqual(temp, test_zone.get_cards())
+        self.assertListFalse(temp == test_zone.get_cards())
         self.assertEqual(len(temp), len(test_zone.get_cards()))
 
     @skip("not yet implemented")
@@ -99,6 +102,7 @@ class ZoneTestCase(TestCase):
         """
         Test getting the number of cards in the zone.
         """
+
         card1 = Card()
         card2 = Card()
 
@@ -114,14 +118,17 @@ class ZoneTestCase(TestCase):
         """
         Test getting zone info.
         """
-       	test_zone = Zone()
-       	self.assertDictEqual(dict({"hidden":False,"orientation":1}), test_zone.get_info())
+
+        test_zone = Zone()
+        self.assertDictEqual(
+            dict({"hidden": False, "orientation": 1}), test_zone.get_info())
 
     @skip("not yet implemented")
     def test_push(self):
         """
         Test pushing cards to our list.
         """
+
         card1 = Card()
         card2 = Card()
         card3 = Card()
@@ -145,6 +152,7 @@ class ZoneTestCase(TestCase):
         """
         Test popping a card from our list.
         """
+
         card1 = Card()
         card2 = Card()
         card3 = Card()

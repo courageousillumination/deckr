@@ -1,3 +1,7 @@
+"""
+Contains any tests around Regions.
+"""
+
 from unittest import TestCase, skip
 
 from engine.region import Region
@@ -6,20 +10,25 @@ from engine.zone import Zone
 
 class GameRunnerTestCase(TestCase):
 
+    """
+    A simple test case for testing anything related to regions.
+    """
+
     @skip("not yet implemented")
     def test_get_add_zones(self):
         """
         Test ability to get list of zones. Also tests adding zones.
         """
+
         zone1 = Zone()
         zone2 = Zone()
         zone3 = Zone()
+        region = Region()
 
-        self.assertEqual(0, len(testregion.get_zones()))
+        self.assertEqual(0, len(region.get_zones()))
 
-        testregion = Region()
-        testregion.add_zone(zone1)
-        testregion.add_zone(zone2)
+        region.add_zone(zone1)
+        region.add_zone(zone2)
 
-        self.assertListEqual([zone1, zone2], testregion.get_zones())
-        self.assertNotIn(zone3, testregion.get_zones())
+        self.assertListEqual([zone1, zone2], region.get_zones())
+        self.assertNotIn(zone3, region.get_zones())
