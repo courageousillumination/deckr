@@ -1,26 +1,5 @@
-<html>
-    <head>
-        <meta charset="utf-8">
-        {% load staticfiles %}
-        <link rel="stylesheet" href="{% static 'deckr/index.css' %}">
-        <script type="text/javascript" src="{% static 'deckr/socket.io.min.js' %}"></script>
-        <script type="text/javascript" src="{% static 'deckr/jquery-2.1.1.min.js' %}"></script>
-        <!-- Once running on server use: <script src="/socket.io/socket.io.js"></script> -->
-        <script type="text/javascript" src="{% static 'deckr/index.js' %}"></script>
-    </head>
-    <body>
-        <a href="{% url "deckr.create_game_room" %}">Create new game room</a>
-        <form action="">
-            <div class="row">
-                <select name="games" id="games-dropdown">
-                    {% for gameid, gamename in games %}
-                    <option id={{gameid}}>{{ gamename }}</option>
-                    {% endfor %}
-                </select>
-                <input type="button" value="Upload new game" id="upload">
-            </div>
-            <input type="submit" value="Play!" id="play">
-        </form>
-        {% include sub_template %}
-    </body>
-</html>
+{% extends "deckr/base.html" %}
+{% block content %}
+<a href="{% url "deckr.create_game_room" %}">Create new game room</a><br />
+<a href="{% url "deckr.upload_new_game" %}">Upload new game</a>
+{% endblock %}

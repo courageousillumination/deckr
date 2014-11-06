@@ -1,13 +1,13 @@
 Feature: Render game
 
     Scenario: Add div directly
-        Given I visit site page "/"
+        Given I visit site page "/test_game"
         Then javascript adds a div to "gamespace" with class "region row" and id "region0"
         Then the element with id "region0" exists
         And the element with id "region0" is a child of the element with id "gamespace"
 
     Scenario: Add card directly
-        Given I visit site page "/"
+        Given I visit site page "/test_game"
         Then javascript adds a div to "gamespace" with class "region row" and id "region0"
         Then the element with id "region0" is a child of the element with id "gamespace"
         Then javascript adds a div to "region0" with class "vertical-span zone" and id "zone0"
@@ -16,7 +16,7 @@ Feature: Render game
         Then the element with id "card0" is a child of the element with id "zone0"
 
     Scenario: Move card directly
-        Given I visit site page "/"
+        Given I visit site page "/test_game"
         Then javascript adds a div to "gamespace" with class "region row" and id "region0"
         Then the element with id "region0" is a child of the element with id "gamespace"
         Then javascript adds a div to "region0" with class "vertical-span zone" and id "zone0"
@@ -31,7 +31,6 @@ Feature: Render game
         Then javascript moves the card "card1" to the zone "zone1"
         Then the element with id "card1" is a child of the element with id "zone1"
         And the element with id "card1" is not a child of the element with id "zone0"
-
 
     @skip
     Scenario: Render new game

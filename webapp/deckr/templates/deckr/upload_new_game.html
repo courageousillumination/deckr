@@ -1,0 +1,9 @@
+{% extends "deckr/base.html" %}
+{% block title %}Deckr | Upload new game{% endblock %}
+{% block content %}
+<form action="/" method="post">
+	{% csrf_token %}
+    <input type="file" name="file">
+    <input type="submit" value="Upload" name="submit">
+</form>
+{% endblock %}
