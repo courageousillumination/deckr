@@ -11,7 +11,6 @@ CREATE_GAME_ROOM = url(r'^new_game_room/', 'deckr.views.create_game_room',
                        name='deckr.create_game_room')
 SOCKETS = url(r'^socket\.io', include(socketio.sdjango.urls))
 
-
 urlpatterns = patterns(
     '',
     SOCKETS,
