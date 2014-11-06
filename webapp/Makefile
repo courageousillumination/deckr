@@ -4,7 +4,7 @@ test:
 	mkdir -p reports;
 	coverage erase;
 	coverage run -p --source=deckr --omit='*/management/*','*/migrations/*' manage.py test --with-xunit --xunit-file=reports/unit.xml;
-	python manage.py harvest -S --with-xunit --xunit-file=reports/lettuce.xml;
+	python manage.py harvest -S -t -skip --with-xunit --xunit-file=reports/lettuce.xml;
 	coverage combine;
 	coverage html --directory=reports/coverage
 	coverage xml -o reports/coverage.xml
