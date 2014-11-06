@@ -58,8 +58,16 @@ class GameRunnerTestCase(TestCase):
         Makes sure we can get the state out of a game.
         """
 
-        state = engine.game_runner.get_state(self.game_id)
-        self.assertEqual(state, {})  # TODO: What is the expected state?
+        expected_state = {
+            "zone1": {
+                "id": 1,
+                "cards": [{"id": 1}]
+            }
+        }
+
+        game_id = engine.game_runner.create_game(self.valid_game_def)
+        state = engine.game_runner.get_state(game_id)
+        self.assertEqual(state, expected_state)
 
     @skip("Not yet implemented")
     def test_add_player(self):

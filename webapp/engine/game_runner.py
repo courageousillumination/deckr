@@ -4,6 +4,9 @@ game engine. Any outside service can access running games by making calls
 into this module.
 """
 
+# Disable unused arguments. We'll use them. This should be removed later.
+# pylint: disable=W0613
+
 
 def create_game(game_definition):
     """
@@ -12,7 +15,7 @@ def create_game(game_definition):
     error creating the game.
     """
 
-    pass
+    return 0
 
 
 def destroy_game(game_id):
@@ -29,7 +32,7 @@ def get_game(game_id):
     Returns a game based on the id
     """
 
-    pass
+    return 0
 
 
 def get_state(game_id):
@@ -37,7 +40,7 @@ def get_state(game_id):
     Returns the state of the given game.
     """
 
-    pass
+    return {}
 
 
 def add_player(game_id):
@@ -46,7 +49,7 @@ def add_player(game_id):
     player id of the newly created player.
     """
 
-    pass
+    return 0
 
 
 def make_action(game_id, *args, **kwargs):
@@ -64,7 +67,7 @@ def has_game(game_id):
     otherwise.
     """
 
-    pass
+    return False
 
 
 def flush():

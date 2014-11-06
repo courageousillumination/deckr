@@ -1,3 +1,7 @@
+"""
+This module contains all test for the Game class.
+"""
+
 from unittest import TestCase, skip
 
 import engine.card
@@ -6,6 +10,10 @@ from engine.tests.mock_game import MockGame
 
 
 class GameTestCase(TestCase):
+
+    """
+    A simple test case for our game class.
+    """
 
     def setUp(self):
         self.game = MockGame()

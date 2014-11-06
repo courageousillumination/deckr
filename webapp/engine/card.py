@@ -3,7 +3,7 @@ This module defines the Card class.
 """
 
 
-class Card():
+class Card(object):
 
     """
     A Card represents a single instance of a card in the game.

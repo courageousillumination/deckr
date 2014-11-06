@@ -42,12 +42,12 @@ class MockGame(Game):
 
         return self.winners_list
 
-    def restrictions(self, player_id):
+    def restrictions(self, player_id):  # pylint: disable=W0613
         """
         A simple restriction.
         """
 
-        self.phase != "restricted"
+        return self.phase != "restricted"
 
     @action
     def win(self, player_id):
@@ -59,7 +59,7 @@ class MockGame(Game):
         self.over = True
 
     @action
-    def lose(self, player_id):
+    def lose(self, player_id):  # pylint: disable=W0613
         """
         If we make this action then we lose.
         """

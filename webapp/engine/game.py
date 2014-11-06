@@ -21,7 +21,10 @@ def action(restriction=None):
             Yet another part of the decorator.
             """
 
-            return func(*args, **kwargs)
+            if restriction(**kwargs):
+                return func(*args, **kwargs)
+            else:
+                raise RuntimeError
         return inner
     return wrapper
 
@@ -37,7 +40,7 @@ class Game(object):
     def __init__(self):
         pass
 
-    def make_action(self, action, **kwargs):
+    def make_action(self, action_name, **kwargs):
         """
         This will try to make an action with the specified
         keyword arguments. It will look at all internal functions

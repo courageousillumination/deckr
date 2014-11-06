@@ -94,7 +94,7 @@ class ZoneTestCase(TestCase):
         test_zone.shuffle()
 
         # Make sure cards were shuffled and that we didn't lose any
-        self.assertListFalse(temp == test_zone.get_cards())
+        self.assertFalse(temp == test_zone.get_cards())
         self.assertEqual(len(temp), len(test_zone.get_cards()))
 
     @skip("not yet implemented")

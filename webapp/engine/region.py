@@ -3,7 +3,7 @@ This module provides the Region class.
 """
 
 
-class Region():
+class Region(object):
 
     """
     A region is basically a collection of zones.
