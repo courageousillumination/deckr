@@ -3,7 +3,6 @@ Unit tests for deckr websockets.
 """
 
 from django.test import TestCase
-from unittest import skip
 from socketio.virtsocket import Socket
 from mock import MagicMock
 
@@ -99,10 +98,12 @@ class GameNamespaceTestCase(SocketTestCase):
         # Make sure we don't actually need to broadcast/emit events
         self.namespace.broadcast_event = MagicMock()
         self.namespace.emit = MagicMock()
+        self.namespace.emit_to_room = MagicMock()
         # Mock out the game runner
         self.namespace.runner = MockGameRunner()
         self.namespace.runner.add_player = MagicMock()
         self.namespace.runner.get_state = MagicMock()
+        self.namespace.runner.make_action = MagicMock()
 
         self.game_room = GameRoom.objects.create(room_id=0,
                                                  max_players=1)
@@ -141,29 +142,31 @@ class GameNamespaceTestCase(SocketTestCase):
         self.namespace.emit.assert_called_with("error",
                                                "Room id is not an integer.")
 
-    @skip("Not yet implemented")
     def test_invalid_move(self):
         """
         If we send an invalid move we should get an error.
         """
 
-        invalid_move = "invalid"
+        invalid_move = {"action": "invalid"}
 
-        self.namespace.on_action(invalid_move)
-        self.namespace.emit.assert_called_with("error", "ERROR")
+        self.namespace.runner.make_action.side_effect = ValueError
 
-    @skip("Not yet implemented")
+        self.assertFalse(self.namespace.on_action(invalid_move))
+        self.namespace.emit.assert_called_with("error", "Invalid move")
+
     def test_valid_move(self):
         """
         If we send a valid move we should get a list of transitions.
         """
 
-        valid_move = "valid move"
+        valid_move = {"action": "valid move"}
         transitions = [{}]
+        self.namespace.runner.make_action.return_value = transitions
 
         self.namespace.on_action(valid_move)
-        self.namespace.broadcast_event.assert_called_with("state_transition",
-                                                          transitions)
+        self.namespace.emit_to_room.assert_called_with(str(self.game_room.pk),
+                                                       "state_transition",
+                                                       transitions)
 
     def test_request_state(self):
         """
@@ -171,14 +174,21 @@ class GameNamespaceTestCase(SocketTestCase):
         """
 
         state = {'foo': 'bar'}
+        error = "Please connect to a game room first."
 
         # Mock out the runner
         runner = self.namespace.runner
         runner.get_state.return_value = state
 
-        self.namespace.on_request_state({})
+        self.assertTrue(self.namespace.on_request_state({}))
         self.namespace.emit.assert_called_with("state", state)
         runner.get_state.assert_called_with(self.game_room.room_id)
+
+        # Test that we get an error if we call this without a room
+        self.namespace.game_room = None
+        self.assertFalse(self.namespace.on_request_state({}))
+
+        self.namespace.emit.assert_called_with("error", error)
 
     def test_disconnect(self):
         """

@@ -110,14 +110,20 @@ class GameNamespace(BaseNamespace, RoomsMixin):
 
         return True
 
-    def on_make_action(self, data):
+    def on_action(self, data):
         """
         Called whenever the socket recieves a chat message. It
         will then broadcast the message to the rest of the channel.
         """
 
-        print "Got socket data", data
-        self.emit('move_card', data)
+        try:
+            transitions = self.runner.make_action(**data)
+        except ValueError:
+            self.emit("error", "Invalid move")
+            return False
+
+        self.emit_to_room(self.room, 'state_transition', transitions)
+        return True
 
     def on_request_state(self, data):
         """
