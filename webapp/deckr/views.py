@@ -3,6 +3,7 @@ Stores all the view logic for deckr.
 """
 
 from django.shortcuts import render
+from django.template import Template
 
 # We need to import the namespace so the URLs can be discovered.
 from deckr.sockets import ChatNamespace  # pylint: disable=unused-import
@@ -13,4 +14,12 @@ def index(request):
     Simply return the index page without any context.
     """
 
-    return render(request, "deckr/index.html", {})
+    sub_template = Template(open("../samples/testgame/layout.html").read())
+
+    return render(request, "deckr/index.html",
+                  {'games': ['foo', 'bar'], 'sub_template': sub_template})
+
+
+def create_game_room(request):
+    return render(request, "deckr/create_game_room.html",
+                  {'games': ['Solitaire', 'TestGame']})

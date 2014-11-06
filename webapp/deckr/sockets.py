@@ -12,7 +12,7 @@ class ChatNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
 
     """
     Represents simple socket logic for a Chat Room. Whenever it
-    recieves a chat event it will broadcast the data to the entire
+    receives a chat event it will broadcast the data to the entire
     channel.
     """
 
@@ -32,21 +32,29 @@ class ChatNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         self.broadcast_event('chat', msg)
 
 
-class GameNamespace(BaseNamespace, RoomsMixin):
+@namespace('/game')
+class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
 
     """
-    Handles all communication around the actual game.
+    Represents simple socket logic for a Chat Room. Whenever it
+    recieves a chat event it will broadcast the data to the entire
+    channel.
     """
 
-    def on_action(self, *args, **kwargs):
+    def initialize(self):
         """
-        Perform an action in the game.
-        """
-        pass
-
-    def on_request_state(self):
-        """
-        Returns the current game state.
+        Mainly for debug.
         """
 
-        pass
+        print "Got socket connection."
+
+    def on_make_action(self, data):
+        """
+        Called whenever the socket recieves a chat message. It
+        will then broadcast the message to the rest of the channel.
+        """
+
+        print "Got socket data", data
+        self.emit('move_card', data)
+        #self.broadcast_event('chat', msg)
+

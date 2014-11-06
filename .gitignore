@@ -46,13 +46,14 @@ coverage.xml
 
 # Django stuff:
 *.log
+webapp/static/
 
 # Sphinx documentation
 docs/_build/
 
 # PyBuilder
 target/
-
+venv/
 /venv
 *.sqlite3
 reports

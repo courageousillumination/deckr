@@ -1,17 +1,26 @@
 <html>
     <head>
-        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js"></script>
-        <script type="text/javascript" charset="utf-8">
-            var socket = io.connect("/chat");
-            socket.on('connect', function() {
-                socket.emit('my event', {data: 'I\'m connected!'});
-            });
-            socket.on('chat', function(data) {
-                console.log(data);
-            });
-        </script>
+        <meta charset="utf-8">
+        {% load staticfiles %}
+        <link rel="stylesheet" href="{% static 'deckr/index.css' %}">
+        <script type="text/javascript" src="{% static 'deckr/socket.io.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'deckr/jquery-2.1.1.min.js' %}"></script>
+        <!-- Once running on server use: <script src="/socket.io/socket.io.js"></script> -->
+        <script type="text/javascript" src="{% static 'deckr/index.js' %}"></script>
     </head>
     <body>
-        Hello World!
+        <a href="{% url "deckr.create_game_room" %}">Create new game room</a>
+        <form action="">
+            <div class="row">
+                <select name="games" id="games-dropdown">
+                    {% for gameid, gamename in games %}
+                    <option id={{gameid}}>{{ gamename }}</option>
+                    {% endfor %}
+                </select>
+                <input type="button" value="Upload new game" id="upload">
+            </div>
+            <input type="submit" value="Play!" id="play">
+        </form>
+        {% include sub_template %}
     </body>
 </html>
