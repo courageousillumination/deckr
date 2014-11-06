@@ -1,0 +1,17 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        {% load staticfiles %}
+        <link rel="stylesheet" href="{% static 'deckr/index.css' %}">
+        <script type="text/javascript" src="{% static 'deckr/socket.io.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'deckr/jquery-2.1.1.min.js' %}"></script>
+        <!-- Once running on server use: <script src="/socket.io/socket.io.js"></script> -->
+        <script type="text/javascript" src="{% static 'deckr/index.js' %}"></script>
+        <title>{% block title %}Deckr{% endblock %}</title>
+    </head>
+    <body>
+        <div id="content">
+            {% block content %}{% endblock %}
+        </div>
+    </body>
+</html>
