@@ -38,6 +38,16 @@ class Game(object):
     """
 
     def __init__(self):
+        self.zones = {}
+        self.max_players = 0
+
+    def load_config(self, config):
+        """
+        This will load a game from a configuration_file.
+        Somebody else should do the parsing and pass the config a dictionary
+        that defines the configuration of the game.
+        """
+
         pass
 
     def make_action(self, action_name, **kwargs):
@@ -49,6 +59,15 @@ class Game(object):
         """
 
         pass
+
+    def assign_id(self, card, card_id):
+        """
+        This is an internal function to assign an id to a card.
+        """
+
+        pass
+
+    # Actions after this point should be implemented by subclasses
 
     def set_up(self):
         """
@@ -62,13 +81,6 @@ class Game(object):
         """
         This function will be called after every action to see if the game
         is over.
-        """
-
-        pass
-
-    def assign_id(self, card, card_id):
-        """
-        This is an internal function to assign an id to a card.
         """
 
         pass

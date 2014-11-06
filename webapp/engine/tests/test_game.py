@@ -78,3 +78,32 @@ class GameTestCase(TestCase):
         self.game.make_action("lose", player_id=1)
         self.assertTrue(self.game.is_over())
         self.assertListEqual([], self.game.winners())
+
+    def test_load_config(self):
+        """
+        Make sure that we can load the configuration of a game.
+        """
+
+        config = {
+            "max_players": 1,
+            "zones": [
+                {"name": "zone1"},
+                {"name": "zone2", "stacked": True}
+            ]
+        }
+
+        self.game.load_config(config)
+
+        # The game should know the maximum number of players
+        self.assertEqual(self.game.max_players, 1)
+
+        # The game should know about its zones
+        self.assertEqual(len(self.game.zones), 2)
+
+        # The game should have created actual attributes for
+        # each of the zones
+        self.assertTrue(hasattr(self.game, "zone1"))
+        self.assertTrue(hasattr(self.game, "zone2"))
+
+        # The zones should know about their configuration
+        self.assertTrue(self.game.zones["zone1"].stacked)
