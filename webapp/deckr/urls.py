@@ -21,7 +21,6 @@ TEST_GAME = url(r'test_game/', 'deckr.views.test_game', name='deckr.test_game')
 
 SOCKETS = url(r'^socket\.io', include(socketio.sdjango.urls))
 
-
 urlpatterns = patterns(
     '',
     SOCKETS,
