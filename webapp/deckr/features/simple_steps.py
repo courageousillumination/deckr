@@ -7,9 +7,6 @@ from selenium.common.exceptions import NoSuchElementException
 import lettuce_webdriver.webdriver
 import lettuce_webdriver.django
 
-# Delete me.
-import time
-
 
 @before.all
 def create_browser():
@@ -20,7 +17,8 @@ def create_browser():
 def destroy_browser(results):
     world.browser.close()
 
-
+# Note that all the functions with "pass" are integration tests, which is why
+# they aren't filled out.
 @step("I create a game room")
 def create_game_room(step):
     pass
@@ -63,35 +61,41 @@ def check_card_in_zone(step, card, zone):
 # Should be in separate file?
 @step(u'javascript adds a div to "([^"]*)" with class "([^"]*)" and id "([^"]*)"')
 def js_add_div(step, parentid, classname, elementid):
-    world.browser.execute_script('addDiv("{0}", {{"id":"{1}", "class":"{2}"}})'
+    world.browser.execute_script('addDiv("{0}", {{"id":"{1}", "class":"{2}"}});'
         .format(parentid, elementid, classname))
 
-@step(u'the element with id "([^"]*)" exists')
-def element_exists(step, elementid):
-    if not world.browser.find_element_by_id(elementid):
-        raise Exception('Element "{}" not found.'.format(elementid))
+@step(u'the element with id "([^"]*)" does( not)? exist')
+def element_exists(step, elementid, negation):
+    try:
+        world.browser.find_element_by_id(elementid)
+        if negation:
+            raise Exception('Element "{}" was NOT expected.'.format(elementid));
+    except NoSuchElementException:
+        if not negation:
+            raise NoSuchElementException('Element "{}" not found.'.format(elementid))
 
 @step(u'the element with id "([^"]*)" is( not)? a child of the element with id "([^"]*)"')
 def is_child_of(step, childid, negation, parentid):
     try:
         world.browser.find_element_by_xpath('//*[@id="{0}"]/*[@id="{1}"]'
             .format(parentid, childid))
+        if negation:
+            raise Exception('Element "{}" was NOT expected to be the child of {}.'.format(childid, parentid));
     except NoSuchElementException:
         if not negation:
             raise NoSuchElementException("Could not find {0} as child of {1}"
                 .format(childid, parentid))
-
     
 # The "attributes" is the lesser of two evils. Takes a dict with
 # keys: id, class, src, among other optionals.
 @step(u'javascript adds a card to "([^"]*)" with attributes "([^"]*)"')
 def js_add_card(step, zoneid, card):
-    world.browser.execute_script('addCard({0},"{1}")'.format(card, zoneid))
+    world.browser.execute_script('addCard({0},"{1}");'.format(card, zoneid))
 
 @step(u'javascript moves the card "([^"]*)" to the zone "([^"]*)"')
 def js_move_card(step, cardid, zoneid):
-    world.browser.execute_script('moveCard("{0}","{1}")'.format(cardid, zoneid))
+    world.browser.execute_script('moveCard("{0}","{1}");'.format(cardid, zoneid))
 
-@step(u'Just testing "([^"]*)"')
-def just_testing(step, other):
-    world.browser.execute_script('console.log("{}")'.format(other))
+@step(u'javascript removes the element with id "([^"]*)"')
+def js_remove_element_by_id(step, elementid):
+    world.browser.execute_script('removeElementById("{0}");'.format(elementid))
