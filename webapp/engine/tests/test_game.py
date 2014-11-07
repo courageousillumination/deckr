@@ -2,7 +2,7 @@
 This module contains all test for the Game class.
 """
 
-from unittest import TestCase, skip
+from unittest import TestCase
 
 from engine.card import Card
 from engine.zone import Zone
@@ -81,7 +81,6 @@ class GameTestCase(TestCase):
         # Make sure we know what to do on edge cases
         self.game.register([])
 
-    @skip("not yet implemented")
     def test_make_action(self):
         """
         Make sure that restrictions work on making actions.
@@ -94,7 +93,6 @@ class GameTestCase(TestCase):
         self.assertTrue(self.game.make_action("restricted_action",
                                               player_id=1))
 
-    @skip("not yet implemented")
     def test_make_winning_action(self):
         """
         Make sure that we can win the game.
@@ -104,7 +102,6 @@ class GameTestCase(TestCase):
         self.assertTrue(self.game.is_over())
         self.assertListEqual([1], self.game.winners())
 
-    @skip("not yet implemented")
     def test_make_losing_action(self):
         """
         Make sure that we can lose the game.

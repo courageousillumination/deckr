@@ -37,10 +37,10 @@ def action(restriction=None):
             Yet another part of the decorator.
             """
 
-            if restriction(**kwargs):
+            if restriction is None or restriction(*args, **kwargs):
                 return func(*args, **kwargs)
             else:
-                raise InvalidMoveException
+                raise InvalidMoveException("Invalid Move")
         return inner
     return wrapper
 
@@ -94,7 +94,16 @@ class Game(object):
         matches. If the action is invalid this could throw an exception.
         """
 
-        pass
+        if not hasattr(self, action_name):
+            return False
+
+        try:
+            getattr(self, action_name)(**kwargs)
+        except InvalidMoveException:
+            return False
+
+        # TODO: This should return a list of transitions, not just True
+        return True
 
     def register(self, objects):
         """
