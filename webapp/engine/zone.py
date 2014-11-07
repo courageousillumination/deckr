@@ -15,9 +15,10 @@ class Zone(GameObject):
     the zone interacts with the cards.
     """
 
-    def __init__(self):
+    def __init__(self, stacked=False):
         super(Zone, self).__init__()
         self.cards = []
+        self.stacked = stacked
 
     def add_card(self, card):
         """
@@ -86,7 +87,11 @@ class Zone(GameObject):
         zone.
         """
 
-        pass
+        info = {}
+        for key in ["stacked"]:
+            info[key] = getattr(self, key)
+
+        return info
 
     def shuffle(self):
         """

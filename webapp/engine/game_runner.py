@@ -97,7 +97,7 @@ def add_player(game_id):
     player id of the newly created player.
     """
 
-    return 0
+    return get_game(game_id).add_player()
 
 
 def make_action(game_id, *args, **kwargs):
@@ -106,7 +106,7 @@ def make_action(game_id, *args, **kwargs):
     exception.
     """
 
-    pass
+    return get_game(game_id).make_action(*args, **kwargs)
 
 
 def has_game(game_id):

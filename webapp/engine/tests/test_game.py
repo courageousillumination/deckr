@@ -90,8 +90,8 @@ class GameTestCase(TestCase):
         self.assertFalse(self.game.make_action("restricted_action",
                                                player_id=1))
         self.game.phase = "unrestricted"
-        self.assertTrue(self.game.make_action("restricted_action",
-                                              player_id=1))
+        self.assertEqual([], self.game.make_action("restricted_action",
+                                                   player_id=1))
 
     def test_make_winning_action(self):
         """

@@ -3,6 +3,7 @@ This module defines everything needed for the base Game class.
 """
 
 from engine.zone import Zone
+from engine.player import Player
 
 
 class InvalidMoveException(Exception):
@@ -63,6 +64,7 @@ class Game(object):
         self.registered_objects = {}
         self.zones = {}
         self.max_players = 0
+        self.players = []
 
         # transitions will be a list of tuples of the following form:
         # (< action >, < args >)
@@ -107,10 +109,9 @@ class Game(object):
         except InvalidMoveException:
             return False
 
-        #transitions = self.get_transitions()
-        # self.flush_transitions()
-        # return transitions
-        return True
+        transitions = self.get_transitions()
+        self.flush_transitions()
+        return transitions
 
     def register(self, objects):
         """
@@ -168,6 +169,19 @@ class Game(object):
         """
 
         self.transitions = []
+
+    def add_player(self):
+        """
+        Adds a player if possible and returns the player id
+        """
+
+        if len(self.players) >= self.max_players:
+            raise ValueError("Too many players.")
+
+        player = Player()
+        self.register([player])
+
+        return player.game_id
 
     # Actions after this point should be implemented by subclasses
 

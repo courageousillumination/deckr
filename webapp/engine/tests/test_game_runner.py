@@ -90,7 +90,6 @@ class GameRunnerTestCase(TestCase):
         state = game_runner.get_state(game_id)
         self.assertEqual(state, expected_state)
 
-    @skip("Not yet implemented")
     def test_add_player(self):
         """
         Makes sure that we can add a player and get back a valid
@@ -102,7 +101,6 @@ class GameRunnerTestCase(TestCase):
         self.assertNotEqual(player_id,
                             game_runner.add_player(self.game_id))
 
-    @skip("Not yet implemented")
     def test_make_action(self):
         """
         Make sure that we can make actions through the GameRunner.
@@ -110,6 +108,10 @@ class GameRunnerTestCase(TestCase):
 
         game1 = game_runner.get_game(self.game_id)
         game1.phase = "restricted"
-        self.assertFalse(game_runner.make_action("restricted_action"))
+        self.assertFalse(game_runner.make_action(self.game_id,
+                                                 "restricted_action",
+                                                 player_id=0))
         game1.phase = "unrestricted"
-        self.assertTrue(game_runner.make_action("restricted_action"))
+        self.assertEqual([], game_runner.make_action(self.game_id,
+                                                     "restricted_action",
+                                                     player_id=0))
