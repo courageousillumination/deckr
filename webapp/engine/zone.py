@@ -15,6 +15,7 @@ class Zone(object):
 
     def __init__(self):
         self.game_id = None
+        self.game = None
         self.cards = []
 
     def add_card(self, card):
@@ -26,6 +27,12 @@ class Zone(object):
             return False
 
         self.cards.append(card)
+
+        if self.game is not None:
+            self.game.add_transition(("add",
+                                      card.game_id,
+                                      self.game_id))
+
         return True
 
     def remove_card(self, card):
@@ -36,6 +43,9 @@ class Zone(object):
 
         if card in self.cards:
             self.cards.remove(card)
+            if self.game is not None:
+                self.game.add_transition(("remove", card.game_id))
+
             return True
 
         return False
@@ -54,7 +64,11 @@ class Zone(object):
         """
 
         if len(self.cards) > 0:
-            return self.cards.pop()
+            card = self.cards.pop()
+            if self.game is not None:
+                self.game.add_transition(("remove", card.game_id))
+
+            return card
 
         return None
 

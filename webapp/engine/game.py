@@ -64,7 +64,10 @@ class Game(object):
         self.zones = {}
         self.max_players = 0
 
-        self.state_changes = []
+        # transitions will be a list of tuples of the following form:
+        # (< action >, < args >)
+        # Where action is one of "move", "add", "remove", "set", "over"
+        self.transitions = []
 
     def load_config(self, config):
         """
@@ -104,8 +107,9 @@ class Game(object):
         except InvalidMoveException:
             return False
 
-        # TODO: This should return a list of transitions, not just True
-        return True
+        transitions = self.get_transitions()
+        self.flush_transitions()
+        return transitions
 
     def register(self, objects):
         """
@@ -142,21 +146,27 @@ class Game(object):
         except KeyError:
             return None
 
-    def add_state_change(self, obj, name, value):
+    def add_transition(self, trans):
         """
-        Register a state change from one of this game's objects.
+        Add a tuple to the current list of transitions.
         """
 
-        self.state_changes.append((type(obj), obj.game_id,
-                                   name, value))
+        self.transitions.append(trans)
 
-    def get_state_changes(self):
+    def get_transitions(self):
         """
         Get all the changes that have occured since the changes were
         last flushed.
         """
 
-        return self.state_changes
+        return self.transitions
+
+    def flush_transitions(self):
+        """
+        Get rid of all the current transitions.
+        """
+
+        self.transitions = []
 
     # Actions after this point should be implemented by subclasses
 

@@ -6,6 +6,7 @@ from unittest import TestCase, skip
 
 from engine.zone import Zone
 from engine.card import Card
+from engine.game import Game
 
 
 class ZoneTestCase(TestCase):
@@ -169,3 +170,62 @@ class ZoneTestCase(TestCase):
         # Try to pop when there are no cards left
         self.assertEqual(0, len(test_zone.get_cards()))
         self.assertEqual(None, test_zone.pop())
+
+    def test_zone_change_registers_with_game(self):
+        """
+        Make sure that when we move/add/remove cards from a zone
+        that the game picks up on it.
+        """
+
+        game = Game()
+
+        test_zone = Zone()
+        card1 = Card()
+
+        game.register([test_zone, card1])
+
+        expected_transitions = [("add",
+                                 card1.game_id,
+                                 test_zone.game_id)]
+
+        expected_transitions2 = [("add",
+                                  card1.game_id,
+                                  test_zone.game_id),
+                                 ("remove",
+                                  card1.game_id)]
+
+        # Test add card
+        test_zone.add_card(card1)
+        self.assertEqual(game.get_transitions(), expected_transitions)
+        test_zone.remove_card(card1)
+        game.flush_transitions()
+
+        # Test push card
+        test_zone.push(card1)
+        self.assertEqual(game.get_transitions(), expected_transitions)
+        test_zone.remove_card(card1)
+        game.flush_transitions()
+
+        # Test remove card
+        test_zone.add_card(card1)
+        test_zone.remove_card(card1)
+        self.assertEqual(game.get_transitions(), expected_transitions2)
+        game.flush_transitions()
+
+        # Test pop card
+        test_zone.push(card1)
+        c = test_zone.pop()
+        self.assertEqual(card1, c)
+        self.assertEqual(game.get_transitions(), expected_transitions2)
+        game.flush_transitions()
+
+        # Make sure we don't get transitions if there's bad data
+        test_zone.add_card(card1)
+        test_zone.add_card(card1)
+        self.assertEqual(game.get_transitions(), expected_transitions)
+        test_zone.remove_card(card1)
+        game.flush_transitions()
+
+        test_zone.pop()
+        test_zone.remove_card(card1)
+        self.assertEqual(game.get_transitions(), [])

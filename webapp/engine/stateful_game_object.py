@@ -21,6 +21,7 @@ class StatefulGameObject(object):
     def __setattr__(self, name, value):
 
         if hasattr(self, "game") and self.game is not None:
-            self.game.add_state_change(self, name, value)
+            self.game.add_transition(("set", type(self), self.game_id,
+                                      name, value))
 
         super(StatefulGameObject, self).__setattr__(name, value)

@@ -28,7 +28,8 @@ class StatefulGameObjectTestCase(TestCase):
         attributes without a game.
         """
 
-        expected_state_changes = [(StatefulGameObject,
+        expected_state_changes = [("set",
+                                   StatefulGameObject,
                                    self.stateful_game_object.game_id,
                                    "life",
                                    10)]
@@ -37,7 +38,7 @@ class StatefulGameObjectTestCase(TestCase):
 
         self.assertEqual(self.stateful_game_object.life, 10)
         self.assertEqual(expected_state_changes,
-                         self.game.get_state_changes())
+                         self.game.get_transitions())
 
         # Make sure we can set an attribute even if game is None
 
