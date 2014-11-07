@@ -38,3 +38,9 @@ class StatefulGameObjectTestCase(TestCase):
         self.assertEqual(self.stateful_game_object.life, 10)
         self.assertEqual(expected_state_changes,
                          self.game.get_state_changes())
+
+        # Make sure we can set an attribute even if game is None
+
+        self.stateful_game_object.game = None
+        self.stateful_game_object.life = 20
+        self.assertEqual(self.stateful_game_object.life, 20)
