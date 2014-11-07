@@ -1,4 +1,5 @@
 Django==1.7.1
+PyYAML==3.11
 argparse==1.2.1
 astroid==1.2.1
 autopep8==1.0.4
