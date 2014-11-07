@@ -2,7 +2,7 @@
 Contains any tests around Regions.
 """
 
-from unittest import TestCase, skip
+from unittest import TestCase
 
 from engine.region import Region
 from engine.zone import Zone
@@ -14,7 +14,6 @@ class GameRunnerTestCase(TestCase):
     A simple test case for testing anything related to regions.
     """
 
-    @skip("not yet implemented")
     def test_get_add_zones(self):
         """
         Test ability to get list of zones. Also tests adding zones.

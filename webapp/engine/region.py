@@ -10,18 +10,18 @@ class Region(object):
     """
 
     def __init__(self):
-        pass
+        self.zones = []
 
     def add_zone(self, zone):
         """
         Add a zone to this region.
         """
 
-        pass
+        self.zones.append(zone)
 
     def get_zones(self):
         """
         Get all the zones out of this region.
         """
 
-        pass
+        return self.zones
