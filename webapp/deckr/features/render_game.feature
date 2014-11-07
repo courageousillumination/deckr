@@ -41,17 +41,19 @@ Feature: Render game
         Then javascript adds a div to "region0" with class "vertical-span zone" and id "zone1"
         Then the element with id "zone1" is a child of the element with id "region0"
         And the element with id "zone0" is a child of the element with id "region0"
-        Then javascript moves the card "<card>" to the zone "<tgt_zone>"
+        Then javascript <movecond> the card "<card>" to the zone "<tgt_zone>"
         Then the element with id "<card>" <tgt_result> a child of the element with id "<tgt_zone>"
         And the element with id "<card>" <src_result> a child of the element with id "<src_zone>"
 
     Examples:
-        | card  | src_zone  | tgt_zone  | src_result    | tgt_result    |
-        | card1 | zone0     | zone1     | is not        | is            |
-        | card0 | zone0     | zone1     | is not        | is            |
-        | card1 | zone1     | zone0     | is not        | is            |
-        | card1 | zone0     | zone0     | is            | is            |
-        | card1 | zone0     | zone2     | is            | is not        |
+        | card  | movecond      | src_zone  | tgt_zone  | src_result    | tgt_result    |
+        | card1 | moves         | zone0     | zone1     | is not        | is            |
+        | card0 | moves         | zone0     | zone1     | is not        | is            |
+        | card1 | moves         | zone1     | zone0     | is not        | is            |
+        | card1 | moves         | zone0     | zone0     | is            | is            |
+        | card1 | does not move | zone0     | zone2     | is            | is not        |
+        | card2 | does not move | zone0     | zone1     | is not        | is not        |
+
 
     Scenario: Remove element by id
         Given I visit site page "/test_game"

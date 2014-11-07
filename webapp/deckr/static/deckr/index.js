@@ -52,7 +52,7 @@ socket.on('game_over', function(data) {
 /////////////////////
 
 // You could argue that this function is superfluous...
-function addCard(cardDict, zoneId) {
+function addCard(cardDict, zoneId, place) {
 	/* Adds new card to a specified zone.
 	   Generates element from cardDict.
 	   We would ideally like to use jQuery data,
@@ -76,11 +76,11 @@ function addCard(cardDict, zoneId) {
 	}
 	
 	if (!place) {
-		zone.appendChild(card);
+		zone.appendChild(newCard);
 	} else {
 		if (place < siblings.length) {
 				selected = null;
-				zone.insertBefore(card, siblings[siblings.length - place]);
+				zone.insertBefore(newCard, siblings[siblings.length - place]);
 		} else {
 			var err = "Place does not exist."
 			console.log(err);
@@ -109,11 +109,11 @@ function addDiv(parentId, divDict, place) {
 
 	if (!place) {
 		selected = null;
-		parent.appendChild(card);
+		parent.appendChild(newDiv);
 	} else {
 		if (place < siblings.length) {
 				selected = null;
-				toZone.insertBefore(card, siblings[place]);
+				toZone.insertBefore(newDiv, siblings[place]);
 		} else {
 			var err = "Place does not exist."
 			console.log(err);
