@@ -22,7 +22,6 @@ class GameTestCase(TestCase):
         self.game = MockGame()
         self.game.set_up()
 
-    @skip("not yet implemented")
     def test_set_up(self):
         """
         Make sure that setup can't be called twice
@@ -33,7 +32,6 @@ class GameTestCase(TestCase):
         self.assertFalse(self.game.set_up())
         self.assertTrue(self.game.is_setup)
 
-    @skip("not yet implemented")
     def test_registration(self):
         """
         Make sure that assigning IDs works.
@@ -57,8 +55,8 @@ class GameTestCase(TestCase):
         self.assertEqual(card2.game_id, 2)
 
         # Make sure we can access the objects from the game
-        self.assertEqual(self.game.get_object_with_id("Card", 1), card1)
-        self.assertEqual(self.game.get_object_with_id("Card", 2), card2)
+        self.assertEqual(self.game.get_object_with_id(Card, 1), card1)
+        self.assertEqual(self.game.get_object_with_id(Card, 2), card2)
 
         # Make sure that we don't change ids if the id
         # is already there.
@@ -77,8 +75,8 @@ class GameTestCase(TestCase):
         self.assertEqual(zone2.game_id, 2)
 
         # Make sure we can access the objects from the game
-        self.assertEqual(self.game.get_object_with_id("Zone", 1), zone1)
-        self.assertEqual(self.game.get_object_with_id("Zone", 2), zone2)
+        self.assertEqual(self.game.get_object_with_id(Zone, 1), zone1)
+        self.assertEqual(self.game.get_object_with_id(Zone, 2), zone2)
 
         # Make sure we know what to do on edge cases
         self.game.register([])
@@ -116,7 +114,6 @@ class GameTestCase(TestCase):
         self.assertTrue(self.game.is_over())
         self.assertListEqual([], self.game.winners())
 
-    @skip("not yet implemented")
     def test_load_config(self):
         """
         Make sure that we can load the configuration of a game.
@@ -144,12 +141,12 @@ class GameTestCase(TestCase):
         self.assertTrue(hasattr(self.game, "zone2"))
 
         # The zones should know about their configuration
-        self.assertTrue(self.game.zones["zone1"].stacked)
+        self.assertFalse(self.game.zones["zone1"].stacked)
+        self.assertTrue(self.game.zones["zone2"].stacked)
 
         # Make sure that all zones were given an id
         self.assertIsNotNone(self.game.zones["zone1"].game_id)
 
-    @skip("not yet implemented")
     def test_load_invalid_config(self):
         """
         This test makes sure we can process a configuration

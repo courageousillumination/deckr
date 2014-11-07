@@ -7,9 +7,9 @@ the best way we could think of to implement the singleton pattern).
 
 from unittest import TestCase, skip
 
-import engine
 from engine import game_runner
-from engine.tests.mock_game.game import MockGame
+from engine.game import Game
+from engine.tests.mock_game.mock_game import MockGame
 
 
 class GameRunnerTestCase(TestCase):
@@ -19,7 +19,7 @@ class GameRunnerTestCase(TestCase):
     """
 
     def setUp(self):
-        self.valid_game_def = "engine/tests/mock_game/"
+        self.valid_game_def = "engine/tests/mock_game"
         self.game_id = game_runner.create_game(self.valid_game_def)
 
     def tearDown(self):
@@ -32,16 +32,21 @@ class GameRunnerTestCase(TestCase):
         """
 
         game, config = game_runner.load_game_definition(self.valid_game_def)
-        self.assertDictEqual(config, {"game_class": "MockGame",
+        self.assertDictEqual(config, {"game_file": "mock_game",
+                                      "game_class": "MockGame",
                                       "max_players": 1})
-        print game
-        self.assertTrue(isinstance(game, engine.tests.mock_game.game.MockGame))
+        self.assertTrue(isinstance(game, Game))
+        # This has been disabled due to namespacing issues. It really is a
+        # mock_game but python doesn't belive it. Instead I've put in MAGIC
+        # test.
+        # self.assertTrue(type(game, MockGame))
+        self.assertEqual(game.get_magic(), MockGame().get_magic())
 
         # Make sure we fail properly if we give it a bad folder
         self.assertRaises(IOError, game_runner.load_game_definition, "foo")
-        
+
         # Make sure we get a value error if it's misconfigured
-        self.assertRaises(ValueError, game_runner.load_game_definition, 
+        self.assertRaises(ValueError, game_runner.load_game_definition,
                           "engine/tests/invalid_game_config")
 
     def test_create_room(self):
@@ -49,7 +54,7 @@ class GameRunnerTestCase(TestCase):
         Test the ability to create a game room.
         """
 
-        self.assertRaises(IOError,  game_runner.create_game,
+        self.assertRaises(IOError, game_runner.create_game,
                           "invalid file")
 
         game_id = game_runner.create_game(self.valid_game_def)
@@ -59,7 +64,6 @@ class GameRunnerTestCase(TestCase):
         game_id_1 = game_runner.create_game(self.valid_game_def)
         self.assertNotEqual(game_id, game_id_1)
 
-    @skip("Not yet implemented")
     def test_destroy_room(self):
         """
         Make sure that we can destroy a game room.

@@ -2,6 +2,22 @@
 This module defines everything needed for the base Game class.
 """
 
+from engine.zone import Zone
+
+
+class InvalidMoveException(Exception):
+
+    """
+    This will be raised whenever a player makes an invalid move.
+    """
+
+    def __init__(self, value):
+        super(InvalidMoveException, self).__init__()
+        self.value = value
+
+    def __str__(self):
+        return repr(self.value)
+
 
 def action(restriction=None):
     """
@@ -24,7 +40,7 @@ def action(restriction=None):
             if restriction(**kwargs):
                 return func(*args, **kwargs)
             else:
-                raise RuntimeError
+                raise InvalidMoveException
         return inner
     return wrapper
 
@@ -38,6 +54,13 @@ class Game(object):
     """
 
     def __init__(self):
+        # registered_objects is a dictionary of all objects that have been
+        # registered with this game. It takes the following form.
+        # { class1 : [next_id, {1 : object1, ...}],
+        #   class2 : [next_id, {1 : object1, ...}]
+        #   ...
+        # }
+        self.registered_objects = {}
         self.zones = {}
         self.max_players = 0
 
@@ -48,7 +71,20 @@ class Game(object):
         that defines the configuration of the game.
         """
 
-        pass
+        self.max_players = config.get('max_players', 0)
+        zones = config.get('zones', [])
+
+        for zone in zones:
+            zone_object = Zone()
+            zone_object.stacked = zone.get('stacked', False)
+
+            # Add to the zones dictionary
+            self.zones[zone["name"]] = zone_object
+            # Add an attribute
+            setattr(self, zone["name"], zone_object)
+
+        # Register all zones
+        self.register(self.zones.values())
 
     def make_action(self, action_name, **kwargs):
         """
@@ -67,7 +103,20 @@ class Game(object):
         have an id will not be assigned a new one.
         """
 
-        pass
+        for obj in objects:
+            # Don't bother re registering
+            if obj.game_id is not None:
+                continue
+
+            object_type = type(obj)
+            if object_type not in self.registered_objects:
+                self.registered_objects[object_type] = [2, {1: obj}]
+                obj.game_id = 1
+            else:
+                next_id = self.registered_objects[object_type][0]
+                self.registered_objects[object_type][1][next_id] = obj
+                self.registered_objects[object_type][0] = next_id + 1
+                obj.game_id = next_id
 
     def get_object_with_id(self, klass, game_id):
         """
@@ -75,7 +124,10 @@ class Game(object):
         the object isn't found this just return None.
         """
 
-        pass
+        try:
+            return self.registered_objects[klass][1][game_id]
+        except KeyError:
+            return None
 
     # Actions after this point should be implemented by subclasses
 
