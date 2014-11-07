@@ -1,0 +1,77 @@
+@import "compass";
+@import "reset";
+@import "variables";
+@import "mixins";
+@import "old-index";
+
+body {
+    font-family: $text-font;
+    background-color: $background-color;
+}
+
+h2 {
+    font-weight: 300;
+    font-size: 1.5em;
+}
+
+#header {
+    background-color: $deckr-purple;
+    border-bottom: 1px solid darken($deckr-purple, 20%);
+    padding: 20px 40px;
+    margin-bottom: 50px;
+    @include box-shadow(lighten(#000, 60%) 0px 5px 10px);
+}
+
+#logo {
+    color: #000;
+    font-family: $logo-font;
+
+    #header & {
+        font-size: 2em;
+        color: #fff;
+    }
+}
+
+#wrapper {
+    @include auto-margin-center($max-width);
+}
+
+#content {
+    background-color: $content-color;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-bottom: 1px solid #999;
+    @include box-shadow(lighten(#000, 70%) 10px 10px 15px);
+    @include border-radius(5px);
+
+    .header {
+        padding-bottom: 5px;
+        margin-bottom: 20px;
+        border-bottom: 1px solid #ccc;
+    }
+}
+
+.center {
+    text-align: center;
+}
+
+.right {
+    float: right;
+}
+
+.big-btn {
+    color: #fff;
+    text-decoration: none;
+    div {
+        display: inline-block;
+        padding: 15px;
+        margin: 10px 0;
+        background-color: $deckr-purple;
+        border: 1px solid darken($deckr-purple, 20%);
+        @include border-radius(5px);
+
+        &:hover {
+            background-color: darken($deckr-purple, 15%);
+        }
+    }
+}
