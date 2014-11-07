@@ -107,9 +107,10 @@ class Game(object):
         except InvalidMoveException:
             return False
 
-        transitions = self.get_transitions()
-        self.flush_transitions()
-        return transitions
+        #transitions = self.get_transitions()
+        #self.flush_transitions()
+        #return transitions
+        return True
 
     def register(self, objects):
         """
