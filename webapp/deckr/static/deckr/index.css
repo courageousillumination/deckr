@@ -1,45 +1,201 @@
+@import url("http://fonts.googleapis.com/css?family=Courgette|Patua+One");
+/* line 1, scss/reset.scss */
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p,
+blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img,
+ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i,
+center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption,
+tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section,
+summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+
+/* HTML5 display-role reset for older browsers */
+/* line 18, scss/reset.scss */
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+  display: block;
+}
+
+/* line 23, scss/reset.scss */
+body {
+  line-height: 1;
+}
+
+/* line 27, scss/reset.scss */
+ol, ul {
+  list-style: none;
+}
+
+/* line 31, scss/reset.scss */
+blockquote, q {
+  quotes: none;
+}
+
+/* line 36, scss/reset.scss */
+blockquote:before, blockquote:after {
+  content: '';
+  content: none;
+}
+
+/* line 43, scss/reset.scss */
+q:before, q:after {
+  content: '';
+  content: none;
+}
+
+/* line 49, scss/reset.scss */
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
 /* Everything in this file needs to be changed. These are working settings. */
+/* line 2, scss/old-index.scss */
 form {
-	text-align: center;
-	margin-top: 25%;
+  text-align: center;
+  margin-top: 25%;
 }
 
+/* line 7, scss/old-index.scss */
 input.play {
-	margin-top: 30px;
-	width: 5%;
-	height: 5%;
+  margin-top: 30px;
+  width: 5%;
+  height: 5%;
 }
 
+/* line 13, scss/old-index.scss */
 select.games {
-	width: 20%;
+  width: 20%;
 }
 
+/* line 17, scss/old-index.scss */
 div.vertical-fan img {
-	float: left;
-	position: relative;
-	margin-bottom: -68px;
+  float: left;
+  position: relative;
+  margin-bottom: -68px;
 }
 
+/* line 23, scss/old-index.scss */
 .vertical-spread {
-	float: left;
-	width: 72px;
-	height: 500px;
-	padding-left: 5px;
-	padding-right: 5px;
+  float: left;
+  width: 72px;
+  height: 500px;
+  padding-left: 5px;
+  padding-right: 5px;
 }
 
+/* line 31, scss/old-index.scss */
 .row {
-	width: 100%;
-	overflow: hidden;
+  width: 100%;
+  overflow: hidden;
 }
 
+/* line 36, scss/old-index.scss */
 div.stacked img {
-	position: absolute
+  position: absolute;
 }
 
+/* line 40, scss/old-index.scss */
 .zone {
-	min-height: 100px;
-	min-width: 100px;
-	border: solid;
-	padding-top: 20px;
+  min-height: 100px;
+  min-width: 100px;
+  border: solid;
+  padding-top: 20px;
+}
+
+/* line 7, scss/index.scss */
+body {
+  font-family: Helvetica, San-Serif;
+  background-color: #eee;
+}
+
+/* line 12, scss/index.scss */
+h2 {
+  font-weight: 300;
+  font-size: 1.5em;
+}
+
+/* line 17, scss/index.scss */
+#header {
+  background-color: #7471b0;
+  border-bottom: 1px solid #454378;
+  padding: 20px 40px;
+  margin-bottom: 50px;
+  -moz-box-shadow: #999999 0px 5px 10px;
+  -webkit-box-shadow: #999999 0px 5px 10px;
+  box-shadow: #999999 0px 5px 10px;
+}
+
+/* line 25, scss/index.scss */
+#logo {
+  color: #000;
+  font-family: "Courgette";
+}
+/* line 29, scss/index.scss */
+#header #logo {
+  font-size: 2em;
+  color: #fff;
+}
+
+/* line 35, scss/index.scss */
+#wrapper {
+  width: 900px;
+  margin: 0 auto;
+}
+
+/* line 39, scss/index.scss */
+#content {
+  background-color: #fff;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-bottom: 1px solid #999;
+  -moz-box-shadow: #b3b3b3 10px 10px 15px;
+  -webkit-box-shadow: #b3b3b3 10px 10px 15px;
+  box-shadow: #b3b3b3 10px 10px 15px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+}
+/* line 47, scss/index.scss */
+#content .header {
+  padding-bottom: 5px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #ccc;
+}
+
+/* line 54, scss/index.scss */
+.center {
+  text-align: center;
+}
+
+/* line 58, scss/index.scss */
+.right {
+  float: right;
+}
+
+/* line 62, scss/index.scss */
+.big-btn {
+  color: #fff;
+  text-decoration: none;
+}
+/* line 65, scss/index.scss */
+.big-btn div {
+  display: inline-block;
+  padding: 15px;
+  margin: 10px 0;
+  background-color: #7471b0;
+  border: 1px solid #454378;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+}
+/* line 73, scss/index.scss */
+.big-btn div:hover {
+  background-color: #4f4c89;
 }
