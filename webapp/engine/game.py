@@ -64,6 +64,8 @@ class Game(object):
         self.zones = {}
         self.max_players = 0
 
+        self.state_changes = []
+
     def load_config(self, config):
         """
         This will load a game from a configuration_file.
@@ -127,6 +129,8 @@ class Game(object):
                 self.registered_objects[object_type][0] = next_id + 1
                 obj.game_id = next_id
 
+            obj.game = self
+
     def get_object_with_id(self, klass, game_id):
         """
         Gets an internal object of the given class with the given id. If
@@ -137,6 +141,22 @@ class Game(object):
             return self.registered_objects[klass][1][game_id]
         except KeyError:
             return None
+
+    def add_state_change(self, obj, name, value):
+        """
+        Register a state change from one of this game's objects.
+        """
+
+        self.state_changes.append((type(obj), obj.game_id,
+                                   name, value))
+
+    def get_state_changes(self):
+        """
+        Get all the changes that have occured since the changes were
+        last flushed.
+        """
+
+        return self.state_changes
 
     # Actions after this point should be implemented by subclasses
 

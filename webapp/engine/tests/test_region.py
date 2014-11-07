@@ -8,7 +8,7 @@ from engine.region import Region
 from engine.zone import Zone
 
 
-class GameRunnerTestCase(TestCase):
+class RegionTestCase(TestCase):
 
     """
     A simple test case for testing anything related to regions.
