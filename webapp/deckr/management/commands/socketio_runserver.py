@@ -86,7 +86,8 @@ class Command(BaseCommand):
 
             cov = coverage.coverage(source=['deckr', 'engine'],
                                     omit=coverage_omit,
-                                    data_suffix=True)
+                                    data_suffix=True,
+                                    branch=True)
             cov.start()
 
         if not addrport:
