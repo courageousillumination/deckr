@@ -1,2 +1,3 @@
 ---
+game_class: "MockGame"
 max_players: 1

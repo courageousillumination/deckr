@@ -7,6 +7,12 @@ into this module.
 # Disable unused arguments. We'll use them. This should be removed later.
 # pylint: disable=W0613
 
+import yaml
+import imp
+import os.path
+
+CACHE = { }
+MAX_ID = 0
 
 def create_game(game_definition):
     """
@@ -14,8 +20,15 @@ def create_game(game_definition):
     new game or throws an exception if there was an
     error creating the game.
     """
+    
+    global MAX_ID
+    
+    game, config = load_game_definition(game_definition)
+    CACHE[MAX_ID] = game
+    
+    MAX_ID = MAX_ID + 1
 
-    return 0
+    return MAX_ID - 1
 
 
 def load_game_definition(game_definition):
@@ -25,8 +38,24 @@ def load_game_definition(game_definition):
     defines the configuration. This will return a tuple of a
     configuration dictionary and an instance of the game.
     """
-
-    return (None, {})
+    
+    config_file = open(os.path.join(game_definition, "config.yml"))
+    config = yaml.load(config_file)
+    
+    # Load the module.
+    # TODO: Figure out what the name parameter should be without breaking
+    #       the tests.
+    module = imp.load_source('engine.tests.mock_game.game',
+                             os.path.join(game_definition, "game.py"))
+    
+    # Make sure we're properly configured.
+    if ("game_class" not in config or 
+        not hasattr(module, config["game_class"])):
+        raise ValueError("Invalid game class specified.")
+        
+    klass = getattr(module, config["game_class"])
+    
+    return (klass(), config)
 
 
 def destroy_game(game_id):
@@ -40,7 +69,7 @@ def destroy_game(game_id):
 
 def get_game(game_id):
     """
-    Returns a game based on the id
+    Returns a game based on the id.
     """
 
     return 0

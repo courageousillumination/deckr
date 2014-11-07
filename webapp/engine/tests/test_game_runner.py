@@ -7,8 +7,8 @@ the best way we could think of to implement the singleton pattern).
 
 from unittest import TestCase, skip
 
+import engine
 from engine import game_runner
-
 from engine.tests.mock_game.game import MockGame
 
 
@@ -25,7 +25,6 @@ class GameRunnerTestCase(TestCase):
     def tearDown(self):
         game_runner.flush()
 
-    @skip("Not yet implemented")
     def test_load_game_definition(self):
         """
         Makes sure we can load a game definition. A definition should
@@ -33,23 +32,25 @@ class GameRunnerTestCase(TestCase):
         """
 
         game, config = game_runner.load_game_definition(self.valid_game_def)
-        self.assertDictEqual(config, {"max_players": 1})
-        self.assertTrue(isinstance(game, MockGame))
+        self.assertDictEqual(config, {"game_class": "MockGame",
+                                      "max_players": 1})
+        print game
+        self.assertTrue(isinstance(game, engine.tests.mock_game.game.MockGame))
 
         # Make sure we fail properly if we give it a bad folder
-        self.assertRaises(IOError, game_runner.load_game_definition("foo"))
+        self.assertRaises(IOError, game_runner.load_game_definition, "foo")
+        
+        # Make sure we get a value error if it's misconfigured
+        self.assertRaises(ValueError, game_runner.load_game_definition, 
+                          "engine/tests/invalid_game_config")
 
-    @skip("Not yet implemented")
     def test_create_room(self):
         """
         Test the ability to create a game room.
         """
 
-        try:
-            game_runner.create_game("invalid file")
-            self.fail()
-        except IOError:
-            pass
+        self.assertRaises(IOError,  game_runner.create_game,
+                          "invalid file")
 
         game_id = game_runner.create_game(self.valid_game_def)
         self.assertTrue(game_id > 0)
