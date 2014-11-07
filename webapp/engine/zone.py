@@ -4,8 +4,10 @@ This module provides the Zone class.
 
 import random
 
+from engine.game_object import GameObject
 
-class Zone(object):
+
+class Zone(GameObject):
 
     """
     A Zone basically represents a region of the game. A zone has a
@@ -14,8 +16,7 @@ class Zone(object):
     """
 
     def __init__(self):
-        self.game_id = None
-        self.game = None
+        super(Zone, self).__init__()
         self.cards = []
 
     def add_card(self, card):
