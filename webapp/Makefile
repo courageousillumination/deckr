@@ -13,3 +13,6 @@ lint:
 autolint:
 	autopep8 --aggressive --in-place -r deckr
 	autopep8 --aggressive --in-place -r engine
+clean:
+	find . -name "*.pyc" -exec rm '{}' ';';
+	coverage erase;

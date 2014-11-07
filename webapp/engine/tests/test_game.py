@@ -6,7 +6,7 @@ from unittest import TestCase, skip
 
 from engine.card import Card
 from engine.zone import Zone
-from engine.tests.mock_game.game import MockGame
+from engine.tests.mock_game.mock_game import MockGame
 
 
 class GameTestCase(TestCase):
