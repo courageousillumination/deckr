@@ -114,6 +114,9 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         return True
 
     def update_player_list(self):
+        """
+        Broadcast names to room
+        """
         if self.game_room is not None:
             player_names = [
                 p.nickname for p in self.game_room.player_set.all()]
@@ -146,6 +149,27 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
 
         state = self.runner.get_state(self.game_room.room_id)
         self.emit("state", state)
+        return True
+
+    def on_update_nickname(self, nickname):
+        """
+        The client will call this when a player wants to change their nickname
+        """
+
+        if self.game_room is None or self.player is None:
+            self.emit("error", "Please connect to a game room first.")
+            return False
+
+        old_nickname = self.player.nickname
+        self.player.nickname = nickname
+        try:
+            self.player.save()
+        except ValueError:
+            self.emit("error", "Invalid nickname")
+            self.player.nickname = old_nickname
+            return False
+
+        self.update_player_list()
         return True
 
     def flush(self):

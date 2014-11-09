@@ -102,6 +102,7 @@ class GameNamespaceTestCase(SocketTestCase):
         # Mock out the game runner
         self.namespace.runner = MockGameRunner()
         self.namespace.runner.add_player = MagicMock()
+        self.namespace.runner.add_player.return_value = 0
         self.namespace.runner.get_state = MagicMock()
         self.namespace.runner.make_action = MagicMock()
 
@@ -227,3 +228,33 @@ class GameNamespaceTestCase(SocketTestCase):
         self.namespace.game_room = None
         self.namespace.update_player_list()
         self.assertFalse(self.namespace.broadcast_event.called)
+
+    def test_on_update_nickname(self):
+        """
+        If a player updates their nickname, handle the update and broadcast
+        the change to the room
+        """
+
+        new_nickname = self.namespace.player.nickname + "_new"
+        self.assertTrue(self.namespace.on_update_nickname(new_nickname))
+        self.assertEqual(self.namespace.player.nickname, new_nickname)
+        player_names = [p.nickname for p in self.game_room.player_set.all()]
+        self.namespace.broadcast_event.assert_called_with('player_names',
+                                                          player_names)
+
+        same_nickname = self.namespace.player.nickname
+        self.assertFalse(self.namespace.on_update_nickname(same_nickname))
+        self.namespace.emit.assert_called_with("error", "Invalid nickname")
+
+        self.namespace.game_room = None
+        new_nickname = self.namespace.player.nickname + "_new"
+        self.assertFalse(self.namespace.on_update_nickname(new_nickname))
+        self.namespace.emit.assert_called_with(
+            "error",
+            "Please connect to a game room first.")
+
+        self.namespace.player = None
+        self.assertFalse(self.namespace.on_update_nickname(new_nickname))
+        self.namespace.emit.assert_called_with(
+            "error",
+            "Please connect to a game room first.")

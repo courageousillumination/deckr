@@ -9,14 +9,8 @@ var selected = null;
 // SOCKET SECTION //
 ////////////////////
 socket.on('connect', function() {
-    //socket.emit('my event', {data: 'I\'m connected!'});
+	socket.emit('join', game_id.toString());
 });
-
-/*socket.on('chat', function(data) {
-    console.log(data);
-});
-*/
-
 
 // NOTE: Could probably replace lambdas with actual function calls.
 socket.on('move_card', function(data) {

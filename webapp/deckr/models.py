@@ -78,7 +78,8 @@ def validate_save(instance, **kwargs):
     """
     Validate player object and ability to join game room
     """
-    if instance.game_room.maximum_occupancy():
+    if (instance.game_room.maximum_occupancy() and
+            instance.pk is None):
         raise ValueError("Cannot join full room")
     elif instance.game_room.existing_nickname(instance.nickname):
         raise ValueError("Nickname is already in use")
