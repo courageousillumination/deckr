@@ -43,6 +43,16 @@ socket.on('game_over', function(data) {
 	gameOver(data);
 })
 
+socket.on('error', function(data) {
+	/* Responds to error from server */
+	console.log(data);
+})
+
+socket.on('player_names', function(data) {
+	/* Responds to list of players names from server */
+	console.log(data);
+})
+
 /////////////////
 // END SOCKETS //
 /////////////////
@@ -225,5 +235,9 @@ $(document).ready(function() {
 	    	parent = $(this).parent();
 	    	parent.click.apply(parent);
 	    }
+	});
+
+	$(window).unload(function(){
+		socket.disconnect();
 	});
 })

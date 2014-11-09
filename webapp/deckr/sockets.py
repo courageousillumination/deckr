@@ -39,7 +39,7 @@ class ChatNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
 
 
 @namespace('/game')
-class GameNamespace(BaseNamespace, RoomsMixin):
+class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
 
     """
     Represents simple socket logic for a Chat Room. Whenever it
@@ -70,6 +70,7 @@ class GameNamespace(BaseNamespace, RoomsMixin):
 
         if self.player is not None:
             self.player.delete()
+            self.update_player_list()
 
     def on_join(self, room):
         """
@@ -94,8 +95,9 @@ class GameNamespace(BaseNamespace, RoomsMixin):
         # Attempt to create a player for this room
         try:
             player_id = self.runner.add_player(game_room.room_id)
+            player_num = str(game_room.player_set.count() + 1)
             player = Player.objects.create(game_room=game_room,
-                                           nickname="Bob",
+                                           nickname="Player " + player_num,
                                            player_id=player_id)
         except ValueError:
             self.emit("error", "Unable to join game room.")
@@ -107,8 +109,15 @@ class GameNamespace(BaseNamespace, RoomsMixin):
         self.game_room = game_room
         self.room = room
         self.join(room)
+        self.update_player_list()
 
         return True
+
+    def update_player_list(self):
+        if self.game_room is not None:
+            player_names = [
+                p.nickname for p in self.game_room.player_set.all()]
+            self.broadcast_event('player_names', player_names)
 
     def on_action(self, data):
         """

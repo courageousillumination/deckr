@@ -123,6 +123,9 @@ class GameNamespaceTestCase(SocketTestCase):
         self.assertTrue(self.namespace.on_join(str(self.game_room.pk)))
         self.assertEqual(Player.objects.all().count(), old_count + 1)
         self.namespace.runner.add_player.assert_called()
+        player_names = [p.nickname for p in self.game_room.player_set.all()]
+        self.namespace.broadcast_event.assert_called_with('player_names',
+                                                          player_names)
 
         # Make sure we can't join a full room
         self.assertFalse(self.namespace.on_join(str(self.game_room.pk)))
@@ -199,9 +202,28 @@ class GameNamespaceTestCase(SocketTestCase):
         old_count = Player.objects.all().count()
         self.namespace.recv_disconnect()
         self.assertEqual(Player.objects.all().count(), old_count - 1)
+        player_names = [p.nickname for p in self.game_room.player_set.all()]
+        self.namespace.broadcast_event.assert_called_with('player_names',
+                                                          player_names)
 
         # Make sure we reconnect.
         self.namespace.player = Player.objects.create(
             game_room=self.game_room,
             player_id=0,
             nickname="Bob")
+
+    def test_update_player_list(self):
+        """
+        If a game room player list changes, broadcast the updated information
+        to the room
+        """
+
+        self.namespace.update_player_list()
+        player_names = [p.nickname for p in self.game_room.player_set.all()]
+        self.namespace.broadcast_event.assert_called_with('player_names',
+                                                          player_names)
+        self.namespace.broadcast_event.reset_mock()
+
+        self.namespace.game_room = None
+        self.namespace.update_player_list()
+        self.assertFalse(self.namespace.broadcast_event.called)
