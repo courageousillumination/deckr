@@ -59,14 +59,9 @@ class GameRoomTestCase(TestCase):
         self.assertIn(player2, self.game_room.player_set.all())
 
         # Can't have more than max players
-        try:
-            Player.objects.create(player_id=3,
-                                  nickname="Alice",
-                                  game_room=self.game_room)
-            self.fail()
-        except ValueError:
-            pass
-
+        self.assertRaises(ValueError, Player.objects.create,
+                          player_id=3, nickname="Alice",
+                          game_room=self.game_room)
         player1.delete()
         player2.delete()
 
@@ -78,13 +73,9 @@ class GameRoomTestCase(TestCase):
         player1 = Player.objects.create(player_id=1,
                                         nickname="Bob",
                                         game_room=self.game_room)
-        try:
-            Player.objects.create(player_id=2,
-                                  nickname="Bob",
-                                  game_room=self.game_room)
-            self.fail()
-        except ValueError:
-            pass
+        self.assertRaises(ValueError, Player.objects.create,
+                          player_id=2, nickname="Bob",
+                          game_room=self.game_room)
 
         player1.delete()
 
@@ -145,8 +136,4 @@ class PlayerTestCase(TestCase):
 
         # Nicknames can't be empty
         self.player.nickname = ""
-        try:
-            self.player.save()
-            self.fail()
-        except ValueError:
-            pass
+        self.assertRaises(ValueError, self.player.save)

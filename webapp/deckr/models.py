@@ -8,6 +8,7 @@ from os.path import join as pjoin
 from django.dispatch import receiver
 from django.conf import settings
 
+
 class GameDefinition(models.Model):
 
     """
@@ -18,7 +19,7 @@ class GameDefinition(models.Model):
     name = models.CharField(max_length=256)
     path = models.FilePathField(path=pjoin(settings.BASE_DIR,
                                            "game_defs"),
-                                allow_folders = True)
+                                allow_folders=True)
 
     def __unicode__(self):
         """

@@ -14,7 +14,9 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='gamedefinition',
             name='path',
-            field=models.FilePathField(path=b'/home/tristan/development/deckr/webapp/game_defs', allow_folders=True),
+            field=models.FilePathField(
+                path=b'/home/tristan/development/deckr/webapp/game_defs',
+                allow_folders=True),
             preserve_default=True,
         ),
     ]
