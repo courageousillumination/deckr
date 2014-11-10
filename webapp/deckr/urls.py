@@ -15,9 +15,11 @@ GAME_ROOM_STAGING_AREA = url(r'^game_room_staging_area/',
 	'deckr.views.game_room_staging_area', name='deckr.game_room_staging_area')
 
 UPLOAD_NEW_GAME = url(r'^upload_new_game/', 'deckr.views.upload_new_game',
-                       name='deckr.upload_new_game')
+                      name='deckr.upload_new_game')
 
 TEST_GAME = url(r'test_game/', 'deckr.views.test_game', name='deckr.test_game')
+TEST_SOLITAIRE = url(r'test_solitaire/', 'deckr.views.test_solitaire',
+                     name='deckr.test_solitaire')
 
 SOCKETS = url(r'^socket\.io', include(socketio.sdjango.urls))
 
@@ -26,6 +28,7 @@ urlpatterns = patterns(
     SOCKETS,
     INDEX,
     TEST_GAME,
+    TEST_SOLITAIRE,
     CREATE_GAME_ROOM,
     UPLOAD_NEW_GAME,
     GAME_ROOM_STAGING_AREA)  # pylint: disable=C0103

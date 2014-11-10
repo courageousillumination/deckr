@@ -199,8 +199,8 @@ $(document).ready(function() {
 	/* Runs when document is ready. Includes the click handlers. */
 
 	// Arbitrary definitions for testing.
-	var cardDict = {"src" :"static/deckr/cards/13.png", "id":"clubJack", "class":"card"};
-	var cardDict2 = {"src" :"static/deckr/cards/14.png", "id":"spadeJack", "class":"card"};
+	var cardDict = {"src" :"../static/deckr/cards/13.png", "id":"clubJack", "class":"card"};
+	var cardDict2 = {"src" :"../static/deckr/cards/14.png", "id":"spadeJack", "class":"card"};
 	addCard(cardDict, "playarea0");	
 	addCard(cardDict2, "playarea0");	
 
