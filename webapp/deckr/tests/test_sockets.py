@@ -109,7 +109,9 @@ class GameNamespaceTestCase(SocketTestCase):
         self.game_room = GameRoom.objects.create(room_id=0,
                                                  max_players=1)
 
-        self.namespace.on_join(str(self.game_room.pk))
+    def addPlayer(self, nick):
+        request = {'game_id': str(self.game_room.pk), 'player_nick': nick}
+        self.namespace.on_join(request)
 
     def test_join(self):
         """
@@ -121,7 +123,9 @@ class GameNamespaceTestCase(SocketTestCase):
         self.namespace.flush()
 
         old_count = Player.objects.all().count()
-        self.assertTrue(self.namespace.on_join(str(self.game_room.pk)))
+        nick = "Player 1"
+        request = {'game_id': str(self.game_room.pk), 'player_nick': nick}
+        self.assertTrue(self.namespace.on_join(request))
         self.assertEqual(Player.objects.all().count(), old_count + 1)
         self.namespace.runner.add_player.assert_called()
         player_names = [p.nickname for p in self.game_room.player_set.all()]
@@ -129,19 +133,21 @@ class GameNamespaceTestCase(SocketTestCase):
                                                           player_names)
 
         # Make sure we can't join a full room
-        self.assertFalse(self.namespace.on_join(str(self.game_room.pk)))
+        self.assertFalse(self.namespace.on_join(request))
         self.assertEqual(Player.objects.all().count(), old_count + 1)
         self.namespace.emit.assert_called_with("error",
                                                "Unable to join game room.")
 
         # Make sure we can't join a bad room id
-        self.assertFalse(self.namespace.on_join("0"))
+        request = {'game_id': "0", 'player_nick': nick}
+        self.assertFalse(self.namespace.on_join(request))
         self.assertEqual(Player.objects.all().count(), old_count + 1)
         self.namespace.emit.assert_called_with("error",
                                                "Can not find game room")
 
         # Make sure we can't join a bad room id
-        self.assertFalse(self.namespace.on_join("foo"))
+        request = {'game_id': "foo", 'player_nick': nick}
+        self.assertFalse(self.namespace.on_join(request))
         self.assertEqual(Player.objects.all().count(), old_count + 1)
         self.namespace.emit.assert_called_with("error",
                                                "Room id is not an integer.")
@@ -163,6 +169,8 @@ class GameNamespaceTestCase(SocketTestCase):
         If we send a valid move we should get a list of transitions.
         """
 
+        self.addPlayer("Player 1")
+
         valid_move = {"action": "valid move"}
         transitions = [{}]
         self.namespace.runner.make_action.return_value = transitions
@@ -176,6 +184,8 @@ class GameNamespaceTestCase(SocketTestCase):
         """
         If we request the state, we should recieve the state back.
         """
+
+        self.addPlayer("Player 1")
 
         state = {'foo': 'bar'}
         error = "Please connect to a game room first."
@@ -200,6 +210,8 @@ class GameNamespaceTestCase(SocketTestCase):
         associated with them.
         """
 
+        self.addPlayer("Player 1")
+
         old_count = Player.objects.all().count()
         self.namespace.recv_disconnect()
         self.assertEqual(Player.objects.all().count(), old_count - 1)
@@ -219,6 +231,8 @@ class GameNamespaceTestCase(SocketTestCase):
         to the room
         """
 
+        self.addPlayer("Player 1")
+
         self.namespace.update_player_list()
         player_names = [p.nickname for p in self.game_room.player_set.all()]
         self.namespace.broadcast_event.assert_called_with('player_names',
@@ -234,6 +248,8 @@ class GameNamespaceTestCase(SocketTestCase):
         If a player updates their nickname, handle the update and broadcast
         the change to the room
         """
+
+        self.addPlayer("Player 1")
 
         new_nickname = self.namespace.player.nickname + "_new"
         self.assertTrue(self.namespace.on_update_nickname(new_nickname))

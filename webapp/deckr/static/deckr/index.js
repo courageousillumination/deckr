@@ -4,13 +4,11 @@
 // GLOBALS
 var socket = io.connect("/game");
 var selected = null;
+var player_nick = null;
 
 ////////////////////
 // SOCKET SECTION //
 ////////////////////
-socket.on('connect', function() {
-	socket.emit('join', game_id.toString());
-});
 
 // NOTE: Could probably replace lambdas with actual function calls.
 socket.on('move_card', function(data) {
@@ -42,10 +40,20 @@ socket.on('error', function(data) {
 	console.log(data);
 })
 
-socket.on('player_names', function(data) {
-	/* Responds to list of players names from server */
-	console.log(data);
+socket.on('player_names', function(names) {
+	/* Responds to list of players names from server
+     and replaces player list dynamically */
+	var namesLength = names.length;
+	innerHTML = ""
+	for(var i = 0; i < namesLength; i++){
+		 innerHTML += "<li>" + names[i] + "</li>";
+	}
+	$('#player_names').html(innerHTML);
 })
+
+socket.on('player_nick', function(nickname){
+	$('#player_nick').html("Welcome " + nickname);
+});
 
 /////////////////
 // END SOCKETS //

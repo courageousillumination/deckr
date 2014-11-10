@@ -1,16 +1,35 @@
 {% extends "deckr/base.html" %}
 {% block title %}Deckr | Game room for {{ game }}{% endblock %}
 {% block content %}
-<h1>New game room for: {{ game }}</h1>
+<h1>Welcome to game room for: {{ game }}</h1>
+
+<h1 id="player_nick"></h1>
+
+<ul id="player_names">{{ player_set }}</ul>
+
+<h2>Set your nickname</h1>
 <form id="nickname_form">
   <label>New nickname</label>:
   <input type="text" desc="nickname" id="change_nickname"/>
   <input type="submit" name="submit" id="change_nickname_submit" value="Change nickname">
 </form>
 
-<script>var game_id = {{ game.id }}</script>
-
 {% if game == 'Solitaire' %}
 <br/><br/>Go to <a href="{% url "deckr.test_solitaire" %}">test game room</a>.
 {% endif %}
 {% endblock %}
+
+<script>
+var game_id = {{ game.id }};
+
+$('#nickname_form').submit(function(e){
+  e.preventDefault();
+  var new_player_nick = $('#change_nickname').val();
+  if(player_nick == null){
+    socket.emit('join', {game_id: game_id.toString(), player_nick: new_player_nick});
+  }
+  else{
+    socket.emit('update_nickname', $('#change_nickname').val());
+  }
+  $('#change_nickname').val('');
+});

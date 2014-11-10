@@ -72,12 +72,14 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
             self.player.delete()
             self.update_player_list()
 
-    def on_join(self, room):
+    def on_join(self, join_request):
         """
         Triggers when a client joins this room. Each room corresponds
         to a GameRoom object. If this gets a bad ID, or it fails
         to create it will return False and emit an error message.
         """
+
+        room = join_request['game_id']
 
         try:
             room_id = int(room)
@@ -95,9 +97,8 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         # Attempt to create a player for this room
         try:
             player_id = self.runner.add_player(game_room.room_id)
-            player_num = str(game_room.player_set.count() + 1)
             player = Player.objects.create(game_room=game_room,
-                                           nickname="Player " + player_num,
+                                           nickname=join_request['player_nick'],
                                            player_id=player_id)
         except ValueError:
             self.emit("error", "Unable to join game room.")
@@ -109,6 +110,7 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         self.game_room = game_room
         self.room = room
         self.join(room)
+        self.emit('player_nick', player.nickname)
         self.update_player_list()
 
         return True
@@ -117,6 +119,7 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         """
         Broadcast names to room
         """
+
         if self.game_room is not None:
             player_names = [
                 p.nickname for p in self.game_room.player_set.all()]
