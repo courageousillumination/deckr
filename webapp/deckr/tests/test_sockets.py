@@ -108,8 +108,7 @@ class GameNamespaceTestCase(SocketTestCase):
 
         self.game_room = GameRoom.objects.create(room_id=0,
                                                  max_players=1)
-
-    def addPlayer(self, nick):
+        nick = "Player 1"
         request = {'game_id': str(self.game_room.pk), 'player_nick': nick}
         self.namespace.on_join(request)
 
@@ -169,8 +168,6 @@ class GameNamespaceTestCase(SocketTestCase):
         If we send a valid move we should get a list of transitions.
         """
 
-        self.addPlayer("Player 1")
-
         valid_move = {"action": "valid move"}
         transitions = [{}]
         self.namespace.runner.make_action.return_value = transitions
@@ -184,8 +181,6 @@ class GameNamespaceTestCase(SocketTestCase):
         """
         If we request the state, we should recieve the state back.
         """
-
-        self.addPlayer("Player 1")
 
         state = {'foo': 'bar'}
         error = "Please connect to a game room first."
@@ -210,8 +205,6 @@ class GameNamespaceTestCase(SocketTestCase):
         associated with them.
         """
 
-        self.addPlayer("Player 1")
-
         old_count = Player.objects.all().count()
         self.namespace.recv_disconnect()
         self.assertEqual(Player.objects.all().count(), old_count - 1)
@@ -231,8 +224,6 @@ class GameNamespaceTestCase(SocketTestCase):
         to the room
         """
 
-        self.addPlayer("Player 1")
-
         self.namespace.update_player_list()
         player_names = [p.nickname for p in self.game_room.player_set.all()]
         self.namespace.broadcast_event.assert_called_with('player_names',
@@ -248,8 +239,6 @@ class GameNamespaceTestCase(SocketTestCase):
         If a player updates their nickname, handle the update and broadcast
         the change to the room
         """
-
-        self.addPlayer("Player 1")
 
         new_nickname = self.namespace.player.nickname + "_new"
         self.assertTrue(self.namespace.on_update_nickname(new_nickname))
