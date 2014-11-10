@@ -5,9 +5,14 @@
 
 <h1 id="player_nick"></h1>
 
-<ul id="player_names">{{ player_set }}</ul>
+<ul id="player_names">
+  {% for name in game.player_set.all %}
+    <li>{{ name }}</li>
+  {% endfor %}
+</ul>
 
-<h2>Set your nickname</h1>
+
+<h2>Set your nickname</h2>
 <form id="nickname_form">
   <label>New nickname</label>:
   <input type="text" desc="nickname" id="change_nickname"/>
@@ -31,5 +36,6 @@ $('#nickname_form').submit(function(e){
   else{
     socket.emit('update_nickname', $('#change_nickname').val());
   }
+  player_nick = new_player_nick;
   $('#change_nickname').val('');
 });
