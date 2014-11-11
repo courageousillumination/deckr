@@ -75,12 +75,12 @@ class Zone(GameObject):
 
         return None
 
-   def peek(self):
+    def peek(self):
         """
         Peek at the top card of a zone.
         This is an ordered operation.
         """
-
+        
         if len(self.cards) > 0:
             return self.cards[-1]
 

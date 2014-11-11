@@ -81,17 +81,17 @@ class Solitaire(Game):
 
         return self.winners_list
 
-    def restrictions(self, zoneA, zoneB):
+    def restrictions(self, zoneA, zoneB, cards_to_move):
         """
         Must play same color, lower number.
         """
 
-        cardA = zoneA.peek()
+        cardA = zoneA.get_cards[zoneA.get_num_cards() - cards_to_move - 1]
         cardB = zoneB.peek()
 
         # We can move cards between the decks
-        if(zoneA.region_id == RegionEnum.deck and zoneB.region_id == RegionEnum.deck):
-            return True
+        if(zoneB.region_id == RegionEnum.deck):
+            return False
 
         # victory zone restrictions:
         # must play an ace if empty
@@ -116,14 +116,12 @@ class Solitaire(Game):
             return cardB.get("suit") == Suit.spades or cardB.get("suit") == Suit.clubs
 
     @action(restriction=restrictions)
-    def move_top_card(self, zoneA, zoneB):
+    def move_cards(self, zoneA, zoneB, cards_to_move):
         """
         Move the top card from one zone to another.
         """
-        zoneB.push(zoneA.pop())
-
-    def move_card_stack(self, zoneA, zoneB):
-        pass
+        for i in range(1, cards_to_move):
+            zoneB.push(zoneA.get_cards[cards_to_move-i])
 
     @action(restriction=restrictions)
     def flip_deck(self):
