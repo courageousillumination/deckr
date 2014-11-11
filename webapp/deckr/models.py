@@ -78,10 +78,10 @@ def validate_save(instance, **kwargs):
     """
     Validate player object and ability to join game room
     """
-    if (instance.game_room.maximum_occupancy() and
-            instance.pk is None):
-        raise ValueError("Cannot join full room")
-    elif instance.game_room.existing_nickname(instance.nickname):
+    if instance.game_room.existing_nickname(instance.nickname):
         raise ValueError("Nickname is already in use")
     elif not 0 < len(instance.nickname) <= 128:
         raise ValueError("Nickname must be between 1 and 128 characters")
+    elif (instance.game_room.maximum_occupancy() and
+            instance.pk is None):
+        raise ValueError("Cannot join full room")
