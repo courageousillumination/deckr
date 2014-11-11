@@ -106,16 +106,19 @@ def is_child_of(step, childid, negation, parentid):
 def js_add_card(step, zoneid, card):
     world.browser.execute_script('addCard({0},"{1}");'.format(card, zoneid))
 
-@step(u'javascript moves the card "([^"]*)" to the zone "([^"]*)"')
+
+@step(
+    u'javascript (does not move|moves) the card "([^"]*)" to the zone "([^"]*)"')
 def js_move_card(step, condition, cardid, zoneid):
     try:
         world.browser.execute_script(
             'moveCard("{0}","{1}");'.format(
-            cardid,
-            zoneid))
+                cardid,
+                zoneid))
     except WebDriverException:
         if condition != "does not move":
             raise
+
 
 @step(u'javascript removes the element with id "([^"]*)"')
 def js_remove_element_by_id(step, elementid):

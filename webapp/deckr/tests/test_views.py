@@ -5,7 +5,7 @@ Test all of the Django views used by deckr.
 from django.test import TestCase, Client
 from django.core.urlresolvers import reverse
 
-from deckr.models import GameRoom, GameDefinition
+from deckr.models import GameRoom, GameDefinition, Player
 
 
 class IndexTestCase(TestCase):
@@ -60,7 +60,8 @@ class CreateGameTestCase(TestCase):
         self.assertTrue(GameRoom.objects.all().count() > 0)
         game = list(GameRoom.objects.all())[-1]
         self.assertRedirects(response,
-                             reverse('deckr.game_room', args=(game.id,)))
+                             reverse('deckr.game_room_staging_area',
+                                     args=(game.id,)))
 
         # Test invalid form
         response = self.client.post(reverse('deckr.create_game_room'),
@@ -86,6 +87,9 @@ class GamePageTestCase(TestCase):
     def setUp(self):
         self.client = Client()
         self.game_room = GameRoom.objects.create(room_id=1)
+        self.player = Player.objects.create(game_room=self.game_room,
+                                            player_id=1,
+                                            nickname="Player 1")
 
     def test_can_access(self):
         """
@@ -93,5 +97,6 @@ class GamePageTestCase(TestCase):
         """
 
         response = self.client.get(reverse('deckr.game_room',
-                                           args=(self.game_room.pk,)))
+                                           args=(self.game_room.pk,)),
+                                   {'player_id': self.player.id})
         self.assertEqual(response.status_code, 200)

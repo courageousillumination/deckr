@@ -79,11 +79,11 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         to create it will return False and emit an error message.
         """
 
-        game_room_id = join_request['game_room_id']
+        room = join_request['game_room_id']
         player_id = join_request['player_id']
 
         try:
-            game_room_id = int(game_room_id)
+            game_room_id = int(room)
         except ValueError:
             self.emit("error", "Game room id is not an integer.")
             return False
@@ -110,8 +110,8 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         # join the room
         self.player = player
         self.game_room = game_room
-        self.room = game_room_id
-        self.join(self.room)
+        self.room = room
+        self.join(room)
         self.emit('player_nick', player.nickname)
         self.update_player_list()
 

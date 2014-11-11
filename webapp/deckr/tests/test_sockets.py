@@ -112,7 +112,10 @@ class GameNamespaceTestCase(SocketTestCase):
                                             nickname="Player 1",
                                             game_room=self.game_room)
 
-        request = {'game_room_id': str(self.game_room.pk), 'player_id': self.player.id }
+        request = {
+            'game_room_id': str(
+                self.game_room.pk),
+            'player_id': self.player.id}
         self.namespace.on_join(request)
 
     def test_join(self):
@@ -136,11 +139,6 @@ class GameNamespaceTestCase(SocketTestCase):
         self.namespace.broadcast_event.assert_called_with('player_names',
                                                           player_names)
 
-        # Make sure we can't join a full room
-        self.assertFalse(self.namespace.on_join(request))
-        self.namespace.emit.assert_called_with("error",
-                                               "Unable to join game room.")
-
         # Make sure we can't join a bad room id
         request = {'game_room_id': "0", 'player_id': self.player.id}
         self.assertFalse(self.namespace.on_join(request))
@@ -151,7 +149,7 @@ class GameNamespaceTestCase(SocketTestCase):
         request = {'game_room_id': "foo", 'player_id': self.player.id}
         self.assertFalse(self.namespace.on_join(request))
         self.namespace.emit.assert_called_with("error",
-                                               "Room id is not an integer.")
+                                               "Game room id is not an integer.")
 
     def test_invalid_move(self):
         """

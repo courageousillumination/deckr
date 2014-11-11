@@ -5,6 +5,7 @@ Stores all the view logic for deckr.
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template import Template
 from django.core.urlresolvers import reverse
+from django.core.exceptions import ObjectDoesNotExist
 
 from engine import game_runner
 
@@ -21,6 +22,16 @@ def index(request):
 
     return render(request, "deckr/index.html", {'games': ['foo', 'bar']})
 
+
+def test_game(request):
+    """
+    A test game page
+    """
+    sub_template = Template(open("../samples/testgame/layout.html").read())
+    return render(request, "deckr/test_game.html",
+                  {'sub_template': sub_template})
+
+
 def game_room_staging_area(request, game_room_id):
     """
     This view will present the staging game room page for
@@ -29,6 +40,7 @@ def game_room_staging_area(request, game_room_id):
 
     game = get_object_or_404(GameRoom, pk=game_room_id)
     return render(request, "deckr/game_room_staging_area.html", {'game': game})
+
 
 def game_room(request, game_room_id):
     """
@@ -42,7 +54,10 @@ def game_room(request, game_room_id):
     sub_template = Template(open("../samples/solitaire/layout.html").read())
 
     return render(request, "deckr/game_room.html",
-                  {'sub_template': sub_template, 'game': game, 'player': player})
+                  {'sub_template': sub_template,
+                   'game': game,
+                   'player': player})
+
 
 def upload_new_game(request):
     """
@@ -50,6 +65,7 @@ def upload_new_game(request):
     """
 
     return render(request, "deckr/upload_new_game.html", {})
+
 
 def create_game_room(request):
     """
@@ -71,11 +87,13 @@ def create_game_room(request):
             room = GameRoom.objects.create(room_id=engine_id)
 
             # Redirect to the staging area for the room
-            return redirect(reverse("deckr.game_room_staging_area", args=(room.pk,)))
+            return redirect(
+                reverse("deckr.game_room_staging_area", args=(room.pk,)))
     else:
         form = CreateGameRoomForm()
     return render(request, "deckr/create_game_room.html",
                   {'form': form})
+
 
 def join_game_room(request):
     """
@@ -95,9 +113,9 @@ def join_game_room(request):
 
     try:
         player_id = game_runner.add_player(game_room.room_id)
-        player = Player.objects.create(game_room=game_room,
-                                   nickname=nickname,
-                                   player_id=player_id)
+        Player.objects.create(game_room=game_room,
+                              nickname=nickname,
+                              player_id=player_id)
     except ValueError:
         return False
 
