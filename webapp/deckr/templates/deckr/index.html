@@ -1,5 +1,15 @@
 {% extends "deckr/base.html" %}
 {% block content %}
-<a href="{% url "deckr.create_game_room" %}">Create new game room</a><br />
-<a href="{% url "deckr.upload_new_game" %}">Upload new game</a>
+<div class="header">
+    <h2>Welcome to <span id="logo">Deckr</span></h2>
+</div>
+<div class="center">
+    <a class="big-btn" href="{% url "deckr.create_game_room" %}">
+        <div>Create new game room</div>
+    </a><br />
+
+    <a class="big-btn" href="{% url "deckr.upload_new_game" %}">
+        <div>Upload new game</div>
+    </a>
+</div>
 {% endblock %}

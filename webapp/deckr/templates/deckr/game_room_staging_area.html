@@ -1,1 +1,14 @@
-<h1>New game room for: {{ game }}</h1>
+{% extends "deckr/base.html" %}
+{% block title %}Deckr | Game room for {{ game }}{% endblock %}
+{% block content %}
+<div class="header">
+    <h2>New Game Room</h2>
+</div>
+<!-- This is a lie. -->
+New game room has been created for {{ game }}.
+
+{% if game == 'Solitaire' %}
+<br/><br/>Go to <a href="{% url "deckr.test_solitaire" %}">test game room</a>.
+{% endif %}
+
+{% endblock %}

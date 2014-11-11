@@ -1,0 +1,41 @@
+/* Everything in this file needs to be changed. These are working settings. */
+input.play {
+    margin-top: 30px;
+    width: 5%;
+    height: 5%;
+}
+
+select.games {
+    width: 20%;
+}
+
+div.vertical-fan img {
+    float: left;
+    position: relative;
+    margin-bottom: -68px;
+}
+
+.vertical-spread {
+    float: left;
+    width: 72px;
+    height: 500px;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.row {
+    width: 100%;
+    overflow: hidden;
+}
+
+div.stacked img {
+    position: absolute
+}
+
+.zone {
+    min-height: 100px;
+    min-width: 100px;
+    margin: 5px;
+    border: 1px dotted #ccc;
+    padding: 20px;
+}

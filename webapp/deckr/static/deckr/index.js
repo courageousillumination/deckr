@@ -35,6 +35,12 @@ socket.on('add_card', function(data) {
 	/* Responds to add_card message from server */
 	console.log('Adding new card to ' + data.zoneId);
 	addCard(data.cardDict, data.zoneId);
+});
+
+socket.on('game_over', function(data) {
+	/* Responds to a game_over message from server.*/
+	console.log('Game over!');
+	gameOver(data);
 })
 
 /////////////////
@@ -46,14 +52,16 @@ socket.on('add_card', function(data) {
 /////////////////////
 
 // You could argue that this function is superfluous...
-function addCard(cardDict, zoneId) {
+function addCard(cardDict, zoneId, place) {
 	/* Adds new card to a specified zone.
 	   Generates element from cardDict.
 	   We would ideally like to use jQuery data,
 	   rather than attr. Would need an equivalent
 	   to getElementById. */
 	var zone = document.getElementById(zoneId);
+	var siblings = zone.childNodes;
 	var newCard = document.createElement('img');
+
 	if (!cardDict["id"]) {
 		var err = "No id attribute provided with card.";
 		console.log(err);
@@ -66,12 +74,26 @@ function addCard(cardDict, zoneId) {
 	for (key in cardDict) {
 		$(newCard).attr(key,cardDict[key]);
 	}
-	zone.appendChild(newCard);
+	
+	if (!place) {
+		zone.appendChild(newCard);
+	} else {
+		if (place < siblings.length) {
+				selected = null;
+				zone.insertBefore(newCard, siblings[siblings.length - place]);
+		} else {
+			var err = "Place does not exist."
+			console.log(err);
+			return err;
+		}
+	}
 }
 
-function addDiv(parentId, divDict) {
+function addDiv(parentId, divDict, place) {
 	var parent = document.getElementById(parentId);
 	var newDiv = document.createElement('div');
+	var siblings = parent.childNodes;
+
 	if (!divDict["id"]) {
 		var err = "No id attr provided with div.";
 		console.log(err);
@@ -84,7 +106,20 @@ function addDiv(parentId, divDict) {
 	for (key in divDict) {
 		$(newDiv).attr(key,divDict[key]);
 	}
-	parent.appendChild(newDiv);
+
+	if (!place) {
+		selected = null;
+		parent.appendChild(newDiv);
+	} else {
+		if (place < siblings.length) {
+				selected = null;
+				toZone.insertBefore(newDiv, siblings[place]);
+		} else {
+			var err = "Place does not exist."
+			console.log(err);
+			return err;
+		}
+	}
 
 }
 
@@ -95,8 +130,9 @@ function removeElementById(id) {
 	parent.removeChild(element);
 }
 
-function moveCard(cardId, toZoneId) {
+function moveCard(cardId, toZoneId, place) {
 	/* Moves card from one zone to another, referenced by id.
+	   place is optional argument. Zero indexed, pops zero
 	   SLIGHTLY BUGGY. AFAIK you should have to say:
 	   fromZone.removeChild(card);
 	   But you don't. The code works fine without it, 
@@ -105,6 +141,7 @@ function moveCard(cardId, toZoneId) {
 	var card = document.getElementById(cardId);
 	var fromZone = card.parentElement;
 	var toZone = document.getElementById(toZoneId);
+	var siblings = toZone.children;
 
 	//COMPATABILITY PROBLEM
 	if (!card.classList.contains('card')) {
@@ -119,8 +156,19 @@ function moveCard(cardId, toZoneId) {
 		return
 	}
 
-	selected = null;
-	toZone.appendChild(card);
+	if (!place) {
+		selected = null;
+		toZone.appendChild(card);
+	} else {
+		if (place < siblings.length) {
+				selected = null;
+				toZone.insertBefore(card, siblings[siblings.length - place]);
+		} else {
+			var err = "Place does not exist."
+			console.log(err);
+			return err;
+		}
+	}
 	
 } 
 
@@ -131,6 +179,12 @@ function requestMoveCard(cardId, toZoneId) {
 	console.log("Sending move request to server.");
 	socket.emit('make_action', {'cardId': cardId,
 								'toZoneId': toZoneId});
+}
+
+function gameOver(results) {
+	/* Handles game_over */
+	// Format of results is [(nick, won_or_lost, rank)]
+	// except without the parens
 }
 
 ///////////////////
@@ -145,10 +199,12 @@ $(document).ready(function() {
 	/* Runs when document is ready. Includes the click handlers. */
 
 	// Arbitrary definitions for testing.
-	var cardDict = {"src" :"static/deckr/cards/13.png", "id":"clubJack", "class":"card"};
-	var cardDict2 = {"src" :"static/deckr/cards/14.png", "id":"spadeJack", "class":"card"};
+	var cardDict = {"src" :"../static/deckr/cards/13.png", "id":"clubJack", "class":"card"};
+	var cardDict2 = {"src" :"../static/deckr/cards/14.png", "id":"spadeJack", "class":"card"};
 	addCard(cardDict, "playarea0");	
 	addCard(cardDict2, "playarea0");	
+
+	return;
 
 	// zone click function
 	$(".zone").click(function() {
