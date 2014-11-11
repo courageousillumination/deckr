@@ -201,10 +201,8 @@ $(document).ready(function() {
 	// Arbitrary definitions for testing.
 	var cardDict = {"src" :"../static/deckr/cards/13.png", "id":"clubJack", "class":"card"};
 	var cardDict2 = {"src" :"../static/deckr/cards/14.png", "id":"spadeJack", "class":"card"};
-	addCard(cardDict, "playarea0");	
-	addCard(cardDict2, "playarea0");	
-
-	return;
+	addCard(cardDict, "playarea0");
+	addCard(cardDict2, "playarea0");
 
 	// zone click function
 	$(".zone").click(function() {
