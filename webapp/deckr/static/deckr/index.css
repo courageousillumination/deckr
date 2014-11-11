@@ -99,26 +99,29 @@ div.stacked img {
 .zone {
   min-height: 100px;
   min-width: 100px;
-  border: solid;
-  padding-top: 20px;
+  margin: 5px;
+  border: 1px dotted #ccc;
+  padding: 20px;
 }
 
 /* line 7, scss/index.scss */
 body {
   font-family: Helvetica, San-Serif;
   background-color: #eee;
+  background-image: url("images/cream_pixels.png");
+  padding-bottom: 20px;
 }
 
-/* line 12, scss/index.scss */
+/* line 14, scss/index.scss */
 h2 {
   font-weight: 300;
   font-size: 1.5em;
 }
 
-/* line 17, scss/index.scss */
+/* line 19, scss/index.scss */
 #header {
-  background-color: #7471b0;
-  border-bottom: 1px solid #454378;
+  background-color: #7991bf;
+  border-bottom: 1px solid #445d8e;
   padding: 20px 40px;
   margin-bottom: 50px;
   -moz-box-shadow: #999999 0px 5px 10px;
@@ -126,24 +129,24 @@ h2 {
   box-shadow: #999999 0px 5px 10px;
 }
 
-/* line 25, scss/index.scss */
+/* line 27, scss/index.scss */
 #logo {
   color: #000;
   font-family: "Courgette";
 }
-/* line 29, scss/index.scss */
+/* line 31, scss/index.scss */
 #header #logo {
   font-size: 2em;
   color: #fff;
 }
 
-/* line 35, scss/index.scss */
+/* line 37, scss/index.scss */
 #wrapper {
   width: 900px;
   margin: 0 auto;
 }
 
-/* line 39, scss/index.scss */
+/* line 41, scss/index.scss */
 #content {
   background-color: #fff;
   padding: 20px;
@@ -156,40 +159,51 @@ h2 {
   -webkit-border-radius: 5px;
   border-radius: 5px;
 }
-/* line 47, scss/index.scss */
+/* line 49, scss/index.scss */
 #content .header {
   padding-bottom: 5px;
   margin-bottom: 20px;
   border-bottom: 1px solid #ccc;
 }
 
-/* line 54, scss/index.scss */
+/* line 56, scss/index.scss */
 .center {
   text-align: center;
 }
 
-/* line 58, scss/index.scss */
+/* line 60, scss/index.scss */
 .right {
   float: right;
 }
 
-/* line 62, scss/index.scss */
+/* line 64, scss/index.scss */
 .big-btn {
   color: #fff;
   text-decoration: none;
 }
-/* line 65, scss/index.scss */
+/* line 67, scss/index.scss */
 .big-btn div {
   display: inline-block;
   padding: 15px;
   margin: 10px 0;
-  background-color: #7471b0;
-  border: 1px solid #454378;
+  background-color: #7991bf;
+  border: 1px solid #445d8e;
+  border-bottom: 2px solid #121927;
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
   border-radius: 5px;
 }
-/* line 73, scss/index.scss */
+/* line 76, scss/index.scss */
 .big-btn div:hover {
-  background-color: #4f4c89;
+  background-color: #4c699f;
+}
+
+/* line 82, scss/index.scss */
+.card {
+  margin: 5px;
+}
+
+/* line 86, scss/index.scss */
+.selected {
+  border: 2px solid #000;
 }

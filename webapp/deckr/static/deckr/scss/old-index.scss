@@ -35,6 +35,7 @@ div.stacked img {
 .zone {
     min-height: 100px;
     min-width: 100px;
-    border: solid;
-    padding-top: 20px;
+    margin: 5px;
+    border: 1px dotted #ccc;
+    padding: 20px;
 }

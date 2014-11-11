@@ -3,10 +3,14 @@ $max-width: 900px;
 
 // Colors
 $deckr-purple: #7471b0;
+$deckr-blue: #7991bf;
+$deckr: $deckr-blue;
+
 $background-color: #eee;
+$background-image: url('images/cream_pixels.png');
 $content-color: #fff;
 $text-color: #333;
-$btn-color: $deckr-purple;
+$btn-color: $deckr;
 
 // Fonts
 @import url("http://fonts.googleapis.com/css?family=Courgette|Patua+One");

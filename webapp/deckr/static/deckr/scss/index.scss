@@ -7,6 +7,8 @@
 body {
     font-family: $text-font;
     background-color: $background-color;
+    background-image: $background-image;
+    padding-bottom: 20px;
 }
 
 h2 {
@@ -15,8 +17,8 @@ h2 {
 }
 
 #header {
-    background-color: $deckr-purple;
-    border-bottom: 1px solid darken($deckr-purple, 20%);
+    background-color: $deckr;
+    border-bottom: 1px solid darken($deckr, 20%);
     padding: 20px 40px;
     margin-bottom: 50px;
     @include box-shadow(lighten(#000, 60%) 0px 5px 10px);
@@ -66,12 +68,21 @@ h2 {
         display: inline-block;
         padding: 15px;
         margin: 10px 0;
-        background-color: $deckr-purple;
-        border: 1px solid darken($deckr-purple, 20%);
+        background-color: $deckr;
+        border: 1px solid darken($deckr, 20%);
+        border-bottom: 2px solid darken($deckr, 50%);
         @include border-radius(5px);
 
         &:hover {
-            background-color: darken($deckr-purple, 15%);
+            background-color: darken($deckr, 15%);
         }
     }
+}
+
+.card {
+    margin: 5px;
+}
+
+.selected {
+    border: 2px solid #000;
 }

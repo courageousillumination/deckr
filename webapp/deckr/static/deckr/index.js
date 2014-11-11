@@ -204,6 +204,8 @@ $(document).ready(function() {
 	addCard(cardDict, "playarea0");	
 	addCard(cardDict2, "playarea0");	
 
+	return;
+
 	// zone click function
 	$(".zone").click(function() {
 	    if (selected != null && $(this).has($(selected)).length == 0) {
