@@ -10,11 +10,9 @@
 </ul>
 
 <h2>Set your nickname</h2>
-<form action="{% url "deckr.join_game_room" %}" method="post">
+<form method="post">
   {% csrf_token %}
-  <label>New nickname</label>:
-  <input type="text" name="nickname" id="change_nickname"/>
-  <input type="hidden" name="game_id" value="{{game.id}}"/>
+  {{ form.as_p }}
   <input type="submit" name="submit" id="change_nickname_submit" value="Change nickname">
 </form>
 
