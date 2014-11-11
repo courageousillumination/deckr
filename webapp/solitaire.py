@@ -43,7 +43,7 @@ class Solitaire(Game):
 
         for i in Suit:
             for j in range(1,13):
-                self.deck_region[1].add_card(Card({"suit": i, "value": j}))
+                self.deck_region[1].add_card(Card({"suit": i, "value": j, "flipped": False}))
 
         self.deck_region[1].shuffle()
 
@@ -64,7 +64,10 @@ class Solitaire(Game):
 
     def deal_cards(deck, zone, num_to_deal):
         for i in range(1, num_to_deal):
-            zone.add_card(deck.pop())
+            if i == num_to_deal-1:
+                zone.add_card(deck.pop().set("flipped", True))
+            else:
+                zone.add_card(deck.pop())
 
 
     def is_over(self):
@@ -88,6 +91,9 @@ class Solitaire(Game):
 
         cardA = zoneA.get_cards[zoneA.get_num_cards() - cards_to_move - 1]
         cardB = zoneB.peek()
+
+        if not cardA.get("flipped") or not cardB.get("flipped"):
+            return False
 
         # We can move cards between the decks
         if(zoneB.region_id == RegionEnum.deck):
@@ -115,6 +121,12 @@ class Solitaire(Game):
         if cardA.get("suit") == Suit.spades or cardA.get("suit") == Suit.clubs:
             return cardB.get("suit") == Suit.spades or cardB.get("suit") == Suit.clubs
 
+    def flip_card_restrictions(self, zone):
+        pass
+
+    def flip_deck_restrictions(self):
+        pass
+
     @action(restriction=restrictions)
     def move_cards(self, zoneA, zoneB, cards_to_move):
         """
@@ -123,7 +135,11 @@ class Solitaire(Game):
         for i in range(1, cards_to_move):
             zoneB.push(zoneA.get_cards[cards_to_move-i])
 
-    @action(restriction=restrictions)
+    @action(restriction=flip_card_restrictions)
+    def flip_card(self, zone):
+        pass
+
+    @action(restriction=flip_deck_restrictions)
     def flip_deck(self):
         pass
     

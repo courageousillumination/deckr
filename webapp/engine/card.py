@@ -4,7 +4,6 @@ This module defines the Card class.
 
 from engine.stateful_game_object import StatefulGameObject
 
-
 class Card(StatefulGameObject):
 
     """
@@ -18,3 +17,6 @@ class Card(StatefulGameObject):
 
 	def get(value):
 		return self.attributes["value"]
+
+	def set(value, new_value):
+		self.attributes["value"] = new_value
