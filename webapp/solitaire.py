@@ -22,8 +22,44 @@ class Solitaire(Game):
         Just set the setup variable, and make sure the phase
         is restricted.
         """
+
+        self.victory_region = Region()
+        self.play_region = Region()
+        self.deck_region = Region()
+
+        for i in range (0,3):
+            self.victory_region.add_zone(Zone(True))
+            
+        for i in range (0,6):
+            self.play_regions.add_zone(Zone())
+
+        self.deck_region.add_zone(Zone(True))
+        self.deck_region.add_zone(Zone(True))
+
+        for i in Suit:
+            for j in range(1,13):
+                self.deck_region[1].add_card(Card({"suit": i, "value": j}))
+
+        self.deck_region[1].shuffle()
+
+        for pair in zip(play_region.get_zones(), range(1,8)):
+            deal_cards(self.deck_region.get_zones[1], pair[0], pair[1])
+
+        self.register(self.deck_region)
+        self.register(self.play_region)
+        self.register(self.victory_region)
+
+        self.register(self.deck_region.get_zones())
+        self.register(self.play_region.get_zones())
+        self.register(self.victory_region.get_zones())
+        self.register(self.deck_region.get_zones[1].get_cards())
+
         self.is_setup = True
         self.phase = "restricted"
+
+    def deal_cards(deck, zone, num_to_deal):
+        for i in range(1, num_to_deal):
+            zone.add_card(deck.pop())
 
 
     def is_over(self):

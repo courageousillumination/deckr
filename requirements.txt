@@ -6,6 +6,7 @@ autopep8==1.0.4
 coverage==3.7.1
 django-jenkins==0.16.3
 django-nose==1.2
+enum==0.4.4
 extras==0.0.3
 fuzzywuzzy==0.3.3
 gevent==1.0.1

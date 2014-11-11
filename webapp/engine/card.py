@@ -13,4 +13,5 @@ class Card(StatefulGameObject):
     and will mainly act as a container for data about the card.
     """
 
-    pass
+	def __init__(attributes):
+		self.attributes = attributes
