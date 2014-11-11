@@ -12,11 +12,11 @@ class Card(StatefulGameObject):
     and will mainly act as a container for data about the card.
     """
 
-	def __init__(attributes):
-		self.attributes = attributes
+    def __init__(attributes):
+        self.attributes = attributes
 
-	def get(value):
-		return self.attributes["value"]
+    def get(value):
+        return self.attributes["value"]
 
-	def set(value, new_value):
-		self.attributes["value"] = new_value
+    def set(value, new_value):
+        self.attributes["value"] = new_value
