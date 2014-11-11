@@ -71,6 +71,7 @@ function addCard(cardDict, zoneId, place) {
 	   rather than attr. Would need an equivalent
 	   to getElementById. */
 	var zone = document.getElementById(zoneId);
+	if (zone == null) {return;}
 	var siblings = zone.childNodes;
 	var newCard = document.createElement('img');
 
@@ -86,7 +87,7 @@ function addCard(cardDict, zoneId, place) {
 	for (key in cardDict) {
 		$(newCard).attr(key,cardDict[key]);
 	}
-	
+
 	if (!place) {
 		zone.appendChild(newCard);
 	} else {
@@ -147,7 +148,7 @@ function moveCard(cardId, toZoneId, place) {
 	   place is optional argument. Zero indexed, pops zero
 	   SLIGHTLY BUGGY. AFAIK you should have to say:
 	   fromZone.removeChild(card);
-	   But you don't. The code works fine without it, 
+	   But you don't. The code works fine without it,
 	   and when you include it, the console randomly
 	   throws "Node not found" errors on that line. */
 	var card = document.getElementById(cardId);
@@ -181,8 +182,8 @@ function moveCard(cardId, toZoneId, place) {
 			return err;
 		}
 	}
-	
-} 
+
+}
 
 // Requests should probably be their own functions.
 // CHANGED: Removed fromZoneId from request!
@@ -213,10 +214,8 @@ $(document).ready(function() {
 	// Arbitrary definitions for testing.
 	var cardDict = {"src" :"../static/deckr/cards/13.png", "id":"clubJack", "class":"card"};
 	var cardDict2 = {"src" :"../static/deckr/cards/14.png", "id":"spadeJack", "class":"card"};
-	addCard(cardDict, "playarea0");	
-	addCard(cardDict2, "playarea0");	
-
-	return;
+	addCard(cardDict, "playarea0");
+	addCard(cardDict2, "playarea0");
 
 	// zone click function
 	$(".zone").click(function() {
@@ -226,7 +225,7 @@ $(document).ready(function() {
 	       		$(this).attr('id'));
 	    }
 	});
-	   
+
 	// card click function
 	$(".card").click(function() {
 		if (!selected) {

@@ -27,7 +27,7 @@ class ChatNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         Mainly for debug.
         """
 
-        print "Got socket connection."
+        print "Got socket connection 1."
 
     def on_chat(self, msg):
         """
@@ -60,7 +60,7 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         Mainly for debug.
         """
 
-        print "Got socket connection."
+        print "Got socket connection 2."
 
     def recv_disconnect(self):
         """
@@ -79,37 +79,39 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         to create it will return False and emit an error message.
         """
 
-        room = join_request['game_id']
+        game_room_id = join_request['game_room_id']
+        player_id = join_request['player_id']
 
         try:
-            room_id = int(room)
+            game_room_id = int(game_room_id)
         except ValueError:
-            self.emit("error", "Room id is not an integer.")
+            self.emit("error", "Game room id is not an integer.")
+            return False
+
+        try:
+            player_id = int(player_id)
+        except ValueError:
+            self.emit("error", "Player id is not an integer.")
             return False
 
         # Get the game room object
         try:
-            game_room = GameRoom.objects.get(pk=int(room_id))
+            game_room = GameRoom.objects.get(pk=int(game_room_id))
         except ObjectDoesNotExist:
             self.emit("error", "Can not find game room")
             return False
 
-        # Attempt to create a player for this room
         try:
-            player_id = self.runner.add_player(game_room.room_id)
-            player = Player.objects.create(game_room=game_room,
-                                           nickname=join_request['player_nick'],
-                                           player_id=player_id)
-        except ValueError:
-            self.emit("error", "Unable to join game room.")
+            player = Player.objects.get(pk=int(player_id))
+        except ObjectDoesNotExist:
+            self.emit("error", "Can not find player")
             return False
 
-        # Now that we've created a player we can actually
         # join the room
         self.player = player
         self.game_room = game_room
-        self.room = room
-        self.join(room)
+        self.room = game_room_id
+        self.join(self.room)
         self.emit('player_nick', player.nickname)
         self.update_player_list()
 

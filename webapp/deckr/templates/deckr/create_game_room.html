@@ -2,14 +2,10 @@
 {% block title %}Deckr | Create Game Room{% endblock %}
 {% block content %}
 <div class="center">
-    <form action="{% url "deckr.game_room_staging_area" %}" method="post">
-        {% csrf_token %}
-        <select name="game">
-            {% for game in games %}
-            <option value="{{ game }}">{{ game }}</option>
-            {% endfor %}
-        </select>
-        <input type="submit" name="submit" value="Create game room">
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <input type="submit" name="submit" value="Create game room">
     </form>
 </div>
 {% endblock %}

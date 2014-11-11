@@ -10,7 +10,7 @@ from engine import game_runner
 
 # We need to import the namespace so the URLs can be discovered.
 from deckr.sockets import ChatNamespace  # pylint: disable=unused-import
-from deckr.models import GameRoom
+from deckr.models import GameRoom, Player
 from deckr.forms import CreateGameRoomForm
 
 
@@ -21,36 +21,28 @@ def index(request):
 
     return render(request, "deckr/index.html", {'games': ['foo', 'bar']})
 
-
-def test_game(request):
+def game_room_staging_area(request, game_room_id):
     """
-    TODO: Remove this when we are done testing.
-    """
-
-    sub_template = Template(open("../samples/testgame/layout.html").read())
-    return render(request, "deckr/test_game.html",
-                  {'sub_template': sub_template})
-
-def test_solitaire(request):
-    sub_template = Template(open("../samples/solitaire/layout.html").read())
-    game = get_object_or_404(GameRoom, pk=game_room_id)
-
-    return render(request, "deckr/test_solitaire.html",
-                  {'sub_template': sub_template, 'game': game})
-
-def game_room_staging_area(request):
-    game = request.POST.get('game')
-    return render(request, "deckr/game_room_staging_area.html", {'game': game})
-
-def game_room(request, game_room_id):
-    """
-    This view will present the actual game room page for
+    This view will present the staging game room page for
     a given game_id.
     """
 
     game = get_object_or_404(GameRoom, pk=game_room_id)
     return render(request, "deckr/game_room_staging_area.html", {'game': game})
 
+def game_room(request, game_room_id):
+    """
+    This view will present the actual game room page for
+    a given game id
+    """
+
+    player_id = request.GET.get('player_id')
+    player = get_object_or_404(Player, pk=player_id)
+    game = get_object_or_404(GameRoom, pk=game_room_id)
+    sub_template = Template(open("../samples/solitaire/layout.html").read())
+
+    return render(request, "deckr/game_room.html",
+                  {'sub_template': sub_template, 'game': game, 'player': player})
 
 def upload_new_game(request):
     """
@@ -78,9 +70,35 @@ def create_game_room(request):
             # Crate the GameRoom in the webapp
             room = GameRoom.objects.create(room_id=engine_id)
 
-            # Redirect to the landing page for the room
-            return redirect(reverse("deckr.game_room", args=(room.pk,)))
+            # Redirect to the staging area for the room
+            return redirect(reverse("deckr.game_room_staging_area", args=(room.pk,)))
     else:
         form = CreateGameRoomForm()
     return render(request, "deckr/create_game_room.html",
                   {'form': form})
+
+def join_game_room(request):
+    """
+    Handles a player nickname submission.
+    If valid nickname and there is space in the room, redirect to game room
+    If valid nickname and there is NO space, redirect to spec room
+    If invalid nickanme, render staging
+    """
+
+    game_id = int(request.POST.get('game_id'))
+    try:
+        game_room = GameRoom.objects.get(pk=int(game_id))
+    except ObjectDoesNotExist:
+        return False
+
+    nickname = request.POST.get('nickname')
+
+    try:
+        player_id = game_runner.add_player(game_room.room_id)
+        player = Player.objects.create(game_room=game_room,
+                                   nickname=nickname,
+                                   player_id=player_id)
+    except ValueError:
+        return False
+
+    return redirect(reverse("deckr.game_room", args=(game_id,)))

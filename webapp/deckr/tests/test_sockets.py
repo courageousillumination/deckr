@@ -108,8 +108,11 @@ class GameNamespaceTestCase(SocketTestCase):
 
         self.game_room = GameRoom.objects.create(room_id=0,
                                                  max_players=1)
-        nick = "Player 1"
-        request = {'game_id': str(self.game_room.pk), 'player_nick': nick}
+        self.player = Player.objects.create(player_id=1,
+                                            nickname="Player 1",
+                                            game_room=self.game_room)
+
+        request = {'game_room_id': str(self.game_room.pk), 'player_id': self.player.id }
         self.namespace.on_join(request)
 
     def test_join(self):
@@ -121,11 +124,13 @@ class GameNamespaceTestCase(SocketTestCase):
         # Discard the already joined data
         self.namespace.flush()
 
-        old_count = Player.objects.all().count()
-        nick = "Player 1"
-        request = {'game_id': str(self.game_room.pk), 'player_nick': nick}
+        self.player = Player.objects.create(player_id=1,
+                                            nickname="Player 1",
+                                            game_room=self.game_room)
+
+        request = {'game_room_id': str(self.game_room.pk),
+                   'player_id': self.player.id}
         self.assertTrue(self.namespace.on_join(request))
-        self.assertEqual(Player.objects.all().count(), old_count + 1)
         self.namespace.runner.add_player.assert_called()
         player_names = [p.nickname for p in self.game_room.player_set.all()]
         self.namespace.broadcast_event.assert_called_with('player_names',
@@ -133,21 +138,18 @@ class GameNamespaceTestCase(SocketTestCase):
 
         # Make sure we can't join a full room
         self.assertFalse(self.namespace.on_join(request))
-        self.assertEqual(Player.objects.all().count(), old_count + 1)
         self.namespace.emit.assert_called_with("error",
                                                "Unable to join game room.")
 
         # Make sure we can't join a bad room id
-        request = {'game_id': "0", 'player_nick': nick}
+        request = {'game_room_id': "0", 'player_id': self.player.id}
         self.assertFalse(self.namespace.on_join(request))
-        self.assertEqual(Player.objects.all().count(), old_count + 1)
         self.namespace.emit.assert_called_with("error",
                                                "Can not find game room")
 
         # Make sure we can't join a bad room id
-        request = {'game_id': "foo", 'player_nick': nick}
+        request = {'game_room_id': "foo", 'player_id': self.player.id}
         self.assertFalse(self.namespace.on_join(request))
-        self.assertEqual(Player.objects.all().count(), old_count + 1)
         self.namespace.emit.assert_called_with("error",
                                                "Room id is not an integer.")
 
