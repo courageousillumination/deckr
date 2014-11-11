@@ -15,3 +15,6 @@ class Card(StatefulGameObject):
 
 	def __init__(attributes):
 		self.attributes = attributes
+
+	def get(value):
+		return self.attributes["value"]

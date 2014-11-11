@@ -17,6 +17,7 @@ class Zone(GameObject):
 
     def __init__(self, stacked=False):
         super(Zone, self).__init__()
+        self.region_id = None
         self.cards = []
         self.stacked = stacked
 

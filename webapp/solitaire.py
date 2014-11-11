@@ -8,10 +8,15 @@ from enum import Enum
 class Solitaire(Game):
 
     class Suit(Enum):
-            hearts = 1
-            diamonds = 2
-            clubs = 3
-            spades = 4
+        hearts = 1
+        diamonds = 2
+        clubs = 3
+        spades = 4
+
+    class RegionEnum(Enum):
+        deck = 1
+        victory =2
+        play = 3
 
     """
     Solitaire is a simple one player game
@@ -23,9 +28,9 @@ class Solitaire(Game):
         is restricted.
         """
 
-        self.victory_region = Region()
-        self.play_region = Region()
-        self.deck_region = Region()
+        self.victory_region = Region(RegionEnum.victory)
+        self.play_region = Region(RegionEnum.play)
+        self.deck_region = Region(RegionEnum.deck)
 
         for i in range (0,3):
             self.victory_region.add_zone(Zone(True))
@@ -34,7 +39,7 @@ class Solitaire(Game):
             self.play_regions.add_zone(Zone())
 
         self.deck_region.add_zone(Zone(True))
-        self.deck_region.add_zone(Zone(True))
+        self.deck_region.add_zone(Zone(False))
 
         for i in Suit:
             for j in range(1,13):
@@ -76,35 +81,51 @@ class Solitaire(Game):
 
         return self.winners_list
 
-    def restrictions(self, player_id):
+    def restrictions(self, zoneA, zoneB):
         """
-        A simple restriction.
-        """
-
-        return self.phase != "restricted"
-
-    @action(restriction=None)
-    def win(self, player_id):
-        """
-        If we make this action we win the game.
+        Must play same color, lower number.
         """
 
-        self.winners_list.append(player_id)
-        self.over = True
+        cardA = zoneA.peek()
+        cardB = zoneB.peek()
 
-    @action(restriction=None)
-    def lose(self, player_id):  # pylint: disable=W0613
-        """
-        If we make this action then we lose.
-        """
+        # We can move cards between the decks
+        if(zoneA.region_id == RegionEnum.deck and zoneB.region_id == RegionEnum.deck):
+            return True
 
-        self.over = True
+        # victory zone restrictions:
+        # must play an ace if empty
+        if(zoneB.region_id == RegionEnum.victory):
+            if(len(zoneB) != 0):
+                return cardA.get("value") == 13
+            else:
+                if cardA.get("value") == cardB.get("value") - 1:
+                    return cardA.get("suit") == cardB.get("suit")
+
+        # We know zone b in the in play region, so if it's empty, we can do anything.
+        if(len(zoneB) == 0):
+            return True
+
+        return compare_color(cardA, cardB) and cardA.get("value") == cardB.get("value") - 1
+
+    def compare_color(cardA, cardB):
+        if cardA.get("suit") == Suit.hearts or cardA.get("suit") == Suit.diamonds:
+            return cardA.get("suit") == Suit.hearts or cardB.get("suit") == Suit.diamonds
+
+        if cardA.get("suit") == Suit.spades or cardA.get("suit") == Suit.clubs:
+            return cardB.get("suit") == Suit.spades or cardB.get("suit") == Suit.clubs
 
     @action(restriction=restrictions)
-    def restricted_action(self, player_id):
+    def move_top_card(self, zoneA, zoneB):
         """
-        This will win, if the phase isn't restricted.
+        Move the top card from one zone to another.
         """
+        zoneB.push(zoneA.pop())
 
-        self.winners_list.append(player_id)
-        self.over = True
+    def move_card_stack(self, zoneA, zoneB):
+        pass
+
+    @action(restriction=restrictions)
+    def flip_deck(self):
+        pass
+    
