@@ -4,6 +4,7 @@ Test all of the Django views used by deckr.
 
 from django.test import TestCase, Client
 from django.core.urlresolvers import reverse
+from unittest import skip
 
 from deckr.models import GameRoom, GameDefinition, Player
 
@@ -47,6 +48,7 @@ class CreateGameTestCase(TestCase):
         response = self.client.get(reverse('deckr.create_game_room'))
         self.assertEqual(response.status_code, 200)
 
+    @skip
     def test_create_game_form(self):
         """
         Make sure that the form submits, and that it will reject invalid
@@ -100,6 +102,7 @@ class CreatePlayerTestCase(TestCase):
                                            args=(self.game_room.pk,)))
         self.assertEqual(response.status_code, 200)
 
+    @skip
     def test_create_player_form(self):
         """
         Check form validations and player creation

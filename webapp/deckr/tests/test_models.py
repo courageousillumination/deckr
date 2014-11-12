@@ -25,7 +25,6 @@ class GameDefinitionTestCase(TestCase):
                          "foo located at /bar")
 
 
-
 class GameRoomTestCase(TestCase):
 
     """

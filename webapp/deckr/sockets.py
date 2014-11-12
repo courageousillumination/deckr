@@ -189,4 +189,3 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         self.player = None
         self.game_room = None
         self.room = None
->>>>>>> master
