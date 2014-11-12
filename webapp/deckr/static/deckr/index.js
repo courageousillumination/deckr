@@ -14,7 +14,7 @@ var player_nick = null;
 socket.on('move_card', function(data) {
 	/* Responds to move_card message from server */
 	console.log('Moving ' + data.cardId + ' to ' + data.toZoneId);
-    moveCard( data.cardId, data.toZoneId);
+    moveCard(data.cardId, data.toZoneId);
 });
 
 socket.on('remove_card', function(data) {
@@ -27,6 +27,14 @@ socket.on('add_card', function(data) {
 	/* Responds to add_card message from server */
 	console.log('Adding new card to ' + data.zoneId);
 	addCard(data.cardDict, data.zoneId);
+});
+
+socket.on('make_action', function(data) {
+	/* Responds to make_action actions */
+	console.log('Making action ' + data.action);
+	if (data.action === 'move_card') {
+		socket.emit('move_card', data);
+	}
 });
 
 socket.on('game_over', function(data) {
@@ -151,6 +159,7 @@ function moveCard(cardId, toZoneId, place) {
 	   But you don't. The code works fine without it,
 	   and when you include it, the console randomly
 	   throws "Node not found" errors on that line. */
+    console.log(cardId)
 	var card = document.getElementById(cardId);
 	var fromZone = card.parentElement;
 	var toZone = document.getElementById(toZoneId);
@@ -190,7 +199,8 @@ function moveCard(cardId, toZoneId, place) {
 function requestMoveCard(cardId, toZoneId) {
 	/* Sends card movement request to server */
 	console.log("Sending move request to server.");
-	socket.emit('make_action', {'cardId': cardId,
+	socket.emit('move_card', {'action': 'move_card',
+								'cardId': cardId,
 								'toZoneId': toZoneId});
 }
 
@@ -212,8 +222,8 @@ $(document).ready(function() {
 	/* Runs when document is ready. Includes the click handlers. */
 
 	// Arbitrary definitions for testing.
-	var cardDict = {"src" :"../static/deckr/cards/13.png", "id":"clubJack", "class":"card"};
-	var cardDict2 = {"src" :"../static/deckr/cards/14.png", "id":"spadeJack", "class":"card"};
+	var cardDict = {"src" :"../../static/deckr/cards/13.png", "id":"clubJack", "class":"card"};
+	var cardDict2 = {"src" :"../../static/deckr/cards/14.png", "id":"spadeJack", "class":"card"};
 	addCard(cardDict, "playarea0");
 	addCard(cardDict2, "playarea0");
 
@@ -221,7 +231,7 @@ $(document).ready(function() {
 	$(".zone").click(function() {
 	    if (selected != null && $(this).has($(selected)).length == 0) {
 	    	console.log("Request move " + $(selected).attr('id'));
-	        requestMoveCard($(selected).parent().attr('id'),
+	        requestMoveCard($(selected).attr('id'),
 	       		$(this).attr('id'));
 	    }
 	});
@@ -236,6 +246,7 @@ $(document).ready(function() {
 	    	parent = $(this).parent();
 	    	parent.click.apply(parent);
 	    }
+	    console.log(selected);
 	});
 
 	$(window).unload(function(){

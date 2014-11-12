@@ -26,8 +26,7 @@ class GameDefinition(models.Model):
         Unicode representation of a Game Definition.
         """
 
-        return "{0} located at {1}".format(self.name,
-                                           self.path)
+        return "{0}".format(self.name)
 
 
 class GameRoom(models.Model):
@@ -42,7 +41,7 @@ class GameRoom(models.Model):
         """
         Unicode representation of GameRoom object
         """
-        return "Game room for game " + str(self.room_id)
+        return "Game room {0} for the game {1}".format(str(self.room_id), "Solitaire")
 
     def maximum_occupancy(self):
         """
