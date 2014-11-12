@@ -127,6 +127,14 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
                 p.nickname for p in self.game_room.player_set.all()]
             self.broadcast_event('player_names', player_names)
 
+    # This is extremely temporary.
+    def on_move_card(self, data):
+        """
+        This should call the engine to determine if this is a valid move
+        """
+        self.emit('move_card', data)
+        return True
+
     def on_action(self, data):
         """
         Called whenever the socket recieves a chat message. It

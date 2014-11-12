@@ -57,3 +57,6 @@ venv/
 /venv
 *.sqlite3
 reports
+
+# SCSS Stuff
+webapp/.sass-cache

@@ -1,7 +1,7 @@
 {% extends "deckr/base.html" %}
 {% block title %}Deckr | Game room for {{ game }}{% endblock %}
 {% block content %}
-<h1>Welcome to game room for: {{ game }}</h1>
+<h1>Welcome to: {{ game_room }}</h1>
 
 <ul id="player_names">
   {% for name in game.player_set.all %}
