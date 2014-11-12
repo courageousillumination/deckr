@@ -36,6 +36,7 @@ class Zone(GameObject):
                                       card.game_id,
                                       self.game_id))
 
+        card.zone = self
         return True
 
     def remove_card(self, card):
@@ -48,7 +49,7 @@ class Zone(GameObject):
             self.cards.remove(card)
             if self.game is not None:
                 self.game.add_transition(("remove", card.game_id))
-
+            card.zone = None
             return True
 
         return False
@@ -70,7 +71,7 @@ class Zone(GameObject):
             card = self.cards.pop()
             if self.game is not None:
                 self.game.add_transition(("remove", card.game_id))
-
+            card.zone = None
             return card
 
         return None
@@ -80,7 +81,7 @@ class Zone(GameObject):
         Peek at the top card of a zone.
         This is an ordered operation.
         """
-        
+
         if len(self.cards) > 0:
             return self.cards[-1]
 
@@ -92,6 +93,14 @@ class Zone(GameObject):
         """
 
         return self.cards
+
+    def set_cards(self, cards):
+        """
+        Sets the list of all cards. Sometimes faster to do than
+        push each individual one.
+        """
+
+        self.cards = cards
 
     def get_info(self):
         """

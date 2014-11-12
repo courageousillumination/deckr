@@ -17,10 +17,14 @@ class StatefulGameObject(object):
         self.game_id = None
         # This is the actual game object that this belongs to.
         self.game = None
+        # What attributes shouldn't be tracked (internal attributes mainly)
+        self.no_track_attributes = set()
 
     def __setattr__(self, name, value):
 
-        if hasattr(self, "game") and self.game is not None:
+        if (hasattr(self, "game") and
+                self.game is not None and
+                name not in self.no_track_attributes):
             self.game.add_transition(("set", type(self), self.game_id,
                                       name, value))
 

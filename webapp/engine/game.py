@@ -84,6 +84,8 @@ class Game(object):
         for zone in zones:
             zone_object = Zone()
             zone_object.stacked = zone.get('stacked', False)
+            zone_object.name = zone.get('name', '')
+            zone_object.zone_type = zone.get('zone_type', '')
 
             # Add to the zones dictionary
             self.zones[zone["name"]] = zone_object

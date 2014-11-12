@@ -1,0 +1,122 @@
+"""
+This module provides an implementation of a game of Solitaire
+"""
+
+from engine.game import Game, action
+from engine.card import Card
+
+SUITS = ["hearts", "diamonds", "clubs", "spades"]
+
+def create_playing_card(suit, number):
+    card = Card()
+    card.suit = suit
+    card.number = number
+    return card
+
+def compare_color(card1, card2):
+    if card1.suit == "hearts" or card1.suit == "diamonds":
+        return card2.suit == "spades" or card2.suit == "clubs"
+    
+    if card1.suit == "spades" or card1.suit == "clubs":
+        return card2.suit == "hearts" or card2.suit == "diamonds"
+    
+class Solitaire(Game):
+    """
+    Solitaire is a simple one player game
+    """
+
+
+
+    def set_up(self):
+        """
+        """
+
+        
+        # Create our deck of cards
+        cards = [create_playing_card(x, y) for x in SUITS for y in range(1, 14)]
+        self.deck.set_cards(cards)
+        self.deck.shuffle()
+        for i in range(1, 8):
+            zone = self.zones["play_zone"+str(i)]
+            for j in range(0, i):
+                zone.push(self.deck.pop())
+
+    def is_over(self):
+        """
+        Just looks at the internal over variable.
+        """
+
+        for i in range(1, 5):
+            if self.zones["victory_zone" + str(i)].get_num_cards() != 13:
+                return False
+        
+        # TODO: Need to also check for losing here...
+        
+        return True
+
+    def winners(self):
+        """
+        Returns the internal winners_list.
+        """
+
+        return []
+
+    def move_card_restrictons(self, card, target_zone):
+        
+        if card.zone.zone_type == "victory":
+            return False
+        elif (target_zone.zone_type == "victory"):
+            return self.victory_zone_restrictions(card, target_zone)
+        elif (target_zone.zone_type == "play"):
+            return self.play_zone_restrictions(card, target_zone)
+        else:
+            return False
+            
+    def victory_zone_restrictions(self, card, target_zone):
+        
+        if target_zone.get_num_cards() == 0 and card.number == 1:
+            return True
+        
+        card_b = target_zone.peek()
+        return card_b.suit == card.suit and card_b.number == card.number - 1
+    
+    def play_zone_restrictions(self, card, target_zone):
+        
+        if target_zone.get_num_cards() == 0 and card.number == 13:
+            return True
+        
+        card_b = target_zone.peek()
+        
+        return compare_color(card, card_b) and card_b.number == card.number + 1
+
+    def draw_restrictions(self):
+        return (self.deck.get_num_cards() + 
+                self.deck_flipped.get_num_cards()) > 0
+
+
+    @action(restriction=move_card_restrictons)
+    def move_cards(self, card, target_zone):
+        """
+        Move the top card from one zone to another.
+        """
+        
+        source_zone = card.zone
+        
+        popped_card = None
+        cards = []
+        while popped_card != card:
+            popped_card = source_zone.pop()
+            cards.append(popped_card)
+            
+        for i in range(len(cards)):
+            target_zone.push(cards.pop())
+            
+    @action(restriction=draw_restrictions)
+    def draw(self):
+        
+        if self.deck.get_num_cards() == 0:
+            self.deck.set_cards(self.deck_flipped.get_cards())
+            self.deck_flipped.set_cards([])
+            
+        self.deck.deck_flipped.push(self.deck.pop())
+            
