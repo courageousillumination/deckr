@@ -41,14 +41,14 @@ def game_room_staging_area(request, game_room_id):
     a given game_id.
     """
 
-    game_room = get_object_or_404(GameRoom, pk=game_room_id)
+    room = get_object_or_404(GameRoom, pk=game_room_id)
 
     if request.method == "POST":
         form = PlayerForm(request.POST)
         if form.is_valid():
             player = form.save(commit=False)
-            player.game_room = game_room
-            player.player_id = game_runner.add_player(game_room.room_id)
+            player.game_room = room
+            player.player_id = game_runner.add_player(room.room_id)
             try:
                 player.save()
                 # Construct the get request for joining the game as
@@ -66,7 +66,7 @@ def game_room_staging_area(request, game_room_id):
     return render(request,
                   "deckr/game_room_staging_area.html",
                   {'form': form,
-                   'game_room': game_room})
+                   'game_room': room})
 
 
 def game_room(request, game_room_id):

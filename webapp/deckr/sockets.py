@@ -129,6 +129,9 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
 
     # This is extremely temporary.
     def on_move_card(self, data):
+        """
+        This should call the engine to determine if this is a valid move
+        """
         self.emit('move_card', data)
         return True
 

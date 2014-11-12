@@ -41,7 +41,8 @@ class GameRoom(models.Model):
         """
         Unicode representation of GameRoom object
         """
-        return "Game room {0} for the game {1}".format(str(self.room_id), "Solitaire")
+        return "Game room {0} for the game {1}".format(
+            str(self.room_id), "Solitaire")
 
     def maximum_occupancy(self):
         """
