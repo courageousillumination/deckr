@@ -19,6 +19,8 @@ def destroy_browser(results):
 
 # Note that all the functions with "pass" are integration tests, which is why
 # they aren't filled out.
+
+
 @step("I create a game room")
 def create_game_room(step):
     pass
@@ -59,46 +61,63 @@ def check_card_in_zone(step, card, zone):
     pass
 
 # Should be in separate file?
-@step(u'javascript adds a div to "([^"]*)" with class "([^"]*)" and id "([^"]*)"')
+
+
+@step(
+    u'javascript adds a div to "([^"]*)" with class "([^"]*)" and id "([^"]*)"')
 def js_add_div(step, parentid, classname, elementid):
     world.browser.execute_script('addDiv("{0}", {{"id":"{1}", "class":"{2}"}});'
-        .format(parentid, elementid, classname))
+                                 .format(parentid, elementid, classname))
+
 
 @step(u'the element with id "([^"]*)" does( not)? exist')
 def element_exists(step, elementid, negation):
     try:
         world.browser.find_element_by_id(elementid)
         if negation:
-            raise Exception('Element "{}" was NOT expected.'.format(elementid));
+            raise Exception('Element "{}" was NOT expected.'.format(elementid))
     except NoSuchElementException:
         if not negation:
-            raise NoSuchElementException('Element "{}" not found.'.format(elementid))
+            raise NoSuchElementException(
+                'Element "{}" not found.'.format(elementid))
 
-@step(u'the element with id "([^"]*)" is( not)? a child of the element with id "([^"]*)"')
+
+@step(
+    u'the element with id "([^"]*)" is( not)? a child of the element with id "([^"]*)"')
 def is_child_of(step, childid, negation, parentid):
     try:
         world.browser.find_element_by_xpath('//*[@id="{0}"]/*[@id="{1}"]'
-            .format(parentid, childid))
+                                            .format(parentid, childid))
         if negation:
-            raise Exception('Element "{}" was NOT expected to be the child of {}.'.format(childid, parentid));
+            raise Exception(
+                'Element "{}" was NOT expected to be the child of {}.'.format(
+                    childid,
+                    parentid))
     except NoSuchElementException:
         if not negation:
             raise NoSuchElementException("Could not find {0} as child of {1}"
-                .format(childid, parentid))
-    
+                                         .format(childid, parentid))
+
 # The "attributes" is the lesser of two evils. Takes a dict with
 # keys: id, class, src, among other optionals.
+
+
 @step(u'javascript adds a card to "([^"]*)" with attributes "([^"]*)"')
 def js_add_card(step, zoneid, card):
     world.browser.execute_script('addCard({0},"{1}");'.format(card, zoneid))
 
-@step(u'javascript (does not move|moves) the card "([^"]*)" to the zone "([^"]*)"')
+
+@step(
+    u'javascript (does not move|moves) the card "([^"]*)" to the zone "([^"]*)"')
 def js_move_card(step, condition, cardid, zoneid):
     try:
-        world.browser.execute_script('moveCard("{0}","{1}");'.format(cardid, zoneid))
+        world.browser.execute_script(
+            'moveCard("{0}","{1}");'.format(
+                cardid,
+                zoneid))
     except WebDriverException:
         if condition != "does not move":
-            raise 
+            raise
 
 
 @step(u'javascript removes the element with id "([^"]*)"')

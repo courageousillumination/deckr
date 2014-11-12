@@ -1,14 +1,19 @@
 {% extends "deckr/base.html" %}
 {% block title %}Deckr | Game room for {{ game }}{% endblock %}
 {% block content %}
-<div class="header">
-    <h2>New Game Room</h2>
-</div>
-<!-- This is a lie. -->
-New game room has been created for {{ game }}.
+<h1>Welcome to game room for: {{ game }}</h1>
 
-{% if game == 'Solitaire' %}
-<br/><br/>Go to <a href="{% url "deckr.test_solitaire" %}">test game room</a>.
-{% endif %}
+<ul id="player_names">
+  {% for name in game.player_set.all %}
+    <li>{{ name }}</li>
+  {% endfor %}
+</ul>
+
+<h2>Set your nickname</h2>
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <input type="submit" name="submit" id="change_nickname_submit" value="Change nickname">
+</form>
 
 {% endblock %}

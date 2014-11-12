@@ -4,19 +4,11 @@
 // GLOBALS
 var socket = io.connect("/game");
 var selected = null;
+var player_nick = null;
 
 ////////////////////
 // SOCKET SECTION //
 ////////////////////
-socket.on('connect', function() {
-    //socket.emit('my event', {data: 'I\'m connected!'});
-});
-
-/*socket.on('chat', function(data) {
-    console.log(data);
-});
-*/
-
 
 // NOTE: Could probably replace lambdas with actual function calls.
 socket.on('move_card', function(data) {
@@ -43,6 +35,26 @@ socket.on('game_over', function(data) {
 	gameOver(data);
 })
 
+socket.on('error', function(data) {
+	/* Responds to error from server */
+	console.log(data);
+})
+
+socket.on('player_names', function(names) {
+	/* Responds to list of players names from server
+     and replaces player list dynamically */
+	var namesLength = names.length;
+	innerHTML = ""
+	for(var i = 0; i < namesLength; i++){
+		 innerHTML += "<li>" + names[i] + "</li>";
+	}
+	$('#player_names').html(innerHTML);
+})
+
+socket.on('player_nick', function(nickname){
+	$('#player_nick').html("Welcome " + nickname);
+});
+
 /////////////////
 // END SOCKETS //
 /////////////////
@@ -59,6 +71,7 @@ function addCard(cardDict, zoneId, place) {
 	   rather than attr. Would need an equivalent
 	   to getElementById. */
 	var zone = document.getElementById(zoneId);
+	if (zone == null) {return;}
 	var siblings = zone.childNodes;
 	var newCard = document.createElement('img');
 
@@ -74,7 +87,7 @@ function addCard(cardDict, zoneId, place) {
 	for (key in cardDict) {
 		$(newCard).attr(key,cardDict[key]);
 	}
-	
+
 	if (!place) {
 		zone.appendChild(newCard);
 	} else {
@@ -135,7 +148,7 @@ function moveCard(cardId, toZoneId, place) {
 	   place is optional argument. Zero indexed, pops zero
 	   SLIGHTLY BUGGY. AFAIK you should have to say:
 	   fromZone.removeChild(card);
-	   But you don't. The code works fine without it, 
+	   But you don't. The code works fine without it,
 	   and when you include it, the console randomly
 	   throws "Node not found" errors on that line. */
 	var card = document.getElementById(cardId);
@@ -169,8 +182,8 @@ function moveCard(cardId, toZoneId, place) {
 			return err;
 		}
 	}
-	
-} 
+
+}
 
 // Requests should probably be their own functions.
 // CHANGED: Removed fromZoneId from request!
@@ -212,7 +225,7 @@ $(document).ready(function() {
 	       		$(this).attr('id'));
 	    }
 	});
-	   
+
 	// card click function
 	$(".card").click(function() {
 		if (!selected) {
@@ -223,5 +236,9 @@ $(document).ready(function() {
 	    	parent = $(this).parent();
 	    	parent.click.apply(parent);
 	    }
+	});
+
+	$(window).unload(function(){
+		socket.disconnect();
 	});
 })
