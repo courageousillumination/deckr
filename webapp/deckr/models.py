@@ -4,7 +4,30 @@ Contains definitions of all models for deckr.
 
 from django.db import models
 from django.db.models.signals import pre_save
+from os.path import join as pjoin
 from django.dispatch import receiver
+from django.conf import settings
+
+
+class GameDefinition(models.Model):
+
+    """
+    Stores a mapping between a game definition on the
+    server and a display name for the webclient.
+    """
+
+    name = models.CharField(max_length=256)
+    path = models.FilePathField(path=pjoin(settings.BASE_DIR,
+                                           "game_defs"),
+                                allow_folders=True)
+
+    def __unicode__(self):
+        """
+        Unicode representation of a Game Definition.
+        """
+
+        return "{0} located at {1}".format(self.name,
+                                           self.path)
 
 
 class GameRoom(models.Model):
@@ -55,9 +78,10 @@ def validate_save(instance, **kwargs):
     """
     Validate player object and ability to join game room
     """
-    if instance.game_room.maximum_occupancy():
-        raise ValueError("Cannot join full room")
-    elif instance.game_room.existing_nickname(instance.nickname):
+    if instance.game_room.existing_nickname(instance.nickname):
         raise ValueError("Nickname is already in use")
     elif not 0 < len(instance.nickname) <= 128:
         raise ValueError("Nickname must be between 1 and 128 characters")
+    elif (instance.game_room.maximum_occupancy() and
+          instance.pk is None):
+        raise ValueError("Cannot join full room")

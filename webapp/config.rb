@@ -1,0 +1,9 @@
+preferred_syntax = :scss
+http_path = '/'
+css_dir = 'deckr/static/deckr/'
+sass_dir = 'deckr/static/deckr/scss/'
+images_dir = 'deckr/static/deckr/images'
+javascripts_dir = 'deckr/static/deckr/js'
+relative_assets = true
+line_comments = true
+# output_style = :compressed

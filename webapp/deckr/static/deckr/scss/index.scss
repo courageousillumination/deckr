@@ -1,0 +1,88 @@
+@import "compass";
+@import "reset";
+@import "variables";
+@import "mixins";
+@import "old-index";
+
+body {
+    font-family: $text-font;
+    background-color: $background-color;
+    background-image: $background-image;
+    padding-bottom: 20px;
+}
+
+h2 {
+    font-weight: 300;
+    font-size: 1.5em;
+}
+
+#header {
+    background-color: $deckr;
+    border-bottom: 1px solid darken($deckr, 20%);
+    padding: 20px 40px;
+    margin-bottom: 50px;
+    @include box-shadow(lighten(#000, 60%) 0px 5px 10px);
+}
+
+#logo {
+    color: #000;
+    font-family: $logo-font;
+
+    #header & {
+        font-size: 2em;
+        color: #fff;
+    }
+}
+
+#wrapper {
+    @include auto-margin-center($max-width);
+}
+
+#content {
+    background-color: $content-color;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-bottom: 1px solid #999;
+    @include box-shadow(lighten(#000, 70%) 10px 10px 15px);
+    @include border-radius(5px);
+
+    .header {
+        padding-bottom: 5px;
+        margin-bottom: 20px;
+        border-bottom: 1px solid #ccc;
+    }
+}
+
+.center {
+    text-align: center;
+}
+
+.right {
+    float: right;
+}
+
+.big-btn {
+    color: #fff;
+    text-decoration: none;
+    div {
+        display: inline-block;
+        padding: 15px;
+        margin: 10px 0;
+        background-color: $deckr;
+        border: 1px solid darken($deckr, 20%);
+        border-bottom: 2px solid darken($deckr, 50%);
+        @include border-radius(5px);
+
+        &:hover {
+            background-color: darken($deckr, 15%);
+        }
+    }
+}
+
+.card {
+    margin: 5px;
+}
+
+.selected {
+    border: 2px solid #000;
+}
