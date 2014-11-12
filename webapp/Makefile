@@ -14,7 +14,7 @@ autolint:
 	autopep8 --aggressive --in-place -r deckr
 	autopep8 --aggressive --in-place -r engine
 setup:
-	python manage.py migrate && python manage.py loaddata initial_data
+	python manage.py migrate && python manage.py loaddata game_def
 run:
 	python manage.py socketio_runserver
 clean:

@@ -80,7 +80,7 @@ def game_room(request, game_room_id):
     player_id = request.GET.get('player_id')
     player = get_object_or_404(Player, pk=player_id)
     game = get_object_or_404(GameRoom, pk=game_room_id)
-    fin = open(pjoin(game.game_definition.path,'layout.html')).read()
+    fin = open(pjoin(game.game_definition.path, 'layout.html')).read()
     sub_template = Template(fin)
 
     return render(request, "deckr/game_room.html",
@@ -112,7 +112,7 @@ def create_game_room(request):
             engine_id = game_runner.create_game(path)
             # Crate the GameRoom in the webapp
             room = GameRoom.objects.create(room_id=engine_id,
-                                           game_definition = game_def)
+                                           game_definition=game_def)
 
             # Redirect to the staging area for the room
             return redirect(

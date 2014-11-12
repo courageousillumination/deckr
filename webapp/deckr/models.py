@@ -37,7 +37,7 @@ class GameRoom(models.Model):
     """
     room_id = models.IntegerField()
     max_players = models.IntegerField(default=8)
-    game_definition = models.ForeignKey(GameDefinition, null = True)
+    game_definition = models.ForeignKey(GameDefinition, null=True)
 
     def __unicode__(self):
         """

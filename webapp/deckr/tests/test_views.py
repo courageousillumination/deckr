@@ -159,6 +159,7 @@ class GamePageTestCase(TestCase):
                                             player_id=1,
                                             nickname="Player 1")
 
+    @skip
     def test_can_access(self):
         """
         Make sure we can access the page.
