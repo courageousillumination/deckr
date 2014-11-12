@@ -6,6 +6,8 @@ Stores all the view logic for deckr.
 # form. So we disable the no-value-for-parameter here.
 # pylint: disable=no-value-for-parameter
 
+from os.path import join as pjoin
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template import Template
 from django.core.urlresolvers import reverse
@@ -78,7 +80,8 @@ def game_room(request, game_room_id):
     player_id = request.GET.get('player_id')
     player = get_object_or_404(Player, pk=player_id)
     game = get_object_or_404(GameRoom, pk=game_room_id)
-    sub_template = Template(open("../samples/solitaire/layout.html").read())
+    fin = open(pjoin(game.game_definition.path,'layout.html')).read()
+    sub_template = Template(fin)
 
     return render(request, "deckr/game_room.html",
                   {'sub_template': sub_template,
@@ -104,10 +107,12 @@ def create_game_room(request):
         form = CreateGameRoomForm(request.POST)
         if form.is_valid():
             # Create a game object in the engine
-            path = form.cleaned_data['game_id'].path
+            game_def = form.cleaned_data['game_id']
+            path = game_def.path
             engine_id = game_runner.create_game(path)
             # Crate the GameRoom in the webapp
-            room = GameRoom.objects.create(room_id=engine_id)
+            room = GameRoom.objects.create(room_id=engine_id,
+                                           game_definition = game_def)
 
             # Redirect to the staging area for the room
             return redirect(
