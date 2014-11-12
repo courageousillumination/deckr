@@ -24,6 +24,6 @@ class PlayerForm(forms.ModelForm):
 
     nickname = forms.CharField(label='Nickname')
 
-    class Meta:
+    class Meta:  # pylint: disable=C1001,W0232,C0111
         model = Player
         fields = ['nickname']

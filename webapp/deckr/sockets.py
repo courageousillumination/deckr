@@ -142,7 +142,7 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         self.emit_to_room(self.room, 'state_transition', transitions)
         return True
 
-    def on_request_state(self, data):
+    def on_request_state(self):
         """
         The client will call this whenever they want the entire
         game state.

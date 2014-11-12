@@ -83,5 +83,5 @@ def validate_save(instance, **kwargs):
     elif not 0 < len(instance.nickname) <= 128:
         raise ValueError("Nickname must be between 1 and 128 characters")
     elif (instance.game_room.maximum_occupancy() and
-            instance.pk is None):
+          instance.pk is None):
         raise ValueError("Cannot join full room")

@@ -75,6 +75,7 @@ class CreateGameTestCase(TestCase):
                              "Select a valid choice. That choice is not one" +
                              " of the available choices.")
 
+
 class CreatePlayerTestCase(TestCase):
 
     """
@@ -107,25 +108,25 @@ class CreatePlayerTestCase(TestCase):
 
         response = self.client.post(reverse('deckr.game_room_staging_area',
                                             args=(self.game_room.pk,)),
-                                            form_data)
+                                    form_data)
         player = list(Player.objects.all())[-1]
         self.assertTrue(Player.objects.all().count() > 0)
         self.assertRedirects(response,
                              reverse('deckr.game_room',
-                                     args=(self.game_room.id,))+
-                                     "?player_id=" + str(player.pk))
+                                     args=(self.game_room.id,)) +
+                             "?player_id=" + str(player.pk))
 
         old_count = Player.objects.all().count()
         response = self.client.post(reverse('deckr.game_room_staging_area',
                                             args=(self.game_room.pk,)),
-                                            form_data)
+                                    form_data)
         self.assertEqual(Player.objects.all().count(), old_count)
         self.assertFormError(response, 'form', 'nickname',
                              'Nickname is already in use')
 
         response = self.client.post(reverse('deckr.game_room_staging_area',
                                             args=(self.game_room.pk,)),
-                                            {})
+                                    {})
         self.assertFormError(response, 'form', 'nickname',
                              'This field is required.')
         self.assertEqual(Player.objects.all().count(), old_count)
@@ -134,10 +135,11 @@ class CreatePlayerTestCase(TestCase):
         form_data = {'nickname': "Player 2"}
         response = self.client.post(reverse('deckr.game_room_staging_area',
                                             args=(self.game_room.pk,)),
-                                            form_data)
+                                    form_data)
         self.assertEqual(Player.objects.all().count(), old_count)
         self.assertFormError(response, 'form', 'nickname',
                              'Cannot join full room')
+
 
 class GamePageTestCase(TestCase):
 

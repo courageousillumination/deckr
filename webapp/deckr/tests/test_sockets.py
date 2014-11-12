@@ -148,8 +148,8 @@ class GameNamespaceTestCase(SocketTestCase):
         # Make sure we can't join a bad room id
         request = {'game_room_id': "foo", 'player_id': self.player.id}
         self.assertFalse(self.namespace.on_join(request))
-        self.namespace.emit.assert_called_with("error",
-                                               "Game room id is not an integer.")
+        error_message = "Game room id is not an integer."
+        self.namespace.emit.assert_called_with("error", error_message)
 
     def test_invalid_move(self):
         """
@@ -189,13 +189,13 @@ class GameNamespaceTestCase(SocketTestCase):
         runner = self.namespace.runner
         runner.get_state.return_value = state
 
-        self.assertTrue(self.namespace.on_request_state({}))
+        self.assertTrue(self.namespace.on_request_state())
         self.namespace.emit.assert_called_with("state", state)
         runner.get_state.assert_called_with(self.game_room.room_id)
 
         # Test that we get an error if we call this without a room
         self.namespace.game_room = None
-        self.assertFalse(self.namespace.on_request_state({}))
+        self.assertFalse(self.namespace.on_request_state())
 
         self.namespace.emit.assert_called_with("error", error)
 

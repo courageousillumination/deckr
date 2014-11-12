@@ -2,10 +2,13 @@
 Stores all the view logic for deckr.
 """
 
+# pylint can't detect the constructor for a Django
+# form. So we disable the no-value-for-parameter here.
+# pylint: disable=no-value-for-parameter
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template import Template
 from django.core.urlresolvers import reverse
-from django.core.exceptions import ObjectDoesNotExist
 
 from engine import game_runner
 
@@ -53,10 +56,10 @@ def game_room_staging_area(request, game_room_id):
                 url = (reverse("deckr.game_room", args=(game_room_id,)) +
                        "?player_id=" + str(player.pk))
                 return redirect(url)
-            except ValueError as e:
+            except ValueError as exception:
                 # If there was an error saving the player we catch it and
                 # add it as an error to the form.
-                form.add_error('nickname', e.args[0])
+                form.add_error('nickname', exception.args[0])
     else:
         form = PlayerForm()
 
@@ -96,10 +99,6 @@ def create_game_room(request):
     This will mainly present a CreateGameRoomForm and
     process that form when it is posted.
     """
-
-    # pylint can't detect the constructor for a Django
-    # form. So we disable the no-value-for-parameter here.
-    # pylint: disable=no-value-for-parameter
 
     if request.method == "POST":
         form = CreateGameRoomForm(request.POST)
