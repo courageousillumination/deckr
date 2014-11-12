@@ -251,6 +251,10 @@ $(document).ready(function() {
 	    console.log(selected);
 	});
 
+    $("#create-game-room #submit").click(function() {
+        $("#create-game-room ").submit();
+    });
+
 	$(window).unload(function(){
 		socket.disconnect();
 	});
