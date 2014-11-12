@@ -17,9 +17,9 @@ class GameDefinition(models.Model):
     """
 
     name = models.CharField(max_length=256)
-    path = models.FilePathField(path=pjoin(settings.BASE_DIR,
-                                           "game_defs"),
-                                allow_folders=True)
+    path = models.FilePathField(path="game_defs",
+                                allow_folders=True,
+                                allow_files=False)
 
     def __unicode__(self):
         """

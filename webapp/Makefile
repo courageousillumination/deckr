@@ -13,6 +13,10 @@ lint:
 autolint:
 	autopep8 --aggressive --in-place -r deckr
 	autopep8 --aggressive --in-place -r engine
+setup:
+	python manage.py migrate && python manage.py loaddata initial_data
+run:
+	python manage.py socketio_runserver
 clean:
 	find . -name "*.pyc" -exec rm '{}' ';';
 	coverage erase;

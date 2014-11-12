@@ -1,0 +1,10 @@
+[
+{
+    "fields": {
+        "path": "game_defs/solitaire",
+        "name": "Solitaire"
+    },
+    "model": "deckr.gamedefinition",
+    "pk": 1
+}
+]
