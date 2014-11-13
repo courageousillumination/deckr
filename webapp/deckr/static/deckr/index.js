@@ -59,8 +59,11 @@ socket.on('state_transitions', function(data) {
                 console.log($(cardId).data("front_face"));
                 if (transition[4]) {
                     $(cardId).attr('src', "/static/deckr/cards/" + $(cardId).data('front_face'));
+                    $(cardId).attr('face_up', 'true');
                 } else {
                     $(cardId).attr('src', "/static/deckr/cards/" + $(cardId).data('back_face'));
+                    $(cardId).attr('face_up', 'false');
+
                 }
             }
         }
@@ -91,6 +94,7 @@ socket.on('state', function(data) {
         data = Object();
         data.action_name = 'draw';
         socket.emit('action', data);
+        $('.selected').removeClass('selected');
     });
     
     for (i = 0; i < data.cards.length; i++) {
@@ -114,15 +118,20 @@ socket.on('state', function(data) {
     
     // Make sure we register all callbacks
     $(".card").click(function() {
-        if (!selected) {
-            selected = this;
-        } else if (selected == this) {
-            selected = null;
+    	if($(this).attr('face_up') == 'false') {
+    		console.log('Clicked on face down card.');
+    		return
+    	}
+
+        if ($('.selected').length == 0) {
+            $(this).addClass('selected');
+        } else if ($(this).hasClass('selected')) {
+            $(this).removeClass('selected');
         } else {
             parent = $(this).parent();
             parent.click.apply(parent);
         }
-        console.log(selected);
+        console.log($('.selected').attr('id') + " is selected.");
     });
     
     
@@ -173,6 +182,8 @@ function addCard(cardDict, zoneId, place) {
 		return err;
 	}
 	$(newCard).attr('id', cardDict["id"]);
+	// Should probably go into data
+	$(newCard).attr('face_up', cardDict['face_up']);
     if (cardDict["face_up"]) {
         $(newCard).attr('src', "/static/deckr/cards/" + cardDict["front_face"]);
     } else {
@@ -187,7 +198,7 @@ function addCard(cardDict, zoneId, place) {
 		zone.appendChild(newCard);
 	} else {
 		if (place < siblings.length) {
-				selected = null;
+				$('.selected').removeClass('selected');
 				zone.insertBefore(newCard, siblings[siblings.length - place]);
 		} else {
 			var err = "Place does not exist."
@@ -216,11 +227,11 @@ function addDiv(parentId, divDict, place) {
 	}
 
 	if (!place) {
-		selected = null;
+		$('.selected').removeClass('selected');
 		parent.appendChild(newDiv);
 	} else {
 		if (place < siblings.length) {
-				selected = null;
+				$('.selected').removeClass('selected');
 				toZone.insertBefore(newDiv, siblings[place]);
 		} else {
 			var err = "Place does not exist."
@@ -267,11 +278,11 @@ function moveCard(cardId, toZoneId, place) {
 	}
 
 	if (!place) {
-		selected = null;
+		$('.selected').removeClass('selected');
 		toZone.appendChild(card);
 	} else {
 		if (place < siblings.length) {
-				selected = null;
+				$('.selected').removeClass('selected');
 				toZone.insertBefore(card, siblings[siblings.length - place]);
 		} else {
 			var err = "Place does not exist."
@@ -312,9 +323,9 @@ $(document).ready(function() {
 	// Arbitrary definitions for testing.
 	// zone click function
 	$(".zone").click(function() {
-	    if (selected != null && $(this).has($(selected)).length == 0) {
-	    	console.log("Request move " + $(selected).attr('id'));
-	        requestMoveCard($(selected).attr('id'),
+	    if ($('.selected').length != 0 && $(this).has($('.selected')).length == 0) {
+	    	console.log("Request move " + $('.selected').attr('id'));
+	        requestMoveCard($('.selected').attr('id'),
 	       		$(this).attr('id'));
 	    }
 	});
