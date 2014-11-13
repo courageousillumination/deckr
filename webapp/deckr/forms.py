@@ -28,6 +28,7 @@ class PlayerForm(forms.ModelForm):
         model = Player
         fields = ['nickname']
 
+
 class DestroyGameRoomForm(forms.ModelForm):
 
     """
