@@ -39,11 +39,34 @@ socket.on('make_action', function(data) {
 socket.on('state_transitions', function(data) {
     console.log(data);
     for (i = 0; i < data.length; i++) {
+        // (name, args)
+        // (add, card, zone)
+        // (remove, card)
+        // (set, type, id, name, value)
         transition = data[i];
         if (transition[0] == 'add') {
             moveCard("card" + transition[1], "zone" + transition[2]);
         }
+        else if (transition[0] == 'set') {
+            // Set state
+            
+            // Check for flipping cards
+            if (transition[1] == 'Card' && transition[3] == 'face_up') {
+                console.log("Setting card face up");
+                cardId = '#card' + transition[2];
+                console.log(cardId);
+                console.log($(cardId));
+                console.log($(cardId).data("front_face"));
+                if (transition[4]) {
+                    $(cardId).attr('src', "/static/deckr/cards/" + $(cardId).data('front_face'));
+                } else {
+                    $(cardId).attr('src', "/static/deckr/cards/" + $(cardId).data('back_face'));
+                }
+            }
+        }
     }
+});
+
 socket.on('leave_game', function() {
 	window.location = '/'
 
@@ -150,8 +173,14 @@ function addCard(cardDict, zoneId, place) {
 		return err;
 	}
 	$(newCard).attr('id', cardDict["id"]);
-    $(newCard).attr('src', "/static/deckr/cards/" + cardDict["src"]);
+    if (cardDict["face_up"]) {
+        $(newCard).attr('src', "/static/deckr/cards/" + cardDict["front_face"]);
+    } else {
+        $(newCard).attr('src', "/static/deckr/cards/" + cardDict["back_face"]);
+    }
     $(newCard).addClass('card');
+    $(newCard).data("front_face", cardDict["front_face"]);
+    $(newCard).data("back_face", cardDict["back_face"]);
 	
 
 	if (!place) {

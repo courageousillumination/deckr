@@ -19,7 +19,8 @@ def create_playing_card(suit, number):
     card = Card()
     card.suit = suit
     card.number = number
-    card.src = get_file_name(suit, number)
+    card.front_face = get_file_name(suit, number)
+    card.back_face = "b1fv.png"
     return card
 
 def compare_color(card1, card2):
