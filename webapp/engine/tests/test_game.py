@@ -89,7 +89,7 @@ class GameTestCase(TestCase):
 
         self.game.phase = "restricted"
         self.assertRaises(InvalidMoveException, self.game.make_action,
-                          "restricted_action",player_id=1)
+                          "restricted_action", player_id=1)
         self.game.phase = "unrestricted"
         self.assertEqual([], self.game.make_action("restricted_action",
                                                    player_id=1))

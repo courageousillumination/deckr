@@ -2,11 +2,15 @@
 Test all of the Django views used by deckr.
 """
 
+from mock import MagicMock
+
 from django.test import TestCase, Client
 from django.core.urlresolvers import reverse
-from unittest import skip
 
 from deckr.models import GameRoom, GameDefinition, Player
+import deckr.views
+
+deckr.views.set_game_runner(MagicMock())
 
 
 class IndexTestCase(TestCase):
@@ -48,7 +52,6 @@ class CreateGameTestCase(TestCase):
         response = self.client.get(reverse('deckr.create_game_room'))
         self.assertEqual(response.status_code, 200)
 
-    @skip
     def test_create_game_form(self):
         """
         Make sure that the form submits, and that it will reject invalid
@@ -88,9 +91,10 @@ class CreatePlayerTestCase(TestCase):
         self.client = Client()
 
         # Make sure we have a game definition
-        self.game_def = GameDefinition.objects.create(name="test",
-                                                      path="/test")
-        self.game_room = GameRoom.objects.create(room_id=1,
+        self.game_def = GameDefinition.objects.create(name="solitaire",
+                                                      path="game_defs/solitaire")
+        self.game_room = GameRoom.objects.create(game_definition=self.game_def,
+                                                 room_id=1,
                                                  max_players=1)
 
     def test_can_access(self):
@@ -102,7 +106,6 @@ class CreatePlayerTestCase(TestCase):
                                            args=(self.game_room.pk,)))
         self.assertEqual(response.status_code, 200)
 
-    @skip
     def test_create_player_form(self):
         """
         Check form validations and player creation
@@ -154,12 +157,14 @@ class GamePageTestCase(TestCase):
 
     def setUp(self):
         self.client = Client()
-        self.game_room = GameRoom.objects.create(room_id=1)
+        self.game_def = GameDefinition.objects.create(name="solitaire",
+                                                      path="game_defs/solitaire")
+        self.game_room = GameRoom.objects.create(game_definition=self.game_def,
+                                                 room_id=1)
         self.player = Player.objects.create(game_room=self.game_room,
                                             player_id=1,
                                             nickname="Player 1")
 
-    @skip
     def test_can_access(self):
         """
         Make sure we can access the page.

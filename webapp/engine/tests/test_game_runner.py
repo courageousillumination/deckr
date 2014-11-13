@@ -73,7 +73,6 @@ class GameRunnerTestCase(TestCase):
         game_runner.destroy_game(game_id)
         self.assertFalse(game_runner.has_game(game_id))
 
-        
     def test_get_state(self):
         """
         Makes sure we can get the state out of a game.
@@ -110,5 +109,5 @@ class GameRunnerTestCase(TestCase):
 
         game1.phase = "unrestricted"
         self.assertEqual((False, []), game_runner.make_action(self.game_id,
-                                                     "restricted_action",
-                                                     player_id=0))
+                                                              "restricted_action",
+                                                              player_id=0))

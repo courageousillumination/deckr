@@ -19,6 +19,13 @@ from deckr.sockets import ChatNamespace  # pylint: disable=unused-import
 from deckr.models import GameRoom, Player
 from deckr.forms import CreateGameRoomForm, PlayerForm
 
+GAME_RUNNER = game_runner
+
+
+def set_game_runner(obj):
+    global GAME_RUNNER
+    GAME_RUNNER = obj
+
 
 def index(request):
     """
@@ -50,7 +57,7 @@ def game_room_staging_area(request, game_room_id):
         if form.is_valid():
             player = form.save(commit=False)
             player.game_room = room
-            player.player_id = game_runner.add_player(room.room_id)
+            player.player_id = GAME_RUNNER.add_player(room.room_id)
             try:
                 player.save()
                 # Construct the get request for joining the game as
@@ -109,7 +116,7 @@ def create_game_room(request):
             # Create a game object in the engine
             game_def = form.cleaned_data['game_id']
             path = game_def.path
-            engine_id = game_runner.create_game(path)
+            engine_id = GAME_RUNNER.create_game(path)
             # Crate the GameRoom in the webapp
             room = GameRoom.objects.create(room_id=engine_id,
                                            game_definition=game_def)
