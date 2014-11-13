@@ -2,7 +2,6 @@
 @import "reset";
 @import "variables";
 @import "mixins";
-@import "old-index";
 
 body {
     font-family: $text-font;
@@ -81,8 +80,4 @@ h2 {
 
 .card {
     margin: 5px;
-}
-
-.selected {
-    border: 2px solid #000;
 }

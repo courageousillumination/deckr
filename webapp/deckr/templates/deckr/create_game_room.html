@@ -2,10 +2,10 @@
 {% block title %}Deckr | Create Game Room{% endblock %}
 {% block content %}
 <div class="center">
-    <form method="post">
+    <form id="create-game-room" method="post">
       {% csrf_token %}
       {{ form.as_p }}
-      <input type="submit" name="submit" value="Create game room">
+      <a href="#" id="submit" class="big-btn"><div>Create game room</div></a>
     </form>
 </div>
 {% endblock %}

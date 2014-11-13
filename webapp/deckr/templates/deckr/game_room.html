@@ -1,16 +1,15 @@
 {% extends "deckr/base.html" %}
 {% block title %}Deckr | Game{% endblock %}
-
+{% block body-classes %}game{% endblock %}
+{% block content %}
 <h1>You are: {{player.nickname}}</h1>
 <ul id="player_names">
   {% for name in game.player_set.all %}
     <li>{{ name }}</li>
   {% endfor %}
 </ul>
-{% block body-classes %}game{% endblock %}
-{% block content %}
 {% include sub_template %}
 <script>
-  socket.emit('join', {game_id: {{game.id}}, player_id: {{player.id}}})
+  socket.emit('join', {game_room_id: "{{game.id}}", player_id: {{player.id}}})
 </script>
 {% endblock %}

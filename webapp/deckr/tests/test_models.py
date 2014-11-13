@@ -22,7 +22,7 @@ class GameDefinitionTestCase(TestCase):
         """
 
         self.assertEqual(self.definition.__unicode__(),
-                         "foo located at /bar")
+                         "foo")
 
 
 class GameRoomTestCase(TestCase):
@@ -40,7 +40,8 @@ class GameRoomTestCase(TestCase):
         Make sure that the string representation of the GameRoom works.
         """
 
-        self.assertEqual(self.game_room.__unicode__(), "Game room for game 1")
+        self.assertEqual(self.game_room.__unicode__(),
+                         "Game room 1 for the game Solitaire")
 
     def test_add_players(self):
         """
