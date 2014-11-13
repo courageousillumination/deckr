@@ -12,4 +12,7 @@ class Player(StatefulGameObject):
     It contains no logic.
     """
 
-    pass
+    def __init__(self):
+        super(Player, self).__init__()
+        
+        self.game_object_type = "Player"

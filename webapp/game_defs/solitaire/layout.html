@@ -1,20 +1,21 @@
 <div class="layout">
     Solitaire
+    <button onclick="socket.emit('start');">Start</button>
     <div class="row">
         <div class="stacked zone" id="deck" style="float: left;"></div>
-        <div class="stacked zone" id="hand"></div>
-        <div class="stacked zone" id="victory0"></div>
-        <div class="stacked zone" id="victory1"></div>
-        <div class="stacked zone" id="victory2"></div>
-        <div class="stacked zone" id="victory3"></div>
+        <div class="stacked zone" id="deck_flipped"></div>
+        <div class="stacked zone" id="victory_zone1"></div>
+        <div class="stacked zone" id="victory_zone2"></div>
+        <div class="stacked zone" id="victory_zone3"></div>
+        <div class="stacked zone" id="victory_zone4"></div>
     </div>
     <div class="row">
-        <div id="playarea0" class="vertical-fan zone"></div>
-        <div id="playarea1" class="vertical-fan zone"></div>
-        <div id="playarea2" class="vertical-fan zone"></div>
-        <div id="playarea3" class="vertical-fan zone"></div>
-        <div id="playarea4" class="vertical-fan zone"></div>
-        <div id="playarea5" class="vertical-fan zone"></div>
-        <div id="playarea6" class="vertical-fan zone"></div>
+        <div id="play_zone1" class="vertical-fan zone"></div>
+        <div id="play_zone2" class="vertical-fan zone"></div>
+        <div id="play_zone3" class="vertical-fan zone"></div>
+        <div id="play_zone4" class="vertical-fan zone"></div>
+        <div id="play_zone5" class="vertical-fan zone"></div>
+        <div id="play_zone6" class="vertical-fan zone"></div>
+        <div id="play_zone7" class="vertical-fan zone"></div>
     </div>
 </div>

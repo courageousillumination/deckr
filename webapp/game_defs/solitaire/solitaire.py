@@ -5,12 +5,21 @@ This module provides an implementation of a game of Solitaire
 from engine.game import Game, action
 from engine.card import Card
 
-SUITS = ["hearts", "diamonds", "clubs", "spades"]
+SUITS = ["clubs", "spades", "hearts", "diamonds"]
+
+def get_file_name(suit, number):
+    if number == 1:
+        return str(SUITS.index(suit) + 1) + ".png"
+    
+    dist_from_top = (13 - number) + 1
+    offset = dist_from_top * 4 + 1 + SUITS.index(suit)
+    return str(offset) + ".png"
 
 def create_playing_card(suit, number):
     card = Card()
     card.suit = suit
     card.number = number
+    card.src = get_file_name(suit, number)
     return card
 
 def compare_color(card1, card2):
@@ -25,15 +34,13 @@ class Solitaire(Game):
     Solitaire is a simple one player game
     """
 
-
-
     def set_up(self):
         """
         """
-
-        
+   
         # Create our deck of cards
         cards = [create_playing_card(x, y) for x in SUITS for y in range(1, 14)]
+        self.register(cards)
         self.deck.set_cards(cards)
         self.deck.shuffle()
         for i in range(1, 8):

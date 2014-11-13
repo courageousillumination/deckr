@@ -19,14 +19,20 @@ class StatefulGameObject(GameObject):
 
         # What attributes shouldn't be tracked (internal attributes mainly)
         self.no_track_attributes = set()
+        self.no_track_attributes.add("game_object_type")
         self.exclude_from_dict.add("no_track_attributes")
+        self.exclude_from_dict.add("game_object_type")
+        
+        self.game_object_type = "None"
 
     def __setattr__(self, name, value):
 
         if (hasattr(self, "game") and
                 self.game is not None and
                 name not in self.no_track_attributes):
-            self.game.add_transition(("set", type(self), self.game_id,
+            self.game.add_transition(("set",
+                                      self.game_object_type,
+                                      self.game_id,
                                       name, value))
 
         super(StatefulGameObject, self).__setattr__(name, value)

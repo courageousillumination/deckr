@@ -75,7 +75,13 @@ def destroy_game(game_id):
     """
 
     del CACHE[game_id]
-
+    
+def start_game(game_id):
+    """
+    This will call the set up code for a specific game.
+    """
+    
+    get_game(game_id).set_up()
 
 def get_game(game_id):
     """

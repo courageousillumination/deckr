@@ -18,3 +18,5 @@ class Card(StatefulGameObject):
 
         self.zone = None
         self.no_track_attributes = set(("zone",))
+        
+        self.game_object_type = "Card"

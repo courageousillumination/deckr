@@ -8,6 +8,7 @@
     <li>{{ name }}</li>
   {% endfor %}
 </ul>
+<div style="display: none;" id="staging_area"></div>
 {% include sub_template %}
 <script>
   socket.emit('join', {game_room_id: "{{game.id}}", player_id: {{player.id}}})

@@ -41,12 +41,32 @@ socket.on('game_over', function(data) {
 	/* Responds to a game_over message from server.*/
 	console.log('Game over!');
 	gameOver(data);
-})
+});
 
 socket.on('error', function(data) {
 	/* Responds to error from server */
 	console.log(data);
-})
+});
+
+socket.on('state', function(data) {
+    console.log(data);
+    for (i = 0; i < data.cards.length; i++) {
+        d = data.cards[i];
+        d.class = "card";
+        d.id = "card" + d.game_id;
+        addCard(d, "staging_area");
+        
+        //var cardDict = {"src" :"../../static/deckr/cards/13.png", "id":"clubJack", "class":"card"};
+        //addCard(cardDict2, "playarea0");
+    }
+    // Add all cards to the proper zones
+    for (i = 0; i < data.zones.length; i++) {
+        zone = data.zones[i];
+        for (j = 0; j < zone.cards.length; j++) {
+            moveCard("card" + zone.cards[j], zone.name);
+        }
+    }
+});
 
 socket.on('player_names', function(names) {
 	/* Responds to list of players names from server
@@ -92,9 +112,10 @@ function addCard(cardDict, zoneId, place) {
 		console.log(err);
 		return err;
 	}
-	for (key in cardDict) {
-		$(newCard).attr(key,cardDict[key]);
-	}
+	$(newCard).attr('id', cardDict["id"]);
+    $(newCard).attr('src', "/static/deckr/cards/" + cardDict["src"]);
+    $(newCard).addClass('card');
+	
 
 	if (!place) {
 		zone.appendChild(newCard);
@@ -222,12 +243,12 @@ $(document).ready(function() {
 	/* Runs when document is ready. Includes the click handlers. */
 
 	// Arbitrary definitions for testing.
-	var cardDict = {"src" :"../../static/deckr/cards/13.png", "id":"clubJack", "class":"card"};
-	var cardDict2 = {"src" :"../../static/deckr/cards/14.png", "id":"spadeJack", "class":"card"};
-    var cardDict3 = {"src" :"../../static/deckr/cards/15.png", "id":"heartJack", "class":"card"};
+	/*var cardDict = {"src" :"13.png", "id":"clubJack", "class":"card"};
+	var cardDict2 = {"src" :"14.png", "id":"spadeJack", "class":"card"};
+    var cardDict3 = {"src" :"15.png", "id":"heartJack", "class":"card"};
 	addCard(cardDict, "playarea0");
 	addCard(cardDict2, "playarea0");
-    addCard(cardDict3, "playarea0");
+    addCard(cardDict3, "playarea0");*/
 
 	// zone click function
 	$(".zone").click(function() {

@@ -18,7 +18,7 @@ class StatefulGameObjectTestCase(TestCase):
     def setUp(self):
         self.game = Game()
         self.stateful_game_object = StatefulGameObject()
-
+        self.stateful_game_object.game_object_type = "foo"
         self.game.register([self.stateful_game_object])
 
     def test_change_state(self):
@@ -29,7 +29,7 @@ class StatefulGameObjectTestCase(TestCase):
         """
 
         expected_state_changes = [("set",
-                                   StatefulGameObject,
+                                   "foo",
                                    self.stateful_game_object.game_id,
                                    "life",
                                    10)]
