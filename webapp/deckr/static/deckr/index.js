@@ -4,7 +4,6 @@
 // GLOBALS
 var socket = io.connect("/game");
 var selected = null;
-var player_nick = null;
 
 ////////////////////
 // SOCKET SECTION //
@@ -45,6 +44,9 @@ socket.on('state_transitions', function(data) {
             moveCard("card" + transition[1], "zone" + transition[2]);
         }
     }
+socket.on('leave_game', function() {
+	window.location = '/'
+
 });
 
 socket.on('game_over', function(data) {
@@ -279,13 +281,6 @@ $(document).ready(function() {
 	/* Runs when document is ready. Includes the click handlers. */
 
 	// Arbitrary definitions for testing.
-	/*var cardDict = {"src" :"13.png", "id":"clubJack", "class":"card"};
-	var cardDict2 = {"src" :"14.png", "id":"spadeJack", "class":"card"};
-    var cardDict3 = {"src" :"15.png", "id":"heartJack", "class":"card"};
-	addCard(cardDict, "playarea0");
-	addCard(cardDict2, "playarea0");
-    addCard(cardDict3, "playarea0");*/
-
 	// zone click function
 	$(".zone").click(function() {
 	    if (selected != null && $(this).has($(selected)).length == 0) {
@@ -298,11 +293,15 @@ $(document).ready(function() {
 	// card click function
 	
 
-    $("#create-game-room #submit").click(function() {
-        $("#create-game-room ").submit();
-    });
+  $("#create-game-room #submit").click(function() {
+     $("#create-game-room ").submit();
+  });
 
-	$(window).unload(function(){
-		socket.disconnect();
-	});
+	$('#destroy-game-room').click(function(){
+		socket.emit('destroy_game');
+	})
+
+	$('#leave-game-room').click(function(){
+		socket.emit('leave_game');
+	})
 })

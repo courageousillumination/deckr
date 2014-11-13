@@ -197,25 +197,6 @@ class GameNamespaceTestCase(SocketTestCase):
 
         self.namespace.emit.assert_called_with("error", error)
 
-    def test_disconnect(self):
-        """
-        If a player disconnects from the room we should clean up the player
-        associated with them.
-        """
-
-        old_count = Player.objects.all().count()
-        self.namespace.recv_disconnect()
-        self.assertEqual(Player.objects.all().count(), old_count - 1)
-        player_names = [p.nickname for p in self.game_room.player_set.all()]
-        self.namespace.broadcast_event.assert_called_with('player_names',
-                                                          player_names)
-
-        # Make sure we reconnect.
-        self.namespace.player = Player.objects.create(
-            game_room=self.game_room,
-            player_id=0,
-            nickname="Bob")
-
     def test_update_player_list(self):
         """
         If a game room player list changes, broadcast the updated information
@@ -261,3 +242,45 @@ class GameNamespaceTestCase(SocketTestCase):
         self.namespace.emit.assert_called_with(
             "error",
             "Please connect to a game room first.")
+
+    def test_on_destroy_game(self):
+        """
+        If a player destroys the room, handle clean up
+        """
+
+        self.assertEqual(Player.objects.all().count(), 1)
+        self.assertEqual(GameRoom.objects.all().count(), 1)
+        self.assertTrue(self.namespace.on_destroy_game())
+        self.assertEqual(Player.objects.all().count(), 0)
+        self.assertEqual(GameRoom.objects.all().count(), 0)
+        self.namespace.emit.assert_called_with('leave_game')
+        self.namespace.emit_to_room.assert_called_with(str(self.game_room.id),
+                                                       'leave_game')
+
+    def test_on_leave_game(self):
+        """
+        If a player leaves the room, handle clean up
+        """
+
+        self.game_room.max_players = 2
+        self.game_room.save()
+        self.player = Player.objects.create(player_id=2,
+                                            nickname="Player 2",
+                                            game_room=self.game_room)
+
+        request = {'game_room_id': str(self.game_room.pk),
+                   'player_id': self.player.id}
+        self.namespace.on_join(request)
+
+        self.assertEqual(Player.objects.all().count(), 2)
+        self.assertEqual(GameRoom.objects.all().count(), 1)
+        self.assertTrue(self.namespace.on_leave_game())
+        self.assertEqual(Player.objects.all().count(), 1)
+        self.assertEqual(GameRoom.objects.all().count(), 1)
+        self.namespace.emit.assert_called_with('leave_game')
+
+        self.namespace.player = self.game_room.player_set.all()[0]
+        self.assertTrue(self.namespace.on_leave_game())
+        self.assertEqual(Player.objects.all().count(), 0)
+        self.assertEqual(GameRoom.objects.all().count(), 0)
+        self.namespace.emit.assert_called_with('leave_game')

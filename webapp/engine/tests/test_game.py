@@ -179,9 +179,9 @@ class GameTestCase(TestCase):
         }
 
         expected_state = {
-            'cards': [{'game_id': 1, 'zone': 2},
-                      {'game_id': 2, 'zone': 1},
-                      {'game_id': 3, 'zone': 1}],
+            'cards': [{'game_id': 1, 'zone': 2, 'face_up': False},
+                      {'game_id': 2, 'zone': 1, 'face_up': False},
+                      {'game_id': 3, 'zone': 1, 'face_up': False}],
             'players': [{'game_id': 1}],
             'zones': [{'cards': [2, 3],
                        'game_id': 1,
