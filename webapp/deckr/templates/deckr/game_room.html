@@ -8,11 +8,8 @@
     <li>{{ name }}</li>
   {% endfor %}
 </ul>
-<form id="destroy-game-room" method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <input type="submit" name="submit" value="Destroy Game Room">
-</form>
+<a href="#" id="destroy-game-room">End Game</a>
+<a href="#" id="leave-game-room">Leave Game</a>
 {% include sub_template %}
 <script>
   socket.emit('join', {game_room_id: "{{game.id}}", player_id: {{player.id}}})

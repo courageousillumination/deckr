@@ -165,20 +165,3 @@ class GamePageTestCase(TestCase):
                                            args=(self.game_room.pk,)),
                                    {'player_id': self.player.id})
         self.assertEqual(response.status_code, 200)
-
-    def test_destroy_room(self):
-        """
-        Make sure the room and its players are destroyed
-        """
-
-        self.assertEqual(Player.objects.all().count(), 1)
-        self.assertEqual(GameRoom.objects.all().count(), 1)
-        response = self.client.post(
-            reverse(
-                "deckr.game_room",
-                args=(
-                    self.game_room.pk,
-                )))
-        self.assertEqual(Player.objects.all().count(), 0)
-        self.assertEqual(GameRoom.objects.all().count(), 0)
-        self.assertEqual(response.status_code, 302)

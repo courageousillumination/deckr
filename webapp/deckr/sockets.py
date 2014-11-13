@@ -185,6 +185,48 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         self.update_player_list()
         return True
 
+    def on_destroy_game(self):
+        """
+        The client will call this when a player wants to end the game
+        """
+
+        if self.game_room is None or self.player is None:
+            self.emit("error", "Please connect to a game room first.")
+            return False
+
+        for player in self.game_room.player_set.all():
+            player.delete()
+
+        self.game_room.delete()
+        self.game_room = None
+        self.player = None
+        self.room = None
+        self.emit_to_room(self.room, 'leave_game')
+        self.emit('leave_game')
+
+        return True
+
+    def on_leave_game(self):
+        """
+        The client will call this when a player decides to leave
+        """
+
+        if self.game_room is None or self.player is None:
+            self.emit("error", "Please connect to a game room first.")
+            return False
+
+        self.player.delete()
+
+        if not self.game_room.player_set.all():
+            self.game_room.delete()
+            self.room = None
+            self.game_room = None
+
+        self.emit('leave_game')
+        self.player = None
+        self.update_player_list()
+        return True
+
     def flush(self):
         """
         Clear out all internal state. Should only be used

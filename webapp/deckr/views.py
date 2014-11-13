@@ -15,7 +15,7 @@ from engine import game_runner
 # We need to import the namespace so the URLs can be discovered.
 from deckr.sockets import ChatNamespace  # pylint: disable=unused-import
 from deckr.models import GameRoom, Player
-from deckr.forms import CreateGameRoomForm, PlayerForm, DestroyGameRoomForm
+from deckr.forms import CreateGameRoomForm, PlayerForm
 
 
 def index(request):
@@ -72,26 +72,20 @@ def game_room_staging_area(request, game_room_id):
 def game_room(request, game_room_id):
     """
     This view will present the actual game room page for
-    a given game id and it will clean up a game room after it's done
+    a given game id
     """
-    if request.method == "POST":
-        room = get_object_or_404(GameRoom, pk=game_room_id)
-        room.delete()
-        return redirect(reverse("deckr.index"))
-    else:
-        player_id = request.GET.get('player_id')
-        player = get_object_or_404(Player, pk=player_id)
-        game = get_object_or_404(GameRoom, pk=game_room_id)
 
-        sub_template = Template(
-            open("../samples/solitaire/layout.html").read())
+    player_id = request.GET.get('player_id')
+    player = get_object_or_404(Player, pk=player_id)
+    game = get_object_or_404(GameRoom, pk=game_room_id)
 
-        form = DestroyGameRoomForm()
-        return render(request, "deckr/game_room.html",
-                      {'sub_template': sub_template,
-                       'game': game,
-                       'player': player,
-                       'form': form})
+    sub_template = Template(
+        open("../samples/solitaire/layout.html").read())
+
+    return render(request, "deckr/game_room.html",
+                  {'sub_template': sub_template,
+                   'game': game,
+                   'player': player})
 
 
 def upload_new_game(request):

@@ -36,6 +36,10 @@ socket.on('make_action', function(data) {
 	}
 });
 
+socket.on('leave_game', function() {
+	window.location = '/'
+});
+
 socket.on('game_over', function(data) {
 	/* Responds to a game_over message from server.*/
 	console.log('Game over!');
@@ -253,4 +257,12 @@ $(document).ready(function() {
   $("#create-game-room #submit").click(function() {
      $("#create-game-room ").submit();
   });
+
+	$('#destroy-game-room').click(function(){
+		socket.emit('destroy_game');
+	})
+
+	$('#leave-game-room').click(function(){
+		socket.emit('leave_game');
+	})
 })
