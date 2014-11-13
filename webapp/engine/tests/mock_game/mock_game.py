@@ -72,7 +72,6 @@ class MockGame(Game):
         """
         This will win, if the phase isn't restricted.
         """
-
         self.winners_list.append(player_id)
         self.over = True
 

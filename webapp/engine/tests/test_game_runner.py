@@ -73,18 +73,12 @@ class GameRunnerTestCase(TestCase):
         game_runner.destroy_game(game_id)
         self.assertFalse(game_runner.has_game(game_id))
 
-    @skip("Not yet implemented")
+        
     def test_get_state(self):
         """
         Makes sure we can get the state out of a game.
         """
-
-        expected_state = {
-            "zone1": {
-                "id": 1,
-                "cards": [{"id": 1}]
-            }
-        }
+        expected_state = {'cards': [], 'zones': [], 'players': []}
 
         game_id = game_runner.create_game(self.valid_game_def)
         state = game_runner.get_state(game_id)
@@ -101,7 +95,6 @@ class GameRunnerTestCase(TestCase):
         self.assertNotEqual(player_id,
                             game_runner.add_player(self.game_id))
 
-    @skip
     def test_make_action(self):
         """
         Make sure that we can make actions through the GameRunner.
@@ -113,9 +106,9 @@ class GameRunnerTestCase(TestCase):
                                                  "restricted_action",
                                                  player_id=0)
         self.assertTrue(error)
-        self.assertEqual(message, "Invalid action")
+        self.assertEqual(message, "Illegal Action")
 
         game1.phase = "unrestricted"
-        self.assertEqual([], game_runner.make_action(self.game_id,
+        self.assertEqual((False, []), game_runner.make_action(self.game_id,
                                                      "restricted_action",
                                                      player_id=0))

@@ -107,10 +107,8 @@ class Game(object):
         if not hasattr(self, action_name):
             return False
 
-        try:
-            getattr(self, action_name)(**kwargs)
-        except InvalidMoveException:
-            return False
+            
+        getattr(self, action_name)(**kwargs)
 
         transitions = self.get_transitions()
         self.flush_transitions()

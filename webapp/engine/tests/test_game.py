@@ -7,6 +7,7 @@ from unittest import TestCase
 from engine.card import Card
 from engine.zone import Zone
 from engine.tests.mock_game.mock_game import MockGame
+from engine.game import InvalidMoveException
 
 
 class GameTestCase(TestCase):
@@ -87,8 +88,8 @@ class GameTestCase(TestCase):
         """
 
         self.game.phase = "restricted"
-        self.assertFalse(self.game.make_action("restricted_action",
-                                               player_id=1))
+        self.assertRaises(InvalidMoveException, self.game.make_action,
+                          "restricted_action",player_id=1)
         self.game.phase = "unrestricted"
         self.assertEqual([], self.game.make_action("restricted_action",
                                                    player_id=1))
