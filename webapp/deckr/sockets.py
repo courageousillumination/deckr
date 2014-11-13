@@ -62,15 +62,15 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
 
         print "Got socket connection 2."
 
-    def recv_disconnect(self):
-        """
-        When we disconnect make sure we clean up any related
-        objects.
-        """
-
-        if self.player is not None:
-            self.player.delete()
-            self.update_player_list()
+    # def recv_disconnect(self):
+    #     """
+    #     When we disconnect make sure we clean up any related
+    #     objects.
+    #     """
+    #
+    #     if self.player is not None:
+    #         self.player.delete()
+    #         self.update_player_list()
 
     def on_join(self, join_request):
         """

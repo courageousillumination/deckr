@@ -4,7 +4,6 @@
 // GLOBALS
 var socket = io.connect("/game");
 var selected = null;
-var player_nick = null;
 
 ////////////////////
 // SOCKET SECTION //
@@ -224,7 +223,7 @@ $(document).ready(function() {
 	// Arbitrary definitions for testing.
 	var cardDict = {"src" :"../../static/deckr/cards/13.png", "id":"clubJack", "class":"card"};
 	var cardDict2 = {"src" :"../../static/deckr/cards/14.png", "id":"spadeJack", "class":"card"};
-    var cardDict3 = {"src" :"../../static/deckr/cards/15.png", "id":"heartJack", "class":"card"};
+  var cardDict3 = {"src" :"../../static/deckr/cards/15.png", "id":"heartJack", "class":"card"};
 	addCard(cardDict, "playarea0");
 	addCard(cardDict2, "playarea0");
     addCard(cardDict3, "playarea0");
@@ -251,11 +250,7 @@ $(document).ready(function() {
 	    console.log(selected);
 	});
 
-    $("#create-game-room #submit").click(function() {
-        $("#create-game-room ").submit();
-    });
-
-	$(window).unload(function(){
-		socket.disconnect();
-	});
+  $("#create-game-room #submit").click(function() {
+     $("#create-game-room ").submit();
+  });
 })

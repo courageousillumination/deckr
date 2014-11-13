@@ -10,12 +10,14 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.template import Template
 from django.core.urlresolvers import reverse
 
+from django.core.exceptions import ObjectDoesNotExist
+
 from engine import game_runner
 
 # We need to import the namespace so the URLs can be discovered.
 from deckr.sockets import ChatNamespace  # pylint: disable=unused-import
 from deckr.models import GameRoom, Player
-from deckr.forms import CreateGameRoomForm, PlayerForm
+from deckr.forms import CreateGameRoomForm, PlayerForm, DestroyGameRoomForm
 
 
 def index(request):
@@ -72,19 +74,40 @@ def game_room_staging_area(request, game_room_id):
 def game_room(request, game_room_id):
     """
     This view will present the actual game room page for
-    a given game id
+    a given game id and it will clean up a game room after it's done
     """
+    if request.method == "POST":
+        try:
+            game = GameRoom.objects.get(pk=game_room_id)
+        except ObjectDoesNotExist:
+            return redirect(reverse("deckr.create_game"))
 
-    player_id = request.GET.get('player_id')
-    player = get_object_or_404(Player, pk=player_id)
-    game = get_object_or_404(GameRoom, pk=game_room_id)
-    sub_template = Template(open("../samples/solitaire/layout.html").read())
+        for p in game.player_set.all():
+            p.delete()
 
-    return render(request, "deckr/game_room.html",
-                  {'sub_template': sub_template,
-                   'game': game,
-                   'player': player})
+        game.delete()
+        return redirect(reverse("deckr.index"))
+    else:
+        player_id = request.GET.get('player_id')
+        try:
+            player = Player.objects.get(pk=player_id)
+        except ObjectDoesNotExist:
+            return redirect(
+                reverse("deckr.game_room_staging_area", args=(game_room_id,)))
 
+        try:
+            game = GameRoom.objects.get(pk=game_room_id)
+        except ObjectDoesNotExist:
+            return redirect(reverse("deckr.create_game"))
+
+        sub_template = Template(open("../samples/solitaire/layout.html").read())
+
+        form = DestroyGameRoomForm()
+        return render(request, "deckr/game_room.html",
+                      {'sub_template': sub_template,
+                       'game': game,
+                       'player': player,
+                       'form': form})
 
 def upload_new_game(request):
     """

@@ -4,7 +4,7 @@ This module provides all of the forms used by the deckr app.
 
 from django import forms
 
-from deckr.models import GameDefinition, Player
+from deckr.models import GameDefinition, Player, GameRoom
 
 
 class CreateGameRoomForm(forms.Form):
@@ -27,3 +27,13 @@ class PlayerForm(forms.ModelForm):
     class Meta:  # pylint: disable=C1001,W0232,C0111
         model = Player
         fields = ['nickname']
+
+class DestroyGameRoomForm(forms.ModelForm):
+
+    """
+    A simple form that destroys the game room and its players
+    """
+
+    class Meta:
+        model = GameRoom
+        fields = []
