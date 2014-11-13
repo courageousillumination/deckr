@@ -107,6 +107,15 @@ class Game(object):
         if not hasattr(self, action_name):
             return False
 
+        # We make some substitutions in the kwargs
+        for key, value in kwargs.items():
+            if "card" in key:
+                kwargs[key] = self.get_object_with_id(Card, value)
+            elif "zone" in key:
+                kwargs[key] = self.get_object_with_id(Zone, value)
+            elif "player" in key:
+                kwargs[key] = self.get_object_with_id(Player, value)
+            
         try:
             getattr(self, action_name)(**kwargs)
         except InvalidMoveException:

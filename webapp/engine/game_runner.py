@@ -82,7 +82,11 @@ def start_game(game_id):
     This will call the set up code for a specific game.
     """
 
-    get_game(game_id).set_up()
+    game = get_game(game_id)
+    game.set_up()
+    # We don't actually care about the state transitions 
+    # during set up. The clients will just request the state.
+    game.flush_transitions()
 
 
 def get_game(game_id):
@@ -110,7 +114,7 @@ def add_player(game_id):
     return get_game(game_id).add_player()
 
 
-def make_action(game_id, *args, **kwargs):
+def make_action(game_id, **kwargs):
     """
     Makes an action in the game. Returns a tuple of (ERROR, DATA)
     ERROR will be a boolean to indicator if the function was successful
@@ -119,7 +123,7 @@ def make_action(game_id, *args, **kwargs):
     """
 
     try:
-        return False, get_game(game_id).make_action(*args, **kwargs)
+        return False, get_game(game_id).make_action(**kwargs)
     except InvalidMoveException:
         return True, "Illegal Action"
 

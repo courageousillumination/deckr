@@ -6,6 +6,7 @@ from unittest import TestCase
 
 from engine.card import Card
 from engine.zone import Zone
+from engine.player import Player
 from engine.tests.mock_game.mock_game import MockGame
 
 
@@ -21,6 +22,8 @@ class GameTestCase(TestCase):
     def setUp(self):
         self.game = MockGame()
         self.game.set_up()
+        self.player = Player()
+        self.game.register([self.player])
 
     def test_set_up(self):
         """
@@ -88,17 +91,17 @@ class GameTestCase(TestCase):
 
         self.game.phase = "restricted"
         self.assertFalse(self.game.make_action("restricted_action",
-                                               player_id=1))
+                                               player_id=self.player.game_id))
         self.game.phase = "unrestricted"
         self.assertEqual([], self.game.make_action("restricted_action",
-                                                   player_id=1))
+                                                   player_id=self.player.game_id))
 
     def test_make_winning_action(self):
         """
         Make sure that we can win the game.
         """
 
-        self.game.make_action("win", player_id=1)
+        self.game.make_action("win", player_id=self.player.game_id)
         self.assertTrue(self.game.is_over())
         self.assertListEqual([1], self.game.winners())
 
@@ -107,7 +110,7 @@ class GameTestCase(TestCase):
         Make sure that we can lose the game.
         """
 
-        self.game.make_action("lose", player_id=1)
+        self.game.make_action("lose", player_id=self.player.game_id)
         self.assertTrue(self.game.is_over())
         self.assertListEqual([], self.game.winners())
 
@@ -176,7 +179,7 @@ class GameTestCase(TestCase):
             'cards': [{'game_id': 1, 'zone': 2},
                       {'game_id': 2, 'zone': 1},
                       {'game_id': 3, 'zone': 1}],
-            'players': [],
+            'players': [{'game_id': 1}],
             'zones': [{'cards': [2, 3],
                        'game_id': 1,
                        'name': 'zone2',

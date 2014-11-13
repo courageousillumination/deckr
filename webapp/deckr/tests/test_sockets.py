@@ -172,9 +172,8 @@ class GameNamespaceTestCase(SocketTestCase):
         self.namespace.runner.make_action.return_value = (False, transitions)
 
         self.namespace.on_action(valid_move)
-        self.namespace.emit_to_room.assert_called_with(str(self.game_room.pk),
-                                                       "state_transition",
-                                                       transitions)
+        self.namespace.broadcast_event.assert_called_with("state_transitions",
+                                                          transitions)
 
     def test_request_state(self):
         """

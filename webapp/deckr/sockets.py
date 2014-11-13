@@ -150,13 +150,16 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         Called whenever the socket recieves a chat message. It
         will then broadcast the message to the rest of the channel.
         """
-
-        error, transitions = self.runner.make_action(**data)
+        
+        error, transitions = self.runner.make_action(self.game_room.room_id,
+                                                     **data)
         if error:
             self.emit("error", "Invalid move")
             return False
 
-        self.emit_to_room(self.room, 'state_transition', transitions)
+        print transitions
+        
+        self.broadcast_event('state_transitions', transitions)
         return True
 
     def on_request_state(self):

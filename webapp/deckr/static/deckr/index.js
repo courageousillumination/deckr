@@ -37,6 +37,16 @@ socket.on('make_action', function(data) {
 	}
 });
 
+socket.on('state_transitions', function(data) {
+    console.log(data);
+    for (i = 0; i < data.length; i++) {
+        transition = data[i];
+        if (transition[0] == 'add') {
+            moveCard("card" + data[1], "zone" + data[2]);
+        }
+    }
+});
+
 socket.on('game_over', function(data) {
 	/* Responds to a game_over message from server.*/
 	console.log('Game over!');
@@ -50,6 +60,14 @@ socket.on('error', function(data) {
 
 socket.on('state', function(data) {
     console.log(data);
+    
+    // TODO: Get rid of this
+    $("#deck").click(function() {
+        data = Object();
+        data.action_name = 'draw';
+        socket.emit('action', data);
+    });
+    
     for (i = 0; i < data.cards.length; i++) {
         d = data.cards[i];
         d.class = "card";
@@ -62,10 +80,27 @@ socket.on('state', function(data) {
     // Add all cards to the proper zones
     for (i = 0; i < data.zones.length; i++) {
         zone = data.zones[i];
+        $("#" + zone.name).attr('id', "zone" + zone.game_id);
         for (j = 0; j < zone.cards.length; j++) {
-            moveCard("card" + zone.cards[j], zone.name);
+            moveCard("card" + zone.cards[j], "zone" + zone.game_id);
         }
     }
+    
+    
+    // Make sure we register all callbacks
+    $(".card").click(function() {
+        if (!selected) {
+            selected = this;
+        } else if (selected == this) {
+            selected = null;
+        } else {
+            parent = $(this).parent();
+            parent.click.apply(parent);
+        }
+        console.log(selected);
+    });
+    
+    
 });
 
 socket.on('player_names', function(names) {
@@ -220,9 +255,9 @@ function moveCard(cardId, toZoneId, place) {
 function requestMoveCard(cardId, toZoneId) {
 	/* Sends card movement request to server */
 	console.log("Sending move request to server.");
-	socket.emit('move_card', {'action': 'move_card',
-								'cardId': cardId,
-								'toZoneId': toZoneId});
+	socket.emit('action', {'action': 'move_card',
+                           'card': cardId,
+						   'target_zone': toZoneId});
 }
 
 function gameOver(results) {
@@ -260,17 +295,7 @@ $(document).ready(function() {
 	});
 
 	// card click function
-	$(".card").click(function() {
-		if (!selected) {
-	    	selected = this;
-	    } else if (selected == this) {
-	    	selected = null;
-	    } else {
-	    	parent = $(this).parent();
-	    	parent.click.apply(parent);
-	    }
-	    console.log(selected);
-	});
+	
 
     $("#create-game-room #submit").click(function() {
         $("#create-game-room ").submit();

@@ -125,5 +125,5 @@ class Solitaire(Game):
             self.deck.set_cards(self.deck_flipped.get_cards())
             self.deck_flipped.set_cards([])
             
-        self.deck.deck_flipped.push(self.deck.pop())
+        self.deck_flipped.push(self.deck.pop())
             
