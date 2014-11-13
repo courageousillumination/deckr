@@ -67,7 +67,9 @@ class Solitaire(Game):
         """
         Returns the internal winners_list.
         """
-
+        
+        if self.is_over():
+            return self.players
         return []
 
     def move_card_restrictons(self, card, target_zone):
