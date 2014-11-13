@@ -6,6 +6,7 @@ from engine.zone import Zone
 from engine.player import Player
 from engine.card import Card
 
+
 class InvalidMoveException(Exception):
 
     """
@@ -114,7 +115,7 @@ class Game(object):
                 kwargs[key] = self.get_object_with_id("Zone", int(value))
             elif "player" in key:
                 kwargs[key] = self.get_object_with_id("Player", int(value))
-            
+
         getattr(self, action_name)(**kwargs)
 
         transitions = self.get_transitions()
@@ -132,7 +133,7 @@ class Game(object):
             # Don't bother re registering
             if obj.game_id is not None:
                 continue
-            
+
             if isinstance(obj, Card):
                 object_type = "Card"
             elif isinstance(obj, Zone):
@@ -143,7 +144,7 @@ class Game(object):
                 # If it's not one of the above we just
                 # use the class name.
                 object_type = type(obj).__name__
-                    
+
             if object_type not in self.registered_objects:
                 self.registered_objects[object_type] = [2, {1: obj}]
                 obj.game_id = 1

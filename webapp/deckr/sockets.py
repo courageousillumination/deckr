@@ -72,7 +72,6 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         self.broadcast_event("state",
                              self.runner.get_state(self.game_room.room_id))
 
-
     def on_join(self, join_request):
         """
         Triggers when a client joins this room. Each room corresponds
@@ -141,9 +140,9 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         Called whenever the socket recieves a chat message. It
         will then broadcast the message to the rest of the channel.
         """
-        
+
         print data
-        
+
         error, transitions = self.runner.make_action(self.game_room.room_id,
                                                      **data)
         if error:
@@ -151,7 +150,7 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
             return False
 
         print("Transitions", transitions)
-        
+
         self.broadcast_event('state_transitions', transitions)
         return True
 

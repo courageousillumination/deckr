@@ -5,7 +5,7 @@ that. Note that the game runner is a __module__ not a class (this is
 the best way we could think of to implement the singleton pattern).
 """
 
-from unittest import TestCase, skip
+from unittest import TestCase
 
 from engine import game_runner
 from engine.game import Game
@@ -104,14 +104,16 @@ class GameRunnerTestCase(TestCase):
         game1.phase = "restricted"
         player = Player()
         game1.register([player])
-        
+        action = "restricted_action"
+
         error, message = game_runner.make_action(self.game_id,
-                                                 action_name="restricted_action",
+                                                 action_name=action,
                                                  player_id=0)
         self.assertTrue(error)
         self.assertEqual(message, "Illegal Action")
 
         game1.phase = "unrestricted"
-        self.assertEqual((False, []), game_runner.make_action(self.game_id,
-                                                              action_name="restricted_action",
-                                                              player_id=0))
+        self.assertEqual((False, []),
+                         game_runner.make_action(self.game_id,
+                                                 action_name=action,
+                                                 player_id=0))

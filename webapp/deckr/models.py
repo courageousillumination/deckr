@@ -4,9 +4,7 @@ Contains definitions of all models for deckr.
 
 from django.db import models
 from django.db.models.signals import pre_save
-from os.path import join as pjoin
 from django.dispatch import receiver
-from django.conf import settings
 
 
 class GameDefinition(models.Model):

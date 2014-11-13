@@ -9,7 +9,6 @@ from engine.zone import Zone
 from engine.player import Player
 from engine.game import InvalidMoveException
 from engine.tests.mock_game.mock_game import MockGame
-from engine.game import InvalidMoveException
 
 
 class GameTestCase(TestCase):
@@ -93,13 +92,14 @@ class GameTestCase(TestCase):
 
         self.game.phase = "restricted"
 
-        self.assertRaises(InvalidMoveException, 
+        self.assertRaises(InvalidMoveException,
                           self.game.make_action,
                           "restricted_action",
                           player_id=self.player.game_id)
         self.game.phase = "unrestricted"
+        player_id = self.player.game_id
         self.assertEqual([], self.game.make_action("restricted_action",
-                                                   player_id=self.player.game_id))
+                                                   player_id=player_id))
 
     def test_make_winning_action(self):
         """

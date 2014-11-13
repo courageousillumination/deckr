@@ -10,7 +10,10 @@ from django.core.urlresolvers import reverse
 from deckr.models import GameRoom, GameDefinition, Player
 import deckr.views
 
+# Make sure the views is using a mocked out runner
 deckr.views.set_game_runner(MagicMock())
+
+MOCK_GAME = "engine/tests/mock_game"
 
 
 class IndexTestCase(TestCase):
@@ -42,8 +45,7 @@ class CreateGameTestCase(TestCase):
 
         # Make sure we have a game definition
         self.game_def = GameDefinition.objects.create(name="test",
-                                                      path=
-                                                      "engine/tests/mock_game")
+                                                      path=MOCK_GAME)
 
     def test_can_access(self):
         """
@@ -92,8 +94,8 @@ class CreatePlayerTestCase(TestCase):
         self.client = Client()
 
         # Make sure we have a game definition
-        self.game_def = GameDefinition.objects.create(name="solitaire",
-                                                      path="game_defs/solitaire")
+        self.game_def = GameDefinition.objects.create(name="test",
+                                                      path=MOCK_GAME)
         self.game_room = GameRoom.objects.create(game_definition=self.game_def,
                                                  room_id=1,
                                                  max_players=1)
@@ -159,8 +161,7 @@ class GamePageTestCase(TestCase):
     def setUp(self):
         self.client = Client()
         self.game_def = GameDefinition.objects.create(name="test",
-                                                      path=
-                                                      "game_defs/solitaire")
+                                                      path=MOCK_GAME)
         self.game_room = GameRoom.objects.create(room_id=1,
                                                  game_definition=self.game_def)
         self.player = Player.objects.create(game_room=self.game_room,

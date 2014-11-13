@@ -19,5 +19,5 @@ class Card(StatefulGameObject):
         self.zone = None
         self.game_object_type = "Card"
         self.no_track_attributes = set(("zone",))
-        
+
         self.face_up = False
