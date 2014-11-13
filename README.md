@@ -40,28 +40,28 @@ Acceptance Tests
   * **Output**: Transition to game creation screen.
 
 
-2. Test 2
+2. 
   * **Input**: Select nothing from the drop-down, then click "Create game room".
   * **Output**: A message stating that this field is required. 
 
 
-3. Test 3
+3. 
   * **Input**: Select "Solitaire" from drop-down. Click "Create game room".
   * **Output**: Transition to "Set Nickname" screen.
 
-4. Test 4
+4. 
   * **Input**: Enter nothing into the text field. Click "change name".
   * **Output**: Message appears stating that this field is required.
 
-5. Test 5
+5.
   * **Input**: Enter a nickname into the text field.
   * **Output**: Transition to the game room.
 
-6. Test 6
+6. 
   * **Input**: Click start.
   * **Output**: Game field is populated with cards in solitaire layout.
 
-7. Test 7
+7. 
   * **Input**: Click the deck.
   * **Output**: A card will be flipped over next to the deck.
 
