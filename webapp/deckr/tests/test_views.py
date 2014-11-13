@@ -42,7 +42,8 @@ class CreateGameTestCase(TestCase):
 
         # Make sure we have a game definition
         self.game_def = GameDefinition.objects.create(name="test",
-                                                      path="/test")
+                                                      path=
+                                                      "engine/tests/mock_game")
 
     def test_can_access(self):
         """
@@ -157,10 +158,11 @@ class GamePageTestCase(TestCase):
 
     def setUp(self):
         self.client = Client()
-        self.game_def = GameDefinition.objects.create(name="solitaire",
-                                                      path="game_defs/solitaire")
-        self.game_room = GameRoom.objects.create(game_definition=self.game_def,
-                                                 room_id=1)
+        self.game_def = GameDefinition.objects.create(name="test",
+                                                      path=
+                                                      "game_defs/solitaire")
+        self.game_room = GameRoom.objects.create(room_id=1,
+                                                 game_definition=self.game_def)
         self.player = Player.objects.create(game_room=self.game_room,
                                             player_id=1,
                                             nickname="Player 1")
