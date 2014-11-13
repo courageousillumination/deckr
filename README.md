@@ -36,29 +36,39 @@ Acceptance Tests
 -----
 
 1.
-	* Input**: Click "Create new game room". 
-	* Output**: Transition to game creation screen.
+  * **Input**: Click "Create new game room". 
+  * **Output**: Transition to game creation screen.
 
 
-2.
-	* **Input**: Select nothing from the drop-down, then click "Create game room".
-	* **Output**: A message stating that this field is required. 
+2. Test 2
+  * **Input**: Select nothing from the drop-down, then click "Create game room".
+  * **Output**: A message stating that this field is required. 
 
 
-3.	Input: Select "Solitaire" from the drop-down, then click "Create game room".
-	Output: You will be taken to the "Set nickname" screen. It will read "Welcome to: Game room 0" at the top.
+3. Test 3
+  * **Input**: Select "Solitaire" from drop-down. Click "Create game room".
+  * **Output**: Transition to "Set Nickname" screen.
 
-4. 	Input: Enter nothing into the text field and click "change name".
-	Output: A message will appear stating that this field is required.
+4. Test 4
+  * **Input**: Enter nothing into the text field. Click "change name".
+  * **Output**: Message appears stating that this field is required.
 
-5.	Input: Enter a nickname into the text field.
-	Output: You will be taken to an empty game room. You will see a message stating, "You are: [nickname]," followed by your nickname on the next line. The options to end the game, leave the game, or start are available.
+5. Test 5
+  * **Input**: Enter a nickname into the text field.
+  * **Output**: Transition to the game room.
 
-6.	Input: Click start.
-	Output: The game will be populated with cards, in the manner appropriate for solitaire.
+6. Test 6
+  * **Input**: Click start.
+  * **Output**: Game field is populated with cards in solitaire layout.
 
-7. 	Input: Click the deck.
-	Output: A card will be flipped over next to the deck.
+7. Test 7
+  * **Input**: Click the deck.
+  * **Output**: A card will be flipped over next to the deck.
 
-8.	Input: Place a card in front of another card (click first card, then the card you want to place it on).
-	Output: If you have made a legal move, the card you selected first will move to where the second card is. If you have attempted to make an illegal move, nothing will happen.
+8.
+  * **Input**: Click on a face-up card in the field of play. 
+  * **Output**: Yellow border appears around card.
+
+9.
+ * **Input**: Click on another face-up card in the field of play.
+ * **Output**: If move is legal, the card selected first will move to mive in front of the second card. If move is illegal, nothing happens.
