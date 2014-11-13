@@ -35,11 +35,15 @@ will run autopep8 on the deckr code base to reduce pep8 violations.
 Acceptance Tests
 -----
 
-1.	Input: Click "Create new game room". 
-	Output: The game creation screen. There should be a drop-down menu available, with a button labelled "Create game room" beneath it.
+1A.	Input: Click "Create new game room". 
 
-2.	Input: Select nothing from the drop-down, then click "Create game room".
-	Output: A message will appear stating that this field is required. 
+1B.	Output: The game creation screen. There should be a drop-down menu available, with a button labelled "Create game room" beneath it.
+
+
+2A.	Input: Select nothing from the drop-down, then click "Create game room".
+
+2B.	Output: A message will appear stating that this field is required. 
+
 
 3.	Input: Select "Solitaire" from the drop-down, then click "Create game room".
 	Output: You will be taken to the "Set nickname" screen. It will read "Welcome to: Game room 0" at the top.
