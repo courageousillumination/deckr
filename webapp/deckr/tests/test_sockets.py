@@ -199,25 +199,6 @@ class GameNamespaceTestCase(SocketTestCase):
 
         self.namespace.emit.assert_called_with("error", error)
 
-    # def test_disconnect(self):
-    #     """
-    #     If a player disconnects from the room we should clean up the player
-    #     associated with them.
-    #     """
-    #
-    #     old_count = Player.objects.all().count()
-    #     self.namespace.recv_disconnect()
-    #     self.assertEqual(Player.objects.all().count(), old_count - 1)
-    #     player_names = [p.nickname for p in self.game_room.player_set.all()]
-    #     self.namespace.broadcast_event.assert_called_with('player_names',
-    #                                                       player_names)
-    #
-    # Make sure we reconnect.
-    #     self.namespace.player = Player.objects.create(
-    #         game_room=self.game_room,
-    #         player_id=0,
-    #         nickname="Bob")
-
     def test_update_player_list(self):
         """
         If a game room player list changes, broadcast the updated information
@@ -275,6 +256,8 @@ class GameNamespaceTestCase(SocketTestCase):
         self.assertEqual(Player.objects.all().count(), 0)
         self.assertEqual(GameRoom.objects.all().count(), 0)
         self.namespace.emit.assert_called_with('leave_game')
+        self.namespace.emit_to_room.assert_called_with(str(self.game_room.id),
+                                                       'leave_game')
 
     def test_on_leave_game(self):
         """
