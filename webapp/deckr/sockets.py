@@ -71,12 +71,12 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         if self.player is not None:
             self.player.delete()
             self.update_player_list()
-            
+
     def on_start(self):
         """
         Starts the game. Can be called by any player.
         """
-        
+
         self.runner.start_game(self.game_room.room_id)
         # Boadcast the state to all clients
         self.broadcast_event("state",

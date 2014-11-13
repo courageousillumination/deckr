@@ -14,5 +14,5 @@ class Player(StatefulGameObject):
 
     def __init__(self):
         super(Player, self).__init__()
-        
+
         self.game_object_type = "Player"

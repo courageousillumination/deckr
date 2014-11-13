@@ -22,7 +22,7 @@ class StatefulGameObject(GameObject):
         self.no_track_attributes.add("game_object_type")
         self.exclude_from_dict.add("no_track_attributes")
         self.exclude_from_dict.add("game_object_type")
-        
+
         self.game_object_type = "None"
 
     def __setattr__(self, name, value):
