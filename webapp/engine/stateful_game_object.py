@@ -2,8 +2,10 @@
 This module defines the StatefulGameObject.
 """
 
+from engine.game_object import GameObject
 
-class StatefulGameObject(object):
+
+class StatefulGameObject(GameObject):
 
     """
     A StatefulGameObject is any object in the game that
@@ -13,12 +15,11 @@ class StatefulGameObject(object):
     """
 
     def __init__(self):
-        # This is the ID of **this** object in the game.
-        self.game_id = None
-        # This is the actual game object that this belongs to.
-        self.game = None
+        super(StatefulGameObject, self).__init__()
+
         # What attributes shouldn't be tracked (internal attributes mainly)
         self.no_track_attributes = set()
+        self.exclude_from_dict.add("no_track_attributes")
 
     def __setattr__(self, name, value):
 

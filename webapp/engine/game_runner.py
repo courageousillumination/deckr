@@ -15,6 +15,8 @@ import yaml
 import sys
 import os.path
 
+from engine.game import InvalidMoveException
+
 CACHE = {}
 MAX_ID = 0
 
@@ -102,11 +104,16 @@ def add_player(game_id):
 
 def make_action(game_id, *args, **kwargs):
     """
-    Makes an action in the game. Can throw an IllegalAction
-    exception.
+    Makes an action in the game. Returns a tuple of (ERROR, DATA)
+    ERROR will be a boolean to indicator if the function was successful
+    if True, then DATA will be an error string. Otherwise DATA will
+    be a list of transitons.
     """
 
-    return get_game(game_id).make_action(*args, **kwargs)
+    try:
+        return False, get_game(game_id).make_action(*args, **kwargs)
+    except InvalidMoveException:
+        return True, "Illegal Action"
 
 
 def has_game(game_id):

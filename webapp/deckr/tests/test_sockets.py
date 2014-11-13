@@ -158,8 +158,7 @@ class GameNamespaceTestCase(SocketTestCase):
 
         invalid_move = {"action": "invalid"}
 
-        self.namespace.runner.make_action.side_effect = ValueError
-
+        self.namespace.runner.make_action.return_value = (True, "Invalid move")
         self.assertFalse(self.namespace.on_action(invalid_move))
         self.namespace.emit.assert_called_with("error", "Invalid move")
 
@@ -170,7 +169,7 @@ class GameNamespaceTestCase(SocketTestCase):
 
         valid_move = {"action": "valid move"}
         transitions = [{}]
-        self.namespace.runner.make_action.return_value = transitions
+        self.namespace.runner.make_action.return_value = (False, transitions)
 
         self.namespace.on_action(valid_move)
         self.namespace.emit_to_room.assert_called_with(str(self.game_room.pk),

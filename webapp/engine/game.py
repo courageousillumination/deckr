@@ -4,6 +4,7 @@ This module defines everything needed for the base Game class.
 
 from engine.zone import Zone
 from engine.player import Player
+from engine.card import Card
 
 
 class InvalidMoveException(Exception):
@@ -12,7 +13,7 @@ class InvalidMoveException(Exception):
     This will be raised whenever a player makes an invalid move.
     """
 
-    def __init__(self, value):
+    def __init__(self, value=None):
         super(InvalidMoveException, self).__init__()
         self.value = value
 
@@ -184,6 +185,28 @@ class Game(object):
         self.register([player])
 
         return player.game_id
+
+    def get_state(self):
+        """
+        This will return a dictonary containg the game state. This includes
+        all cards and all their data, all zones, all players and their
+        attributes, etc.
+        """
+
+        # Get all of my objects
+        _, cards = self.registered_objects.get(Card, (1, {}))
+        _, zones = self.registered_objects.get(Zone, (1, {}))
+        _, players = self.registered_objects.get(Player, (1, {}))
+
+        # Convert to a dictionary
+        result = {}
+
+        print cards
+        result['cards'] = [x.to_dict() for x in cards.values()]
+        result['zones'] = [x.to_dict() for x in zones.values()]
+        result['players'] = [x.to_dict() for x in players.values()]
+
+        return result
 
     # Actions after this point should be implemented by subclasses
 

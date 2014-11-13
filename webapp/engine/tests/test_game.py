@@ -158,3 +158,50 @@ class GameTestCase(TestCase):
         }
 
         self.game.load_config(invalid_configuration)
+
+    def test_get_state(self):
+        """
+        Make sure that we can get the state out of a Game.
+        """
+
+        config = {
+            "max_players": 1,
+            "zones": [
+                {"name": "zone1"},
+                {"name": "zone2", "stacked": True}
+            ]
+        }
+
+        expected_state = {
+            'cards': [{'game_id': 1, 'zone': 2},
+                      {'game_id': 2, 'zone': 1},
+                      {'game_id': 3, 'zone': 1}],
+            'players': [],
+            'zones': [{'cards': [2, 3],
+                       'game_id': 1,
+                       'name': 'zone2',
+                       'region_id': None,
+                       'stacked': True,
+                       'zone_type': ''},
+                      {'cards': [1],
+                       'game_id': 2,
+                       'name': 'zone1',
+                       'region_id': None,
+                       'stacked': False,
+                       'zone_type': ''}]
+        }
+
+        self.game.load_config(config)
+
+        card1 = Card()
+        card2 = Card()
+        card3 = Card()
+        cards = [card1, card2, card3]
+        self.game.register(cards)
+
+        self.game.zone1.push(card1)
+        self.game.zone2.push(card2)
+        self.game.zone2.push(card3)
+
+        self.assertDictEqual(self.game.get_state(),
+                             expected_state)

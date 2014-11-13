@@ -141,9 +141,8 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         will then broadcast the message to the rest of the channel.
         """
 
-        try:
-            transitions = self.runner.make_action(**data)
-        except ValueError:
+        error, transitions = self.runner.make_action(**data)
+        if error:
             self.emit("error", "Invalid move")
             return False
 
