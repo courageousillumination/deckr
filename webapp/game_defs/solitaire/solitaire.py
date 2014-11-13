@@ -33,20 +33,20 @@ class Solitaire(Game):
     """
     Solitaire is a simple one player game
     """
-
     def set_up(self):
         """
         """
    
         # Create our deck of cards
-        cards = [create_playing_card(x, y) for x in SUITS for y in range(1, 14)]
-        self.register(cards)
-        self.deck.set_cards(cards)
-        self.deck.shuffle()
-        for i in range(1, 8):
-            zone = self.zones["play_zone"+str(i)]
-            for j in range(0, i):
-                zone.push(self.deck.pop())
+        if(not len(self.deck.get_cards())):
+            cards = [create_playing_card(x, y) for x in SUITS for y in range(1, 14)]
+            self.register(cards)
+            self.deck.set_cards(cards)
+            self.deck.shuffle()
+            for i in range(1, 8):
+                zone = self.zones["play_zone"+str(i)]
+                for j in range(0, i):
+                    zone.push(self.deck.pop())
 
     def is_over(self):
         """
