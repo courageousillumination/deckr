@@ -44,6 +44,8 @@ socket.on('state_transitions', function(data) {
             moveCard("card" + transition[1], "zone" + transition[2]);
         }
     }
+});
+
 socket.on('leave_game', function() {
 	window.location = '/'
 
