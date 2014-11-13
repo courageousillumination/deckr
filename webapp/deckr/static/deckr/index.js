@@ -42,7 +42,7 @@ socket.on('state_transitions', function(data) {
     for (i = 0; i < data.length; i++) {
         transition = data[i];
         if (transition[0] == 'add') {
-            moveCard("card" + data[1], "zone" + data[2]);
+            moveCard("card" + transition[1], "zone" + transition[2]);
         }
     }
 });
@@ -82,7 +82,7 @@ socket.on('state', function(data) {
         zone = data.zones[i];
         $("#" + zone.name).attr('id', "zone" + zone.game_id);
         for (j = 0; j < zone.cards.length; j++) {
-            moveCard("card" + zone.cards[j], "zone" + zone.game_id);
+            moveCard("card" + zone.cards[j], "zone" + zone.game_id, 0);
         }
     }
     
@@ -215,7 +215,8 @@ function moveCard(cardId, toZoneId, place) {
 	   But you don't. The code works fine without it,
 	   and when you include it, the console randomly
 	   throws "Node not found" errors on that line. */
-    console.log(cardId)
+    console.log("Moving card");
+    console.log(cardId, toZoneId, place);
 	var card = document.getElementById(cardId);
 	var fromZone = card.parentElement;
 	var toZone = document.getElementById(toZoneId);
