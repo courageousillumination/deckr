@@ -9,6 +9,7 @@ from unittest import TestCase, skip
 
 from engine import game_runner
 from engine.game import Game
+from engine.player import Player
 from engine.tests.mock_game.mock_game import MockGame
 
 
@@ -101,13 +102,16 @@ class GameRunnerTestCase(TestCase):
 
         game1 = game_runner.get_game(self.game_id)
         game1.phase = "restricted"
+        player = Player()
+        game1.register([player])
+        
         error, message = game_runner.make_action(self.game_id,
-                                                 "restricted_action",
+                                                 action_name="restricted_action",
                                                  player_id=0)
         self.assertTrue(error)
         self.assertEqual(message, "Illegal Action")
 
         game1.phase = "unrestricted"
         self.assertEqual((False, []), game_runner.make_action(self.game_id,
-                                                              "restricted_action",
+                                                              action_name="restricted_action",
                                                               player_id=0))

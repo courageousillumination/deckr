@@ -6,6 +6,8 @@ from unittest import TestCase
 
 from engine.card import Card
 from engine.zone import Zone
+from engine.player import Player
+from engine.game import InvalidMoveException
 from engine.tests.mock_game.mock_game import MockGame
 from engine.game import InvalidMoveException
 
@@ -22,6 +24,8 @@ class GameTestCase(TestCase):
     def setUp(self):
         self.game = MockGame()
         self.game.set_up()
+        self.player = Player()
+        self.game.register([self.player])
 
     def test_set_up(self):
         """
@@ -56,8 +60,8 @@ class GameTestCase(TestCase):
         self.assertEqual(card2.game_id, 2)
 
         # Make sure we can access the objects from the game
-        self.assertEqual(self.game.get_object_with_id(Card, 1), card1)
-        self.assertEqual(self.game.get_object_with_id(Card, 2), card2)
+        self.assertEqual(self.game.get_object_with_id("Card", 1), card1)
+        self.assertEqual(self.game.get_object_with_id("Card", 2), card2)
 
         # Make sure that we don't change ids if the id
         # is already there.
@@ -76,8 +80,8 @@ class GameTestCase(TestCase):
         self.assertEqual(zone2.game_id, 2)
 
         # Make sure we can access the objects from the game
-        self.assertEqual(self.game.get_object_with_id(Zone, 1), zone1)
-        self.assertEqual(self.game.get_object_with_id(Zone, 2), zone2)
+        self.assertEqual(self.game.get_object_with_id("Zone", 1), zone1)
+        self.assertEqual(self.game.get_object_with_id("Zone", 2), zone2)
 
         # Make sure we know what to do on edge cases
         self.game.register([])
@@ -88,18 +92,21 @@ class GameTestCase(TestCase):
         """
 
         self.game.phase = "restricted"
-        self.assertRaises(InvalidMoveException, self.game.make_action,
-                          "restricted_action", player_id=1)
+
+        self.assertRaises(InvalidMoveException, 
+                          self.game.make_action,
+                          "restricted_action",
+                          player_id=self.player.game_id)
         self.game.phase = "unrestricted"
         self.assertEqual([], self.game.make_action("restricted_action",
-                                                   player_id=1))
+                                                   player_id=self.player.game_id))
 
     def test_make_winning_action(self):
         """
         Make sure that we can win the game.
         """
 
-        self.game.make_action("win", player_id=1)
+        self.game.make_action("win", player_id=self.player.game_id)
         self.assertTrue(self.game.is_over())
         self.assertListEqual([1], self.game.winners())
 
@@ -108,7 +115,7 @@ class GameTestCase(TestCase):
         Make sure that we can lose the game.
         """
 
-        self.game.make_action("lose", player_id=1)
+        self.game.make_action("lose", player_id=self.player.game_id)
         self.assertTrue(self.game.is_over())
         self.assertListEqual([], self.game.winners())
 
@@ -174,10 +181,10 @@ class GameTestCase(TestCase):
         }
 
         expected_state = {
-            'cards': [{'game_id': 1, 'zone': 2},
-                      {'game_id': 2, 'zone': 1},
-                      {'game_id': 3, 'zone': 1}],
-            'players': [],
+            'cards': [{'game_id': 1, 'zone': 2, 'face_up': False},
+                      {'game_id': 2, 'zone': 1, 'face_up': False},
+                      {'game_id': 3, 'zone': 1, 'face_up': False}],
+            'players': [{'game_id': 1}],
             'zones': [{'cards': [2, 3],
                        'game_id': 1,
                        'name': 'zone2',

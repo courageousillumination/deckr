@@ -6,7 +6,6 @@ from engine.zone import Zone
 from engine.player import Player
 from engine.card import Card
 
-
 class InvalidMoveException(Exception):
 
     """
@@ -105,8 +104,17 @@ class Game(object):
         """
 
         if not hasattr(self, action_name):
-            return False
+            raise InvalidMoveException
 
+        # We make some substitutions in the kwargs
+        for key, value in kwargs.items():
+            if "card" in key:
+                kwargs[key] = self.get_object_with_id("Card", int(value))
+            elif "zone" in key:
+                kwargs[key] = self.get_object_with_id("Zone", int(value))
+            elif "player" in key:
+                kwargs[key] = self.get_object_with_id("Player", int(value))
+            
         getattr(self, action_name)(**kwargs)
 
         transitions = self.get_transitions()
@@ -124,8 +132,18 @@ class Game(object):
             # Don't bother re registering
             if obj.game_id is not None:
                 continue
-
-            object_type = type(obj)
+            
+            if isinstance(obj, Card):
+                object_type = "Card"
+            elif isinstance(obj, Zone):
+                object_type = "Zone"
+            elif isinstance(obj, Player):
+                object_type = "Player"
+            else:
+                # If it's not one of the above we just
+                # use the class name.
+                object_type = type(obj).__name__
+                    
             if object_type not in self.registered_objects:
                 self.registered_objects[object_type] = [2, {1: obj}]
                 obj.game_id = 1
@@ -191,9 +209,9 @@ class Game(object):
         """
 
         # Get all of my objects
-        _, cards = self.registered_objects.get(Card, (1, {}))
-        _, zones = self.registered_objects.get(Zone, (1, {}))
-        _, players = self.registered_objects.get(Player, (1, {}))
+        _, cards = self.registered_objects.get("Card", (1, {}))
+        _, zones = self.registered_objects.get("Zone", (1, {}))
+        _, players = self.registered_objects.get("Player", (1, {}))
 
         # Convert to a dictionary
         result = {}

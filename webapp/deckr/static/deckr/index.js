@@ -4,7 +4,6 @@
 // GLOBALS
 var socket = io.connect("/game");
 var selected = null;
-var player_nick = null;
 
 ////////////////////
 // SOCKET SECTION //
@@ -37,6 +36,19 @@ socket.on('make_action', function(data) {
 	}
 });
 
+socket.on('state_transitions', function(data) {
+    console.log(data);
+    for (i = 0; i < data.length; i++) {
+        transition = data[i];
+        if (transition[0] == 'add') {
+            moveCard("card" + transition[1], "zone" + transition[2]);
+        }
+    }
+socket.on('leave_game', function() {
+	window.location = '/'
+
+});
+
 socket.on('game_over', function(data) {
 	/* Responds to a game_over message from server.*/
 	console.log('Game over!');
@@ -50,6 +62,14 @@ socket.on('error', function(data) {
 
 socket.on('state', function(data) {
     console.log(data);
+    
+    // TODO: Get rid of this
+    $("#deck").click(function() {
+        data = Object();
+        data.action_name = 'draw';
+        socket.emit('action', data);
+    });
+    
     for (i = 0; i < data.cards.length; i++) {
         d = data.cards[i];
         d.class = "card";
@@ -62,10 +82,27 @@ socket.on('state', function(data) {
     // Add all cards to the proper zones
     for (i = 0; i < data.zones.length; i++) {
         zone = data.zones[i];
+        $("#" + zone.name).attr('id', "zone" + zone.game_id);
         for (j = 0; j < zone.cards.length; j++) {
-            moveCard("card" + zone.cards[j], zone.name);
+            moveCard("card" + zone.cards[j], "zone" + zone.game_id, 0);
         }
     }
+    
+    
+    // Make sure we register all callbacks
+    $(".card").click(function() {
+        if (!selected) {
+            selected = this;
+        } else if (selected == this) {
+            selected = null;
+        } else {
+            parent = $(this).parent();
+            parent.click.apply(parent);
+        }
+        console.log(selected);
+    });
+    
+    
 });
 
 socket.on('player_names', function(names) {
@@ -180,7 +217,8 @@ function moveCard(cardId, toZoneId, place) {
 	   But you don't. The code works fine without it,
 	   and when you include it, the console randomly
 	   throws "Node not found" errors on that line. */
-    console.log(cardId)
+    console.log("Moving card");
+    console.log(cardId, toZoneId, place);
 	var card = document.getElementById(cardId);
 	var fromZone = card.parentElement;
 	var toZone = document.getElementById(toZoneId);
@@ -220,9 +258,9 @@ function moveCard(cardId, toZoneId, place) {
 function requestMoveCard(cardId, toZoneId) {
 	/* Sends card movement request to server */
 	console.log("Sending move request to server.");
-	socket.emit('move_card', {'action': 'move_card',
-								'cardId': cardId,
-								'toZoneId': toZoneId});
+	socket.emit('action', {'action_name': 'move_cards',
+                           'card': cardId.substring(4),
+						   'target_zone': toZoneId.substring(4)});
 }
 
 function gameOver(results) {
@@ -243,13 +281,6 @@ $(document).ready(function() {
 	/* Runs when document is ready. Includes the click handlers. */
 
 	// Arbitrary definitions for testing.
-	/*var cardDict = {"src" :"13.png", "id":"clubJack", "class":"card"};
-	var cardDict2 = {"src" :"14.png", "id":"spadeJack", "class":"card"};
-    var cardDict3 = {"src" :"15.png", "id":"heartJack", "class":"card"};
-	addCard(cardDict, "playarea0");
-	addCard(cardDict2, "playarea0");
-    addCard(cardDict3, "playarea0");*/
-
 	// zone click function
 	$(".zone").click(function() {
 	    if (selected != null && $(this).has($(selected)).length == 0) {
@@ -260,23 +291,17 @@ $(document).ready(function() {
 	});
 
 	// card click function
-	$(".card").click(function() {
-		if (!selected) {
-	    	selected = this;
-	    } else if (selected == this) {
-	    	selected = null;
-	    } else {
-	    	parent = $(this).parent();
-	    	parent.click.apply(parent);
-	    }
-	    console.log(selected);
-	});
+	
 
-    $("#create-game-room #submit").click(function() {
-        $("#create-game-room ").submit();
-    });
+  $("#create-game-room #submit").click(function() {
+     $("#create-game-room ").submit();
+  });
 
-	$(window).unload(function(){
-		socket.disconnect();
-	});
+	$('#destroy-game-room').click(function(){
+		socket.emit('destroy_game');
+	})
+
+	$('#leave-game-room').click(function(){
+		socket.emit('leave_game');
+	})
 })

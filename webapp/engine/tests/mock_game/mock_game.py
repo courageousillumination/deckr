@@ -56,7 +56,7 @@ class MockGame(Game):
         If we make this action we win the game.
         """
 
-        self.winners_list.append(player_id)
+        self.winners_list.append(player_id.game_id)
         self.over = True
 
     @action(restriction=None)
@@ -72,7 +72,7 @@ class MockGame(Game):
         """
         This will win, if the phase isn't restricted.
         """
-        self.winners_list.append(player_id)
+       
         self.over = True
 
     def get_magic(self):
