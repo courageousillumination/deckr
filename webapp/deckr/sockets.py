@@ -151,13 +151,15 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         will then broadcast the message to the rest of the channel.
         """
         
+        print data
+        
         error, transitions = self.runner.make_action(self.game_room.room_id,
                                                      **data)
         if error:
             self.emit("error", "Invalid move")
             return False
 
-        print transitions
+        print("Transitions", transitions)
         
         self.broadcast_event('state_transitions', transitions)
         return True

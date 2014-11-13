@@ -47,6 +47,10 @@ class Solitaire(Game):
             zone = self.zones["play_zone"+str(i)]
             for j in range(0, i):
                 zone.push(self.deck.pop())
+            card = zone.peek()    
+            card.face_up = True
+            
+        print self.registered_objects
 
     def is_over(self):
         """
@@ -70,7 +74,7 @@ class Solitaire(Game):
 
     def move_card_restrictons(self, card, target_zone):
         
-        if card.zone.zone_type == "victory":
+        if card.zone.zone_type == "victory" or card.face_up == False:
             return False
         elif (target_zone.zone_type == "victory"):
             return self.victory_zone_restrictions(card, target_zone)
@@ -81,18 +85,19 @@ class Solitaire(Game):
             
     def victory_zone_restrictions(self, card, target_zone):
         
-        if target_zone.get_num_cards() == 0 and card.number == 1:
-            return True
-        
         card_b = target_zone.peek()
+        
+        if card_b is None:
+            return card.number == 1
+        
         return card_b.suit == card.suit and card_b.number == card.number - 1
     
     def play_zone_restrictions(self, card, target_zone):
         
-        if target_zone.get_num_cards() == 0 and card.number == 13:
-            return True
-        
         card_b = target_zone.peek()
+        
+        if card_b is None:
+            return card.number == 13
         
         return compare_color(card, card_b) and card_b.number == card.number + 1
 
@@ -118,12 +123,20 @@ class Solitaire(Game):
         for i in range(len(cards)):
             target_zone.push(cards.pop())
             
+        last_card = source_zone.peek()
+        if last_card is not None and last_card.face_up == False:
+            last_card.face_up = True
+            
     @action(restriction=draw_restrictions)
     def draw(self):
         
         if self.deck.get_num_cards() == 0:
             self.deck.set_cards(self.deck_flipped.get_cards())
             self.deck_flipped.set_cards([])
+            for card in self.deck.get_cards():
+                card.face_up = False
             
-        self.deck_flipped.push(self.deck.pop())
+        card = self.deck.pop()
+        card.face_up = True
+        self.deck_flipped.push(card)
             

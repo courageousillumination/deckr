@@ -256,9 +256,9 @@ function moveCard(cardId, toZoneId, place) {
 function requestMoveCard(cardId, toZoneId) {
 	/* Sends card movement request to server */
 	console.log("Sending move request to server.");
-	socket.emit('action', {'action': 'move_card',
-                           'card': cardId,
-						   'target_zone': toZoneId});
+	socket.emit('action', {'action_name': 'move_cards',
+                           'card': cardId.substring(4),
+						   'target_zone': toZoneId.substring(4)});
 }
 
 function gameOver(results) {
