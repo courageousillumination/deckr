@@ -78,7 +78,9 @@ def game_room(request, game_room_id):
     player_id = request.GET.get('player_id')
     player = get_object_or_404(Player, pk=player_id)
     game = get_object_or_404(GameRoom, pk=game_room_id)
-    sub_template = Template(open("../samples/solitaire/layout.html").read())
+
+    sub_template = Template(
+        open("../samples/solitaire/layout.html").read())
 
     return render(request, "deckr/game_room.html",
                   {'sub_template': sub_template,

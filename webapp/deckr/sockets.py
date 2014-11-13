@@ -62,16 +62,6 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
 
         print "Got socket connection 2."
 
-    def recv_disconnect(self):
-        """
-        When we disconnect make sure we clean up any related
-        objects.
-        """
-
-        if self.player is not None:
-            self.player.delete()
-            self.update_player_list()
-
     def on_join(self, join_request):
         """
         Triggers when a client joins this room. Each room corresponds
@@ -183,6 +173,49 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
             return False
 
         self.update_player_list()
+        return True
+
+    def on_destroy_game(self):
+        """
+        The client will call this when a player wants to end the game
+        """
+
+        if self.game_room is None or self.player is None:
+            self.emit("error", "Please connect to a game room first.")
+            return False
+
+        for player in self.game_room.player_set.all():
+            player.delete()
+
+        self.game_room.delete()
+        self.emit_to_room(self.room, 'leave_game')
+        self.emit('leave_game')
+
+        self.game_room = None
+        self.player = None
+        self.room = None
+
+        return True
+
+    def on_leave_game(self):
+        """
+        The client will call this when a player decides to leave
+        """
+
+        if self.game_room is None or self.player is None:
+            self.emit("error", "Please connect to a game room first.")
+            return False
+
+        self.player.delete()
+        self.update_player_list()
+        self.emit('leave_game')
+
+        if not self.game_room.player_set.all():
+            self.game_room.delete()
+            self.room = None
+            self.game_room = None
+
+        self.player = None
         return True
 
     def flush(self):
