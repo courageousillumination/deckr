@@ -124,7 +124,9 @@ class GameRunnerTestCase(TestCase):
         self.assertEqual(message, "Illegal Action")
 
         game1.phase = "unrestricted"
+
         self.assertEqual((False, [('is_over', [player.game_id])]),
+
                          game_runner.make_action(self.game_id,
                                                  action_name=action,
                                                  player_id=player.game_id))

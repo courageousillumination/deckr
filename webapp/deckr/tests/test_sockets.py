@@ -137,8 +137,10 @@ class GameNamespaceTestCase(SocketTestCase):
         self.namespace.runner.add_player.assert_called()
         player_names = [{'nickname': p.nickname, 'id': p.player_id}
                         for p in self.game_room.player_set.all()]
-        self.namespace.broadcast_event.assert_called_with('player_names',
-                                                          player_names)
+
+        self.namespace.emit_to_room.assert_called_with(self.namespace.room,
+                                                       'player_names',
+                                                       player_names)
 
         # Make sure we can't join a bad room id
         request = {'game_room_id': "0", 'player_id': self.player.id}
@@ -173,8 +175,9 @@ class GameNamespaceTestCase(SocketTestCase):
         self.namespace.runner.make_action.return_value = (False, transitions)
 
         self.namespace.on_action(valid_move)
-        self.namespace.broadcast_event.assert_called_with("state_transitions",
-                                                          transitions)
+        self.namespace.emit_to_room.assert_called_with(self.namespace.room,
+                                                       "state_transitions",
+                                                       transitions)
 
     def test_request_state(self):
         """
@@ -207,13 +210,20 @@ class GameNamespaceTestCase(SocketTestCase):
         self.namespace.update_player_list()
         player_names = [{'nickname': p.nickname, 'id': p.player_id}
                         for p in self.game_room.player_set.all()]
+<< << << < HEAD
         self.namespace.broadcast_event.assert_called_with('player_names',
                                                           player_names)
         self.namespace.broadcast_event.reset_mock()
+== == == =
+        self.namespace.emit_to_room.assert_called_with(self.namespace.room,
+                                                       'player_names',
+                                                       player_names)
+        self.namespace.emit_to_room.reset_mock()
+>>>>>> > master
 
         self.namespace.game_room = None
         self.namespace.update_player_list()
-        self.assertFalse(self.namespace.broadcast_event.called)
+        self.assertFalse(self.namespace.emit_to_room.called)
 
     def test_on_update_nickname(self):
         """
@@ -226,8 +236,14 @@ class GameNamespaceTestCase(SocketTestCase):
         self.assertEqual(self.namespace.player.nickname, new_nickname)
         player_names = [{'nickname': p.nickname, 'id': p.player_id}
                         for p in self.game_room.player_set.all()]
+<<<<<<< HEAD
         self.namespace.broadcast_event.assert_called_with('player_names',
                                                           player_names)
+=======
+        self.namespace.emit_to_room.assert_called_with(self.namespace.room,
+                                                       'player_names',
+                                                       player_names)
+>>>>>>> master
 
         same_nickname = self.namespace.player.nickname
         self.assertFalse(self.namespace.on_update_nickname(same_nickname))
@@ -297,4 +313,5 @@ class GameNamespaceTestCase(SocketTestCase):
         self.namespace.runner.get_state.return_value = state
 
         self.namespace.on_start()
-        self.namespace.broadcast_event.assert_called_with('state', state)
+        self.namespace.emit_to_room.assert_called_with(self.namespace.room,
+                                                       'state', state)
