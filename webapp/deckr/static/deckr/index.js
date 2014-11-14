@@ -66,16 +66,15 @@ socket.on('state_transitions', function(data) {
 
                 }
             }
-        }
-				else if (transition[0] == 'is_over') {
-					winner = player_mapping[transition[1][0]];
-					alert("You won " +  winner);
-				}
+        } else if (transition[0] == 'is_over') {
+			winner = player_mapping[transition[1][0]];
+			alert("You won " +  winner);
+		}
     }
 });
 
 socket.on('leave_game', function() {
-	window.location = '/'
+	window.location = '/';
 
 });
 
@@ -95,14 +94,14 @@ socket.on('player_names', function(players) {
      and replaces player list dynamically */
 
 	var playersLength = players.length;
-	innerHTML = ""
+	innerHTML = "";
 	for(var i = 0; i < playersLength; i++){
 		innerHTML += "<li>" + players[i].nickname + "</li>";
 		player_mapping[players[i].id] = players[i].nickname;
 	}
 
 	$('#player_names').html(innerHTML);
-})
+});
 
 socket.on('player_nick', function(nickname){
 	$('#player_nick').html("Welcome " + nickname);
@@ -229,8 +228,8 @@ function moveCard(cardId, toZoneId, place) {
 
 	if (!toZone) {
 		err = "Zone not found: " + toZoneId;
-		console.log(err)
-		return
+		console.log(err);
+		return;
 	}
 
 	if (!place) {
@@ -281,9 +280,9 @@ $(document).ready(function() {
 
 	$('#destroy-game-room').click(function(){
 		socket.emit('destroy_game');
-	})
+	});
 
 	$('#leave-game-room').click(function(){
 		socket.emit('leave_game');
-	})
-})
+	});
+});
