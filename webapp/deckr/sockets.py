@@ -55,6 +55,21 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         self.room = None
         self.runner = game_runner
 
+    def emit_to_room(self, room, event, *args):
+        """
+        We override this so that it will actually broadcast to self.
+        """
+        pkt = dict(type="event",
+                   name=event,
+                   args=args,
+                   endpoint=self.ns_name)
+        room_name = self._get_room_name(room)
+        for sessid, socket in self.socket.server.sockets.iteritems():
+            if 'rooms' not in socket.session:
+                continue
+            if room_name in socket.session['rooms']:
+                socket.send_packet(pkt)
+
     def initialize(self):
         """
         Mainly for debug.
@@ -69,8 +84,9 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
 
         self.runner.start_game(self.game_room.room_id)
         # Boadcast the state to all clients
-        self.broadcast_event("state",
-                             self.runner.get_state(self.game_room.room_id))
+        self.emit_to_room(self.room,
+                          "state",
+                          self.runner.get_state(self.game_room.room_id))
 
     def on_join(self, join_request):
         """
@@ -125,7 +141,7 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         if self.game_room is not None:
             player_names = [
                 p.nickname for p in self.game_room.player_set.all()]
-            self.broadcast_event('player_names', player_names)
+            self.emit_to_room(self.room, 'player_names', player_names)
 
     # This is extremely temporary.
     def on_move_card(self, data):
@@ -151,7 +167,7 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
 
         print("Transitions", transitions)
 
-        self.broadcast_event('state_transitions', transitions)
+        self.emit_to_room(self.room, 'state_transitions', transitions)
         return True
 
     def on_request_state(self):
