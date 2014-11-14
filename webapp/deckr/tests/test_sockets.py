@@ -286,6 +286,10 @@ class GameNamespaceTestCase(SocketTestCase):
         self.namespace.emit.assert_called_with('leave_game')
 
     def test_on_start(self):
+        """
+        Make sure that the socket can start a game.
+        """
+
         state = {"foo": "bar"}
         self.namespace.runner.get_state.return_value = state
 
