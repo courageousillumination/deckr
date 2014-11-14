@@ -14,7 +14,7 @@ After cloning the repository run the following commands:
   source venv/bin/activate
   pip install -r requirements.txt
   cd webapp
-  python manage.py migrate
+  make setup
   python manage.py socketio_runserver
 ```
   
@@ -22,7 +22,7 @@ At this point the server should be up and running at 127.0.0.1:8000. You can run
 ```
 python manage.py test 
 ```
-and the integration tests with 
+and the integration tests (note you shouldn't be running the development server) with 
 ```
 python manage.py harvest -S
 ```
@@ -173,3 +173,8 @@ We added peek(), push(), and pop() functions to Zones to help with ordered remov
 The Game class now includes some helper classes, one for throwing exceptions, and the other allowing us to use @action wrappers to help with making game actions. The Game class itself now includes functions for getting and setting transitions (so we can track the game state and send it to the webabb), as well as a function to flush these transitions. Game objects can be found by id, and register() registers game objects to the game with a unique id. Configuration files specifiying different aspects of the game can also be loaded via load_config().
 
 We added tests to Game and Game_Runner to cover new classes as well as to provide additional branch coverage.  We also changed some unit tests on the webserver to cover the fact that we are now getting additional data from the webserver (the player nicknames).
+
+In general there were many edge cases which we didn't consider when writing our original batch of unittests. As we encountered these cases we
+wrote additional unittests to test the cases. Currently we have around 95% line coverage and 90% branch coverage. Additionally, as we developed
+and experimented with writing games we realized there were many things we could do to make our lives easier in the future; these were implemented
+and had unittests created for them.
