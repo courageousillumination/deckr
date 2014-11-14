@@ -119,12 +119,12 @@ class GameRunnerTestCase(TestCase):
 
         error, message = game_runner.make_action(self.game_id,
                                                  action_name=action,
-                                                 player_id=0)
+                                                 player_id=player.game_id)
         self.assertTrue(error)
         self.assertEqual(message, "Illegal Action")
 
         game1.phase = "unrestricted"
-        self.assertEqual((False, [('is_over',[None])]),
+        self.assertEqual((False, [('is_over',[player.game_id])]),
                          game_runner.make_action(self.game_id,
                                                  action_name=action,
-                                                 player_id=0))
+                                                 player_id=player.game_id))
