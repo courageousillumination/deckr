@@ -22,13 +22,6 @@ class ChatNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
     channel.
     """
 
-    def initialize(self):
-        """
-        Mainly for debug.
-        """
-
-        print "Got socket connection 1."
-
     def on_chat(self, msg):
         """
         Called whenever the socket recieves a chat message. It

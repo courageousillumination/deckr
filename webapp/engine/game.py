@@ -199,6 +199,7 @@ class Game(object):
 
         player = Player()
         self.register([player])
+        self.players.append(player)
 
         return player.game_id
 
