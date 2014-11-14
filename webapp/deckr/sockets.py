@@ -124,7 +124,7 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
 
         if self.game_room is not None:
             player_names = [{'id': p.player_id, 'nickname': p.nickname}
-                 for p in self.game_room.player_set.all()]
+                            for p in self.game_room.player_set.all()]
             self.broadcast_event('player_names', player_names)
 
     # This is extremely temporary.
