@@ -95,6 +95,16 @@ class GameRunnerTestCase(TestCase):
         self.assertTrue(player_id > 0)
         self.assertNotEqual(player_id,
                             game_runner.add_player(self.game_id))
+        
+    def test_start_game(self):
+        """
+        Make sure that we can start a game and when we do so no transitions
+        are stored.
+        """
+        
+        game_runner.start_game(self.game_id)
+        self.assertTrue(game_runner.get_game(self.game_id).is_setup)
+        self.assertEqual(game_runner.get_game(self.game_id).transitions, [])
 
     def test_make_action(self):
         """
