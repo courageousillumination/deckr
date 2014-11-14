@@ -44,7 +44,7 @@ def test_game(request):
     """
     A test game page
     """
-    sub_template = Template(open("../samples/testgame/layout.html").read())
+    sub_template = Template(open("game_defs/testgame/layout.html").read())
     return render(request, "deckr/test_game.html",
                   {'sub_template': sub_template})
 

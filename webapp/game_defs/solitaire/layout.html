@@ -51,8 +51,7 @@ $(document).ready(function() {
     $(".zone").click(function() {
         if ($('.selected').length != 0 && $(this).has($('.selected')).length == 0) {
             console.log("Request move " + $('.selected').attr('id'));
-            requestMoveCard($('.selected').attr('id'),
-                $(this).attr('id'));
+            requestMoveCard($('.selected').attr('id'), $(this).attr('id'));
         }
     });
 });
