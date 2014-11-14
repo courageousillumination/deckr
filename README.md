@@ -35,37 +35,37 @@ will run autopep8 on the deckr code base to reduce pep8 violations.
 Acceptance Tests
 -----
 
-1.
+1. Z
   * **Input**: Click "Create new game room". 
   * **Output**: Transition to game creation screen.
-2.
+2. Z
   * **Input**: Select nothing from the drop-down, then click "Create game room".
   * **Output**: A message stating that this field is required. 
-3.
+3. Z
   * **Input**: Select "Solitaire" from drop-down. Click "Create game room".
   * **Output**: Transition to "Set Nickname" screen.
-4. 
+4. Z
   * **Input**: Enter nothing into the text field. Click "change name".
   * **Output**: Message appears stating that this field is required.
-5.
+5. Z
   * **Input**: Enter a nickname into the text field.
   * **Output**: Transition to the game room.
-6.
+6. Z
   * **Input**: Click start.
   * **Output**: The game field is populated with cards in solitaire layout.
-7.
+7. Z
   * **Input**: Click the deck.
   * **Output**: A card is flipped over next to the deck.
-8.
+8. Z
   * **Input**: Click on a face-up card in the field of play. 
   * **Output**: Yellow border appears around card.
-9.
+9. Z
  * **Input**: Click on another face-up card in the field of play.
  * **Output**: If move is legal, the card selected first moves to be in front of the card selected second. If move is illegal, nothing happens.
-10.
+10. Z
   * **Input**: Click an ace, then click the victory zone.
   * **Output**: Selected ace moves to the victory zone.
-11. 
+11. Z
   * **Input**: Flip over cards in the deck until the deck is empty. Click empty deck space.
   * **Output**: Flipped cards return to the deck.
 12.
