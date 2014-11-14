@@ -148,7 +148,7 @@ Pairs and Responsibilities
 (Looking at the git commit history gives a good enough idea, but considering that when working in pairs, only one person tends to commit code, this should clear up any uncertainty about who did what.)
 
 * Tristan/Shaan: Built webserver.
-* Alex/Graham: Wrote the website front-end.
+* Alex/Graham: Wrote the website front-end. Wrote lettuce tests for front-end.
 * Allison/Lee: Mapped out the components of cards, rules, etc. Wrote initial logic of Solitaire game. Implemented parts of the game engine (namely Zones, Regions, Cards)
 * Joey/Hazel: Mapped out the functions the game engine would need. Implemented parts of the game engine (namely game, game_runner). Cleaned up/designed extra features for Solitaire. Wrote tests for solitaire [game] as well as socket tests and engine tests.
 * Allison/Tristan: Web front-end touch-ups, refinements to Solitaire code. Wrote tests for parts of the game engine.

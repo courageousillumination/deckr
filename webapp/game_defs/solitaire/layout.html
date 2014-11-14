@@ -106,7 +106,7 @@ socket.on('state', function (data) {
 
 <div class="layout">
     <button onclick="socket.emit('start');">Start</button>
-    <div class="row">
+    <div class="row" id="region1">
         <div class="stacked zone deck" id="deck" style="float: left;"></div>
         <div class="stacked zone" id="deck_flipped"></div>
         <div class="stacked zone victory" id="victory_zone1"></div>
@@ -114,7 +114,7 @@ socket.on('state', function (data) {
         <div class="stacked zone victory" id="victory_zone3"></div>
         <div class="stacked zone victory" id="victory_zone4"></div>
     </div>
-    <div class="row">
+    <div class="row" id="region2">
         <div id="play_zone1" class="vertical-fan zone"></div>
         <div id="play_zone2" class="vertical-fan zone"></div>
         <div id="play_zone3" class="vertical-fan zone"></div>
