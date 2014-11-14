@@ -137,6 +137,7 @@ class GameNamespaceTestCase(SocketTestCase):
         self.namespace.runner.add_player.assert_called()
         player_names = [{'nickname': p.nickname, 'id': p.player_id}
                         for p in self.game_room.player_set.all()]
+
         self.namespace.emit_to_room.assert_called_with(self.namespace.room,
                                                        'player_names',
                                                        player_names)
@@ -209,10 +210,16 @@ class GameNamespaceTestCase(SocketTestCase):
         self.namespace.update_player_list()
         player_names = [{'nickname': p.nickname, 'id': p.player_id}
                         for p in self.game_room.player_set.all()]
+<< << << < HEAD
+        self.namespace.broadcast_event.assert_called_with('player_names',
+                                                          player_names)
+        self.namespace.broadcast_event.reset_mock()
+== == == =
         self.namespace.emit_to_room.assert_called_with(self.namespace.room,
                                                        'player_names',
                                                        player_names)
         self.namespace.emit_to_room.reset_mock()
+>>>>>> > master
 
         self.namespace.game_room = None
         self.namespace.update_player_list()
@@ -229,9 +236,14 @@ class GameNamespaceTestCase(SocketTestCase):
         self.assertEqual(self.namespace.player.nickname, new_nickname)
         player_names = [{'nickname': p.nickname, 'id': p.player_id}
                         for p in self.game_room.player_set.all()]
+<<<<<<< HEAD
+        self.namespace.broadcast_event.assert_called_with('player_names',
+                                                          player_names)
+=======
         self.namespace.emit_to_room.assert_called_with(self.namespace.room,
                                                        'player_names',
                                                        player_names)
+>>>>>>> master
 
         same_nickname = self.namespace.player.nickname
         self.assertFalse(self.namespace.on_update_nickname(same_nickname))

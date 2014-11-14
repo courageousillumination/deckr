@@ -44,7 +44,7 @@ class MockGame(Game):
         Returns the internal winners_list.
         """
 
-        return self.winners_list
+        return [x.game_id for x in self.winners_list]
 
     def restrictions(self, player_id):  # pylint: disable=W0613
         """
@@ -59,7 +59,7 @@ class MockGame(Game):
         If we make this action we win the game.
         """
 
-        self.winners_list.append(player_id.game_id)
+        self.winners_list.append(player_id)
         self.over = True
 
     @action(restriction=None)
