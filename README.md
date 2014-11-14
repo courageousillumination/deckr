@@ -96,6 +96,7 @@ Acceptance Tests
   * **Output**: Transition to main page.
 
 
+
  What is Implemented
  -----
 
@@ -136,6 +137,8 @@ Acceptance Tests
     * If illegal, the engine catches an exception and informs the server the request was illegal.
 * Feature: A pre-included definition of solitaire.
   * Use cases are as above in "webapp".
+
+
 
  Pairs and Responsibilities
  -----
