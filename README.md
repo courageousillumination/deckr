@@ -162,4 +162,12 @@ We have not yet implemented the option to upload a game to the server.
 
 The actual class structure of the game engine has diverged quite a bit from our original diagrams. We added game_objects to aid in associating ids with objects in play, and we added stateful_game_objects to provide a framework for tracking state transitions that objects undergo. These both serve as expedients for interfacing with the webapp, as they allow us to send information about an object's attributes (via dictionary) and its state transitions (via list) to the webapp. They also serve as helpful organizational abstractions for the game itself. 
 
-The functions within our previous classes (game_runner, card, player, region, zone, game) have largely changed as well. 
+The functions within many of our extant classes (namely region, zone, game) have largely changed as well. 
+
+Cards no longer store type or id information explicitly; rather, these are created and set in the game's set_up function by appending attributes to the Card. This made more sense than using dictionaries to store information, as it was cleaner provided better ease of access (especially given how card structure can vary across non-playing card games). They are, however, aware of their zone.
+
+Regions have an add_zone() function to expedite adding Zones to the Region properly.
+
+We added peek(), push(), and pop() functions to Zones to help with ordered removal and addition of cards. A set_cards() function expedites adding a large number of cards to the zone.
+
+The Game class now includes some helper classes, one for throwing exceptions, and the other allowing us to use @action wrappers to help with making game actions. The Game class itself now includes functions for getting and setting transitions (so we can track the game state and send it to the webabb), as well as a function to flush these transitions. Game objects can be found by id, and register() registers game objects to the game with a unique id. Configuration files specifiying different aspects of the game can also be loaded via load_config().
