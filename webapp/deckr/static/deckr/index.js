@@ -9,7 +9,6 @@ var selected = null;
 // SOCKET SECTION //
 ////////////////////
 
-// NOTE: Could probably replace lambdas with actual function calls.
 socket.on('move_card', function(data) {
 	/* Responds to move_card message from server */
 	console.log('Moving ' + data.cardId + ' to ' + data.toZoneId);
@@ -214,7 +213,7 @@ function moveCard(cardId, toZoneId, place) {
 	var siblings = toZone.children;
 
 	//COMPATABILITY PROBLEM
-	if (!card.classList.contains('card')) {
+	if ($(card).hasClass('card').length == 0) {
 		var err = "Please don't misuse our functions. That is not a card.";
 		console.log(err);
 		return err;
@@ -267,7 +266,6 @@ function gameOver(results) {
 //////////////
 
 $(document).ready(function() {
-
 
 	$("#create-game-room #submit").click(function() {
 		$("#create-game-room ").submit();
