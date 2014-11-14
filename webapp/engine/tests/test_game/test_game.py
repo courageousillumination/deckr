@@ -4,9 +4,6 @@ setup, and game ending conditions.
 """
 
 from engine.game import Game, action
-from engine.card import Card
-from engine.zone import Zone
-from engine.player import Player
 
 
 class MockGame(Game):
@@ -59,7 +56,7 @@ class MockGame(Game):
         If we make this action we win the game.
         """
 
-        self.winners_list.append(player_id.game_id)
+        self.winners_list.append(player_id)
         self.over = True
 
     @action(restriction=None)
@@ -77,19 +74,7 @@ class MockGame(Game):
         """
 
         self.winners_list.append(player_id)
-
         self.over = True
-
-    @action(restriction=None)
-    def test_argument_types(self, card, zone, player):
-        """
-        This makes sure that all the arguments have the
-        right type.
-        """
-
-        assert isinstance(card, Card)
-        assert isinstance(zone, Zone)
-        assert isinstance(player, Player)
 
     def get_magic(self):
         """

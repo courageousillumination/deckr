@@ -103,11 +103,11 @@ class Zone(GameObject):
         # Remove all current cards
         while len(self.cards) > 0:
             self.pop()
-        
+
         # Since we're pushing onto a stack we actually need to reverse
         # these cards.
         cards.reverse()
-        
+
         # Add all the new cards
         for card in cards:
             self.push(card)

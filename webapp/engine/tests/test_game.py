@@ -9,7 +9,6 @@ from engine.zone import Zone
 from engine.player import Player
 from engine.game import InvalidMoveException
 from engine.tests.mock_game.mock_game import MockGame
-from engine.game import InvalidMoveException
 
 
 class GameTestCase(TestCase):
@@ -26,6 +25,7 @@ class GameTestCase(TestCase):
         self.game.set_up()
         self.player = Player()
         self.game.register([self.player])
+        self.game.players = [self.player]
 
     def test_set_up(self):
         """
@@ -93,13 +93,42 @@ class GameTestCase(TestCase):
 
         self.game.phase = "restricted"
 
-        self.assertRaises(InvalidMoveException, 
+        self.assertRaises(InvalidMoveException,
                           self.game.make_action,
                           "restricted_action",
                           player_id=self.player.game_id)
         self.game.phase = "unrestricted"
+        player_id = self.player.game_id
         self.assertEqual([], self.game.make_action("restricted_action",
-                                                   player_id=self.player.game_id))
+                                                   player_id=player_id))
+
+        self.assertRaises(InvalidMoveException,
+                          self.game.make_action,
+                          "foobar")
+
+    def test_make_action_substitution(self):
+        """
+        Makes sure that make action actually makes proper substitutions
+        depending on variable name.
+        """
+
+        card = Card()
+        zone = Zone()
+        self.game.register([card, zone])
+
+        self.game.make_action('test_argument_types',
+                              card=card.game_id,
+                              zone=zone.game_id,
+                              player=self.player.game_id)
+
+    def test_add_player(self):
+        """
+        Make sure we can add the propre number of players.
+        """
+
+        self.game.max_players = 2
+        self.assertEqual(self.game.add_player(), 2)
+        self.assertRaises(ValueError, self.game.add_player)
 
     def test_make_winning_action(self):
         """

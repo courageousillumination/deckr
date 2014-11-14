@@ -5,7 +5,7 @@ that. Note that the game runner is a __module__ not a class (this is
 the best way we could think of to implement the singleton pattern).
 """
 
-from unittest import TestCase, skip
+from unittest import TestCase
 
 from engine import game_runner
 from engine.game import Game
@@ -90,10 +90,21 @@ class GameRunnerTestCase(TestCase):
         id.
         """
 
+        game_runner.get_game(self.game_id).max_players = 2
         player_id = game_runner.add_player(self.game_id)
         self.assertTrue(player_id > 0)
         self.assertNotEqual(player_id,
                             game_runner.add_player(self.game_id))
+
+    def test_start_game(self):
+        """
+        Make sure that we can start a game and when we do so no transitions
+        are stored.
+        """
+
+        game_runner.start_game(self.game_id)
+        self.assertTrue(game_runner.get_game(self.game_id).is_setup)
+        self.assertEqual(game_runner.get_game(self.game_id).transitions, [])
 
     def test_make_action(self):
         """
@@ -104,14 +115,16 @@ class GameRunnerTestCase(TestCase):
         game1.phase = "restricted"
         player = Player()
         game1.register([player])
-        
+        action = "restricted_action"
+
         error, message = game_runner.make_action(self.game_id,
-                                                 action_name="restricted_action",
+                                                 action_name=action,
                                                  player_id=0)
         self.assertTrue(error)
         self.assertEqual(message, "Illegal Action")
 
         game1.phase = "unrestricted"
-        self.assertEqual((False, []), game_runner.make_action(self.game_id,
-                                                              action_name="restricted_action",
-                                                              player_id=0))
+        self.assertEqual((False, [('is_over',[None])]),
+                         game_runner.make_action(self.game_id,
+                                                 action_name=action,
+                                                 player_id=0))

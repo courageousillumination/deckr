@@ -105,7 +105,7 @@ class GameNamespaceTestCase(SocketTestCase):
         self.namespace.runner.add_player.return_value = 0
         self.namespace.runner.get_state = MagicMock()
         self.namespace.runner.make_action = MagicMock()
-
+        self.namespace.runner.start_game = MagicMock()
         self.game_room = GameRoom.objects.create(room_id=0,
                                                  max_players=1)
         self.player = Player.objects.create(player_id=1,
@@ -135,7 +135,7 @@ class GameNamespaceTestCase(SocketTestCase):
                    'player_id': self.player.id}
         self.assertTrue(self.namespace.on_join(request))
         self.namespace.runner.add_player.assert_called()
-        player_names = [p.nickname for p in self.game_room.player_set.all()]
+        player_names = [{'nickname': p.nickname, 'id': p.player_id} for p in self.game_room.player_set.all()]
         self.namespace.broadcast_event.assert_called_with('player_names',
                                                           player_names)
 
@@ -204,7 +204,7 @@ class GameNamespaceTestCase(SocketTestCase):
         """
 
         self.namespace.update_player_list()
-        player_names = [p.nickname for p in self.game_room.player_set.all()]
+        player_names = [{'nickname': p.nickname, 'id': p.player_id} for p in self.game_room.player_set.all()]
         self.namespace.broadcast_event.assert_called_with('player_names',
                                                           player_names)
         self.namespace.broadcast_event.reset_mock()
@@ -222,7 +222,7 @@ class GameNamespaceTestCase(SocketTestCase):
         new_nickname = self.namespace.player.nickname + "_new"
         self.assertTrue(self.namespace.on_update_nickname(new_nickname))
         self.assertEqual(self.namespace.player.nickname, new_nickname)
-        player_names = [p.nickname for p in self.game_room.player_set.all()]
+        player_names = [{'nickname': p.nickname, 'id': p.player_id} for p in self.game_room.player_set.all()]
         self.namespace.broadcast_event.assert_called_with('player_names',
                                                           player_names)
 
@@ -284,3 +284,14 @@ class GameNamespaceTestCase(SocketTestCase):
         self.assertEqual(Player.objects.all().count(), 0)
         self.assertEqual(GameRoom.objects.all().count(), 0)
         self.namespace.emit.assert_called_with('leave_game')
+
+    def test_on_start(self):
+        """
+        Make sure that the socket can start a game.
+        """
+
+        state = {"foo": "bar"}
+        self.namespace.runner.get_state.return_value = state
+
+        self.namespace.on_start()
+        self.namespace.broadcast_event.assert_called_with('state', state)

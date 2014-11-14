@@ -22,13 +22,6 @@ class ChatNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
     channel.
     """
 
-    def initialize(self):
-        """
-        Mainly for debug.
-        """
-
-        print "Got socket connection 1."
-
     def on_chat(self, msg):
         """
         Called whenever the socket recieves a chat message. It
@@ -71,7 +64,6 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         # Boadcast the state to all clients
         self.broadcast_event("state",
                              self.runner.get_state(self.game_room.room_id))
-
 
     def on_join(self, join_request):
         """
@@ -124,8 +116,8 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         """
 
         if self.game_room is not None:
-            player_names = [
-                p.nickname for p in self.game_room.player_set.all()]
+            player_names = [{'id': p.player_id, 'nickname': p.nickname}
+                 for p in self.game_room.player_set.all()]
             self.broadcast_event('player_names', player_names)
 
     # This is extremely temporary.
@@ -141,9 +133,9 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         Called whenever the socket recieves a chat message. It
         will then broadcast the message to the rest of the channel.
         """
-        
+
         print data
-        
+
         error, transitions = self.runner.make_action(self.game_room.room_id,
                                                      **data)
         if error:
@@ -151,7 +143,7 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
             return False
 
         print("Transitions", transitions)
-        
+
         self.broadcast_event('state_transitions', transitions)
         return True
 

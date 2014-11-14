@@ -23,6 +23,11 @@ GAME_RUNNER = game_runner
 
 
 def set_game_runner(obj):
+    """
+    This is mainly for testing. But it could also be used
+    to put in another game runner.
+    """
+
     global GAME_RUNNER
     GAME_RUNNER = obj
 

@@ -202,3 +202,22 @@ class ZoneTestCase(TestCase):
         self.zone.pop()
         self.zone.remove_card(self.card1)
         self.assertEqual(game.get_transitions(), [])
+
+    def test_peek(self):
+        """
+        Make sure that we can peek at the top card of the zone.
+        """
+
+        self.assertIsNone(self.zone.peek())
+        self.zone.push(self.card1)
+        self.assertEqual(self.card1, self.zone.peek())
+
+    def test_set_cards(self):
+        """
+        Make sure we can add a list of cards diretly. This won't just set
+        the cards but will generate transitions to move the cards.
+        """
+
+        cards = [self.card1, self.card2, self.card3]
+        self.zone.set_cards(cards)
+        self.assertListEqual(self.zone.get_cards(), cards)

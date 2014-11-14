@@ -4,12 +4,12 @@
 // GLOBALS
 var socket = io.connect("/game");
 var selected = null;
+var player_mapping = {};
 
 ////////////////////
 // SOCKET SECTION //
 ////////////////////
 
-// NOTE: Could probably replace lambdas with actual function calls.
 socket.on('move_card', function(data) {
 	/* Responds to move_card message from server */
 	console.log('Moving ' + data.cardId + ' to ' + data.toZoneId);
@@ -39,11 +39,41 @@ socket.on('make_action', function(data) {
 socket.on('state_transitions', function(data) {
     console.log(data);
     for (i = 0; i < data.length; i++) {
+        // (name, args)
+        // (add, card, zone)
+        // (remove, card)
+        // (set, type, id, name, value)
         transition = data[i];
         if (transition[0] == 'add') {
             moveCard("card" + transition[1], "zone" + transition[2]);
         }
+        else if (transition[0] == 'set') {
+            // Set state
+
+            // Check for flipping cards
+            if (transition[1] == 'Card' && transition[3] == 'face_up') {
+                console.log("Setting card face up");
+                cardId = '#card' + transition[2];
+                console.log(cardId);
+                console.log($(cardId));
+                console.log($(cardId).data("front_face"));
+                if (transition[4]) {
+                    $(cardId).attr('src', "/static/deckr/cards/" + $(cardId).data('front_face'));
+                    $(cardId).attr('face_up', 'true');
+                } else {
+                    $(cardId).attr('src', "/static/deckr/cards/" + $(cardId).data('back_face'));
+                    $(cardId).attr('face_up', 'false');
+
+                }
+            }
+        }
+				else if (transition[0] == 'is_over') {
+					winner = player_mapping[transition[1][0]];
+					alert("You won " +  winner);
+				}
     }
+});
+
 socket.on('leave_game', function() {
 	window.location = '/'
 
@@ -62,20 +92,20 @@ socket.on('error', function(data) {
 
 socket.on('state', function(data) {
     console.log(data);
-    
+
     // TODO: Get rid of this
     $("#deck").click(function() {
         data = Object();
         data.action_name = 'draw';
         socket.emit('action', data);
     });
-    
+
     for (i = 0; i < data.cards.length; i++) {
         d = data.cards[i];
         d.class = "card";
         d.id = "card" + d.game_id;
         addCard(d, "staging_area");
-        
+
         //var cardDict = {"src" :"../../static/deckr/cards/13.png", "id":"clubJack", "class":"card"};
         //addCard(cardDict2, "playarea0");
     }
@@ -87,8 +117,8 @@ socket.on('state', function(data) {
             moveCard("card" + zone.cards[j], "zone" + zone.game_id, 0);
         }
     }
-    
-    
+
+
     // Make sure we register all callbacks
     $(".card").click(function() {
         if (!selected) {
@@ -101,18 +131,21 @@ socket.on('state', function(data) {
         }
         console.log(selected);
     });
-    
-    
+
+
 });
 
-socket.on('player_names', function(names) {
+socket.on('player_names', function(players) {
 	/* Responds to list of players names from server
      and replaces player list dynamically */
-	var namesLength = names.length;
+
+	var playersLength = players.length;
 	innerHTML = ""
-	for(var i = 0; i < namesLength; i++){
-		 innerHTML += "<li>" + names[i] + "</li>";
+	for(var i = 0; i < playersLength; i++){
+		innerHTML += "<li>" + players[i].nickname + "</li>";
+		player_mapping[players[i].id] = players[i].nickname;
 	}
+
 	$('#player_names').html(innerHTML);
 })
 
@@ -150,15 +183,23 @@ function addCard(cardDict, zoneId, place) {
 		return err;
 	}
 	$(newCard).attr('id', cardDict["id"]);
-    $(newCard).attr('src', "/static/deckr/cards/" + cardDict["src"]);
+	// Should probably go into data
+	$(newCard).attr('face_up', cardDict['face_up']);
+    if (cardDict["face_up"]) {
+        $(newCard).attr('src', "/static/deckr/cards/" + cardDict["front_face"]);
+    } else {
+        $(newCard).attr('src', "/static/deckr/cards/" + cardDict["back_face"]);
+    }
     $(newCard).addClass('card');
-	
+    $(newCard).data("front_face", cardDict["front_face"]);
+    $(newCard).data("back_face", cardDict["back_face"]);
+
 
 	if (!place) {
 		zone.appendChild(newCard);
 	} else {
 		if (place < siblings.length) {
-				selected = null;
+				$('.selected').removeClass('selected');
 				zone.insertBefore(newCard, siblings[siblings.length - place]);
 		} else {
 			var err = "Place does not exist."
@@ -187,11 +228,11 @@ function addDiv(parentId, divDict, place) {
 	}
 
 	if (!place) {
-		selected = null;
+		$('.selected').removeClass('selected');
 		parent.appendChild(newDiv);
 	} else {
 		if (place < siblings.length) {
-				selected = null;
+				$('.selected').removeClass('selected');
 				toZone.insertBefore(newDiv, siblings[place]);
 		} else {
 			var err = "Place does not exist."
@@ -225,7 +266,7 @@ function moveCard(cardId, toZoneId, place) {
 	var siblings = toZone.children;
 
 	//COMPATABILITY PROBLEM
-	if (!card.classList.contains('card')) {
+	if ($(card).hasClass('card').length == 0) {
 		var err = "Please don't misuse our functions. That is not a card.";
 		console.log(err);
 		return err;
@@ -238,11 +279,11 @@ function moveCard(cardId, toZoneId, place) {
 	}
 
 	if (!place) {
-		selected = null;
+		$('.selected').removeClass('selected');
 		toZone.appendChild(card);
 	} else {
 		if (place < siblings.length) {
-				selected = null;
+				$('.selected').removeClass('selected');
 				toZone.insertBefore(card, siblings[siblings.length - place]);
 		} else {
 			var err = "Place does not exist."
@@ -278,24 +319,10 @@ function gameOver(results) {
 //////////////
 
 $(document).ready(function() {
-	/* Runs when document is ready. Includes the click handlers. */
 
-	// Arbitrary definitions for testing.
-	// zone click function
-	$(".zone").click(function() {
-	    if (selected != null && $(this).has($(selected)).length == 0) {
-	    	console.log("Request move " + $(selected).attr('id'));
-	        requestMoveCard($(selected).attr('id'),
-	       		$(this).attr('id'));
-	    }
+	$("#create-game-room #submit").click(function() {
+		$("#create-game-room ").submit();
 	});
-
-	// card click function
-	
-
-  $("#create-game-room #submit").click(function() {
-     $("#create-game-room ").submit();
-  });
 
 	$('#destroy-game-room').click(function(){
 		socket.emit('destroy_game');
