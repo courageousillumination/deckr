@@ -97,8 +97,8 @@ Acceptance Tests
 
 
 
- What is Implemented
- -----
+What is Implemented
+-----
 
 ###Webapp
 * Feature: Game Room
@@ -140,8 +140,8 @@ Acceptance Tests
 
 
 
- Pairs and Responsibilities
- -----
+Pairs and Responsibilities
+-----
 
 * Tristan/Shaan: Built webserver.
 * Alex/Graham: Wrote the website front-end.
@@ -150,6 +150,8 @@ Acceptance Tests
 * Allison/Tristan: Web front-end touch-ups, refinements to Solitaire code.
 * Tristan: Major refinements/additions to game engine (game_object, game_runner, stateful_game_object, player, game)/solitaire code.
 
- Changes
- -----
+
+
+Changes
+-----
  The actual class structure of the game engine has diverged quite a bit from our original diagrams. 
