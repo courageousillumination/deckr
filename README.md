@@ -85,7 +85,7 @@ Acceptance Tests
 
 ######Test 13
   * **Input**: Make moves until the game is won. 
-  * **Outout**: Game concludes with a message notifying the user of victory.
+  * **Output**: Game concludes with a message notifying the user of victory.
 
 ######Test 14
   * **Input**: Click "End Game".
