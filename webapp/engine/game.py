@@ -119,6 +119,9 @@ class Game(object):
         getattr(self, action_name)(**kwargs)
 
         transitions = self.get_transitions()
+        if self.is_over:
+            self.add_transition(('is_over', self.winners()))
+
         self.flush_transitions()
         return transitions
 

@@ -135,7 +135,8 @@ class GameNamespaceTestCase(SocketTestCase):
                    'player_id': self.player.id}
         self.assertTrue(self.namespace.on_join(request))
         self.namespace.runner.add_player.assert_called()
-        player_names = [p.nickname for p in self.game_room.player_set.all()]
+        player_names = [{'nickname': p.nickname, 'id': p.player_id}
+                        for p in self.game_room.player_set.all()]
         self.namespace.emit_to_room.assert_called_with(self.namespace.room,
                                                        'player_names',
                                                        player_names)
@@ -206,7 +207,8 @@ class GameNamespaceTestCase(SocketTestCase):
         """
 
         self.namespace.update_player_list()
-        player_names = [p.nickname for p in self.game_room.player_set.all()]
+        player_names = [{'nickname': p.nickname, 'id': p.player_id}
+                        for p in self.game_room.player_set.all()]
         self.namespace.emit_to_room.assert_called_with(self.namespace.room,
                                                        'player_names',
                                                        player_names)
@@ -225,7 +227,8 @@ class GameNamespaceTestCase(SocketTestCase):
         new_nickname = self.namespace.player.nickname + "_new"
         self.assertTrue(self.namespace.on_update_nickname(new_nickname))
         self.assertEqual(self.namespace.player.nickname, new_nickname)
-        player_names = [p.nickname for p in self.game_room.player_set.all()]
+        player_names = [{'nickname': p.nickname, 'id': p.player_id}
+                        for p in self.game_room.player_set.all()]
         self.namespace.emit_to_room.assert_called_with(self.namespace.room,
                                                        'player_names',
                                                        player_names)

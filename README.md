@@ -85,7 +85,7 @@ Acceptance Tests
 
 ######Test 13
   * **Input**: Make moves until the game is won. 
-  * **Outout**: Game concludes with a message notifying the user of victory and the user may restart or return to the main page.
+  * **Outout**: Game concludes with a message notifying the user of victory.
 
 ######Test 14
   * **Input**: Click "End Game".
@@ -150,8 +150,8 @@ Pairs and Responsibilities
 * Tristan/Shaan: Built webserver.
 * Alex/Graham: Wrote the website front-end.
 * Allison/Lee: Mapped out the components of cards, rules, etc. Wrote initial logic of Solitaire game. Implemented parts of the game engine (namely Zones, Regions, Cards)
-* Joey/Hazel: Mapped out the functions the game engine would need. Implemented parts of the game engine (namely game, game_runner). Cleaned up/designed extra features for Solitaire.
-* Allison/Tristan: Web front-end touch-ups, refinements to Solitaire code.
+* Joey/Hazel: Mapped out the functions the game engine would need. Implemented parts of the game engine (namely game, game_runner). Cleaned up/designed extra features for Solitaire. Wrote tests for solitaire [game].
+* Allison/Tristan: Web front-end touch-ups, refinements to Solitaire code. Wrote tests for parts of the game engine.
 * Tristan: Major refinements/additions to game engine (game_object, game_runner, stateful_game_object, player, game)/solitaire code.
 
 

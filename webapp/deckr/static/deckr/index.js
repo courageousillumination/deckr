@@ -4,6 +4,7 @@
 // GLOBALS
 var socket = io.connect("/game");
 var selected = null;
+var player_mapping = {};
 
 ////////////////////
 // SOCKET SECTION //
@@ -48,7 +49,7 @@ socket.on('state_transitions', function(data) {
         }
         else if (transition[0] == 'set') {
             // Set state
-            
+
             // Check for flipping cards
             if (transition[1] == 'Card' && transition[3] == 'face_up') {
                 console.log("Setting card face up");
@@ -66,6 +67,10 @@ socket.on('state_transitions', function(data) {
                 }
             }
         }
+				else if (transition[0] == 'is_over') {
+					winner = player_mapping[transition[1][0]];
+					alert("You won " +  winner);
+				}
     }
 });
 
@@ -85,14 +90,17 @@ socket.on('error', function(data) {
 	console.log(data);
 });
 
-socket.on('player_names', function(names) {
+socket.on('player_names', function(players) {
 	/* Responds to list of players names from server
      and replaces player list dynamically */
-	var namesLength = names.length;
+
+	var playersLength = players.length;
 	innerHTML = ""
-	for(var i = 0; i < namesLength; i++){
-		 innerHTML += "<li>" + names[i] + "</li>";
+	for(var i = 0; i < playersLength; i++){
+		innerHTML += "<li>" + players[i].nickname + "</li>";
+		player_mapping[players[i].id] = players[i].nickname;
 	}
+
 	$('#player_names').html(innerHTML);
 })
 
@@ -140,7 +148,7 @@ function addCard(cardDict, zoneId, place) {
     $(newCard).addClass('card');
     $(newCard).data("front_face", cardDict["front_face"]);
     $(newCard).data("back_face", cardDict["back_face"]);
-	
+
 
 	if (!place) {
 		zone.appendChild(newCard);
