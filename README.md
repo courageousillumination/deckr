@@ -150,7 +150,7 @@ Pairs and Responsibilities
 * Tristan/Shaan: Built webserver.
 * Alex/Graham: Wrote the website front-end.
 * Allison/Lee: Mapped out the components of cards, rules, etc. Wrote initial logic of Solitaire game. Implemented parts of the game engine (namely Zones, Regions, Cards)
-* Joey/Hazel: Mapped out the functions the game engine would need. Implemented parts of the game engine (namely game, game_runner). Cleaned up/designed extra features for Solitaire. Wrote tests for solitaire [game].
+* Joey/Hazel: Mapped out the functions the game engine would need. Implemented parts of the game engine (namely game, game_runner). Cleaned up/designed extra features for Solitaire. Wrote tests for solitaire [game] as well as socket tests and engine tests.
 * Allison/Tristan: Web front-end touch-ups, refinements to Solitaire code. Wrote tests for parts of the game engine.
 * Tristan: Major refinements/additions to game engine (game_object, game_runner, stateful_game_object, player, game)/solitaire code.
 
@@ -171,3 +171,5 @@ Regions have an add_zone() function to expedite adding Zones to the Region prope
 We added peek(), push(), and pop() functions to Zones to help with ordered removal and addition of cards. A set_cards() function expedites adding a large number of cards to the zone.
 
 The Game class now includes some helper classes, one for throwing exceptions, and the other allowing us to use @action wrappers to help with making game actions. The Game class itself now includes functions for getting and setting transitions (so we can track the game state and send it to the webabb), as well as a function to flush these transitions. Game objects can be found by id, and register() registers game objects to the game with a unique id. Configuration files specifiying different aspects of the game can also be loaded via load_config().
+
+We added tests to Game and Game_Runner to cover new classes as well as to provide additional branch coverage.  We also changed some unit tests on the webserver to cover the fact that we are now getting additional data from the webserver (the player nicknames).
