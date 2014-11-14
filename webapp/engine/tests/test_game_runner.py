@@ -90,6 +90,7 @@ class GameRunnerTestCase(TestCase):
         id.
         """
 
+        game_runner.get_game(self.game_id).max_players = 2
         player_id = game_runner.add_player(self.game_id)
         self.assertTrue(player_id > 0)
         self.assertNotEqual(player_id,
