@@ -105,7 +105,7 @@ class GameNamespaceTestCase(SocketTestCase):
         self.namespace.runner.add_player.return_value = 0
         self.namespace.runner.get_state = MagicMock()
         self.namespace.runner.make_action = MagicMock()
-
+        self.namespace.runner.start_game = MagicMock()
         self.game_room = GameRoom.objects.create(room_id=0,
                                                  max_players=1)
         self.player = Player.objects.create(player_id=1,
@@ -299,3 +299,5 @@ class GameNamespaceTestCase(SocketTestCase):
 
         self.namespace.on_start()
         self.namespace.emit_to_room.assert_called_with(self.namespace.room,
+                                                       'state', state)
+

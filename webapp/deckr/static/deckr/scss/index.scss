@@ -81,3 +81,47 @@ h2 {
 .card {
     margin: 5px;
 }
+
+.zone {
+    float: left;
+    width: 80px;
+    height: 100px;
+    margin: 5px;
+    padding: 15px;
+    border: 1px dotted #ccc;
+}
+
+.zone#hand {
+    width: 200px;
+}
+
+.zone.last {
+    float: right;
+}
+
+.victory {
+    float: right;
+}
+
+.vertical-fan {
+    height: 350px;
+}
+
+.vertical-fan img {
+    margin-bottom: -68px;
+}
+
+.stacked img {
+    position: absolute
+}
+
+.row {
+    clear: both;
+    width: 100%;
+    overflow: hidden;
+}
+
+.selected {
+    border: solid;
+    border-color: yellow;
+}
