@@ -86,57 +86,6 @@ socket.on('error', function(data) {
 	console.log(data);
 });
 
-socket.on('state', function(data) {
-    console.log(data);
-    
-    // TODO: Get rid of this
-    $("#deck").click(function() {
-        data = Object();
-        data.action_name = 'draw';
-        socket.emit('action', data);
-        $('.selected').removeClass('selected');
-    });
-    
-    for (i = 0; i < data.cards.length; i++) {
-        d = data.cards[i];
-        d.class = "card";
-        d.id = "card" + d.game_id;
-        addCard(d, "staging_area");
-        
-        //var cardDict = {"src" :"../../static/deckr/cards/13.png", "id":"clubJack", "class":"card"};
-        //addCard(cardDict2, "playarea0");
-    }
-    // Add all cards to the proper zones
-    for (i = 0; i < data.zones.length; i++) {
-        zone = data.zones[i];
-        $("#" + zone.name).attr('id', "zone" + zone.game_id);
-        for (j = 0; j < zone.cards.length; j++) {
-            moveCard("card" + zone.cards[j], "zone" + zone.game_id, 0);
-        }
-    }
-    
-    
-    // Make sure we register all callbacks
-    $(".card").click(function() {
-    	if($(this).attr('face_up') == 'false') {
-    		console.log('Clicked on face down card.');
-    		return
-    	}
-
-        if ($('.selected').length == 0) {
-            $(this).addClass('selected');
-        } else if ($(this).hasClass('selected')) {
-            $(this).removeClass('selected');
-        } else {
-            parent = $(this).parent();
-            parent.click.apply(parent);
-        }
-        console.log($('.selected').attr('id') + " is selected.");
-    });
-    
-    
-});
-
 socket.on('player_names', function(names) {
 	/* Responds to list of players names from server
      and replaces player list dynamically */
@@ -318,24 +267,11 @@ function gameOver(results) {
 //////////////
 
 $(document).ready(function() {
-	/* Runs when document is ready. Includes the click handlers. */
 
-	// Arbitrary definitions for testing.
-	// zone click function
-	$(".zone").click(function() {
-	    if ($('.selected').length != 0 && $(this).has($('.selected')).length == 0) {
-	    	console.log("Request move " + $('.selected').attr('id'));
-	        requestMoveCard($('.selected').attr('id'),
-	       		$(this).attr('id'));
-	    }
+
+	$("#create-game-room #submit").click(function() {
+		$("#create-game-room ").submit();
 	});
-
-	// card click function
-	
-
-  $("#create-game-room #submit").click(function() {
-     $("#create-game-room ").submit();
-  });
 
 	$('#destroy-game-room').click(function(){
 		socket.emit('destroy_game');
