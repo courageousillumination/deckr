@@ -85,7 +85,7 @@ Acceptance Tests
 
 ######Test 13
   * **Input**: Make moves until the game is won. 
-  * **Outout**: Game concludes and user may restart or return to the main page.
+  * **Outout**: Game concludes with a message notifying the user of victory and the user may restart or return to the main page.
 
 ######Test 14
   * **Input**: Click "End Game".
@@ -112,6 +112,8 @@ What is Implemented
     * The user makes an action through the UI, and the browser sends a websocket event to the server.
     * The server processes the event and determines if it is legal.
     * If the action is legal, the action is performed.
+
+
 ###Engine
 * Feature: Define game
   * Use Case: Defining the game logic.
@@ -143,6 +145,8 @@ What is Implemented
 Pairs and Responsibilities
 -----
 
+(Looking at the git commit history gives a good enough idea, but considering that when working in pairs, only one person tends to commit code, this should clear up any uncertainty about who did what.)
+
 * Tristan/Shaan: Built webserver.
 * Alex/Graham: Wrote the website front-end.
 * Allison/Lee: Mapped out the components of cards, rules, etc. Wrote initial logic of Solitaire game. Implemented parts of the game engine (namely Zones, Regions, Cards)
@@ -154,4 +158,8 @@ Pairs and Responsibilities
 
 Changes
 -----
- The actual class structure of the game engine has diverged quite a bit from our original diagrams. 
+We have not yet implemented the option to upload a game to the server.
+
+The actual class structure of the game engine has diverged quite a bit from our original diagrams. We added game_objects to aid in associating ids with objects in play, and we added stateful_game_objects to provide a framework for tracking state transitions that objects undergo. These both serve as expedients for interfacing with the webapp, as they allow us to send information about an object's attributes (via dictionary) and its state transitions (via list) to the webapp. They also serve as helpful organizational abstractions for the game itself. 
+
+The functions within our previous classes (game_runner, card, player, region, zone, game) have largely changed as well. 
