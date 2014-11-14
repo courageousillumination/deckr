@@ -90,51 +90,6 @@ socket.on('error', function(data) {
 	console.log(data);
 });
 
-socket.on('state', function(data) {
-    console.log(data);
-
-    // TODO: Get rid of this
-    $("#deck").click(function() {
-        data = Object();
-        data.action_name = 'draw';
-        socket.emit('action', data);
-    });
-
-    for (i = 0; i < data.cards.length; i++) {
-        d = data.cards[i];
-        d.class = "card";
-        d.id = "card" + d.game_id;
-        addCard(d, "staging_area");
-
-        //var cardDict = {"src" :"../../static/deckr/cards/13.png", "id":"clubJack", "class":"card"};
-        //addCard(cardDict2, "playarea0");
-    }
-    // Add all cards to the proper zones
-    for (i = 0; i < data.zones.length; i++) {
-        zone = data.zones[i];
-        $("#" + zone.name).attr('id', "zone" + zone.game_id);
-        for (j = 0; j < zone.cards.length; j++) {
-            moveCard("card" + zone.cards[j], "zone" + zone.game_id, 0);
-        }
-    }
-
-
-    // Make sure we register all callbacks
-    $(".card").click(function() {
-        if (!selected) {
-            selected = this;
-        } else if (selected == this) {
-            selected = null;
-        } else {
-            parent = $(this).parent();
-            parent.click.apply(parent);
-        }
-        console.log(selected);
-    });
-
-
-});
-
 socket.on('player_names', function(players) {
 	/* Responds to list of players names from server
      and replaces player list dynamically */
