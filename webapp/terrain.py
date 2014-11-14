@@ -13,7 +13,7 @@ def run_server(variables):
                           "socketio_runserver",
                           "--noreload",
                           "--enable-coverage"],
-                         )
+                         stdout = FNULL, stderr = FNULL)
     
     print "Running socketio server at localhost:8000"
 
