@@ -21,9 +21,6 @@ class Zone(GameObject):
         self.cards = []
         self.stacked = stacked
 
-    def setOwner(owner):
-        pass
-
     def add_card(self, card):
         """
         Add a card to the zone. This is an unorderd operation.
