@@ -6,6 +6,7 @@ from mock import MagicMock
 
 from django.test import TestCase, Client
 from django.core.urlresolvers import reverse
+from unittest import skip
 
 from deckr.models import GameRoom, GameDefinition, Player
 import deckr.views
@@ -177,3 +178,30 @@ class GamePageTestCase(TestCase):
                                            args=(self.game_room.pk,)),
                                    {'player_id': self.player.id})
         self.assertEqual(response.status_code, 200)
+
+class UploadGameDefTestCase(TestCase):
+    """
+    Test the upload game page to submit a zipped file and create a game
+    definition
+    """
+
+    def setup(self):
+        self.client = Client()
+
+    @skip("not yet implemented")
+    def can_upload(self):
+        """
+        Make sure the form submits or displays validation
+        """
+        old_count = GameDefinition.objects.all().count()
+        form_data = {'file': "solitaire.zip"}
+        response = self.client.post(reverse('deckr.upload_game_definition',),
+                                    form_data)
+        self.assertEqual(GameDefinition.objects.all().count(), old_count + 1)
+
+        old_count = GameDefinition.objects.all().count()
+        response = self.client.post(reverse('deckr.upload_game_definition',),
+                                    {})
+        self.assertFormError(response, 'form', 'file',
+                             'This field is required.')
+        self.assertEqual(GameDefinition.objects.all().count(), old_count)
