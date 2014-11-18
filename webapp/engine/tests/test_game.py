@@ -156,6 +156,11 @@ class GameTestCase(TestCase):
         Make sure that we can load the configuration of a game.
         """
 
+        @effect("destroy target (.*)")
+        def destroy_target(target):
+            # destroy target
+            pass
+
         config = {
             "max_players": 1,
             "zones": [
@@ -164,7 +169,7 @@ class GameTestCase(TestCase):
             ]
             "cards": [
                 {"name": "card1"},
-                {"name": "card2", "type": "Instant", "effect": "destroy cards"}
+                {"name": "card2", "type": "instant", "effect": "destroy all cards"}
             ]
         }
 
@@ -192,8 +197,8 @@ class GameTestCase(TestCase):
         self.assertTrue(self.game.zones["zone2"].stacked)
 
         # The cards should know about their attributes
-        self.assertEqual(self.game.card_defs["card2"].type, "Instant")
-        self.assertEqual(self.game.card_defs["card2"].effect, "destroy cards")
+        self.assertEqual(self.game.card_defs["card2"].type, "instant")
+        self.assertEqual(self.game.card_defs["card2"].effect, destroy_target)
 
         # Make sure that all zones were given an id
         self.assertIsNotNone(self.game.zones["zone1"].game_id)
