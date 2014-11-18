@@ -182,6 +182,43 @@ class GameTestCase(TestCase):
         # Make sure that all zones were given an id
         self.assertIsNotNone(self.game.zones["zone1"].game_id)
 
+    def test_config_with_owners(self):
+        """
+        Test allowing configurations to specify zone ownership.
+        """
+
+        config = {
+            "max_players": 2,
+            "zones": [
+                {"name": "zone1", "owner": "player"},
+                {"name": "zone2"} 
+            ]
+        }
+
+        self.game.load_config(config)
+
+        # Game should be aware of its players and zones
+        self.assertEqual(self.game.max_players, 2)
+        self.assertEqual(len(self.game.zones, 2))
+
+        player1 = self.game.add_player()
+        player2 = self.game.add_player()
+
+        # Players should be aware of their assigned zones, and only those zones
+        self.assertTrue(hasattr(self.game.player1, "zone1"))
+        self.assertFalse(hasattr(self.player1, "zone2"))
+
+        self.assertTrue(hasattr(self.game.player2, "zone1"))
+        self.assertFalse(hasattr(self.game.player2, "zone2"))
+
+        # The game should be aware of the zones and who has them, if anyone
+        self.assertEqual(self.games.zones["zone1_" + str(self.game.player1.game_id)],self.game.zone1)
+        self.assertEqual(self.games.zones["zone1_" + str(self.game.player2.game_id)],self.game.zone1)
+        self.assertEqual(self.games.zones["zone2"],self.game.zone2)
+
+    def test_config_multi(self):
+        pass
+
     def test_load_invalid_config(self):
         """
         This test makes sure we can process a configuration

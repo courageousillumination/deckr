@@ -18,9 +18,13 @@ class ZoneTestCase(TestCase):
     def setUp(self):
 
         self.zone = Zone()
+        
         self.card1 = Card()
         self.card2 = Card()
         self.card3 = Card()
+
+        self.player1 = Player()
+        self.player2 = Player()
 
     def test_add_card(self):
         """

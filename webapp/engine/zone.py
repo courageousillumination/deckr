@@ -15,11 +15,14 @@ class Zone(GameObject):
     the zone interacts with the cards.
     """
 
-    def __init__(self, stacked=False):
+    def __init__(self, owner=None, stacked=False):
         super(Zone, self).__init__()
         self.region_id = None
         self.cards = []
         self.stacked = stacked
+
+    def setOwner(owner):
+        pass
 
     def add_card(self, card):
         """
