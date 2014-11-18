@@ -5,7 +5,7 @@ that. Note that the game runner is a __module__ not a class (this is
 the best way we could think of to implement the singleton pattern).
 """
 
-from unittest import TestCase, skip
+from unittest import skip, TestCase
 
 from engine import game_runner
 from engine.game import Game
@@ -141,10 +141,11 @@ class GameRunnerTestCase(TestCase):
         game1.max_players = 2
         player1 = Player()
         player2 = Player()
+        action_name = "private_public_action"
 
         game1.register((player1, player2))
         self.assertTrue(game_runner.make_action(self.game_id,
-                                                action_name="private_public_action",
+                                                action_name=action_name,
                                                 player_id=player1.game_id))
 
         # Now we expect a list of public transitions

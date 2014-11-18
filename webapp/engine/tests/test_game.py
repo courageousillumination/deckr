@@ -2,13 +2,13 @@
 This module contains all test for the Game class.
 """
 
-from unittest import TestCase, skip
+from unittest import skip, TestCase
 
 from engine.card import Card
-from engine.zone import Zone
-from engine.player import Player
 from engine.game import InvalidMoveException
+from engine.player import Player
 from engine.tests.mock_game.mock_game import MockGame
+from engine.zone import Zone
 
 
 class GameTestCase(TestCase):
@@ -258,5 +258,5 @@ class GameTestCase(TestCase):
 
         self.assertListEqual([("foo", "bar")],
                              self.game.get_public_transitions())
-        self.assertListEqual([("baz",)],
-                             self.game.get_player_transitions(self.player.game_id))
+        transitions = self.game.get_player_transitions(self.player.game_id)
+        self.assertListEqual([("baz",)], transitions)

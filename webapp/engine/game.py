@@ -2,9 +2,9 @@
 This module defines everything needed for the base Game class.
 """
 
-from engine.zone import Zone
-from engine.player import Player
 from engine.card import Card
+from engine.player import Player
+from engine.zone import Zone
 
 
 class InvalidMoveException(Exception):

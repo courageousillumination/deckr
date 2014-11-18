@@ -2,13 +2,14 @@
 Unit tests for deckr websockets.
 """
 
-from django.test import TestCase
-from socketio.virtsocket import Socket
-from mock import MagicMock
 from unittest import skip
 
+from django.test import TestCase
+
+from deckr.models import GameRoom, Player
 from deckr.sockets import ChatNamespace, GameNamespace
-from deckr.models import Player, GameRoom
+from mock import MagicMock
+from socketio.virtsocket import Socket
 
 
 class MockSocketIOServer(object):
@@ -185,7 +186,7 @@ class GameNamespaceTestCase(SocketTestCase):
                                                        transitions)
 
     @skip
-    def test_player_specific_transitions(self):
+    def test_private_transitions(self):
         """
         Make sure that if there are specific player transitions then we return
         the proper values.
@@ -203,9 +204,10 @@ class GameNamespaceTestCase(SocketTestCase):
             if player_id == self.player.player_id:
                 return player_1_transitions
 
-        self.namespace.runner.make_action.return_value = True
-        self.namespace.runner.get_public_transitions.return_value = transitions
-        self.namespace.runner.get_player_transitions.side_effect = per_player_transitions
+        runner = self.namespace.runner
+        runner.make_action.return_value = True
+        runner.get_public_transitions.return_value = transitions
+        runner.get_player_transitions.side_effect = per_player_transitions
 
         self.namespace.on_action(valid_move)
         # Make sure that we broadcast public information
