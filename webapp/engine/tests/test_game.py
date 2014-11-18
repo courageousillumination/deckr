@@ -169,7 +169,9 @@ class GameTestCase(TestCase):
             ]
             "cards": [
                 {"name": "card1"},
-                {"name": "card2", "type": "instant", "effect": "destroy all cards"}
+                {"name": "card2",
+                 "type": "instant",
+                 "effect": "destroy all cards"}
             ]
         }
 
