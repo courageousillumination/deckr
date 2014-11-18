@@ -160,6 +160,10 @@ class GameTestCase(TestCase):
                 {"name": "zone1"},
                 {"name": "zone2", "stacked": True}
             ]
+            "cards": [
+                {"name": "card1"},
+                {"name": "card2", "type": "Instant", "effect": "destroy cards"}
+            ]
         }
 
         self.game.load_config(config)
@@ -167,17 +171,27 @@ class GameTestCase(TestCase):
         # The game should know the maximum number of players
         self.assertEqual(self.game.max_players, 1)
 
-        # The game should know about its zones
+        # The game should know about its zones and initial unique cards
         self.assertEqual(len(self.game.zones), 2)
+        self.assertEqual(len(self.game.cards), 2)
 
         # The game should have created actual attributes for
         # each of the zones
         self.assertTrue(hasattr(self.game, "zone1"))
         self.assertTrue(hasattr(self.game, "zone2"))
 
+        # The game should have created actual attributes for
+        # each of the cards
+        self.assertTrue(hasattr(self.game, "card1"))
+        self.assertTrue(hasattr(self.game, "card2"))
+
         # The zones should know about their configuration
         self.assertFalse(self.game.zones["zone1"].stacked)
         self.assertTrue(self.game.zones["zone2"].stacked)
+
+        # The cards should know about their attributes
+        self.assertEqual(self.game.cards["card2"].type, "Instant")
+        self.assertEqual(self.game.cards["card2"].effect, "destroy cards")
 
         # Make sure that all zones were given an id
         self.assertIsNotNone(self.game.zones["zone1"].game_id)
