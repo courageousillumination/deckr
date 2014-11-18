@@ -96,6 +96,19 @@ class GameRunnerTestCase(TestCase):
         self.assertNotEqual(player_id,
                             game_runner.add_player(self.game_id))
 
+    @skip
+    def test_remove_player(self):
+        """
+        Makes sure we can remove a player and it informs
+        if we are successful or not
+        """
+
+        game_runner.add_player(self.game_id)
+        player_id = game_runner.get_game(self.game_id).players[0].game_id
+        self.assertTrue(game_runner.remove_player(self.game_id, player_id))
+        self.assertFalse(game_runner.remove_player(self.game_id, player_id))
+        player_id = game_runner.add_player(self.game_id)
+
     def test_start_game(self):
         """
         Make sure that we can start a game and when we do so no transitions
