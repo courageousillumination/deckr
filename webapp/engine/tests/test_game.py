@@ -222,7 +222,7 @@ class GameTestCase(TestCase):
         """
         Test allowing configurations to specify zone multiplicity.
         """
-        
+
         config = {
             "max_players": 2,
             "zones": [
@@ -239,16 +239,16 @@ class GameTestCase(TestCase):
 
         # The ownerless zones should simply be numbered in order
         for i in range(1, 11):
-            assertEqual(self.game.zones["zoneA" + \
+            self.assertEqual(self.game.zones["zoneA" + \
                 str(i)], getattr(self.game, "zoneA" + str(i)))
 
         # Zones assigned to "player" should be numbered and include its game_id
         # "Player" should have attributes for its zones
         for i in range(11, 21):
-            assertTrue(hasattr(player, "zoneB" + str(i)))
-            assertEqual(self.game.zones["zoneB" + str(i) + \
+            self.assertTrue(hasattr(self.player, "zoneB" + str(i)))
+            self.assertEqual(self.game.zones["zoneB" + str(i) + \
                 "_" + str(self.game.player.game_id)], \
-                getattr(player, "zoneB" + str(i)))
+                getattr(self.player, "zoneB" + str(i)))
 
         other_player = self.game.add_player()
 
@@ -258,10 +258,11 @@ class GameTestCase(TestCase):
         # New zones should be numbered and tagged with other_player's game_id
         # The player should also be aware of them as attributes
         for i in range(21, 31):
-            assertTrue(hasattr(other_player, "zoneB" + str(i)))
-            assertEqual(self.game.zones["zoneB" + str(i) + \
-                "_" + str(self.game.other_player.game_id)], \
-                getattr(other_player, "zoneB" + str(i)))
+            self.assertTrue(hasattr(self.game.players[other_player], \
+                "zoneB" + str(i)))
+            self.assertEqual(self.game.zones["zoneB" + str(i) + \
+                "_" + str(other_player)], \
+                getattr(self.other_player, "zoneB" + str(i)))
 
     def test_load_invalid_config(self):
         """
