@@ -86,6 +86,7 @@ class GameTestCase(TestCase):
         # Make sure we know what to do on edge cases
         self.game.register([])
 
+    @skip
     def test_make_action(self):
         """
         Make sure that restrictions work on making actions.
@@ -99,9 +100,10 @@ class GameTestCase(TestCase):
                           player_id=self.player.game_id)
         self.game.phase = "unrestricted"
         player_id = self.player.game_id
+        self.game.make_action("restricted_action", player_id=player_id)
+
         self.assertEqual([('is_over', [1])],
-                         self.game.make_action("restricted_action",
-                                               player_id=player_id))
+                         self.game.get_public_transitions())
 
         self.assertRaises(InvalidMoveException,
                           self.game.make_action,
