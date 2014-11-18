@@ -171,9 +171,9 @@ class GameTestCase(TestCase):
         # The game should know the maximum number of players
         self.assertEqual(self.game.max_players, 1)
 
-        # The game should know about its zones and initial unique cards
+        # The game should know about its zones and card definitions
         self.assertEqual(len(self.game.zones), 2)
-        self.assertEqual(len(self.game.cards), 2)
+        self.assertEqual(len(self.game.card_defs), 2)
 
         # The game should have created actual attributes for
         # each of the zones
@@ -181,7 +181,7 @@ class GameTestCase(TestCase):
         self.assertTrue(hasattr(self.game, "zone2"))
 
         # The game should have created actual attributes for
-        # each of the cards
+        # each of the card definitions
         self.assertTrue(hasattr(self.game, "card1"))
         self.assertTrue(hasattr(self.game, "card2"))
 
@@ -190,8 +190,8 @@ class GameTestCase(TestCase):
         self.assertTrue(self.game.zones["zone2"].stacked)
 
         # The cards should know about their attributes
-        self.assertEqual(self.game.cards["card2"].type, "Instant")
-        self.assertEqual(self.game.cards["card2"].effect, "destroy cards")
+        self.assertEqual(self.game.card_defs["card2"].type, "Instant")
+        self.assertEqual(self.game.card_defs["card2"].effect, "destroy cards")
 
         # Make sure that all zones were given an id
         self.assertIsNotNone(self.game.zones["zone1"].game_id)
