@@ -2,7 +2,7 @@
 This module contains all test for the Game class.
 """
 
-from unittest import TestCase
+from unittest import TestCase, skip
 
 from engine.card import Card
 from engine.zone import Zone
@@ -182,6 +182,7 @@ class GameTestCase(TestCase):
         # Make sure that all zones were given an id
         self.assertIsNotNone(self.game.zones["zone1"].game_id)
 
+    @skip("not yet implemented")
     def test_config_with_owners(self):
         """
         Test allowing configurations to specify zone ownership.
@@ -218,6 +219,7 @@ class GameTestCase(TestCase):
             str(self.game.player2.game_id)], player2.zone1)
         self.assertEqual(self.games.zones["zone2"], self.game.zone2)
 
+    @skip("not yet implemented")
     def test_config_multi(self):
         """
         Test allowing configurations to specify zone multiplicity.
@@ -279,6 +281,7 @@ class GameTestCase(TestCase):
 
         self.game.load_config(invalid_configuration)
 
+    @skip("not yet implemented")
     def test_invalid_owner(self):
         """
         This test makes sure we can process a configuration
