@@ -212,12 +212,45 @@ class GameTestCase(TestCase):
         self.assertFalse(hasattr(player2, "zone2"))
 
         # The game should be aware of the zones and who has them, if anyone
-        self.assertEqual(self.games.zones["zone1_" + str(self.game.player1.game_id)],self.game.zone1)
-        self.assertEqual(self.games.zones["zone1_" + str(self.game.player2.game_id)],self.game.zone1)
+        self.assertEqual(self.games.zones["zone1_" + str(self.game.player1.game_id)], player1.zone1)
+        self.assertEqual(self.games.zones["zone1_" + str(self.game.player2.game_id)], player2.zone1)
         self.assertEqual(self.games.zones["zone2"],self.game.zone2)
 
     def test_config_multi(self):
-        pass
+        config = {
+            "max_players": 2,
+            "zones": [
+                {"name": "zoneA", "multiplicity": 10},
+                {"name": "zoneB", "owner": "player", "multiplicity": 10} 
+            ]
+        }
+
+        self.game.load_config(config)
+
+        # First we should have 20 zones, 10 of "zoneA" 
+        # and 10 "zoneB"s belonging to "player"
+        self.assertEqual(len(self.game.zones), 20)
+
+        # The ownerless zones should simply be numbered in order
+        for i in range (1,11):
+            assertEqual(self.game.zones["zoneA" + str(i)], getattr(self.game, "zoneA" + str(i)))
+        
+        # The zones assigned to "player" should be numbered and include its game_id
+        # "Player" should have attributes for its zones
+        for i in range(11,21):
+            assertTrue(hasattr(player, "zoneB" + str(i)))
+            assertEqual(self.game.zones["zoneB" + str(i) + "_" + str(self.game.player.game_id)],getattr(player, "zoneB" + str(i)))
+
+        other_player = self.game.add_player()
+
+        # Now there are 30 zones, because "other_player" also has 10 "zoneB"s
+        self.assertEqual(len(self.game.zones), 30)
+
+        # The new zones should be numbered and tagged with other_player's game_id
+        # The player should also be aware of them as attributes
+        for i in range (21,31):
+            assertTrue(hasattr(other_player, "zoneB" + str(i)))
+            assertEqual(self.game.zones["zoneB" + str(i) + "_" + str(self.game.other_player.game_id)],getattr(other_player, "zoneB" + str(i)))
 
     def test_load_invalid_config(self):
         """
