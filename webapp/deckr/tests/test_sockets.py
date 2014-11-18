@@ -5,6 +5,7 @@ Unit tests for deckr websockets.
 from django.test import TestCase
 from socketio.virtsocket import Socket
 from mock import MagicMock
+from unittest import skip
 
 from deckr.sockets import ChatNamespace, GameNamespace
 from deckr.models import Player, GameRoom
@@ -178,6 +179,38 @@ class GameNamespaceTestCase(SocketTestCase):
         self.namespace.emit_to_room.assert_called_with(self.namespace.room,
                                                        "state_transitions",
                                                        transitions)
+
+    @skip
+    def test_player_specific_transitions(self):
+        """
+        Make sure that if there are specific player transitions then we return
+        the proper values.
+        """
+
+        valid_move = {"action": "valid move"}
+        transitions = [("move", 1, 1)]
+        player_1_transitions = [("set", "Card", 1, "face_up", True)]
+
+        def per_player_transitions(player_id):
+            """
+            Turn Card1 face up for player 1 only.
+            """
+
+            if player_id == self.player.player_id:
+                return player_1_transitions
+
+        self.namespace.runner.make_action.return_value = True
+        self.namespace.runner.get_public_transitions.return_value = transitions
+        self.namespace.runner.get_player_transitions = per_player_transitions
+
+        self.namespace.on_action(valid_move)
+        # Make sure that we broadcast public information
+        self.namespace.emit_to_room.assert_called_with(self.namespace.room,
+                                                       "state_transitions",
+                                                       transitions)
+        # Make sure that we emit private information
+        self.namespace.emit.assert_called_with("state_transitions",
+                                               player_1_transitions)
 
     def test_request_state(self):
         """

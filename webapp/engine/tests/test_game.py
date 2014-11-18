@@ -2,7 +2,7 @@
 This module contains all test for the Game class.
 """
 
-from unittest import TestCase
+from unittest import TestCase, skip
 
 from engine.card import Card
 from engine.zone import Zone
@@ -243,3 +243,18 @@ class GameTestCase(TestCase):
 
         self.assertDictEqual(self.game.get_state(),
                              expected_state)
+
+    @skip
+    def test_add_transition(self):
+        """
+        Make sure that we can add transitions, both publicly and on a per player
+        basis.
+        """
+
+        self.game.add_transition(("foo", "bar"))
+        self.game.add_transition(("baz",), self.player)
+
+        self.assertListEqual([("foo", "bar")],
+                             self.game.get_public_transitions())
+        self.assertListEqual([("baz",)],
+                             self.game.get_player_transitions(self.player.game_id))
