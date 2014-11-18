@@ -188,7 +188,7 @@ class GameTestCase(TestCase):
         """
 
         config = {
-            "max_players": 2,
+            "max_players": 3,
             "zones": [
                 {"name": "zone1", "owner": "player"},
                 {"name": "zone2"} 
@@ -198,18 +198,18 @@ class GameTestCase(TestCase):
         self.game.load_config(config)
 
         # Game should be aware of its players and zones
-        self.assertEqual(self.game.max_players, 2)
-        self.assertEqual(len(self.game.zones, 2))
+        self.assertEqual(self.game.max_players, 3)
+        self.assertEqual(len(self.game.zones), 2)
 
         player1 = self.game.add_player()
         player2 = self.game.add_player()
 
         # Players should be aware of their assigned zones, and only those zones
-        self.assertTrue(hasattr(self.game.player1, "zone1"))
-        self.assertFalse(hasattr(self.player1, "zone2"))
+        self.assertTrue(hasattr(player1, "zone1"))
+        self.assertFalse(hasattr(player1, "zone2"))
 
-        self.assertTrue(hasattr(self.game.player2, "zone1"))
-        self.assertFalse(hasattr(self.game.player2, "zone2"))
+        self.assertTrue(hasattr(player2, "zone1"))
+        self.assertFalse(hasattr(player2, "zone2"))
 
         # The game should be aware of the zones and who has them, if anyone
         self.assertEqual(self.games.zones["zone1_" + str(self.game.player1.game_id)],self.game.zone1)
@@ -233,6 +233,24 @@ class GameTestCase(TestCase):
         }
 
         self.game.load_config(invalid_configuration)
+
+    def test_invalid_owner(self):
+        """
+        This test makes sure we can process a configuration
+        dict with a bad owner field.
+        """
+
+        config = {
+            "max_players": 2,
+            "zones": [
+                {"name": "zone1", "owner": "player"},
+                {"name": "zone2"},
+                {"name": "zone3", "owner": "foo"} 
+            ]
+        }
+
+        pass
+
 
     def test_get_state(self):
         """
