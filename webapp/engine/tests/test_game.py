@@ -2,13 +2,13 @@
 This module contains all test for the Game class.
 """
 
-from unittest import TestCase,skip
+from unittest import skip, TestCase
 
 from engine.card import Card
-from engine.zone import Zone
-from engine.player import Player
 from engine.game import InvalidMoveException
+from engine.player import Player
 from engine.tests.mock_game.mock_game import MockGame
+from engine.zone import Zone
 
 
 class GameTestCase(TestCase):
@@ -185,6 +185,90 @@ class GameTestCase(TestCase):
         # Make sure that all zones were given an id
         self.assertIsNotNone(self.game.zones["zone1"].game_id)
 
+    @skip("not yet implemented")
+    def test_config_with_owners(self):
+        """
+        Test allowing configurations to specify zone ownership.
+        """
+
+        config = {
+            "max_players": 3,
+            "zones": [
+                {"name": "zone1", "owner": "player"},
+                {"name": "zone2"}
+            ]
+        }
+
+        self.game.load_config(config)
+
+        # Game should be aware of its players and zones
+        self.assertEqual(self.game.max_players, 3)
+        self.assertEqual(len(self.game.zones), 2)
+
+        player1 = self.game.add_player()
+        player2 = self.game.add_player()
+
+        # Players should be aware of their assigned zones, and only those zones
+        self.assertTrue(hasattr(player1, "zone1"))
+        self.assertFalse(hasattr(player1, "zone2"))
+
+        self.assertTrue(hasattr(player2, "zone1"))
+        self.assertFalse(hasattr(player2, "zone2"))
+
+        # The game should be aware of the zones and who has them, if anyone
+        self.assertEqual(self.games.zones["zone1_" + \
+            str(self.game.player1.game_id)], player1.zone1)
+        self.assertEqual(self.games.zones["zone1_" + \
+            str(self.game.player2.game_id)], player2.zone1)
+        self.assertEqual(self.games.zones["zone2"], self.game.zone2)
+
+    @skip("not yet implemented")
+    def test_config_multi(self):
+        """
+        Test allowing configurations to specify zone multiplicity.
+        """
+
+        config = {
+            "max_players": 2,
+            "zones": [
+                {"name": "zoneA", "multiplicity": 10},
+                {"name": "zoneB", "owner": "player", "multiplicity": 10}
+            ]
+        }
+
+        self.game.load_config(config)
+
+        # First we should have 20 zones, 10 of "zoneA"
+        # and 10 "zoneB"s belonging to "player"
+        self.assertEqual(len(self.game.zones), 20)
+
+        # The ownerless zones should simply be numbered in order
+        for i in range(1, 11):
+            self.assertEqual(self.game.zones["zoneA" + \
+                str(i)], getattr(self.game, "zoneA" + str(i)))
+
+        # Zones assigned to "player" should be numbered and include its game_id
+        # "Player" should have attributes for its zones
+        for i in range(11, 21):
+            self.assertTrue(hasattr(self.player, "zoneB" + str(i)))
+            self.assertEqual(self.game.zones["zoneB" + str(i) + \
+                "_" + str(self.game.player.game_id)], \
+                getattr(self.player, "zoneB" + str(i)))
+
+        other_player = self.game.add_player()
+
+        # Now there are 30 zones, because "other_player" also has 10 "zoneB"s
+        self.assertEqual(len(self.game.zones), 30)
+
+        # New zones should be numbered and tagged with other_player's game_id
+        # The player should also be aware of them as attributes
+        for i in range(21, 31):
+            self.assertTrue(hasattr(self.game.players[other_player], \
+                "zoneB" + str(i)))
+            self.assertEqual(self.game.zones["zoneB" + str(i) + \
+                "_" + str(other_player)], \
+                getattr(self.other_player, "zoneB" + str(i)))
+
     def test_load_invalid_config(self):
         """
         This test makes sure we can process a configuration
@@ -199,6 +283,34 @@ class GameTestCase(TestCase):
         }
 
         self.game.load_config(invalid_configuration)
+
+    @skip("not yet implemented")
+    def test_invalid_owner(self):
+        """
+        This test makes sure we can process a configuration
+        dict with a bad owner field.
+        """
+
+        bad_config = {
+            "max_players": 2,
+            "zones": [
+                {"name": "zone1", "owner": "player"},
+                {"name": "zone2"},
+                {"name": "zone3", "owner": "foo"}
+            ]
+        }
+
+        self.game.load_config(bad_config)
+
+        # Game should contain only the valid zones
+        self.assertEqual(len(self.game.zones), 2)
+
+        # Game should have attributes for the valid zones
+        self.assertTrue(hasattr(self.game, "zone1"))
+        self.assertTrue(hasattr(self.game, "zone2"))
+
+        #Game should not contain the invalid zone
+        self.assertFalse(hasattr(self.game, "zone3"))
 
     def test_get_state(self):
         """
