@@ -122,6 +122,9 @@ class GameTestCase(TestCase):
                               zone=zone.game_id,
                               player=self.player.game_id)
 
+
+
+
     def test_add_player(self):
         """
         Make sure we can add the propre number of players.
@@ -243,3 +246,17 @@ class GameTestCase(TestCase):
 
         self.assertDictEqual(self.game.get_state(),
                              expected_state)
+
+    def test_remove_player(self):
+        """
+        Make sure players can be removed by player_id
+        """
+        player = self.game.players[0].game_id
+        self.assertTrue(self.game.remove_player(player))
+        self.assertFalse(self.game.remove_player(player))
+        self.game.max_players = 3
+        newplayer = self.game.add_player()
+        newplayertwo = self.game.add_player()
+        self.assertTrue(self.game.remove_player(newplayer))
+        self.assertFalse(self.game.remove_player(newplayer))
+        self.assertTrue(self.game.remove_player(newplayertwo))
