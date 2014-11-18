@@ -113,6 +113,13 @@ def add_player(game_id):
 
     return get_game(game_id).add_player()
 
+def remove_player(game_id, player_id):
+    """
+    Removes a player and returns a boolean
+    denoting success or failure
+    """
+
+    return get_game(game_id).remove_player(player_id)
 
 def make_action(game_id, **kwargs):
     """
