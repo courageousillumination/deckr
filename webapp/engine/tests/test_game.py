@@ -240,7 +240,7 @@ class GameTestCase(TestCase):
         dict with a bad owner field.
         """
 
-        config = {
+        bad_config = {
             "max_players": 2,
             "zones": [
                 {"name": "zone1", "owner": "player"},
@@ -249,8 +249,17 @@ class GameTestCase(TestCase):
             ]
         }
 
-        pass
+        self.game.load_config(bad_config)
 
+        # Game should contain only the valid zones
+        self.assertEqual(len(self.game.zones), 2)
+
+        # Game should have attributes for the valid zones
+        self.assertTrue(hasattr(self.game, "zone1"))
+        self.assertTrue(hasattr(self.game, "zone2"))
+
+        #Game should not contain the invalid zone
+        self.assertFalse(hasattr(self.game, "zone3"))
 
     def test_get_state(self):
         """
