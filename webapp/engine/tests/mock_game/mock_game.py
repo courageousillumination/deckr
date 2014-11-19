@@ -15,6 +15,18 @@ class MockGame(Game):
     The MockGame is basically the simplest game you could imagine.
     """
 
+        @step("draw")
+        draw_card():
+            add_transition("draw_complete")
+
+        @step("discard")
+        discard():
+            add_transition("discard_complete")
+
+        @step("buy")
+        buy():
+            add_transition("buy_complete")
+
     def __init__(self):
         super(MockGame, self).__init__()
 
