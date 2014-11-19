@@ -199,7 +199,6 @@ class Game(object):
         """
         pass
 
-
     def add_player(self):
         """
         Adds a player if possible and returns the player id
