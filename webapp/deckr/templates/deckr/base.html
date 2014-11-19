@@ -3,13 +3,16 @@
         <meta charset="utf-8">
         {% load staticfiles %}
         <link rel="stylesheet" href="{% static 'deckr/index.css' %}">
-        <script type="text/javascript" src="{% static 'deckr/socket.io.min.js' %}"></script>
-        <script type="text/javascript" src="{% static 'deckr/jquery-2.1.1.min.js' %}"></script>
-        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.js"></script>
+        <!-- External Libraries -->
         <!-- Once running on server use: <script src="/socket.io/socket.io.js"></script> -->
-        <script type="text/javascript" src="{% static 'deckr/index.js' %}"></script>
-        
-        <!-- <script type="text/javascript" src="{% static 'deckr/ui.js' %}"></script> -->
+        <script type="text/javascript" src="{% static 'deckr/js/socket.io.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'deckr/js/jquery-2.1.1.min.js' %}"></script>
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.js"></script>
+        <!-- Deckr JS -->
+        <script type="text/javascript" src="{% static 'deckr/js/socket.js' %}"></script>
+        <script type="text/javascript" src="{% static 'deckr/js/render.js' %}"></script>
+        <script type="text/javascript" src="{% static 'deckr/js/game-utils.js' %}"></script>
+        <script type="text/javascript" src="{% static 'deckr/js/index.js' %}"></script>
         <title>{% block title %}Deckr{% endblock %}</title>
     </head>
     <body class="{% block body-classes %}{% endblock %}">
