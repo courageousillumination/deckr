@@ -179,13 +179,15 @@ class GamePageTestCase(TestCase):
                                    {'player_id': self.player.id})
         self.assertEqual(response.status_code, 200)
 
+
 class UploadGameDefTestCase(TestCase):
+
     """
     Test the upload game page to submit a zipped file and create a game
     definition
     """
 
-    def setup(self):
+    def setUp(self):
         self.client = Client()
 
     @skip("not yet implemented")
