@@ -243,3 +243,27 @@ class GameTestCase(TestCase):
 
         self.assertDictEqual(self.game.get_state(),
                              expected_state)
+
+    @skip
+    def test_resolve_card_actions(self):
+        """
+        Make sure that all of the actions on a card get resolved when it is played
+        """
+
+        @step
+        draw_card():
+            add_transition("draw_complete")
+
+        @step
+        discard():
+            add_transition("discard_complete")
+
+        @step
+        buy():
+            add_transition("buy_complete")
+
+        card = Card()
+        card.steps = [draw_card, discard, buy]
+        self.game.play_card(card)
+
+        assertListEqual(self.game.transitions, ["draw_complete", "discard_complete", "buy_complete"])
