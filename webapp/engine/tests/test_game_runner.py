@@ -5,7 +5,7 @@ that. Note that the game runner is a __module__ not a class (this is
 the best way we could think of to implement the singleton pattern).
 """
 
-from unittest import TestCase,skip
+from unittest import skip, TestCase
 
 from engine import game_runner
 from engine.game import Game
@@ -119,6 +119,7 @@ class GameRunnerTestCase(TestCase):
         self.assertTrue(game_runner.get_game(self.game_id).is_setup)
         self.assertEqual(game_runner.get_game(self.game_id).transitions, [])
 
+    @skip
     def test_make_action(self):
         """
         Make sure that we can make actions through the GameRunner.
@@ -130,16 +131,44 @@ class GameRunnerTestCase(TestCase):
         game1.register([player])
         action = "restricted_action"
 
-        error, message = game_runner.make_action(self.game_id,
+        valid, message = game_runner.make_action(self.game_id,
                                                  action_name=action,
                                                  player_id=player.game_id)
-        self.assertTrue(error)
+        self.assertFalse(valid)
         self.assertEqual(message, "Illegal Action")
 
         game1.phase = "unrestricted"
 
-        self.assertEqual((False, [('is_over', [player.game_id])]),
-
+        self.assertEqual((True, None),
                          game_runner.make_action(self.game_id,
                                                  action_name=action,
                                                  player_id=player.game_id))
+
+    @skip
+    def test_get_transitions(self):
+        """
+        Make sure that we can get public and private transitions
+        """
+
+        game1 = game_runner.get_game(self.game_id)
+        game1.max_players = 2
+        player1 = Player()
+        player2 = Player()
+        action_name = "private_public_action"
+
+        game1.register((player1, player2))
+        self.assertTrue(game_runner.make_action(self.game_id,
+                                                action_name=action_name,
+                                                player_id=player1.game_id))
+
+        # Now we expect a list of public transitions
+        self.assertListEqual([("public", "foobar")],
+                             game_runner.get_public_transitions(self.game_id))
+
+        # We also expect player1 to have a private list
+        transitions = game_runner.get_player_transitions(self.game_id,
+                                                         player1.game_id)
+        self.assertListEqual([("private", "foobaz")], transitions)
+        transitions = game_runner.get_player_transitions(self.game_id,
+                                                         player2.game_id)
+        self.assertListEqual([], transitions)
