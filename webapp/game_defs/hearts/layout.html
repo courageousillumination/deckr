@@ -105,21 +105,20 @@ socket.on('state', function (data) {
 
 <div class="layout">
     <button onclick="socket.emit('start');">Start</button>
-    <div class="row" id="region1">
-        <div class="stacked zone deck" id="deck" style="float: left;"></div>
-        <div class="stacked zone" id="deck_flipped"></div>
-        <div class="stacked zone victory" id="victory_zone1"></div>
-        <div class="stacked zone victory" id="victory_zone2"></div>
-        <div class="stacked zone victory" id="victory_zone3"></div>
-        <div class="stacked zone victory" id="victory_zone4"></div>
-    </div>
-    <div class="row" id="region2">
-        <div id="play_zone1" class="vertical-fan zone"></div>
-        <div id="play_zone2" class="vertical-fan zone"></div>
-        <div id="play_zone3" class="vertical-fan zone"></div>
-        <div id="play_zone4" class="vertical-fan zone"></div>
-        <div id="play_zone5" class="vertical-fan zone"></div>
-        <div id="play_zone6" class="vertical-fan zone"></div>
-        <div id="play_zone7" class="vertical-fan zone last"></div>
+    <div class="table" id="region0">
+        <div class="horizontal-fan zone" id="zone0"></div>
+        <div class="stacked zone" id="discardzone0"></div>
+        <div class="left-vertical-fan zone" id="zone1"></div>
+        <div class="stacked zone" id="discardzone1"></div>
+        <div class="upsidedown-horizontal-fan" id="zone2"></div>
+        <div class="stacked zone" id="discardzone2"></div>
+        <div class="right-vertical-fan" id="zone3"></div>
+        <div class="stacked zone" id="discardzone3"></div>
+        <div class="playarea" id="region1">
+            <div class="zone" id="playzone0"></div>
+            <div class="facing-left zone" id="playzone1"></div>
+            <div class="facing-top zone" id="playzone2"></div>
+            <div class="facing-right zone" id="playzone3"></div>
+        </div>
     </div>
 </div>

@@ -61,7 +61,7 @@ class Hearts(Game):
                 card.owner = player
 
         # Set any extra cards to the side
-        self.side_zone.set_cads(all_cards)
+        self.side_zone.set_cards(all_cards)
 
         self.current_turn = self.players[0]
 
