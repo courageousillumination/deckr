@@ -156,22 +156,11 @@ class GameTestCase(TestCase):
         Make sure that we can load the configuration of a game.
         """
 
-        @effect("destroy target (.*)")
-        def destroy_target(target):
-            # destroy target
-            pass
-
         config = {
             "max_players": 1,
             "zones": [
                 {"name": "zone1"},
                 {"name": "zone2", "stacked": True}
-            ]
-            "cards": [
-                {"name": "card1"},
-                {"name": "card2",
-                 "type": "instant",
-                 "effect": "destroy all cards"}
             ]
         }
 
@@ -182,28 +171,38 @@ class GameTestCase(TestCase):
 
         # The game should know about its zones and card definitions
         self.assertEqual(len(self.game.zones), 2)
-        self.assertEqual(len(self.game.card_defs), 2)
 
         # The game should have created actual attributes for
         # each of the zones
         self.assertTrue(hasattr(self.game, "zone1"))
         self.assertTrue(hasattr(self.game, "zone2"))
 
-        # The game should have created actual attributes for
-        # each of the card definitions
-        self.assertTrue(hasattr(self.game, "card1"))
-        self.assertTrue(hasattr(self.game, "card2"))
-
         # The zones should know about their configuration
         self.assertFalse(self.game.zones["zone1"].stacked)
         self.assertTrue(self.game.zones["zone2"].stacked)
 
-        # The cards should know about their attributes
-        self.assertEqual(self.game.card_defs["card2"].type, "instant")
-        self.assertEqual(self.game.card_defs["card2"].effect, destroy_target)
-
         # Make sure that all zones were given an id
         self.assertIsNotNone(self.game.zones["zone1"].game_id)
+
+    @skip
+    def test_load_card_set_config(self):
+        """
+        This test will try to load a configuration with an embeded card set.
+        This should register the card set with the game.
+        """
+
+        config = {
+            "max_players": 1,
+            "card_set": [
+                {"name": "card1"},
+                {"name": "card2"}
+            ]
+        }
+
+        self.game.load_config(config)
+
+        self.assertTrue(hasattr(self.game, 'card_set'))
+        self.assertEqual(len(self.game.card_set.all_cards()), 2)
 
     @skip("not yet implemented")
     def test_config_with_owners(self):
