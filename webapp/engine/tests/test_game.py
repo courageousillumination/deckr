@@ -5,7 +5,7 @@ This module contains all test for the Game class.
 from unittest import skip, TestCase
 
 from engine.card import Card
-from engine.game import game_step, InvalidMoveException, NeedsMoreInfo
+from engine.game import game_step, InvalidMoveException, NeedsMoreInfo, action
 from engine.player import Player
 from engine.tests.mock_game.mock_game import MockGame
 from engine.zone import Zone
@@ -54,30 +54,30 @@ class GameTestCase(TestCase):
             """
             return False
 
-        @action
+        @action()
         def mock_action1(*args, ** kwargs):
             """
             Should always return 1
             """
             return 1
 
-        @action(restrictions=restriction_pass)
+        @action(restriction=restriction_pass)
         def mock_action2(*args, ** kwargs):
             """
             Should always return 2
             """
             return 2
 
-        @action(restrctions=restriction_fail)
+        @action(restriction=restriction_fail)
         def mock_action3(*args, ** kwargs):
             """
             Should always fail with an InvalidMoveException
             """
             return 3
 
-        assertEqual(mock_action1(), 1)
-        assertEqual(mock_action2(), 2)
-        assertRaises(mock_action3(), InvalidMoveException)
+        self.assertEqual(mock_action1(), 1)
+        self.assertEqual(mock_action2(), 2)
+        self.assertRaises(InvalidMoveException, mock_action3, "Invalid Move")
 
     def test_registration(self):
         """
