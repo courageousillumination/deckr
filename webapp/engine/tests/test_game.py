@@ -5,7 +5,7 @@ This module contains all test for the Game class.
 from unittest import skip, TestCase
 
 from engine.card import Card
-from engine.game import InvalidMoveException
+from engine.game import game_step, InvalidMoveException, NeedsMoreInfo
 from engine.player import Player
 from engine.tests.mock_game.mock_game import MockGame
 from engine.zone import Zone
@@ -377,6 +377,72 @@ class GameTestCase(TestCase):
 
         self.assertDictEqual(self.game.get_state(),
                              expected_state)
+
+    @skip
+    def test_multi_step_action(self):
+        """
+        Make sure that all of the actions on a card get resolved when it is
+        played. This test will call an action that has three steps. The first
+        one should run, and then the second one needs input so it should stop.
+        When we send it more information then we should see the rest of the
+        steps execute.
+        """
+
+        self.game.make_action("test_multi_step")
+        self.assertListEqual([("step1",)],
+                             self.game.get_transitions())
+
+        self.game.flush_transitions()
+        # Now we send the additional information
+        self.game.make_action("send_information", num=6)
+        self.assertListEqual([("step2", 6),
+                              ("step3", 6)],
+                             self.game.get_transitions())
+
+    @skip
+    def test_expected_action(self):
+        """
+        Make sure that we can query the game to see what it thinks
+        the next action should be.
+        """
+
+        self.assertIsNone(self.game.get_expected_action())
+
+        # Now if we make a multistep action we should expect send_information
+        self.game.make_action("test_multi_step")
+        self.assertEqual(self.game.get_expected_action(),
+                         ("send_information", "num"))
+
+    @skip
+    def test_add_step(self):
+        """
+        Test to see if we can add a step and run it.
+        """
+
+        @game_step(requires=None)
+        def simple_step(self):
+            """ Adds a simple transition to the game."""
+            self.add_transition(("simple_step",))
+
+        self.game.add_step(simple_step)
+        self.game.run()
+        self.assertListEqual([("simple_step",)],
+                             self.game.get_transitions())
+
+    @skip
+    def test_game_step_decorator(self):
+        """
+        Test that the game_Step decorator does what we expect it to (run if
+        it has the right arguments or throw an exception otherwise).
+        """
+
+        @game_step(requires="num")
+        def simple_step(num):
+            """ Returns the input. """
+            return num
+
+        self.assertRaises(NeedsMoreInfo, simple_step)
+        self.assertEqual(simple_step(num=10), 10)
 
     @skip
     def test_add_transition(self):

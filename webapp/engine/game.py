@@ -21,6 +21,16 @@ class InvalidMoveException(Exception):
         return repr(self.value)
 
 
+class NeedsMoreInfo(Exception):
+
+    """
+    This can be thrown by a step that needs more information before it can
+    continue.
+    """
+
+    pass
+
+
 def action(restriction=None):
     """
     This is a decorator that can be put around actions in Game subclasses.
@@ -43,6 +53,34 @@ def action(restriction=None):
                 return func(*args, **kwargs)
             else:
                 raise InvalidMoveException("Invalid Move")
+        return inner
+    return wrapper
+
+
+def game_step(requires=None):
+    """
+    A step is a subcomponent of an action. Actions are things that the user can
+    do while, steps are things that result from actions. An action ought to have
+    one or more steps. A step can require more input, in which case the user
+    is prompted. Once the user returns with more input the step continues where
+    it left off.
+
+    If requires is None will just run the step; otherwise it checks to see if
+    it has the required values. If it doesn't it throws a NeedsMoreInfo
+    exception.
+    """
+
+    def wrapper(func):
+        """
+        Woo decorators!
+        """
+
+        def inner(*args, **kwargs):
+            """
+            MOAR decorators!
+            """
+
+            return func(*args, **kwargs)
         return inner
     return wrapper
 
