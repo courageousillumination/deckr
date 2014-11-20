@@ -387,7 +387,7 @@ class GameTestCase(TestCase):
                              expected_state)
 
     @skip
-    def test_get_state_zones(self):
+    def test_get_state_with_player_zones(self):
         config = {
             "max_players": 3,
             "zones": [
@@ -418,14 +418,14 @@ class GameTestCase(TestCase):
             'players': [{'game_id': 1}],
             'zones': [{'cards': [],
                        'game_id': 1,
-                       'name': 'zone1_' + self.player.game_id,
+                       'name': 'zone1_' + str(self.player.game_id),
                        'region_id': None,
                        'owner_id': self.player.game_id,
                        'stacked': False,
                        'zone_type': ''},
                       {'cards': [],
                        'game_id': 1,
-                       'name': 'zone1_' + other_player,
+                       'name': 'zone1_' + str(other_player),
                        'region_id': None,
                        'owner_id': other_player,
                        'stacked': False,
@@ -433,6 +433,38 @@ class GameTestCase(TestCase):
         }
 
         self.assertDictEqual(self.game.get_state(), expected_state)
+
+    @skip
+    def test_get_state_zones_with_multiplicity(self):
+        config = {
+            "max_players": 3,
+            "zones": [
+                {"name": "zoneA", "owner": "player", "multiplicity": 2}
+            ]
+        }
+
+        expected_state = {
+            'cards': [{}],
+            'players': [{'game_id': 1}],
+            'zones': [{'cards': [],
+                       'game_id': 1,
+                       'name': 'zoneA1_' + str(self.player.game_id),
+                       'region_id': None,
+                       'owner_id': self.player.game_id,
+                       'stacked': False,
+                       'zone_type': ''},
+                      {'cards': [],
+                       'game_id': 1,
+                       'name': 'zoneA2_' + str(self.player.game_id),
+                       'region_id': None,
+                       'owner_id': self.player.game_id,
+                       'stacked': False,
+                       'zone_type': ''}]
+        }
+
+        self.game.load_config(config)
+        self.assertDictEqual(self.game.get_state(),
+                             expected_state)
 
     @skip
     def test_multi_step_action(self):
