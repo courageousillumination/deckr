@@ -42,7 +42,7 @@ class GameTestCase(TestCase):
         Make sure that action restrictions work correctly
         """
 
-        def restrction_pass(*args, ** kwargs):
+        def restriction_pass(*args, ** kwargs):
             """
             Always returns true
             """
