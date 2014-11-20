@@ -77,7 +77,6 @@ class MockGame(Game):
         """
 
         self.winners_list.append(player_id)
-
         self.over = True
 
     @action(restriction=None)
@@ -126,6 +125,17 @@ class MockGame(Game):
         """
 
         self.add_transition(("step3", num))
+
+    @action(restriction=None)
+    def private_public_action(self, player):
+        """
+        Make sure that we can add both public transitions and per player
+        transitions.
+        """
+
+        self.add_transition(("public", "foobar"))
+        self.add_transition(("private", "foobaz"), player)
+
 
     def get_magic(self):
         """

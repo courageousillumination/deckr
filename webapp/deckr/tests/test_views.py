@@ -2,16 +2,14 @@
 Test all of the Django views used by deckr.
 """
 
-from mock import MagicMock
+from unittest import skip
 
-from django.test import TestCase, Client
 from django.core.urlresolvers import reverse
+from django.test import Client, TestCase
 
-from deckr.models import GameRoom, GameDefinition, Player
 import deckr.views
-
-# Make sure the views is using a mocked out runner
-deckr.views.set_game_runner(MagicMock())
+from deckr.models import GameDefinition, GameRoom, Player
+from mock import MagicMock
 
 MOCK_GAME = "engine/tests/mock_game"
 
@@ -100,6 +98,9 @@ class CreatePlayerTestCase(TestCase):
                                                  room_id=1,
                                                  max_players=1)
 
+        # Mock out the add player function
+        deckr.views.game_runner = MagicMock()
+
     def test_can_access(self):
         """
         Make sure we can access the form.
@@ -109,10 +110,30 @@ class CreatePlayerTestCase(TestCase):
                                            args=(self.game_room.pk,)))
         self.assertEqual(response.status_code, 200)
 
+    @skip
+    def test_out_of_sync_engine(self):
+        """
+        Make sure that even if the engine throws an internal error
+        while creating a player that we catch it and return a valid
+        page instead of throwing a stacktrace.
+        """
+
+        deckr.views.game_runner.add_player.side_effect = ValueError
+        form_data = {'nickname': "Player 1"}
+        response = self.client.post(reverse('deckr.game_room_staging_area',
+                                            args=(self.game_room.pk,)),
+                                    form_data)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response,
+                            'Unable to join room, unknown Engine Error')
+
     def test_create_player_form(self):
         """
         Check form validations and player creation
         """
+
+        deckr.views.game_runner.add_player.return_value = 1
+
         form_data = {'nickname': "Player 1"}
 
         response = self.client.post(reverse('deckr.game_room_staging_area',
@@ -177,3 +198,33 @@ class GamePageTestCase(TestCase):
                                            args=(self.game_room.pk,)),
                                    {'player_id': self.player.id})
         self.assertEqual(response.status_code, 200)
+
+
+class UploadGameDefTestCase(TestCase):
+
+    """
+    Test the upload game page to submit a zipped file and create a game
+    definition
+    """
+
+    def setUp(self):
+        self.client = Client()
+
+    @skip("not yet implemented")
+    def can_upload(self):
+        """
+        Make sure the form submits or displays validation
+        """
+
+        old_count = GameDefinition.objects.all().count()
+        form_data = {'file': open('solitaire.zip')}
+        response = self.client.post(reverse('deckr.upload_game_definition',),
+                                    form_data)
+        self.assertEqual(GameDefinition.objects.all().count(), old_count + 1)
+
+        old_count = GameDefinition.objects.all().count()
+        response = self.client.post(reverse('deckr.upload_game_definition',),
+                                    {})
+        self.assertFormError(response, 'form', 'file',
+                             'This field is required.')
+        self.assertEqual(GameDefinition.objects.all().count(), old_count)

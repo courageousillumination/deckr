@@ -230,6 +230,13 @@ class Game(object):
 
         self.transitions = []
 
+    def remove_player(self, player_id):
+        """
+        Removes a player if possible and returns a
+        boolean denoting success or failure
+        """
+        pass
+
     def add_player(self):
         """
         Adds a player if possible and returns the player id
