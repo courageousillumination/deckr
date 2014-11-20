@@ -1,0 +1,10 @@
+---
+game_file: "hearts"
+game_class: "Hearts"
+max_players: 4
+zones:
+    - name: "hand"
+      owner: "player"
+    - name: "discard"
+      owner: "player"
+    - name: "play_zone"
