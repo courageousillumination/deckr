@@ -265,12 +265,17 @@ class Game(object):
 
         return player.game_id
 
-    def get_state(self):
+    def get_state(self, player_id=None):
         """
         This will return a dictonary containg the game state. This includes
         all cards and all their data, all zones, all players and their
         attributes, etc.
         """
+
+        if player_id is not None:
+            player = self.get_object_with_id("Player", player_id)
+        else:
+            player = None
 
         # Get all of my objects
         _, cards = self.registered_objects.get("Card", (1, {}))
@@ -280,10 +285,11 @@ class Game(object):
         # Convert to a dictionary
         result = {}
 
-        print cards
-        result['cards'] = [x.to_dict() for x in cards.values()]
+        result['cards'] = [x.to_dict(player) for x in cards.values()]
+        result['players'] = [x.to_dict(player) for x in players.values()]
+        # Note that zones aren't StatefulGameObjects but just base game
+        # objects.
         result['zones'] = [x.to_dict() for x in zones.values()]
-        result['players'] = [x.to_dict() for x in players.values()]
 
         return result
 

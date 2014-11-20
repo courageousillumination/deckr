@@ -82,9 +82,11 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
 
         self.runner.start_game(self.game_room.room_id)
         # Boadcast the state to all clients
+        state = self.runner.get_state(self.game_room.room_id,
+                                      self.player.player_id)
         self.emit_to_room(self.room,
                           "state",
-                          self.runner.get_state(self.game_room.room_id))
+                          state)
 
     def on_join(self, join_request):
         """
@@ -182,7 +184,8 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
             self.emit("error", "Please connect to a game room first.")
             return False
 
-        state = self.runner.get_state(self.game_room.room_id)
+        state = self.runner.get_state(self.game_room.room_id,
+                                      self.player.player_id)
         self.emit("state", state)
         return True
 

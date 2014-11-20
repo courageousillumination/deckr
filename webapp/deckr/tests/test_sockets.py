@@ -232,7 +232,8 @@ class GameNamespaceTestCase(SocketTestCase):
 
         self.assertTrue(self.namespace.on_request_state())
         self.namespace.emit.assert_called_with("state", state)
-        runner.get_state.assert_called_with(self.game_room.room_id)
+        runner.get_state.assert_called_with(self.game_room.room_id,
+                                            self.namespace.player.player_id)
 
         # Test that we get an error if we call this without a room
         self.namespace.game_room = None

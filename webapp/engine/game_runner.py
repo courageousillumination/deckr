@@ -97,12 +97,12 @@ def get_game(game_id):
     return CACHE.get(game_id, None)
 
 
-def get_state(game_id):
+def get_state(game_id, player_id=None):
     """
     Returns the state of the given game.
     """
 
-    return get_game(game_id).get_state()
+    return get_game(game_id).get_state(player_id)
 
 
 def add_player(game_id):
