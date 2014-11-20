@@ -234,6 +234,10 @@ class GameTestCase(TestCase):
         self.assertTrue(hasattr(player2, "zone1"))
         self.assertFalse(hasattr(player2, "zone2"))
 
+        # Players should also have dictionary of their zones
+        self.assertEqual(len(player1.zones), 2)
+        self.assertEqual(len(player2.zones), 2)
+
         # The game should be aware of the zones and who has them, if anyone
         self.assertEqual(self.games.zones["zone1_" +
                                           str(self.game.player1.game_id)], player1.zone1)
@@ -287,6 +291,10 @@ class GameTestCase(TestCase):
             self.assertEqual(self.game.zones["zoneB" + str(i) +
                                              "_" + str(other_player)],
                              getattr(self.other_player, "zoneB" + str(i)))
+
+        # Check that player dictionaries have the right number of elements
+        self.assertEqual(len(player.zones), 10)
+        self.assertEqual(len(other_player.zones), 10)
 
     def test_load_invalid_config(self):
         """
