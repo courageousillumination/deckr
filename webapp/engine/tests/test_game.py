@@ -37,40 +37,39 @@ class GameTestCase(TestCase):
         self.assertFalse(self.game.set_up())
         self.assertTrue(self.game.is_setup)
 
-    @skip
     def test_action(self):
         """
         Make sure that action restrictions work correctly
         """
 
-        def restrction_pass(*args ** kwargs):
+        def restrction_pass(*args, ** kwargs):
             """
             Always returns true
             """
             return True
 
-        def restriction_fail(*args ** kwargs):
+        def restriction_fail(*args, ** kwargs):
             """
             Always returns false
             """
             return False
 
         @action
-        def mock_action1(*args ** kwargs):
+        def mock_action1(*args, ** kwargs):
             """
             Should always return 1
             """
             return 1
 
         @action(restrictions=restriction_pass)
-        def mock_action2(*args ** kwargs):
+        def mock_action2(*args, ** kwargs):
             """
             Should always return 2
             """
             return 2
 
         @action(restrctions=restriction_fail)
-        def mock_action3(*args ** kwargs):
+        def mock_action3(*args, ** kwargs):
             """
             Should always fail with an InvalidMoveException
             """
