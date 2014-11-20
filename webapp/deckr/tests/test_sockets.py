@@ -171,6 +171,16 @@ class GameNamespaceTestCase(SocketTestCase):
         self.namespace.emit.assert_called_with("error", "Invalid move")
 
     @skip
+    def test_spectator_move(self):
+        """
+        If spectator makes a move, reject it
+        """
+
+        valid_move = {"action": "valid move"}
+        self.namespace.player = None
+        self.assertFalse(self.namespace.on_action(valid_move))
+
+    @skip
     def test_valid_move(self):
         """
         If we send a valid move we should get a list of transitions.
@@ -343,3 +353,16 @@ class GameNamespaceTestCase(SocketTestCase):
         self.namespace.on_start()
         self.namespace.emit_to_room.assert_called_with(self.namespace.room,
                                                        'state', state)
+
+    @skip('Not yet implemented')
+    def test_join_as_spectator(self):
+        """
+        Create a socket with no player
+        """
+
+        room = self.namespace.room
+        old_count = Player.objects.all().count()
+        self.assertTrue(self.namespace.join_as_spectator())
+        self.assertEqual(Player.objects.all().count(), old_count)
+        self.assertEqual(self.namespace.player, None)
+        self.assertEqual(self.namespace.room, room)
