@@ -387,7 +387,12 @@ class GameTestCase(TestCase):
                              expected_state)
 
     @skip
-    def test_get_state_with_player_zones(self):
+    def test_state_with_owners(self):
+        """
+        This tests getting the state of the game when zones
+        assigned to players.
+        """
+
         config = {
             "max_players": 3,
             "zones": [
@@ -435,7 +440,12 @@ class GameTestCase(TestCase):
         self.assertDictEqual(self.game.get_state(), expected_state)
 
     @skip
-    def test_get_state_zones_with_multiplicity(self):
+    def test_state_with_multiplicity(self):
+        """
+        This tests getting the state of the game when multiple
+        zones are created at once.
+        """
+
         config = {
             "max_players": 3,
             "zones": [
