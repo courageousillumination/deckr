@@ -1,0 +1,32 @@
+*************************
+*         Deckr         *
+* Milestone 4A Write-up *
+*************************
+
+Goals
+=====
+
+See Milestone 2 document. In addition to the features listed there, we plan to implement
+
+* Feature: Spectators.
+  * Use case: User would like to watch a game that is in progress.
+    * User can select a game room, then select to join as a spectator.
+* Feature: YAML definitions for cards.
+  * Use case: User would like to define a large number of cards without hard-coding them.
+    * User can write the cards into a YAML file and upload this to the server.
+* Feature: Hearts
+  * Use case: User would like to play the default implementation of Hearts.
+    * User can choose to play the game Hearts on the "new game" page.
+* Feature: Dominion
+  * Use case: User would like to play the default implementation of Dominion.
+    * User can choose to play the game Dominion on the "new game" page.
+
+
+Tasks
+=====
+
+Allison/Hazel/Joey/Tristan: Definitions of Hearts and Dominion.
+Lee/Joey/Allison: Card efficiency, players
+Hazel/Graham: Making zones work with multiple players
+Shaan/Tristan: Uploading and using game definitions
+Alex/Graham: UI upgrades
