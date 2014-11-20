@@ -14,6 +14,22 @@ See Milestone 2 document. In addition to the features listed there, we plan to i
 * Feature: YAML definitions for cards.
   * Use case: User would like to define a large number of cards without hard-coding them.
     * User can write the cards into a YAML file and upload this to the server.
+* Feature: User feedback from actions.
+  * Use case: In some actions we need user feedback before we finish resolving the action.
+    * An action can be broken down into steps and each step will either run atomically
+      or request more information from the clients.
+* Feature: Per user state transitions
+  * Use case: Sometimes transitions should only apply to a specific user.
+    * The engine will export an interface to get all public transitions and private
+      transitions for each player.
+* Feature: Leaving the game.
+  * Use case: A player wants to leave.
+    * A player should be able to leave and be removed from the game. The
+      game should respond properly.
+* Feature: Improved zones
+  * Use case: Sometimes a zone should belong to a player, or have multiple copies.
+    * We will expand our zone specification format to allow for ownership and
+      multiplicity.
 * Feature: Hearts
   * Use case: User would like to play the default implementation of Hearts.
     * User can choose to play the game Hearts on the "new game" page.
@@ -24,6 +40,8 @@ See Milestone 2 document. In addition to the features listed there, we plan to i
 
 Tasks
 =====
+
+For the most part see Division of Labor from Milestone 2. 
 
 Allison/Hazel/Joey/Tristan: Definitions of Hearts and Dominion.
 Lee/Joey/Allison: Card efficiency, players
