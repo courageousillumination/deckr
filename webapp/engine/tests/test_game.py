@@ -37,6 +37,48 @@ class GameTestCase(TestCase):
         self.assertFalse(self.game.set_up())
         self.assertTrue(self.game.is_setup)
 
+    def test_action(self):
+        """
+        Make sure that action restrictions work correctly
+        """
+
+        def restriction_pass(*args, ** kwargs):
+            """
+            Always returns true
+            """
+            return True
+
+        def restriction_fail(*args, ** kwargs):
+            """
+            Always returns false
+            """
+            return False
+
+        @action
+        def mock_action1(*args, ** kwargs):
+            """
+            Should always return 1
+            """
+            return 1
+
+        @action(restrictions=restriction_pass)
+        def mock_action2(*args, ** kwargs):
+            """
+            Should always return 2
+            """
+            return 2
+
+        @action(restrctions=restriction_fail)
+        def mock_action3(*args, ** kwargs):
+            """
+            Should always fail with an InvalidMoveException
+            """
+            return 3
+
+        assertEqual(mock_action1(), 1)
+        assertEqual(mock_action2(), 2)
+        assertRaises(mock_action3(), InvalidMoveException)
+
     def test_registration(self):
         """
         Make sure that assigning IDs works.
