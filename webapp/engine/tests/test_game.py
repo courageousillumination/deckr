@@ -5,7 +5,7 @@ This module contains all test for the Game class.
 from unittest import skip, TestCase
 
 from engine.card import Card
-from engine.game import game_step, InvalidMoveException, NeedsMoreInfo, action
+from engine.game import action, game_step, InvalidMoveException, NeedsMoreInfo
 from engine.player import Player
 from engine.tests.mock_game.mock_game import MockGame
 from engine.zone import Zone
@@ -42,34 +42,34 @@ class GameTestCase(TestCase):
         Make sure that action restrictions work correctly
         """
 
-        def restriction_pass(*args, ** kwargs):
+        def restriction_pass():
             """
             Always returns true
             """
             return True
 
-        def restriction_fail(*args, ** kwargs):
+        def restriction_fail():
             """
             Always returns false
             """
             return False
 
-        @action()
-        def mock_action1(*args, ** kwargs):
+        @action(restriction=None)
+        def mock_action1():
             """
             Should always return 1
             """
             return 1
 
         @action(restriction=restriction_pass)
-        def mock_action2(*args, ** kwargs):
+        def mock_action2():
             """
             Should always return 2
             """
             return 2
 
         @action(restriction=restriction_fail)
-        def mock_action3(*args, ** kwargs):
+        def mock_action3():
             """
             Should always fail with an InvalidMoveException
             """
@@ -282,9 +282,11 @@ class GameTestCase(TestCase):
 
         # The game should be aware of the zones and who has them, if anyone
         self.assertEqual(self.games.zones["zone1_" +
-                                          str(self.game.player1.game_id)], player1.zone1)
+                                          str(self.game.player1.game_id)],
+                         player1.zone1)
         self.assertEqual(self.games.zones["zone1_" +
-                                          str(self.game.player2.game_id)], player2.zone1)
+                                          str(self.game.player2.game_id)],
+                         player2.zone1)
         self.assertEqual(self.games.zones["zone2"], self.game.zone2)
 
     @skip("not yet implemented")
@@ -309,15 +311,15 @@ class GameTestCase(TestCase):
 
         # The ownerless zones should simply be numbered in order
         for i in range(1, 11):
-            self.assertEqual(self.game.zones["zoneA" +
-                                             str(i)], getattr(self.game, "zoneA" + str(i)))
+            self.assertEqual(self.game.zones["zoneA" + str(i)],
+                             getattr(self.game, "zoneA" + str(i)))
 
         # Zones assigned to "player" should be numbered and include its game_id
         # "Player" should have attributes for its zones
         for i in range(11, 21):
             self.assertTrue(hasattr(self.player, "zoneB" + str(i)))
-            self.assertEqual(self.game.zones["zoneB" + str(i) +
-                                             "_" + str(self.game.player.game_id)],
+            zone_name = "zoneB" + str(i) + "_" + str(self.game.player.game_id)
+            self.assertEqual(self.game.zones[zone_name],
                              getattr(self.player, "zoneB" + str(i)))
 
         other_player = self.game.add_player()
