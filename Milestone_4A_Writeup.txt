@@ -21,3 +21,9 @@ See Milestone 2 document. In addition to the features listed there, we plan to i
 
 Tasks
 =====
+
+Allison/Hazel/Joey/Tristan: Definitions of Hearts and Dominion.
+Lee/Joey/Allison: Card efficiency, players
+Hazel/Graham: Making zones work with multiple players
+Shaan/Tristan: Uploading and using game definitions
+Alex/Graham: UI upgrades
