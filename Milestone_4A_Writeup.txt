@@ -1,4 +1,7 @@
-Milestone 4A Write-up
+*************************
+*         Deckr         *
+* Milestone 4A Write-up *
+*************************
 
 Goals
 =====
@@ -14,6 +17,7 @@ See Milestone 2 document. In addition to the features listed there, we plan to i
 * Feature: Dominion
   * Use case: User would like to play the default implementation of Dominion.
     * User can choose to play the game Dominion on the "new game" page.
+
 
 Tasks
 =====
