@@ -195,8 +195,9 @@ class UploadGameDefTestCase(TestCase):
         """
         Make sure the form submits or displays validation
         """
+
         old_count = GameDefinition.objects.all().count()
-        form_data = {'file': "solitaire.zip"}
+        form_data = {'file': open('solitaire.zip')}
         response = self.client.post(reverse('deckr.upload_game_definition',),
                                     form_data)
         self.assertEqual(GameDefinition.objects.all().count(), old_count + 1)

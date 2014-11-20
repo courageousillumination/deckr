@@ -125,6 +125,8 @@ def js_remove_element_by_id(step, elementid):
     world.browser.execute_script('removeElementById("{0}");'.format(elementid))
 
 
-@step(u'I upload a zipped file for "([^"]*)"')
+@step(u'I upload "([^"]*)"')
 def upload_zipped_file(step, file):
-    pass
+    element = world.browser.find_element_by_css_selector(
+        "input[type=\"file\"]")
+    element.send_keys(file)
