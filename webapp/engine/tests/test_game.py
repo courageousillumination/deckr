@@ -169,7 +169,7 @@ class GameTestCase(TestCase):
         # The game should know the maximum number of players
         self.assertEqual(self.game.max_players, 1)
 
-        # The game should know about its zones
+        # The game should know about its zones and card definitions
         self.assertEqual(len(self.game.zones), 2)
 
         # The game should have created actual attributes for
@@ -183,6 +183,26 @@ class GameTestCase(TestCase):
 
         # Make sure that all zones were given an id
         self.assertIsNotNone(self.game.zones["zone1"].game_id)
+
+    @skip
+    def test_load_card_set_config(self):
+        """
+        This test will try to load a configuration with an embeded card set.
+        This should register the card set with the game.
+        """
+
+        config = {
+            "max_players": 1,
+            "card_set": [
+                {"name": "card1"},
+                {"name": "card2"}
+            ]
+        }
+
+        self.game.load_config(config)
+
+        self.assertTrue(hasattr(self.game, 'card_set'))
+        self.assertEqual(len(self.game.card_set.all_cards()), 2)
 
     @skip("not yet implemented")
     def test_config_with_owners(self):
