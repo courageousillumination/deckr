@@ -293,7 +293,7 @@ class GameTestCase(TestCase):
                              getattr(self.other_player, "zoneB" + str(i)))
 
         # Check that player dictionaries have the right number of elements
-        self.assertEqual(len(player.zones), 10)
+        self.assertEqual(len(self.player.zones), 10)
         self.assertEqual(len(other_player.zones), 10)
 
     def test_load_invalid_config(self):
@@ -385,6 +385,54 @@ class GameTestCase(TestCase):
 
         self.assertDictEqual(self.game.get_state(),
                              expected_state)
+
+    @skip
+    def test_get_state_zones(self):
+        config = {
+            "max_players": 3,
+            "zones": [
+                {"name": "zone1", "owner": "player"}
+            ]
+        }
+
+        expected_state = {
+            'cards': [{}],
+            'players': [{'game_id': 1}],
+            'zones': [{'cards': [],
+                       'game_id': 1,
+                       'name': 'zone1',
+                       'region_id': None,
+                       'owner_id': self.player.game_id,
+                       'stacked': False,
+                       'zone_type': ''}]
+        }
+
+        self.game.load_config(config)
+        self.assertDictEqual(self.game.get_state(),
+                             expected_state)
+
+        other_player = self.add_player()
+
+        expected_state = {
+            'cards': [{}],
+            'players': [{'game_id': 1}],
+            'zones': [{'cards': [],
+                       'game_id': 1,
+                       'name': 'zone1_' + self.player.game_id,
+                       'region_id': None,
+                       'owner_id': self.player.game_id,
+                       'stacked': False,
+                       'zone_type': ''},
+                      {'cards': [],
+                       'game_id': 1,
+                       'name': 'zone1_' + other_player,
+                       'region_id': None,
+                       'owner_id': other_player,
+                       'stacked': False,
+                       'zone_type': ''}]
+        }
+
+        self.assertDictEqual(self.game.get_state(), expected_state)
 
     @skip
     def test_multi_step_action(self):
