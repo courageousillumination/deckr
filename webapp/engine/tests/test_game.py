@@ -368,13 +368,15 @@ class GameTestCase(TestCase):
 
         self.game.load_config(bad_config)
 
-        other_player = self.game.get_object_with_id("Player", self.game.add_player())
+        other_player = self.game.get_object_with_id("Player",
+                                                    self.game.add_player())
 
         # Game should contain only the valid zones
         self.assertEqual(len(self.game.zones), 2)
 
         # Game should have attributes for the valid zones
-        self.assertTrue(hasattr(self.game, "zone1_" + str(other_player.game_id)))
+        self.assertTrue(hasattr(self.game, "zone1_"
+                                + str(other_player.game_id)))
         self.assertTrue(hasattr(self.game, "zone2"))
 
         # The player should have one zone
@@ -493,8 +495,8 @@ class GameTestCase(TestCase):
         expected_state = {
             'cards': [],
             'players': [{'game_id': 1},
-                        {'zones': {'zoneA2': 1, 
-                                   'zoneA1': 2}, 
+                        {'zones': {'zoneA2': 1,
+                                   'zoneA1': 2},
                          'zoneA2': 1,
                          'zoneA1': 2,
                          'game_id': 2}],
