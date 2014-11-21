@@ -292,7 +292,7 @@ class GameTestCase(TestCase):
         """
 
         config = {
-            "max_players": 2,
+            "max_players": 3,
             "zones": [
                 {"name": "zoneA", "multiplicity": 10},
                 {"name": "zoneB", "owner": "player", "multiplicity": 10}
@@ -313,11 +313,11 @@ class GameTestCase(TestCase):
 
         # Zones assigned to "player" should be numbered and include its game_id
         # "Player" should have attributes for its zones
-        for i in range(11, 21):
+        for i in range(1, 11):
             self.assertTrue(hasattr(player1, "zoneB" + str(i)))
             self.assertEqual(self.game.zones["zoneB" + str(i) +
                                              "_" + str(player1.game_id)],
-                             getattr(self.player1, "zoneB" + str(i)))
+                             getattr(player1, "zoneB" + str(i)))
 
         other_player = self.game.get_object_with_id("Player", self.game.add_player())
 
@@ -326,15 +326,14 @@ class GameTestCase(TestCase):
 
         # New zones should be numbered and tagged with other_player's game_id
         # The player should also be aware of them as attributes
-        for i in range(21, 31):
-            self.assertTrue(hasattr(self.game.players[other_player],
-                                    "zoneB" + str(i)))
+        for i in range(1, 11):
+            self.assertTrue(hasattr(other_player, "zoneB" + str(i)))
             self.assertEqual(self.game.zones["zoneB" + str(i) +
-                                             "_" + str(other_player)],
-                             getattr(self.other_player, "zoneB" + str(i)))
+                                             "_" + str(other_player.game_id)],
+                             getattr(other_player, "zoneB" + str(i)))
 
         # Check that player dictionaries have the right number of elements
-        self.assertEqual(len(self.player.zones), 10)
+        self.assertEqual(len(player1.zones), 10)
         self.assertEqual(len(other_player.zones), 10)
 
     def test_load_invalid_config(self):

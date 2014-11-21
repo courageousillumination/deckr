@@ -140,7 +140,7 @@ class Game(object):
                     # We only want to number a zone if there will be
                     # more than one of it.
                     if(num_copies != 1):
-                        id_str = str(i)
+                        id_str = str(i+1)
 
                     # Add to the zones dictionary
                     self.zones[zone["name"] + id_str] = zone_object
@@ -274,7 +274,7 @@ class Game(object):
             id_str = ''
             for i in range(0, num_copies):
                 if num_copies != 1:
-                    id_str = str(i)
+                    id_str = str(i+1)
 
                 # Add zone to player's dictionary
                 player.zones[zone.name + id_str] = zone
