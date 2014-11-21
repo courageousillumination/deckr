@@ -165,6 +165,8 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         trans = self.runner.get_public_transitions(self.game_room.room_id)
         self.emit_to_room(self.room, 'state_transitions', trans)
 
+        self.emit_to_room(self.room, 'info_string', str(trans));
+
         # Get all the private transitions
         trans = self.runner.get_player_transitions(self.game_room.room_id,
                                                    self.player.player_id)

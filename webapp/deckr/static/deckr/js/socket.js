@@ -34,6 +34,10 @@ socket.on('make_action', function(data) {
     }
 });
 
+socket.on('info_string', function(data) {
+    alert(data);
+});
+
 socket.on('state_transitions', function(data) {
     console.log(data);
     for (i = 0; i < data.length; i++) {

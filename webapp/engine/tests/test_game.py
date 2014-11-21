@@ -444,7 +444,7 @@ class GameTestCase(TestCase):
     def test_state_with_owners(self):
         """
         This tests getting the state of the game when zones
-        assigned to players.
+        are assigned to players.
         """
 
         config = {
