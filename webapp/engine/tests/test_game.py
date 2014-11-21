@@ -247,7 +247,6 @@ class GameTestCase(TestCase):
         self.assertTrue(hasattr(self.game, 'card_set'))
         self.assertEqual(len(self.game.card_set.all_cards()), 2)
 
-    @skip("not yet implemented")
     def test_config_with_owners(self):
         """
         Test allowing configurations to specify zone ownership.
@@ -265,10 +264,14 @@ class GameTestCase(TestCase):
 
         # Game should be aware of its players and zones
         self.assertEqual(self.game.max_players, 3)
-        self.assertEqual(len(self.game.zones), 2)
+        self.assertEqual(len(self.game.zones), 1)
 
-        player1 = self.game.add_player()
-        player2 = self.game.add_player()
+        player1 = self.game.get_object_with_id(
+            "Player",
+            self.game.add_player())
+        player2 = self.game.get_object_with_id(
+            "Player",
+            self.game.add_player())
 
         # Players should be aware of their assigned zones, and only those zones
         self.assertTrue(hasattr(player1, "zone1"))
@@ -278,26 +281,23 @@ class GameTestCase(TestCase):
         self.assertFalse(hasattr(player2, "zone2"))
 
         # Players should also have dictionary of their zones
-        self.assertEqual(len(player1.zones), 2)
-        self.assertEqual(len(player2.zones), 2)
+        self.assertEqual(len(player1.zones), 1)
+        self.assertEqual(len(player2.zones), 1)
 
         # The game should be aware of the zones and who has them, if anyone
-        self.assertEqual(self.games.zones["zone1_" +
-                                          str(self.game.player1.game_id)],
-                         player1.zone1)
-        self.assertEqual(self.games.zones["zone1_" +
-                                          str(self.game.player2.game_id)],
-                         player2.zone1)
-        self.assertEqual(self.games.zones["zone2"], self.game.zone2)
+        self.assertEqual(self.game.zones["zone1_"
+                                         + str(player1.game_id)], player1.zone1)
+        self.assertEqual(self.game.zones["zone1_"
+                                         + str(player2.game_id)], player2.zone1)
+        self.assertEqual(self.game.zones["zone2"], self.game.zone2)
 
-    @skip("not yet implemented")
     def test_config_multi(self):
         """
         Test allowing configurations to specify zone multiplicity.
         """
 
         config = {
-            "max_players": 2,
+            "max_players": 3,
             "zones": [
                 {"name": "zoneA", "multiplicity": 10},
                 {"name": "zoneB", "owner": "player", "multiplicity": 10}
@@ -305,40 +305,42 @@ class GameTestCase(TestCase):
         }
 
         self.game.load_config(config)
+        player1 = self.game.get_object_with_id(
+            "Player",
+            self.game.add_player())
 
         # First we should have 20 zones, 10 of "zoneA"
-        # and 10 "zoneB"s belonging to "player"
+        # and 10 "zoneB"s belonging to "player1"
         self.assertEqual(len(self.game.zones), 20)
 
-        # The ownerless zones should simply be numbered in order
-        for i in range(1, 11):
+        for i in range(0, 10):
+            # The ownerless zones should simply be numbered in order
             self.assertEqual(self.game.zones["zoneA" + str(i)],
                              getattr(self.game, "zoneA" + str(i)))
 
-        # Zones assigned to "player" should be numbered and include its game_id
-        # "Player" should have attributes for its zones
-        for i in range(11, 21):
-            self.assertTrue(hasattr(self.player, "zoneB" + str(i)))
-            zone_name = "zoneB" + str(i) + "_" + str(self.game.player.game_id)
-            self.assertEqual(self.game.zones[zone_name],
-                             getattr(self.player, "zoneB" + str(i)))
+            # Player1's zones should be numbered and include game_id
+            # "Player" should have attributes for its zones
+            self.assertTrue(hasattr(player1, "zoneB" + str(i)))
+            self.assertEqual(self.game.zones["zoneB" + str(i)
+                                             + "_" + str(player1.game_id)],
+                             getattr(player1, "zoneB" + str(i)))
 
-        other_player = self.game.add_player()
+        other_player = self.game.get_object_with_id("Player",
+                                                    self.game.add_player())
 
         # Now there are 30 zones, because "other_player" also has 10 "zoneB"s
         self.assertEqual(len(self.game.zones), 30)
 
         # New zones should be numbered and tagged with other_player's game_id
         # The player should also be aware of them as attributes
-        for i in range(21, 31):
-            self.assertTrue(hasattr(self.game.players[other_player],
-                                    "zoneB" + str(i)))
+        for i in range(0, 10):
+            self.assertTrue(hasattr(other_player, "zoneB" + str(i)))
             self.assertEqual(self.game.zones["zoneB" + str(i) +
-                                             "_" + str(other_player)],
-                             getattr(self.other_player, "zoneB" + str(i)))
+                                             "_" + str(other_player.game_id)],
+                             getattr(other_player, "zoneB" + str(i)))
 
         # Check that player dictionaries have the right number of elements
-        self.assertEqual(len(self.player.zones), 10)
+        self.assertEqual(len(player1.zones), 10)
         self.assertEqual(len(other_player.zones), 10)
 
     def test_load_invalid_config(self):
@@ -356,7 +358,6 @@ class GameTestCase(TestCase):
 
         self.game.load_config(invalid_configuration)
 
-    @skip("not yet implemented")
     def test_invalid_owner(self):
         """
         This test makes sure we can process a configuration
@@ -374,17 +375,23 @@ class GameTestCase(TestCase):
 
         self.game.load_config(bad_config)
 
+        other_player = self.game.get_object_with_id("Player",
+                                                    self.game.add_player())
+
         # Game should contain only the valid zones
         self.assertEqual(len(self.game.zones), 2)
 
         # Game should have attributes for the valid zones
-        self.assertTrue(hasattr(self.game, "zone1"))
+        self.assertTrue(hasattr(self.game, "zone1_"
+                                + str(other_player.game_id)))
         self.assertTrue(hasattr(self.game, "zone2"))
+
+        # The player should have one zone
+        self.assertTrue(hasattr(other_player, "zone1"))
 
         # Game should not contain the invalid zone
         self.assertFalse(hasattr(self.game, "zone3"))
 
-    @skip("broken for now")
     def test_get_state(self):
         """
         Make sure that we can get the state out of a Game.
@@ -402,19 +409,19 @@ class GameTestCase(TestCase):
             'cards': [{'game_id': 1, 'zone': 2, 'face_up': False},
                       {'game_id': 2, 'zone': 1, 'face_up': False},
                       {'game_id': 3, 'zone': 1, 'face_up': False}],
-            'players': [{'game_id': 1}],
+            'players': [{'game_id': 1, 'zones': {}}],
             'zones': [{'cards': [2, 3],
                        'game_id': 1,
                        'name': 'zone2',
                        'region_id': None,
-                       'owner_id': False,
+                       'owner': None,
                        'stacked': True,
                        'zone_type': ''},
                       {'cards': [1],
                        'game_id': 2,
                        'name': 'zone1',
                        'region_id': None,
-                       'owner_id': None,
+                       'owner': None,
                        'stacked': False,
                        'zone_type': ''}]
         }
@@ -434,7 +441,6 @@ class GameTestCase(TestCase):
         self.assertDictEqual(self.game.get_state(),
                              expected_state)
 
-    @skip
     def test_state_with_owners(self):
         """
         This tests getting the state of the game when zones
@@ -449,45 +455,34 @@ class GameTestCase(TestCase):
         }
 
         expected_state = {
-            'cards': [{}],
-            'players': [{'game_id': 1}],
-            'zones': [{'cards': [],
-                       'game_id': 1,
-                       'name': 'zone1',
-                       'region_id': None,
-                       'owner_id': self.player.game_id,
-                       'stacked': False,
-                       'zone_type': ''}]
+            'cards': [],
+            'players': [{'game_id': 1, 'zones': {}}],
+            'zones': []
         }
 
         self.game.load_config(config)
         self.assertDictEqual(self.game.get_state(),
                              expected_state)
 
-        other_player = self.add_player()
+        other_player = self.game.add_player()
 
         expected_state = {
-            'cards': [{}],
-            'players': [{'game_id': 1}],
+            'cards': [],
+            'players': [{'game_id': 1, 'zones': {}},
+                        {'game_id': 2,
+                         'zones': {'zone1': 1},
+                         'zone1': 1}],
             'zones': [{'cards': [],
                        'game_id': 1,
-                       'name': 'zone1_' + str(self.player.game_id),
+                       'name': 'zone1',
                        'region_id': None,
-                       'owner_id': self.player.game_id,
-                       'stacked': False,
-                       'zone_type': ''},
-                      {'cards': [],
-                       'game_id': 1,
-                       'name': 'zone1_' + str(other_player),
-                       'region_id': None,
-                       'owner_id': other_player,
+                       'owner': other_player,
                        'stacked': False,
                        'zone_type': ''}]
         }
 
         self.assertDictEqual(self.game.get_state(), expected_state)
 
-    @skip
     def test_state_with_multiplicity(self):
         """
         This tests getting the state of the game when multiple
@@ -495,32 +490,38 @@ class GameTestCase(TestCase):
         """
 
         config = {
-            "max_players": 3,
+            "max_players": 2,
             "zones": [
                 {"name": "zoneA", "owner": "player", "multiplicity": 2}
             ]
         }
 
-        expected_state = {
-            'cards': [{}],
-            'players': [{'game_id': 1}],
-            'zones': [{'cards': [],
-                       'game_id': 1,
-                       'name': 'zoneA1_' + str(self.player.game_id),
-                       'region_id': None,
-                       'owner_id': self.player.game_id,
-                       'stacked': False,
-                       'zone_type': ''},
-                      {'cards': [],
-                       'game_id': 1,
-                       'name': 'zoneA2_' + str(self.player.game_id),
-                       'region_id': None,
-                       'owner_id': self.player.game_id,
-                       'stacked': False,
-                       'zone_type': ''}]
-        }
-
         self.game.load_config(config)
+        other_player = self.game.add_player()
+
+        expected_state = {
+            'cards': [],
+            'players': [{'game_id': 1, 'zones': {}},
+                        {'zones': {'zoneA1': 1,
+                                   'zoneA0': 2},
+                         'zoneA1': 1,
+                         'zoneA0': 2,
+                         'game_id': 2}],
+            'zones': [{'name': 'zoneA1',
+                       'stacked': False,
+                       'region_id': None,
+                       'cards': [],
+                       'owner': other_player,
+                       'zone_type': '',
+                       'game_id': 1},
+                      {'name': 'zoneA0',
+                       'stacked': False,
+                       'region_id': None,
+                       'cards': [],
+                       'owner': other_player,
+                       'zone_type': '',
+                       'game_id': 2}]}
+
         self.assertDictEqual(self.game.get_state(),
                              expected_state)
 
@@ -629,13 +630,13 @@ class GameTestCase(TestCase):
         expected_state = {'cards': [{'face_up': False,
                                      'game_id': 1,
                                      'zone': None}],
-                          'players': [{'game_id': 1}],
+                          'players': [{'game_id': 1, 'zones': {}}],
                           'zones': []}
 
         player_expected_state = {'cards': [{'face_up': True,
                                             'game_id': 1,
                                             'zone': None}],
-                                 'players': [{'game_id': 1}],
+                                 'players': [{'game_id': 1, 'zones': {}}],
                                  'zones': []}
         card = Card()
         self.game.register([card])

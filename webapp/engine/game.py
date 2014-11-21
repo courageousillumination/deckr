@@ -3,6 +3,7 @@ This module defines everything needed for the base Game class.
 """
 
 from engine.card import Card
+from engine.has_zones import HasZones
 from engine.player import Player
 from engine.zone import Zone
 
@@ -85,7 +86,7 @@ def game_step(requires=None):
     return wrapper
 
 
-class Game(object):
+class Game(HasZones):
 
     """
     A game is one of the core classes of the engine. It contains logic to run
@@ -94,6 +95,8 @@ class Game(object):
     """
 
     def __init__(self):
+        super(Game, self).__init__()
+
         # registered_objects is a dictionary of all objects that have been
         # registered with this game. It takes the following form.
         # { class1 : [next_id, {1 : object1, ...}],
@@ -101,7 +104,7 @@ class Game(object):
         #   ...
         # }
         self.registered_objects = {}
-        self.zones = {}
+        self.player_zones = []
         self.max_players = 0
         self.players = []
 
@@ -122,16 +125,10 @@ class Game(object):
         self.max_players = config.get('max_players', 0)
         zones = config.get('zones', [])
 
-        for zone in zones:
-            zone_object = Zone()
-            zone_object.stacked = zone.get('stacked', False)
-            zone_object.name = zone.get('name', '')
-            zone_object.zone_type = zone.get('zone_type', '')
-
-            # Add to the zones dictionary
-            self.zones[zone["name"]] = zone_object
-            # Add an attribute
-            setattr(self, zone["name"], zone_object)
+        game_zones = [x for x in zones if x.get('owner', None) is None]
+        player_zones = [x for x in zones if x.get('owner', None) == 'player']
+        self.add_zones(game_zones)
+        self.player_zones = player_zones
 
         # Register all zones
         self.register(self.zones.values())
@@ -260,9 +257,19 @@ class Game(object):
             raise ValueError("Too many players.")
 
         player = Player()
-        self.register([player])
+        player.add_zones(self.player_zones)
         self.players.append(player)
 
+        # Register both the player and it's zones with the game.
+        self.register([player])
+        self.register(player.zones.values())
+        # Add the per-player zones to our dictionary and add the owner to
+        # each zone.
+        for name, zone in player.zones.items():
+            zone.owner = player.game_id
+            zone_name = name + '_' + str(player.game_id)
+            self.zones[zone_name] = zone
+            setattr(self, zone_name, zone)
         return player.game_id
 
     def get_state(self, player_id=None):
