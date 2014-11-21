@@ -128,7 +128,8 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         self.game_room = game_room
         self.room = room
         self.join(room)
-        self.emit('player_nick', player.nickname)
+        self.emit('player_nick', {'nickname': player.nickname,
+                                  'id': player.player_id})
         self.update_player_list()
 
         return True

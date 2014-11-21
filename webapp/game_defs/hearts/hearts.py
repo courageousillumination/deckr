@@ -57,8 +57,9 @@ class Hearts(Game):
 
         # Set card owners
         for player in self.players:
-            for card in player.hand:
+            for card in player.hand.get_cards():
                 card.owner = player
+                card.face_up = True
 
         # Set any extra cards to the side
         self.side_zone.set_cards(all_cards)

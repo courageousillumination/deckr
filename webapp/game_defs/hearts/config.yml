@@ -8,3 +8,5 @@ zones:
     - name: "discard"
       owner: "player"
     - name: "play_zone"
+      owner: "player"
+    - name: "side_zone"
