@@ -28,6 +28,30 @@
     margin-bottom: -68px;
 }
 
+.horizontal-fan {
+    width: 350px;
+}
+
+.horizontal-fan img {
+    margin-left: -34px;
+}
+
+.horizontal-fan .facing-up img {
+    margin-right: -34px;
+}
+
+.facing-top img{
+    transform: rotate(180deg);
+}
+
+.facing-left img{
+    transform: rotate(90deg);
+}
+
+.facing-left img{
+    transform: rotate(270deg);
+}
+
 .stacked img {
     position: absolute
 }
@@ -108,16 +132,16 @@ socket.on('state', function (data) {
     <div class="table" id="region0">
         <div class="horizontal-fan zone" id="zone0"></div>
         <div class="stacked zone" id="discardzone0"></div>
-        <div class="left-vertical-fan zone" id="zone1"></div>
+        <div class="vertical-fan facing-left zone" id="zone1"></div>
         <div class="stacked zone" id="discardzone1"></div>
-        <div class="upsidedown-horizontal-fan" id="zone2"></div>
+        <div class="horizontal-fan facing-up" id="zone2"></div>
         <div class="stacked zone" id="discardzone2"></div>
-        <div class="right-vertical-fan" id="zone3"></div>
+        <div class="vertical-fan facing-right" id="zone3"></div>
         <div class="stacked zone" id="discardzone3"></div>
         <div class="playarea" id="region1">
             <div class="zone" id="playzone0"></div>
             <div class="facing-left zone" id="playzone1"></div>
-            <div class="facing-top zone" id="playzone2"></div>
+            <div class="facing-up zone" id="playzone2"></div>
             <div class="facing-right zone" id="playzone3"></div>
         </div>
     </div>
