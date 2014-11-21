@@ -1,9 +1,8 @@
 // index.js
-
 $(document).ready(function() {
 
     $("#create-game-room #submit").click(function() {
-        $("#create-game-room ").submit();
+        $("#create-game-room").submit();
     });
 
     $('#destroy-game-room').click(function(){

@@ -1,5 +1,4 @@
 // Globals
-var socket = io.connect("/game");
 var player_mapping = {};
 
 socket.on('move_card', function(data) {
