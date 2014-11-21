@@ -490,32 +490,35 @@ class GameTestCase(TestCase):
         """
 
         config = {
-            "max_players": 3,
+            "max_players": 2,
             "zones": [
                 {"name": "zoneA", "owner": "player", "multiplicity": 2}
             ]
         }
 
+        self.game.load_config(config)
+        player1 = self.game.add_player()
+
         expected_state = {
-            'cards': [{}],
-            'players': [{'game_id': 1}],
+            'cards': [],
+            'players': [{'game_id': 1},
+                        {'game_id': 2}],
             'zones': [{'cards': [],
                        'game_id': 1,
-                       'name': 'zoneA1_' + str(self.player.game_id),
+                       'name': 'zoneA1_' + str(player1),
                        'region_id': None,
-                       'owner_id': self.player.game_id,
+                       'owner_id': str(player1),
                        'stacked': False,
                        'zone_type': ''},
                       {'cards': [],
                        'game_id': 1,
-                       'name': 'zoneA2_' + str(self.player.game_id),
+                       'name': 'zoneA2_' + str(player1),
                        'region_id': None,
                        'owner_id': self.player.game_id,
                        'stacked': False,
                        'zone_type': ''}]
         }
 
-        self.game.load_config(config)
         self.assertDictEqual(self.game.get_state(),
                              expected_state)
 
