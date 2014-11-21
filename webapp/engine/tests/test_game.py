@@ -379,7 +379,6 @@ class GameTestCase(TestCase):
         # Game should not contain the invalid zone
         self.assertFalse(hasattr(self.game, "zone3"))
 
-    @skip("broken for now")
     def test_get_state(self):
         """
         Make sure that we can get the state out of a Game.
@@ -402,14 +401,14 @@ class GameTestCase(TestCase):
                        'game_id': 1,
                        'name': 'zone2',
                        'region_id': None,
-                       'owner_id': False,
+                       'owner': None,
                        'stacked': True,
                        'zone_type': ''},
                       {'cards': [1],
                        'game_id': 2,
                        'name': 'zone1',
                        'region_id': None,
-                       'owner_id': None,
+                       'owner': None,
                        'stacked': False,
                        'zone_type': ''}]
         }
@@ -444,45 +443,34 @@ class GameTestCase(TestCase):
         }
 
         expected_state = {
-            'cards': [{}],
+            'cards': [],
             'players': [{'game_id': 1}],
-            'zones': [{'cards': [],
-                       'game_id': 1,
-                       'name': 'zone1',
-                       'region_id': None,
-                       'owner_id': self.player.game_id,
-                       'stacked': False,
-                       'zone_type': ''}]
+            'zones': []
         }
 
         self.game.load_config(config)
         self.assertDictEqual(self.game.get_state(),
                              expected_state)
 
-        other_player = self.add_player()
+        other_player = self.game.add_player()
 
         expected_state = {
-            'cards': [{}],
-            'players': [{'game_id': 1}],
+            'cards': [],
+            'players': [{'game_id': 1},
+                        {'game_id': 2,
+                         'zones': {'zone1': 1},
+                         'zone1': 1}],
             'zones': [{'cards': [],
                        'game_id': 1,
-                       'name': 'zone1_' + str(self.player.game_id),
+                       'name': 'zone1',
                        'region_id': None,
-                       'owner_id': self.player.game_id,
-                       'stacked': False,
-                       'zone_type': ''},
-                      {'cards': [],
-                       'game_id': 1,
-                       'name': 'zone1_' + str(other_player),
-                       'region_id': None,
-                       'owner_id': other_player,
+                       'owner': other_player,
                        'stacked': False,
                        'zone_type': ''}]
         }
 
         self.assertDictEqual(self.game.get_state(), expected_state)
 
-    @skip
     def test_state_with_multiplicity(self):
         """
         This tests getting the state of the game when multiple
@@ -497,28 +485,32 @@ class GameTestCase(TestCase):
         }
 
         self.game.load_config(config)
-        player1 = self.game.add_player()
+        other_player = self.game.add_player()
 
         expected_state = {
             'cards': [],
             'players': [{'game_id': 1},
-                        {'game_id': 2}],
+                        {'game_id': 2,
+                         'zones': {'zoneA1': 1,
+                                   'zoneA2': 1},
+                         'zoneA1': 1,
+                         'zoneA2': 1}],
             'zones': [{'cards': [],
                        'game_id': 1,
-                       'name': 'zoneA1_' + str(player1),
+                       'name': 'zoneA1_2',
                        'region_id': None,
-                       'owner_id': str(player1),
+                       'owner': other_player,
                        'stacked': False,
                        'zone_type': ''},
                       {'cards': [],
                        'game_id': 1,
-                       'name': 'zoneA2_' + str(player1),
+                       'name': 'zoneA2_2',
                        'region_id': None,
-                       'owner_id': self.player.game_id,
+                       'owner': other_player,
                        'stacked': False,
-                       'zone_type': ''}]
-        }
+                       'zone_type': ''}]}
 
+        print self.game.get_state()
         self.assertDictEqual(self.game.get_state(),
                              expected_state)
 

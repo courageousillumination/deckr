@@ -278,17 +278,22 @@ class Game(object):
 
                 full_name = zone.name + id_str
 
+                new_zone = Zone()
+                new_zone.stacked = zone.stacked
+                new_zone.name = full_name
+                new_zone.zone_type = zone.zone_type
+
                 # Add zone to player's dictionary
-                player.zones[full_name] = zone
+                player.zones[full_name] = new_zone
                 # Make it an attribute
-                setattr(player, full_name, zone)
+                setattr(player, full_name, new_zone)
 
                 # Add to the zones dictionary
                 self.zones[full_name + "_"
-                           + str(player.game_id)] = zone
+                           + str(player.game_id)] = new_zone
                 # Add an attribute
                 setattr(self, full_name + "_"
-                        + str(player.game_id), zone)
+                        + str(player.game_id), new_zone)
 
         self.register(player.zones.values())
         self.players.append(player)
