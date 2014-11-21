@@ -4,13 +4,11 @@ Stores all the socket logic for the deckr webapp.
 
 from django.core.exceptions import ObjectDoesNotExist
 
-from socketio.namespace import BaseNamespace
-from socketio.mixins import RoomsMixin, BroadcastMixin
-from socketio.sdjango import namespace
-
+from deckr.models import GameRoom, Player
 from engine import game_runner
-
-from deckr.models import Player, GameRoom
+from socketio.mixins import BroadcastMixin, RoomsMixin
+from socketio.namespace import BaseNamespace
+from socketio.sdjango import namespace
 
 
 @namespace('/chat')
@@ -64,7 +62,7 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
                    args=args,
                    endpoint=self.ns_name)
         room_name = self._get_room_name(room)
-        for sessid, socket in self.socket.server.sockets.iteritems():
+        for _, socket in self.socket.server.sockets.iteritems():
             if 'rooms' not in socket.session:
                 continue
             if room_name in socket.session['rooms']:
@@ -84,9 +82,11 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
 
         self.runner.start_game(self.game_room.room_id)
         # Boadcast the state to all clients
+        state = self.runner.get_state(self.game_room.room_id,
+                                      self.player.player_id)
         self.emit_to_room(self.room,
                           "state",
-                          self.runner.get_state(self.game_room.room_id))
+                          state)
 
     def on_join(self, join_request):
         """
@@ -157,17 +157,21 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         will then broadcast the message to the rest of the channel.
         """
 
-        print data
-
-        error, transitions = self.runner.make_action(self.game_room.room_id,
-                                                     **data)
-        if error:
-            self.emit("error", "Invalid move")
+        # pylint: disable=W0142
+        valid, message = self.runner.make_action(self.game_room.room_id,
+                                                 **data)
+        if not valid:
+            self.emit("error", message)
             return False
 
-        print("Transitions", transitions)
+        trans = self.runner.get_public_transitions(self.game_room.room_id)
+        self.emit_to_room(self.room, 'state_transitions', trans)
 
-        self.emit_to_room(self.room, 'state_transitions', transitions)
+        # Get all the private transitions
+        trans = self.runner.get_player_transitions(self.game_room.room_id,
+                                                   self.player.player_id)
+        self.emit('state_transitions', trans)
+
         return True
 
     def on_request_state(self):
@@ -180,7 +184,8 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
             self.emit("error", "Please connect to a game room first.")
             return False
 
-        state = self.runner.get_state(self.game_room.room_id)
+        state = self.runner.get_state(self.game_room.room_id,
+                                      self.player.player_id)
         self.emit("state", state)
         return True
 

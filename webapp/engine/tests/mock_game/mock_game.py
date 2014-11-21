@@ -136,7 +136,6 @@ class MockGame(Game):
         self.add_transition(("public", "foobar"))
         self.add_transition(("private", "foobaz"), player)
 
-
     def get_magic(self):
         """
         This is just because isinstance of is acting poorly.

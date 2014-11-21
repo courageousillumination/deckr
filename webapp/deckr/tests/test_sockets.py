@@ -108,6 +108,8 @@ class GameNamespaceTestCase(SocketTestCase):
         self.namespace.runner.get_state = MagicMock()
         self.namespace.runner.make_action = MagicMock()
         self.namespace.runner.start_game = MagicMock()
+        self.namespace.runner.get_public_transitions = MagicMock()
+        self.namespace.runner.get_player_transitions = MagicMock()
         self.game_room = GameRoom.objects.create(room_id=0,
                                                  max_players=1)
         self.player = Player.objects.create(player_id=1,
@@ -156,7 +158,6 @@ class GameNamespaceTestCase(SocketTestCase):
         error_message = "Game room id is not an integer."
         self.namespace.emit.assert_called_with("error", error_message)
 
-    @skip
     def test_invalid_move(self):
         """
         If we send an invalid move we should get an error.
@@ -170,17 +171,6 @@ class GameNamespaceTestCase(SocketTestCase):
         self.assertFalse(self.namespace.on_action(invalid_move))
         self.namespace.emit.assert_called_with("error", "Invalid move")
 
-    @skip
-    def test_spectator_move(self):
-        """
-        If spectator makes a move, reject it
-        """
-
-        valid_move = {"action": "valid move"}
-        self.namespace.player = None
-        self.assertFalse(self.namespace.on_action(valid_move))
-
-    @skip
     def test_valid_move(self):
         """
         If we send a valid move we should get a list of transitions.
@@ -189,13 +179,13 @@ class GameNamespaceTestCase(SocketTestCase):
         valid_move = {"action": "valid move"}
         transitions = [{}]
         self.namespace.runner.make_action.return_value = (True, None)
+        self.namespace.runner.get_public_transitions.return_value = transitions
 
         self.namespace.on_action(valid_move)
         self.namespace.emit_to_room.assert_called_with(self.namespace.room,
                                                        "state_transitions",
                                                        transitions)
 
-    @skip
     def test_private_transitions(self):
         """
         Make sure that if there are specific player transitions then we return
@@ -206,7 +196,7 @@ class GameNamespaceTestCase(SocketTestCase):
         transitions = [("move", 1, 1)]
         player_1_transitions = [("set", "Card", 1, "face_up", True)]
 
-        def per_player_transitions(player_id):
+        def per_player_transitions(_, player_id):
             """
             Turn Card1 face up for player 1 only.
             """
@@ -215,7 +205,7 @@ class GameNamespaceTestCase(SocketTestCase):
                 return player_1_transitions
 
         runner = self.namespace.runner
-        runner.make_action.return_value = True
+        runner.make_action.return_value = (True, None)
         runner.get_public_transitions.return_value = transitions
         runner.get_player_transitions.side_effect = per_player_transitions
 
@@ -242,7 +232,8 @@ class GameNamespaceTestCase(SocketTestCase):
 
         self.assertTrue(self.namespace.on_request_state())
         self.namespace.emit.assert_called_with("state", state)
-        runner.get_state.assert_called_with(self.game_room.room_id)
+        runner.get_state.assert_called_with(self.game_room.room_id,
+                                            self.namespace.player.player_id)
 
         # Test that we get an error if we call this without a room
         self.namespace.game_room = None
@@ -366,3 +357,13 @@ class GameNamespaceTestCase(SocketTestCase):
         self.assertEqual(Player.objects.all().count(), old_count)
         self.assertEqual(self.namespace.player, None)
         self.assertEqual(self.namespace.room, room)
+
+    @skip
+    def test_spectator_move(self):
+        """
+        If spectator makes a move, reject it
+        """
+
+        valid_move = {"action": "valid move"}
+        self.namespace.player = None
+        self.assertFalse(self.namespace.on_action(valid_move))

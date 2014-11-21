@@ -5,7 +5,7 @@ This module contains all test for the Game class.
 from unittest import skip, TestCase
 
 from engine.card import Card
-from engine.game import game_step, InvalidMoveException, NeedsMoreInfo, action
+from engine.game import action, game_step, InvalidMoveException, NeedsMoreInfo
 from engine.player import Player
 from engine.tests.mock_game.mock_game import MockGame
 from engine.zone import Zone
@@ -42,34 +42,35 @@ class GameTestCase(TestCase):
         Make sure that action restrictions work correctly
         """
 
-        def restriction_pass(*args, ** kwargs):
+        # pylint: disable=unused-argument
+        def restriction_pass(*args, **kwargs):
             """
             Always returns true
             """
             return True
 
-        def restriction_fail(*args, ** kwargs):
+        def restriction_fail(*args, **kwargs):
             """
             Always returns false
             """
             return False
 
-        @action()
-        def mock_action1(*args, ** kwargs):
+        @action(restriction=None)
+        def mock_action1(*args, **kwargs):
             """
             Should always return 1
             """
             return 1
 
         @action(restriction=restriction_pass)
-        def mock_action2(*args, ** kwargs):
+        def mock_action2(*args, **kwargs):
             """
             Should always return 2
             """
             return 2
 
         @action(restriction=restriction_fail)
-        def mock_action3(*args, ** kwargs):
+        def mock_action3(*args, **kwargs):
             """
             Should always fail with an InvalidMoveException
             """
@@ -282,9 +283,11 @@ class GameTestCase(TestCase):
 
         # The game should be aware of the zones and who has them, if anyone
         self.assertEqual(self.games.zones["zone1_" +
-                                          str(self.game.player1.game_id)], player1.zone1)
+                                          str(self.game.player1.game_id)],
+                         player1.zone1)
         self.assertEqual(self.games.zones["zone1_" +
-                                          str(self.game.player2.game_id)], player2.zone1)
+                                          str(self.game.player2.game_id)],
+                         player2.zone1)
         self.assertEqual(self.games.zones["zone2"], self.game.zone2)
 
     @skip("not yet implemented")
@@ -309,15 +312,15 @@ class GameTestCase(TestCase):
 
         # The ownerless zones should simply be numbered in order
         for i in range(1, 11):
-            self.assertEqual(self.game.zones["zoneA" +
-                                             str(i)], getattr(self.game, "zoneA" + str(i)))
+            self.assertEqual(self.game.zones["zoneA" + str(i)],
+                             getattr(self.game, "zoneA" + str(i)))
 
         # Zones assigned to "player" should be numbered and include its game_id
         # "Player" should have attributes for its zones
         for i in range(11, 21):
             self.assertTrue(hasattr(self.player, "zoneB" + str(i)))
-            self.assertEqual(self.game.zones["zoneB" + str(i) +
-                                             "_" + str(self.game.player.game_id)],
+            zone_name = "zoneB" + str(i) + "_" + str(self.game.player.game_id)
+            self.assertEqual(self.game.zones[zone_name],
                              getattr(self.player, "zoneB" + str(i)))
 
         other_player = self.game.add_player()
@@ -616,3 +619,29 @@ class GameTestCase(TestCase):
         self.assertTrue(self.game.remove_player(newplayer))
         self.assertFalse(self.game.remove_player(newplayer))
         self.assertTrue(self.game.remove_player(newplayertwo))
+
+    def test_get_state_with_player_data(self):
+        """
+        If we set attributes that are specifc to player make sure we can
+        get the state for that player.
+        """
+
+        expected_state = {'cards': [{'face_up': False,
+                                     'game_id': 1,
+                                     'zone': None}],
+                          'players': [{'game_id': 1}],
+                          'zones': []}
+
+        player_expected_state = {'cards': [{'face_up': True,
+                                            'game_id': 1,
+                                            'zone': None}],
+                                 'players': [{'game_id': 1}],
+                                 'zones': []}
+        card = Card()
+        self.game.register([card])
+
+        card.set_value("face_up", True, self.player)
+
+        self.assertDictEqual(expected_state, self.game.get_state())
+        self.assertDictEqual(player_expected_state,
+                             self.game.get_state(self.player.game_id))
