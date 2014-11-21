@@ -42,34 +42,35 @@ class GameTestCase(TestCase):
         Make sure that action restrictions work correctly
         """
 
-        def restriction_pass(*args, ** kwargs):
+        # pylint: disable=unused-argument
+        def restriction_pass(*args, **kwargs):
             """
             Always returns true
             """
             return True
 
-        def restriction_fail(*args, ** kwargs):
+        def restriction_fail(*args, **kwargs):
             """
             Always returns false
             """
             return False
 
-        @action()
-        def mock_action1(*args, ** kwargs):
+        @action(restriction=None)
+        def mock_action1(*args, **kwargs):
             """
             Should always return 1
             """
             return 1
 
         @action(restriction=restriction_pass)
-        def mock_action2(*args, ** kwargs):
+        def mock_action2(*args, **kwargs):
             """
             Should always return 2
             """
             return 2
 
         @action(restriction=restriction_fail)
-        def mock_action3(*args, ** kwargs):
+        def mock_action3(*args, **kwargs):
             """
             Should always fail with an InvalidMoveException
             """
@@ -333,7 +334,6 @@ class GameTestCase(TestCase):
         # New zones should be numbered and tagged with other_player's game_id
         # The player should also be aware of them as attributes
         for i in range(0, 10):
-            print(other_player.zones)
             self.assertTrue(hasattr(other_player, "zoneB" + str(i)))
             self.assertEqual(self.game.zones["zoneB" + str(i) +
                                              "_" + str(other_player.game_id)],
@@ -522,8 +522,6 @@ class GameTestCase(TestCase):
                        'zone_type': '',
                        'game_id': 2}]}
 
-        print other_player
-        print self.game.get_state()
         self.assertDictEqual(self.game.get_state(),
                              expected_state)
 
@@ -622,3 +620,29 @@ class GameTestCase(TestCase):
         self.assertTrue(self.game.remove_player(newplayer))
         self.assertFalse(self.game.remove_player(newplayer))
         self.assertTrue(self.game.remove_player(newplayertwo))
+
+    def test_get_state_with_player_data(self):
+        """
+        If we set attributes that are specifc to player make sure we can
+        get the state for that player.
+        """
+
+        expected_state = {'cards': [{'face_up': False,
+                                     'game_id': 1,
+                                     'zone': None}],
+                          'players': [{'game_id': 1, 'zones': {}}],
+                          'zones': []}
+
+        player_expected_state = {'cards': [{'face_up': True,
+                                            'game_id': 1,
+                                            'zone': None}],
+                                 'players': [{'game_id': 1, 'zones': {}}],
+                                 'zones': []}
+        card = Card()
+        self.game.register([card])
+
+        card.set_value("face_up", True, self.player)
+
+        self.assertDictEqual(expected_state, self.game.get_state())
+        self.assertDictEqual(player_expected_state,
+                             self.game.get_state(self.player.game_id))

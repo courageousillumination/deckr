@@ -108,10 +108,12 @@ class Game(HasZones):
         self.max_players = 0
         self.players = []
 
-        # transitions will be a list of tuples of the following form:
+        # transitions is a dictionary of lists of tuples. The dictionary keys
+        # are player_ids and the values are lists of transitions that should be
+        # visible to that player.
         # (< action >, < args >)
         # Where action is one of "move", "add", "remove", "set", "over"
-        self.transitions = []
+        self.transitions = {}
 
     def load_config(self, config):
         """
@@ -139,6 +141,9 @@ class Game(HasZones):
         matches. If the action is invalid this could throw an exception.
         """
 
+        # Flush the old transitions
+        self.flush_transitions()
+
         if not hasattr(self, action_name):
             raise InvalidMoveException
 
@@ -153,12 +158,8 @@ class Game(HasZones):
 
         getattr(self, action_name)(**kwargs)
 
-        transitions = self.get_transitions()
         if self.is_over():
             self.add_transition(('is_over', self.winners()))
-
-        self.flush_transitions()
-        return transitions
 
     def register(self, objects):
         """
@@ -205,27 +206,40 @@ class Game(HasZones):
         except KeyError:
             return None
 
-    def add_transition(self, trans):
+    def add_transition(self, trans, player=None):
         """
-        Add a tuple to the current list of transitions.
-        """
-
-        self.transitions.append(trans)
-
-    def get_transitions(self):
-        """
-        Get all the changes that have occured since the changes were
-        last flushed.
+        Add a tuple to the current list of transitions. If player is given it
+        will register it as a player specific transition. Otherwise it registers
+        as a global transition.
         """
 
-        return self.transitions
+        if player is None:
+            key = None
+        else:
+            key = player.game_id
+
+        self.transitions.setdefault(key, []).append(trans)
+
+    def get_public_transitions(self):
+        """
+        Get all the transitions that have been registered without a player.
+        """
+
+        return self.transitions.get(None, [])
+
+    def get_player_transitions(self, player_id):
+        """
+        Get all the transitions that have been registered for a specific player.
+        """
+
+        return self.transitions.get(player_id, [])
 
     def flush_transitions(self):
         """
         Get rid of all the current transitions.
         """
 
-        self.transitions = []
+        self.transitions = {}
 
     def remove_player(self, player_id):
         """
@@ -258,12 +272,17 @@ class Game(HasZones):
             setattr(self, zone_name, zone)
         return player.game_id
 
-    def get_state(self):
+    def get_state(self, player_id=None):
         """
         This will return a dictonary containg the game state. This includes
         all cards and all their data, all zones, all players and their
         attributes, etc.
         """
+
+        if player_id is not None:
+            player = self.get_object_with_id("Player", player_id)
+        else:
+            player = None
 
         # Get all of my objects
         _, cards = self.registered_objects.get("Card", (1, {}))
@@ -273,10 +292,11 @@ class Game(HasZones):
         # Convert to a dictionary
         result = {}
 
-        print cards
-        result['cards'] = [x.to_dict() for x in cards.values()]
+        result['cards'] = [x.to_dict(player) for x in cards.values()]
+        result['players'] = [x.to_dict(player) for x in players.values()]
+        # Note that zones aren't StatefulGameObjects but just base game
+        # objects.
         result['zones'] = [x.to_dict() for x in zones.values()]
-        result['players'] = [x.to_dict() for x in players.values()]
 
         return result
 

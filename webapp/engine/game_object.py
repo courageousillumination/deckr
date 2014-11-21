@@ -31,9 +31,11 @@ class GameObject(object):
             return item.game_id
         # If it's a dictionary we replace each sub item.
         elif isinstance(item, dict):
+            new_items = {}
             for key, value in item.items():
-                item[key] = self.replace_game_objects(value)
-            return item
+                converted_key = self.replace_game_objects(key)
+                new_items[converted_key] = self.replace_game_objects(value)
+            return new_items
         # If it's iterable we return a list of the replaced items
         elif hasattr(item, "__iter__"):
             return [self.replace_game_objects(x) for x in item]
@@ -41,7 +43,9 @@ class GameObject(object):
         else:
             return item
 
-    def to_dict(self):
+    # This is overriden by stateful game objets which care about what player
+    # we are.
+    def to_dict(self, player=None):  # pylint: disable=unused-argument
         """
         Converts a GameObject into a dictonary, excluding various values
         and using game_ids where possible.

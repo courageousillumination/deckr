@@ -170,39 +170,39 @@ class ZoneTestCase(TestCase):
 
         # Test add card
         self.zone.add_card(self.card1)
-        self.assertEqual(game.get_transitions(), expected_transitions)
+        self.assertEqual(game.get_public_transitions(), expected_transitions)
         self.zone.remove_card(self.card1)
         game.flush_transitions()
 
         # Test push card
         self.zone.push(self.card1)
-        self.assertEqual(game.get_transitions(), expected_transitions)
+        self.assertEqual(game.get_public_transitions(), expected_transitions)
         self.zone.remove_card(self.card1)
         game.flush_transitions()
 
         # Test remove card
         self.zone.add_card(self.card1)
         self.zone.remove_card(self.card1)
-        self.assertEqual(game.get_transitions(), expected_transitions2)
+        self.assertEqual(game.get_public_transitions(), expected_transitions2)
         game.flush_transitions()
 
         # Test pop card
         self.zone.push(self.card1)
         card = self.zone.pop()
         self.assertEqual(self.card1, card)
-        self.assertEqual(game.get_transitions(), expected_transitions2)
+        self.assertEqual(game.get_public_transitions(), expected_transitions2)
         game.flush_transitions()
 
         # Make sure we don't get transitions if there's bad data
         self.zone.add_card(self.card1)
         self.zone.add_card(self.card1)
-        self.assertEqual(game.get_transitions(), expected_transitions)
+        self.assertEqual(game.get_public_transitions(), expected_transitions)
         self.zone.remove_card(self.card1)
         game.flush_transitions()
 
         self.zone.pop()
         self.zone.remove_card(self.card1)
-        self.assertEqual(game.get_transitions(), [])
+        self.assertEqual(game.get_public_transitions(), [])
 
     def test_peek(self):
         """

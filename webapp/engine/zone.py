@@ -16,10 +16,13 @@ class Zone(GameObject):
     dictonary that defines specific attributes to be set on the zone.
     """
 
-    def __init__(self, config={}):
+    def __init__(self, config=None):
         super(Zone, self).__init__()
         self.region_id = None
         self.cards = []
+
+        if config is None:
+            config = {}
 
         self.stacked = config.get('stacked', False)
         self.name = config.get('name', '')
