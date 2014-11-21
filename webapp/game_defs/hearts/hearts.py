@@ -110,6 +110,8 @@ class Hearts(Game):
         Make sure that a player can play a card.
         """
 
+        # TODO: Can't break hearts on first turn
+
         # Make sure we own the card an it's in our hand
         if card not in player.hand:
             return False
@@ -192,6 +194,9 @@ class Hearts(Game):
             if (card.suit == 'hearts' or
                 card.suit == 'spades' and card.number == 12):
                 contains_point_card = True
+            if not self.hearts_broken and contains_point_card:
+                self.hearts_broken = True
+
 
         self.play_zone.suit = None
         self.current_turn = player
