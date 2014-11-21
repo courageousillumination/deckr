@@ -127,14 +127,21 @@ class Game(object):
             zone_object.name = zone.get('name', '')
             zone_object.zone_type = zone.get('zone_type', '')
 
-            if(zone.owner == 'player'):
-                player_zones.append(tuple(zone_object, zone.name, zone.multiplicity))
+            # TODO: Do we want zones to store these? It's only
+            # useful here, as far as I can tell.
+            zone_object.owner = zone.get('owner', '')
+            zone_object.multiplicity = zone.get('multiplicity', 1)
+
+            if(zone_object.owner == 'player'):
+                # We need to keep track of the zones that
+                # need to be given to players later on
+                player_zones.append(tuple(zone_object, zone_object.multiplicity))
             else:
                 for i in range(0, zone_object.multiplicity):
-                # Add to the zones dictionary
-                self.zones[zone["name"]] = zone_object
-                # Add an attribute
-                setattr(self, zone["name"], zone_object)
+                    # Add to the zones dictionary
+                    self.zones[zone["name"]] = zone_object
+                    # Add an attribute
+                    setattr(self, zone["name"], zone_object)
 
         # Register all zones
         self.register(self.zones.values())
