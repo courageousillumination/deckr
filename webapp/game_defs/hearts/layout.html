@@ -80,6 +80,11 @@ $(document).ready(function() {
     });
 });
 
+function convert_game_id_to_player_order_id(game_id) {
+  my_ordered_game_ids = [my_game_id].concat(_.filter(player_ids, function (x) { return x > my_game_id; })).concat(_.filter(player_ids, function (x) { return x < my_game_id; }));
+  return my_ordered_game_ids.indexOf(game_id) + 1;
+}
+
 socket.on('state', function (data) {
 
     console.log(data);
@@ -93,8 +98,17 @@ socket.on('state', function (data) {
 
     // Add all cards to the proper zones
     for (i = 0; i < data.zones.length; i++) {
+
         zone = data.zones[i];
-        $("#" + zone.name).attr('id', "zone" + zone.game_id);
+        // Fix the zone names
+        if (zone.owner == null) {
+            $("#" + zone.name).attr('id', "zone" + zone.game_id);
+        } else {
+            // Find the zone with the name + the player order id
+            z = $("#" + zone.name + convert_game_id_to_player_order_id(zone.owner));
+            z.attr('id', 'zone' + zone.game_id);
+        }
+
         for (j = 0; j < zone.cards.length; j++) {
             moveCard("card" + zone.cards[j], "zone" + zone.game_id, 0);
         }
@@ -130,19 +144,20 @@ socket.on('state', function (data) {
 <div class="layout">
     <button onclick="socket.emit('start');">Start</button>
     <div class="table" id="region0">
-        <div class="horizontal-fan zone" id="zone0"></div>
-        <div class="stacked zone" id="discardzone0"></div>
-        <div class="vertical-fan facing-left zone" id="zone1"></div>
-        <div class="stacked zone" id="discardzone1"></div>
-        <div class="horizontal-fan facing-up" id="zone2"></div>
-        <div class="stacked zone" id="discardzone2"></div>
-        <div class="vertical-fan facing-right" id="zone3"></div>
-        <div class="stacked zone" id="discardzone3"></div>
+        <div class="horizontal-fan zone" id="hand1"></div>
+        <div class="stacked zone" id="discard1"></div>
+        <div class="vertical-fan facing-left zone" id="hand2"></div>
+        <div class="stacked zone" id="discard2"></div>
+        <div class="horizontal-fan facing-up" id="hand3"></div>
+        <div class="stacked zone" id="discard3"></div>
+        <div class="vertical-fan facing-right" id="hand4"></div>
+        <div class="stacked zone" id="discard4"></div>
         <div class="playarea" id="region1">
-            <div class="zone" id="playzone0"></div>
-            <div class="facing-left zone" id="playzone1"></div>
-            <div class="facing-up zone" id="playzone2"></div>
-            <div class="facing-right zone" id="playzone3"></div>
+            <div class="zone" id="play_zone1"></div>
+            <div class="facing-left zone" id="play_zone2"></div>
+            <div class="facing-up zone" id="play_zone3"></div>
+            <div class="facing-right zone" id="play_zone4"></div>
         </div>
+        <div class="zone" id="side_zone"></div>
     </div>
 </div>
