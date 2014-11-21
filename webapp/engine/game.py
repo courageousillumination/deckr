@@ -131,7 +131,7 @@ class Game(object):
 
             # We need to keep track of the zones that
             # need to be given to players later on
-            if(zone.get('owner', '') == 'player'):
+            if zone.get('owner', '') == 'player':
                 self.player_zones.append((zone_object, num_copies))
             else:
                 # We can deal with multiplicity here, otherwise
@@ -139,7 +139,7 @@ class Game(object):
                 for i in range(0, num_copies):
                     # We only want to number a zone if there will be
                     # more than one of it.
-                    if(num_copies != 1):
+                    if num_copies != 1:
                         id_str = str(i+1)
 
                     # Add to the zones dictionary
@@ -276,15 +276,19 @@ class Game(object):
                 if num_copies != 1:
                     id_str = str(i+1)
 
+                full_name = zone.name + id_str
+
                 # Add zone to player's dictionary
-                player.zones[zone.name + id_str] = zone
+                player.zones[full_name] = zone
                 # Make it an attribute
-                setattr(player, zone.name + id_str, zone)
+                setattr(player, full_name, zone)
 
                 # Add to the zones dictionary
-                self.zones[zone.name + id_str + "_" + str(player.game_id)] = zone
-                # TODO: Do we still want an attribute for this? 
-                setattr(self, zone.name + id_str + "_" + str(player.game_id), zone)
+                self.zones[full_name + "_"
+                           + str(player.game_id)] = zone
+                # Add an attribute
+                setattr(self, full_name + "_"
+                        + str(player.game_id), zone)
 
         self.register(player.zones.values())
         self.players.append(player)

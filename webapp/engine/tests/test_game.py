@@ -280,10 +280,10 @@ class GameTestCase(TestCase):
         self.assertEqual(len(player2.zones), 1)
 
         # The game should be aware of the zones and who has them, if anyone
-        self.assertEqual(self.game.zones["zone1_" +
-                                          str(player1.game_id)], player1.zone1)
-        self.assertEqual(self.game.zones["zone1_" +
-                                          str(player2.game_id)], player2.zone1)
+        self.assertEqual(self.game.zones["zone1_"
+                                         + str(player1.game_id)], player1.zone1)
+        self.assertEqual(self.game.zones["zone1_" 
+                                         + str(player2.game_id)], player2.zone1)
         self.assertEqual(self.game.zones["zone2"], self.game.zone2)
 
     def test_config_multi(self):
@@ -306,14 +306,13 @@ class GameTestCase(TestCase):
         # and 10 "zoneB"s belonging to "player1"
         self.assertEqual(len(self.game.zones), 20)
 
-        # The ownerless zones should simply be numbered in order
         for i in range(1, 11):
-            self.assertEqual(self.game.zones["zoneA" +
-                                             str(i)], getattr(self.game, "zoneA" + str(i)))
+            # The ownerless zones should simply be numbered in order
+            self.assertEqual(self.game.zones["zoneA" + str(i)], 
+                                             getattr(self.game, "zoneA" + str(i)))
 
-        # Zones assigned to "player" should be numbered and include its game_id
-        # "Player" should have attributes for its zones
-        for i in range(1, 11):
+            # Zones assigned to "player" should be numbered and include its game_id
+            # "Player" should have attributes for its zones
             self.assertTrue(hasattr(player1, "zoneB" + str(i)))
             self.assertEqual(self.game.zones["zoneB" + str(i) +
                                              "_" + str(player1.game_id)],
