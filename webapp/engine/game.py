@@ -127,29 +127,25 @@ class Game(object):
             zone_object.name = zone.get('name', '')
             zone_object.zone_type = zone.get('zone_type', '')
 
-            # TODO: Do we want zones to store these? It's only useful here,
-            # as far as I can tell, if we use tuples later.
-            zone_object.owner = zone.get('owner', '')
-            zone_object.multiplicity = zone.get('multiplicity', 1)
+            num_copies = zone.get('multiplicity', 0)
 
             # We need to keep track of the zones that
             # need to be given to players later on
             if(zone_object.owner == 'player'):
-                self.player_zones.append(tuple(zone_object, zone_object.multiplicity))
+                self.player_zones.append(tuple(zone_object, num_copies))
             else:
                 # We can deal with multiplicity here, otherwise
-                for i in range(0, zone_object.multiplicity):
+                id_str = ''
+                for i in range(0, num_copies):
                     # We only want to number a zone if there will be
                     # more than one of it.
-                    if(zone_object.multiplicity == 1):
-                        mult = ''
-                    else:
-                        mult = str(i)
+                    if(num_copies != 1):
+                        id_str = str(i)
 
                     # Add to the zones dictionary
-                    self.zones[zone["name"] + mult] = zone_object
+                    self.zones[zone["name"] + id_str] = zone_object
                     # Add an attribute
-                    setattr(self, zone["name"] + mult, zone_object)
+                    setattr(self, zone["name"] + id_str, zone_object)
 
         # Register all zones
         self.register(self.zones.values())
@@ -268,14 +264,14 @@ class Game(object):
         player = Player()
         player.zones = {}
 
-        for (zone, multiplicity) in self.player_zones:
+        for (zone, num_copies) in self.player_zones:
             # Give the zone an owner
             zone.owner = player
 
             # Make a bunch of copies, if necessary
             id_str = ''
-            for i in range(0, multiplicity):
-                if multiplicity != 1:
+            for i in range(0, num_copies):
+                if num_copies != 1:
                     id_str = str(i)
 
                 # Add zone to player's dictionary
@@ -284,9 +280,9 @@ class Game(object):
                 setattr(player, zone.name + mult, zone)
 
                 # Add to the zones dictionary
-                self.zones["name_" + player.game_id + mult] = zone
+                self.zones["name" + mult + "_" + player.game_id] = zone
                 # TODO: Do we still want an attribute for this? 
-                setattr(self, zone.name + player.game_id + mult, zone)
+                setattr(self, zone.name + mult + "_" + player.game_id, zone)
 
 
         self.register([player])

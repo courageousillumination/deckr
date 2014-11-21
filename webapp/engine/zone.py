@@ -20,6 +20,7 @@ class Zone(GameObject):
         self.region_id = None
         self.cards = []
         self.stacked = stacked
+        self.owner = None
 
     def add_card(self, card):
         """
