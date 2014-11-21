@@ -127,11 +127,11 @@ class Game(object):
             zone_object.name = zone.get('name', '')
             zone_object.zone_type = zone.get('zone_type', '')
 
-            num_copies = zone.get('multiplicity', 0)
+            num_copies = zone.get('multiplicity', 1)
 
             # We need to keep track of the zones that
             # need to be given to players later on
-            if(zone_object.owner == 'player'):
+            if(zone.get('owner', '') == 'player'):
                 self.player_zones.append(tuple(zone_object, num_copies))
             else:
                 # We can deal with multiplicity here, otherwise
