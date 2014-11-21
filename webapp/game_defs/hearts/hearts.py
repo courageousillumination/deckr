@@ -8,7 +8,7 @@ from engine.game import action, Game
 SUITS = ["clubs", "spades", "hearts", "diamonds"]
 
 def get_file_name(suit, number):
-    if number == 1:
+    if number == 14:
         return str(SUITS.index(suit) + 1) + ".png"
 
     dist_from_top = (13 - number) + 1
@@ -39,13 +39,14 @@ class Hearts(Game):
         super(Hearts, self).__init__()
         self.current_turn = None
         self.hearts_broken = False
+        self.played_two_of_clubs = False
 
     def set_up(self):
         import random
 
         # Create our deck of cards
         all_cards = [create_playing_card(x, y)
-                 for x in SUITS for y in range(1, 14)]
+                 for x in SUITS for y in range(2, 15)]
         self.register(all_cards)
 
         random.shuffle(all_cards)
@@ -117,6 +118,10 @@ class Hearts(Game):
         if self.current_turn != player:
             return False
 
+        if (not self.played_two_of_clubs and
+            not (card.number == 2 and card.suit == 'clubs')):
+            return False
+
         # If everybody has already played then we can't play any more
         if self.play_zone.get_num_cards() == len(self.players):
             return False
@@ -171,16 +176,31 @@ class Hearts(Game):
 
         self.current_turn = self.next_player(player)
 
+        if card.number == 2 and card.suit == 'clubs':
+            self.played_two_of_clubs = True
+
 
     @action(restriction=can_take_trick)
     def take_trick(self, player):
+        contains_point_card = False
         while self.play_zone.get_num_cards() > 0:
             card = self.play_zone.pop()
             card.face_up = False
             card.set_value("face_up", False, card.owner)
             player.discard.push(card)
+
+            if (card.suit == 'hearts' or
+                card.suit == 'spades' and card.number == 12):
+                contains_point_card = True
+
         self.play_zone.suit = None
         self.current_turn = player
+
+        # Check if we need to take anything from the side_zone
+        if self.side_zone.get_num_cards() > 0 and contains_point_card:
+            while self.side_zone.get_num_cards() > 0:
+                player.discard.push(self.size_zone.pop())
+
 
     def next_player(self, player):
         player_index = self.players.index(player)
