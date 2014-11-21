@@ -246,7 +246,6 @@ class GameTestCase(TestCase):
         self.assertTrue(hasattr(self.game, 'card_set'))
         self.assertEqual(len(self.game.card_set.all_cards()), 2)
 
-    @skip("not yet implemented")
     def test_config_with_owners(self):
         """
         Test allowing configurations to specify zone ownership.
@@ -264,10 +263,10 @@ class GameTestCase(TestCase):
 
         # Game should be aware of its players and zones
         self.assertEqual(self.game.max_players, 3)
-        self.assertEqual(len(self.game.zones), 2)
+        self.assertEqual(len(self.game.zones), 1)
 
-        player1 = self.game.add_player()
-        player2 = self.game.add_player()
+        player1 = self.game.get_object_with_id("Player", self.game.add_player())
+        player2 = self.game.get_object_with_id("Player", self.game.add_player())
 
         # Players should be aware of their assigned zones, and only those zones
         self.assertTrue(hasattr(player1, "zone1"))
@@ -277,17 +276,16 @@ class GameTestCase(TestCase):
         self.assertFalse(hasattr(player2, "zone2"))
 
         # Players should also have dictionary of their zones
-        self.assertEqual(len(player1.zones), 2)
-        self.assertEqual(len(player2.zones), 2)
+        self.assertEqual(len(player1.zones), 1)
+        self.assertEqual(len(player2.zones), 1)
 
         # The game should be aware of the zones and who has them, if anyone
-        self.assertEqual(self.games.zones["zone1_" +
-                                          str(self.game.player1.game_id)], player1.zone1)
-        self.assertEqual(self.games.zones["zone1_" +
-                                          str(self.game.player2.game_id)], player2.zone1)
-        self.assertEqual(self.games.zones["zone2"], self.game.zone2)
+        self.assertEqual(self.game.zones["zone1_" +
+                                          str(player1.game_id)], player1.zone1)
+        self.assertEqual(self.game.zones["zone1_" +
+                                          str(player2.game_id)], player2.zone1)
+        self.assertEqual(self.game.zones["zone2"], self.game.zone2)
 
-    @skip("not yet implemented")
     def test_config_multi(self):
         """
         Test allowing configurations to specify zone multiplicity.
@@ -302,9 +300,10 @@ class GameTestCase(TestCase):
         }
 
         self.game.load_config(config)
+        player1 = self.game.get_object_with_id("Player", self.game.add_player())
 
         # First we should have 20 zones, 10 of "zoneA"
-        # and 10 "zoneB"s belonging to "player"
+        # and 10 "zoneB"s belonging to "player1"
         self.assertEqual(len(self.game.zones), 20)
 
         # The ownerless zones should simply be numbered in order
@@ -315,12 +314,12 @@ class GameTestCase(TestCase):
         # Zones assigned to "player" should be numbered and include its game_id
         # "Player" should have attributes for its zones
         for i in range(11, 21):
-            self.assertTrue(hasattr(self.player, "zoneB" + str(i)))
+            self.assertTrue(hasattr(player1, "zoneB" + str(i)))
             self.assertEqual(self.game.zones["zoneB" + str(i) +
-                                             "_" + str(self.game.player.game_id)],
-                             getattr(self.player, "zoneB" + str(i)))
+                                             "_" + str(player1.game_id)],
+                             getattr(self.player1, "zoneB" + str(i)))
 
-        other_player = self.game.add_player()
+        other_player = self.game.get_object_with_id("Player", self.game.add_player())
 
         # Now there are 30 zones, because "other_player" also has 10 "zoneB"s
         self.assertEqual(len(self.game.zones), 30)

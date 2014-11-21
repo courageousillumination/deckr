@@ -132,7 +132,7 @@ class Game(object):
             # We need to keep track of the zones that
             # need to be given to players later on
             if(zone.get('owner', '') == 'player'):
-                self.player_zones.append(tuple(zone_object, num_copies))
+                self.player_zones.append((zone_object, num_copies))
             else:
                 # We can deal with multiplicity here, otherwise
                 id_str = ''
@@ -262,7 +262,9 @@ class Game(object):
             raise ValueError("Too many players.")
 
         player = Player()
-        player.zones = {}
+        self.register([player])
+
+        setattr(player, "zones", {})
 
         for (zone, num_copies) in self.player_zones:
             # Give the zone an owner
@@ -275,17 +277,15 @@ class Game(object):
                     id_str = str(i)
 
                 # Add zone to player's dictionary
-                player.zones[zone.name + mult] = zone
+                player.zones[zone.name + id_str] = zone
                 # Make it an attribute
-                setattr(player, zone.name + mult, zone)
+                setattr(player, zone.name + id_str, zone)
 
                 # Add to the zones dictionary
-                self.zones["name" + mult + "_" + player.game_id] = zone
+                self.zones[zone.name + id_str + "_" + str(player.game_id)] = zone
                 # TODO: Do we still want an attribute for this? 
-                setattr(self, zone.name + mult + "_" + player.game_id, zone)
+                setattr(self, zone.name + id_str + "_" + str(player.game_id), zone)
 
-
-        self.register([player])
         self.register(player.zones.values())
         self.players.append(player)
 
