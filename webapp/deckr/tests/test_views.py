@@ -2,10 +2,12 @@
 Test all of the Django views used by deckr.
 """
 
+import tempfile
 from unittest import skip
 
 from django.core.urlresolvers import reverse
 from django.test import Client, TestCase
+from django.test.utils import override_settings
 
 import deckr.views
 from deckr.models import GameDefinition, GameRoom, Player
@@ -209,14 +211,15 @@ class UploadGameDefTestCase(TestCase):
     def setUp(self):
         self.client = Client()
 
-    @skip("not yet implemented")
-    def can_upload(self):
+    @override_settings(GAME_DEFINITION_PATH=tempfile.mkdtemp())
+    def test_can_upload(self):
         """
         Make sure the form submits or displays validation
         """
 
         old_count = GameDefinition.objects.all().count()
-        form_data = {'file': open('solitaire.zip')}
+        form_data = {'game_name': 'Solitaire',
+                     'file': open('deckr/tests/solitaire.zip')}
         response = self.client.post(reverse('deckr.upload_game_definition',),
                                     form_data)
         self.assertEqual(GameDefinition.objects.all().count(), old_count + 1)
