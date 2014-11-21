@@ -102,6 +102,7 @@ class Game(object):
         # }
         self.registered_objects = {}
         self.zones = {}
+        self.player_zones = []
         self.max_players = 0
         self.players = []
 
@@ -126,10 +127,14 @@ class Game(object):
             zone_object.name = zone.get('name', '')
             zone_object.zone_type = zone.get('zone_type', '')
 
-            # Add to the zones dictionary
-            self.zones[zone["name"]] = zone_object
-            # Add an attribute
-            setattr(self, zone["name"], zone_object)
+            if(zone.owner == 'player'):
+                player_zones.append(tuple(zone_object, zone.name, zone.multiplicity))
+            else:
+                for i in range(0, zone_object.multiplicity):
+                # Add to the zones dictionary
+                self.zones[zone["name"]] = zone_object
+                # Add an attribute
+                setattr(self, zone["name"], zone_object)
 
         # Register all zones
         self.register(self.zones.values())
