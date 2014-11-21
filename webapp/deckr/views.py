@@ -48,11 +48,9 @@ def game_room_staging_area(request, game_room_id):
         if form.is_valid():
             player = form.save(commit=False)
             player.game_room = room
-            player.player_id = game_runner.add_player(room.room_id)
             try:
+                player.player_id = game_runner.add_player(room.room_id)
                 player.save()
-                # Construct the get request for joining the game as
-                # this player.
                 url = (reverse("deckr.game_room", args=(game_room_id,)) +
                        "?player_id=" + str(player.pk))
                 return redirect(url)
