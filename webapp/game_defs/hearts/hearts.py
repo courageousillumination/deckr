@@ -8,7 +8,7 @@ from engine.game import action, Game
 SUITS = ["clubs", "spades", "hearts", "diamonds"]
 
 def get_file_name(suit, number):
-    if number == 1:
+    if number == 14:
         return str(SUITS.index(suit) + 1) + ".png"
 
     dist_from_top = (13 - number) + 1
@@ -46,7 +46,7 @@ class Hearts(Game):
 
         # Create our deck of cards
         all_cards = [create_playing_card(x, y)
-                 for x in SUITS for y in range(1, 14)]
+                 for x in SUITS for y in range(2, 15)]
         self.register(all_cards)
 
         random.shuffle(all_cards)
