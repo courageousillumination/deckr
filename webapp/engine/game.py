@@ -133,7 +133,7 @@ class Game(object):
             # need to be given to players later on
             if zone.get('owner', '') == 'player':
                 self.player_zones.append((zone_object, num_copies))
-            else:
+            elif zone.get('owner', '') == '':
                 # We can deal with multiplicity here, otherwise
                 id_str = ''
                 for i in range(0, num_copies):
@@ -282,6 +282,7 @@ class Game(object):
                 new_zone.stacked = zone.stacked
                 new_zone.name = full_name
                 new_zone.zone_type = zone.zone_type
+                new_zone.owner = zone.owner
 
                 # Add zone to player's dictionary
                 player.zones[full_name] = new_zone
