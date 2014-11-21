@@ -282,7 +282,7 @@ class GameTestCase(TestCase):
         # The game should be aware of the zones and who has them, if anyone
         self.assertEqual(self.game.zones["zone1_"
                                          + str(player1.game_id)], player1.zone1)
-        self.assertEqual(self.game.zones["zone1_" 
+        self.assertEqual(self.game.zones["zone1_"
                                          + str(player2.game_id)], player2.zone1)
         self.assertEqual(self.game.zones["zone2"], self.game.zone2)
 
@@ -308,17 +308,18 @@ class GameTestCase(TestCase):
 
         for i in range(1, 11):
             # The ownerless zones should simply be numbered in order
-            self.assertEqual(self.game.zones["zoneA" + str(i)], 
-                                             getattr(self.game, "zoneA" + str(i)))
+            self.assertEqual(self.game.zones["zoneA" + str(i)],
+                             getattr(self.game, "zoneA" + str(i)))
 
-            # Zones assigned to "player" should be numbered and include its game_id
+            # Player1's zones should be numbered and include game_id
             # "Player" should have attributes for its zones
             self.assertTrue(hasattr(player1, "zoneB" + str(i)))
-            self.assertEqual(self.game.zones["zoneB" + str(i) +
-                                             "_" + str(player1.game_id)],
+            self.assertEqual(self.game.zones["zoneB" + str(i)
+                                             + "_" + str(player1.game_id)],
                              getattr(player1, "zoneB" + str(i)))
 
-        other_player = self.game.get_object_with_id("Player", self.game.add_player())
+        other_player = self.game.get_object_with_id("Player",
+                                                    self.game.add_player())
 
         # Now there are 30 zones, because "other_player" also has 10 "zoneB"s
         self.assertEqual(len(self.game.zones), 30)
