@@ -28,13 +28,3 @@ function setupClickEvents(obj) {
         $(s).click(f);
     })
 }
-
-$(document).ready(function() {
-    $('#destroy-game-room').click(function(){
-        socket.emit('destroy_game');
-    });
-
-    $('#leave-game-room').click(function(){
-        socket.emit('leave_game');
-    });
-});
