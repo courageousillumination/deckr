@@ -51,21 +51,25 @@ class Hearts(Game):
         random.shuffle(all_cards)
 
         # Deal out among the players
-        while len(all_cards) > len(self.players):
+        while len(all_cards) >= len(self.players):
             for player in self.players:
                 player.hand.push(all_cards.pop())
 
         # Set card owners
         for player in self.players:
             for card in player.hand.get_cards():
+                if card.number == 2 and card.suit == 'clubs':
+                    self.current_turn = player
                 card.owner = player
-                card.face_up = True
+                card.face_up = False
+                card.set_value("face_up", True, player)
 
         # Set any extra cards to the side
         self.side_zone.set_cards(all_cards)
+        if (self.current_turn is None):
+            raise ValueError("2 of clubs was not in any hand")
 
-        self.current_turn = self.players[0]
-
+        self.play_zone.suit = None
 
     def is_over(self):
         """
@@ -125,15 +129,18 @@ class Hearts(Game):
                 return False
         else:
             if (leading_suit != card.suit and
-                len([x for x in player.hand if x.suit == leading_suit]) > 0):
+                len([x for x in player.hand.get_cards() if x.suit == leading_suit]) > 0):
                 return False
 
         return True
 
     def can_take_trick(self, player):
 
+        print "Checking if you can take trick"
         if self.play_zone.get_num_cards() != len(self.players):
             return False
+
+        print "There are enough cards in there."
 
         # Find the highest card
         valid_cards = [x for x in self.play_zone.get_cards()
@@ -148,6 +155,8 @@ class Hearts(Game):
         if max_card.owner != player:
             return False
 
+        print "The maximum card is owned by the current player"
+
         return True
 
 
@@ -155,6 +164,8 @@ class Hearts(Game):
     def play_card(self, player, card):
         player.hand.remove_card(card)
         self.play_zone.add_card(card)
+
+        card.face_up = True
         if self.play_zone.suit is None:
             self.play_zone.suit = card.suit
 
@@ -164,13 +175,18 @@ class Hearts(Game):
     @action(restriction=can_take_trick)
     def take_trick(self, player):
         while self.play_zone.get_num_cards() > 0:
-            player.discard.push(self.play_zone.pop())
+            card = self.play_zone.pop()
+            card.face_up = False
+            card.set_value("face_up", False, card.owner)
+            player.discard.push(card)
         self.play_zone.suit = None
         self.current_turn = player
 
     def next_player(self, player):
         player_index = self.players.index(player)
-        if (player_index == len(self.players)):
+        print self.players
+        print player_index
+        if player_index == (len(self.players) - 1):
             return self.players[0]
         else:
             return self.players[player_index + 1]

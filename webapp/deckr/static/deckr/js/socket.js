@@ -3,6 +3,11 @@ var player_mapping = {};
 var player_ids = [];
 var my_game_id = 0;
 
+socket.on('start', function() {
+    /* When the server says that we're starting we need to get the state. */
+    socket.emit('request_state');
+});
+
 socket.on('move_card', function(data) {
     /* Responds to move_card message from server */
     console.log('Moving ' + data.cardId + ' to ' + data.toZoneId);
