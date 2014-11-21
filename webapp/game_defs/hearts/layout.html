@@ -141,7 +141,7 @@ socket.on('state', function (data) {
                                'card': $(this).attr('id').substring(4)});
     });
 });
-
+/*
 function zoneOnClick() {
     if ($('.selected').length != 0 && $(this).has($('.selected')).length == 0) {
         console.log("Request move " + $('.selected').attr('id'));
@@ -176,7 +176,7 @@ socket.on('state', function (data) {
         ".card": cardOnClick,
         ".zone": zoneOnClick
     });
-});
+}); */
 </script>
 
 <div class="layout">
@@ -201,12 +201,8 @@ socket.on('state', function (data) {
             <div class="horizontal-fan zone" id="hand1"></div>
             <div class="stacked zone" id="discard1"></div>
         </div>
-        <!--<div class="playarea" id="play_region">
-            <div class="zone" id="play_zone1"></div>
-            <div class="facing-left zone" id="play_zone2"></div>
-            <div class="facing-up zone" id="play_zone3"></div>
-            <div class="facing-right zone" id="play_zone4"></div>
-        </div>-->
-        <div class="zone" id="side_zone"></div>
+        <div class="row" id="region4">
+            <div class="zone" id="side_zone"></div>
+        </div>
     </div>
 </div>
