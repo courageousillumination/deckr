@@ -135,7 +135,7 @@ class Game(object):
             # We need to keep track of the zones that
             # need to be given to players later on
             if(zone_object.owner == 'player'):
-                player_zones.append(tuple(zone_object, zone_object.multiplicity))
+                self.player_zones.append(tuple(zone_object, zone_object.multiplicity))
             else:
                 # We can deal with multiplicity here, otherwise
                 for i in range(0, zone_object.multiplicity):
@@ -147,9 +147,9 @@ class Game(object):
                         mult = str(i)
 
                     # Add to the zones dictionary
-                    self.zones[zone["name" + mult]] = zone_object
+                    self.zones[zone["name"] + mult] = zone_object
                     # Add an attribute
-                    setattr(self, zone["name" + mult], zone_object)
+                    setattr(self, zone["name"] + mult, zone_object)
 
         # Register all zones
         self.register(self.zones.values())
@@ -266,7 +266,31 @@ class Game(object):
             raise ValueError("Too many players.")
 
         player = Player()
+        player.zones = {}
+
+        for (zone, multiplicity) in self.player_zones:
+            # Give the zone an owner
+            zone.owner = player
+
+            # Make a bunch of copies, if necessary
+            id_str = ''
+            for i in range(0, multiplicity):
+                if multiplicity != 1:
+                    id_str = str(i)
+
+                # Add zone to player's dictionary
+                player.zones[zone.name + mult] = zone
+                # Make it an attribute
+                setattr(player, zone.name + mult, zone)
+
+                # Add to the zones dictionary
+                self.zones["name_" + player.game_id + mult] = zone
+                # TODO: Do we still want an attribute for this? 
+                setattr(self, zone.name + player.game_id + mult, zone)
+
+
         self.register([player])
+        self.register(player.zones.values())
         self.players.append(player)
 
         return player.game_id
