@@ -180,7 +180,8 @@ socket.on('state', function (data) {
 </script>
 
 <div class="layout">
-    <button onclick="socket.emit('start');">Start</button>
+    <button onclick="socket.emit('start');">Start</button><br />
+    <textarea readonly rows="5" cols="50" id="eventbox">Welcome to the game!</textarea>
     <div class="table" id="region0">
         <div class="row" id="region1">
             <div class="stacked zone" id="discard3"></div>
