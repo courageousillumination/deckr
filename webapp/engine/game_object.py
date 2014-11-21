@@ -10,6 +10,7 @@ class GameObject(object):
     """
 
     def __init__(self):
+        super(GameObject, self).__init__()
         # This is the ID of **this** object in the game.
         self.game_id = None
         # This is the actual game object that this belongs to.

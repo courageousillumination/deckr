@@ -12,14 +12,18 @@ class Zone(GameObject):
     """
     A Zone basically represents a region of the game. A zone has a
     collection of cards, and several other attributes that define how
-    the zone interacts with the cards.
+    the zone interacts with the cards. The constructor can take in an optional
+    dictonary that defines specific attributes to be set on the zone.
     """
 
-    def __init__(self, stacked=False):
+    def __init__(self, config={}):
         super(Zone, self).__init__()
         self.region_id = None
         self.cards = []
-        self.stacked = stacked
+
+        self.stacked = config.get('stacked', False)
+        self.name = config.get('name', '')
+        self.zone_type = config.get('zone_type', '')
         self.owner = None
 
     def add_card(self, card):

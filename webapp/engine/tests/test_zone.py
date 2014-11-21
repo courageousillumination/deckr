@@ -4,9 +4,9 @@ This module contains all the code needed to test a Zone.
 
 from unittest import TestCase
 
-from engine.zone import Zone
 from engine.card import Card
 from engine.game import Game
+from engine.zone import Zone
 
 
 class ZoneTestCase(TestCase):
@@ -105,7 +105,7 @@ class ZoneTestCase(TestCase):
         """
 
         expected = {"stacked": True}
-        self.zone = Zone(stacked=True)
+        self.zone = Zone(expected)
         self.assertDictEqual(expected, self.zone.get_info())
 
     def test_push(self):

@@ -5,7 +5,7 @@ This module contains all test for the Game class.
 from unittest import skip, TestCase
 
 from engine.card import Card
-from engine.game import game_step, InvalidMoveException, NeedsMoreInfo, action
+from engine.game import action, game_step, InvalidMoveException, NeedsMoreInfo
 from engine.player import Player
 from engine.tests.mock_game.mock_game import MockGame
 from engine.zone import Zone
@@ -265,8 +265,12 @@ class GameTestCase(TestCase):
         self.assertEqual(self.game.max_players, 3)
         self.assertEqual(len(self.game.zones), 1)
 
-        player1 = self.game.get_object_with_id("Player", self.game.add_player())
-        player2 = self.game.get_object_with_id("Player", self.game.add_player())
+        player1 = self.game.get_object_with_id(
+            "Player",
+            self.game.add_player())
+        player2 = self.game.get_object_with_id(
+            "Player",
+            self.game.add_player())
 
         # Players should be aware of their assigned zones, and only those zones
         self.assertTrue(hasattr(player1, "zone1"))
@@ -300,13 +304,15 @@ class GameTestCase(TestCase):
         }
 
         self.game.load_config(config)
-        player1 = self.game.get_object_with_id("Player", self.game.add_player())
+        player1 = self.game.get_object_with_id(
+            "Player",
+            self.game.add_player())
 
         # First we should have 20 zones, 10 of "zoneA"
         # and 10 "zoneB"s belonging to "player1"
         self.assertEqual(len(self.game.zones), 20)
 
-        for i in range(1, 11):
+        for i in range(0, 10):
             # The ownerless zones should simply be numbered in order
             self.assertEqual(self.game.zones["zoneA" + str(i)],
                              getattr(self.game, "zoneA" + str(i)))
@@ -326,7 +332,8 @@ class GameTestCase(TestCase):
 
         # New zones should be numbered and tagged with other_player's game_id
         # The player should also be aware of them as attributes
-        for i in range(1, 11):
+        for i in range(0, 10):
+            print(other_player.zones)
             self.assertTrue(hasattr(other_player, "zoneB" + str(i)))
             self.assertEqual(self.game.zones["zoneB" + str(i) +
                                              "_" + str(other_player.game_id)],
@@ -402,7 +409,7 @@ class GameTestCase(TestCase):
             'cards': [{'game_id': 1, 'zone': 2, 'face_up': False},
                       {'game_id': 2, 'zone': 1, 'face_up': False},
                       {'game_id': 3, 'zone': 1, 'face_up': False}],
-            'players': [{'game_id': 1}],
+            'players': [{'game_id': 1, 'zones': {}}],
             'zones': [{'cards': [2, 3],
                        'game_id': 1,
                        'name': 'zone2',
@@ -449,7 +456,7 @@ class GameTestCase(TestCase):
 
         expected_state = {
             'cards': [],
-            'players': [{'game_id': 1}],
+            'players': [{'game_id': 1, 'zones': {}}],
             'zones': []
         }
 
@@ -461,7 +468,7 @@ class GameTestCase(TestCase):
 
         expected_state = {
             'cards': [],
-            'players': [{'game_id': 1},
+            'players': [{'game_id': 1, 'zones': {}},
                         {'game_id': 2,
                          'zones': {'zone1': 1},
                          'zone1': 1}],
@@ -494,20 +501,20 @@ class GameTestCase(TestCase):
 
         expected_state = {
             'cards': [],
-            'players': [{'game_id': 1},
-                        {'zones': {'zoneA2': 1,
-                                   'zoneA1': 2},
-                         'zoneA2': 1,
-                         'zoneA1': 2,
+            'players': [{'game_id': 1, 'zones': {}},
+                        {'zones': {'zoneA1': 1,
+                                   'zoneA0': 2},
+                         'zoneA1': 1,
+                         'zoneA0': 2,
                          'game_id': 2}],
-            'zones': [{'name': 'zoneA2',
+            'zones': [{'name': 'zoneA1',
                        'stacked': False,
                        'region_id': None,
                        'cards': [],
                        'owner': other_player,
                        'zone_type': '',
                        'game_id': 1},
-                      {'name': 'zoneA1',
+                      {'name': 'zoneA0',
                        'stacked': False,
                        'region_id': None,
                        'cards': [],
