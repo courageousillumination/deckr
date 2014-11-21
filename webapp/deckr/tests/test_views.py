@@ -110,7 +110,6 @@ class CreatePlayerTestCase(TestCase):
                                            args=(self.game_room.pk,)))
         self.assertEqual(response.status_code, 200)
 
-    @skip
     def test_out_of_sync_engine(self):
         """
         Make sure that even if the engine throws an internal error
@@ -118,14 +117,14 @@ class CreatePlayerTestCase(TestCase):
         page instead of throwing a stacktrace.
         """
 
-        deckr.views.game_runner.add_player.side_effect = ValueError
+        error_msg = "Failed to join"
+        deckr.views.game_runner.add_player.side_effect = ValueError(error_msg)
         form_data = {'nickname': "Player 1"}
         response = self.client.post(reverse('deckr.game_room_staging_area',
                                             args=(self.game_room.pk,)),
                                     form_data)
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response,
-                            'Unable to join room, unknown Engine Error')
+        self.assertFormError(response, 'form', 'nickname', error_msg)
 
     def test_create_player_form(self):
         """
