@@ -160,6 +160,30 @@ class Game(HasZones):
 
         if self.is_over():
             self.add_transition(('is_over', self.winners()))
+            
+    def deregister(self, objects):
+        """
+        This function will deregister objects in the game, cleaning up anything
+        that register created.
+        """
+        
+        for obj in objects:
+            if obj.game_id is None:
+                continue
+            
+            if isinstance(obj, Card):
+                object_type = "Card"
+            elif isinstance(obj, Zone):
+                object_type = "Zone"
+            elif isinstance(obj, Player):
+                object_type = "Player"
+            else:
+                object_type = type(obj).__name__
+            
+            if object_type in self.registered_objects:
+                del self.registered_objects[object_type][1][obj.game_id]
+                self.registered_objects[object_type][0] -= 1
+        
 
     def register(self, objects):
         """
@@ -246,7 +270,14 @@ class Game(HasZones):
         Removes a player if possible and returns a
         boolean denoting success or failure
         """
-        pass
+        player = self.get_object_with_id("Player", player_id)
+        if player is None:
+            return False
+        self.deregister([player])
+        self.deregister(player.zones.values())
+        for name, zone in player.zones.items():
+            del self.zones[name + '_' + str(player.game_id)]
+        return True
 
     def add_player(self):
         """
