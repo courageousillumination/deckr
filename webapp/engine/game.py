@@ -3,6 +3,7 @@ This module defines everything needed for the base Game class.
 """
 
 from engine.card import Card
+from engine.card_set import CardSet
 from engine.has_zones import HasZones
 from engine.player import Player
 from engine.zone import Zone
@@ -124,6 +125,7 @@ class Game(HasZones):
 
         self.max_players = config.get('max_players', 0)
         zones = config.get('zones', [])
+        self.card_set = CardSet(config.get('card_set', []))
 
         game_zones = [x for x in zones if x.get('owner', None) is None]
         player_zones = [x for x in zones if x.get('owner', None) == 'player']

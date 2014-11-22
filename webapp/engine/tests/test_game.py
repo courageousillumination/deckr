@@ -227,7 +227,6 @@ class GameTestCase(TestCase):
         # Make sure that all zones were given an id
         self.assertIsNotNone(self.game.zones["zone1"].game_id)
 
-    @skip
     def test_load_card_set_config(self):
         """
         This test will try to load a configuration with an embeded card set.

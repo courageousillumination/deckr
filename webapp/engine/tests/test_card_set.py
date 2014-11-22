@@ -24,9 +24,8 @@ class CardSetTestCase(TestCase):
              "cost": 2}
         ]
 
-        self.card_set.load_from_dict(config)
+        self.card_set.load_from_list(config)
 
-    @skip
     def test_load_from_config(self):
         """
         Make sure that we can load a CardSet from a dictonary.
@@ -34,7 +33,6 @@ class CardSetTestCase(TestCase):
 
         self.assertEqual(len(self.card_set.all_cards()), 2)
 
-    @skip
     def test_create_instances(self):
         """
         Make sure we can create instances using a CardSet.
