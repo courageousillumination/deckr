@@ -52,3 +52,6 @@ class CardSetTestCase(TestCase):
         # Make sure that we can get a copy of every card
         card_instances = self.card_set.create_set()
         self.assertEqual(len(card_instances), 2)
+
+        # Make sure no error is thrown if we create a card that doesn't exist
+        self.card_set.create("Gold")
