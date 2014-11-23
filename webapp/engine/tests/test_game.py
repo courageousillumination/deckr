@@ -227,7 +227,6 @@ class GameTestCase(TestCase):
         # Make sure that all zones were given an id
         self.assertIsNotNone(self.game.zones["zone1"].game_id)
 
-    @skip
     def test_load_card_set_config(self):
         """
         This test will try to load a configuration with an embeded card set.
@@ -357,6 +356,31 @@ class GameTestCase(TestCase):
         }
 
         self.game.load_config(invalid_configuration)
+
+    def test_invalid_card_set_config(self):
+        """
+        This test will try to load an invalid configuration with an embeded card
+        set.
+        This should only load valid cards into the game.
+        """
+
+        config = {
+            "max_players": 1,
+            "card_set": [
+                {"name": "card1",
+                 "value": 1},
+                {"value": 2}
+            ]
+        }
+
+        self.game.load_config(config)
+
+        self.assertTrue(hasattr(self.game, 'card_set'))
+        self.assertEqual(len(self.game.card_set.all_cards()), 1)
+
+        # The valid card should be the one with a name
+        card_name = self.game.card_set.all_cards()[0].get("name", None)
+        self.assertEqual(card_name, "card1")
 
     def test_invalid_owner(self):
         """

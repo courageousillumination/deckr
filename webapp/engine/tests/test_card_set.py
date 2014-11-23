@@ -2,7 +2,7 @@
 Contains any tests around card sets
 """
 
-from unittest import skip, TestCase
+from unittest import TestCase
 
 from engine.card import Card
 from engine.card_set import CardSet
@@ -24,9 +24,8 @@ class CardSetTestCase(TestCase):
              "cost": 2}
         ]
 
-        self.card_set.load_from_dict(config)
+        self.card_set.load_from_list(config)
 
-    @skip
     def test_load_from_config(self):
         """
         Make sure that we can load a CardSet from a dictonary.
@@ -34,7 +33,6 @@ class CardSetTestCase(TestCase):
 
         self.assertEqual(len(self.card_set.all_cards()), 2)
 
-    @skip
     def test_create_instances(self):
         """
         Make sure we can create instances using a CardSet.
@@ -54,3 +52,6 @@ class CardSetTestCase(TestCase):
         # Make sure that we can get a copy of every card
         card_instances = self.card_set.create_set()
         self.assertEqual(len(card_instances), 2)
+
+        # Make sure no error is thrown if we create a card that doesn't exist
+        self.assertRaises(ValueError, self.card_set.create, "Gold")

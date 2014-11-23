@@ -3,6 +3,7 @@ This module defines everything needed for the base Game class.
 """
 
 from engine.card import Card
+from engine.card_set import CardSet
 from engine.has_zones import HasZones
 from engine.player import Player
 from engine.zone import Zone
@@ -107,6 +108,7 @@ class Game(HasZones):
         self.player_zones = []
         self.max_players = 0
         self.players = []
+        self.card_set = CardSet()
 
         # transitions is a dictionary of lists of tuples. The dictionary keys
         # are player_ids and the values are lists of transitions that should be
@@ -124,6 +126,7 @@ class Game(HasZones):
 
         self.max_players = config.get('max_players', 0)
         zones = config.get('zones', [])
+        self.card_set.load_from_list(config.get('card_set', []))
 
         game_zones = [x for x in zones if x.get('owner', None) is None]
         player_zones = [x for x in zones if x.get('owner', None) == 'player']
