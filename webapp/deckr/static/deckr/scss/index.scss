@@ -44,7 +44,6 @@ h2 {
     border-bottom: 1px solid #999;
     @include box-shadow(lighten(#000, 70%) 10px 10px 15px);
     @include border-radius(5px);
-    height: 80%;
 
     .header {
         padding-bottom: 5px;
