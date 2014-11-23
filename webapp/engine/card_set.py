@@ -14,18 +14,17 @@ class CardSet(object):
     from a configuration file or defined via python.
     """
 
-    def __init__(self, card_list=[]):
-        """
-        Loads the card set with cards from an initial dictionary defining cards and their attributes.
-        """
-
+    def __init__(self):
         self.cards = {}
-        self.load_from_list(card_list)
 
     def load_from_list(self, card_list):
         """
-        This function takes in a list of dicts and uses that to create the card set.
-        If any card definition in the list does not have a name, it will be considered an invalid card definition and will not be included in the card set.  This will add to anything that is currently in the card set.  A card added to the card set will overwrite any card already in the card set with the same name.
+        This function takes in a list of dicts and uses that to create the card
+        set. If any card definition in the list does not have a name, it will be
+        considered an invalid card definition and will not be included in the
+        card set.  This will add to anything that is currently in the card set.
+        A card added to the card set will overwrite any card already in the card
+        set with the same name.
         """
 
         for card_def in card_list:
@@ -47,7 +46,8 @@ class CardSet(object):
         """
         Create an instance of the card with card_name. If number == 1 then this
         will return a single instance. Otherwise this returns a list of cards
-        each of which is a copy of the card_name.  If there is no card with card_name in the card set, then a default card instance or list of default card instances will be returned
+        each of which is a copy of the card_name.  If there is no card with
+        card_name in the card set, then an error will be thrown.
         """
 
         if number == 1:

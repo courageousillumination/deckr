@@ -2,7 +2,7 @@
 Contains any tests around card sets
 """
 
-from unittest import skip, TestCase
+from unittest import TestCase
 
 from engine.card import Card
 from engine.card_set import CardSet
