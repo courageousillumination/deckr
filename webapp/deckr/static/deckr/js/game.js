@@ -26,10 +26,12 @@ function setupClickEvents(obj) {
         var s = kv[0];
         var f = kv[1];
         $(s).click(f);
-    })
+    });
 }
 
 $(document).ready(function() {
+    setupSockets();
+    
     $('#destroy-game-room').click(function(){
         socket.emit('destroy_game');
     });

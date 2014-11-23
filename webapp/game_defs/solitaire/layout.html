@@ -76,14 +76,14 @@ function cardOnClick() {
     console.log($('.selected').attr('id') + " is selected.");
 }
 
-socket.on('state', function (data) {
-
-    setupInitialState(data);
-    setupClickEvents({
+socket.on('state', function(data) {
+    var click_fn_map = {
         ".deck": deckOnClick,
         ".card": cardOnClick,
         ".zone": zoneOnClick
-    });
+    };
+    setupInitialState(data);
+    setupClickEvents(click_fn_map);
 });
 </script>
 
