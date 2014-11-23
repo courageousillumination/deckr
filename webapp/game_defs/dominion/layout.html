@@ -1,0 +1,220 @@
+<style type="text/css">
+.zone {
+    float: left;
+    width: 80px;
+    height: 100px;
+    margin: 5px;
+    padding: 15px;
+    border: 1px dotted #ccc;
+}
+
+.zone#hand {
+    width: 200px;
+}
+
+.zone.last {
+    float: right;
+}
+
+.victory {
+    float: right;
+}
+
+.vertical-fan {
+    height: 350px;
+}
+
+.vertical-fan img {
+    margin-bottom: -78px;
+}
+
+.horizontal-fan {
+    width: 350px;
+}
+
+div.horizontal-fan{
+    padding-left: 85px;
+}
+
+.horizontal-fan img {
+    margin-left: -60px;
+}
+
+.horizontal-fan .facing-up img {
+    margin-right: -60px;
+}
+
+.facing-top img{
+    transform: rotate(180deg);
+}
+
+.facing-left img{
+    transform: rotate(90deg);
+}
+
+.facing-right img{
+    transform: rotate(270deg);
+}
+
+.center-field {
+    height: 350px;
+    width: 350px;
+}
+
+.stacked img {
+    position: absolute
+}
+
+.row {
+    clear: both;
+    width: 100%;
+    overflow: hidden;
+}
+
+.selected {
+    border: solid;
+    border-color: yellow;
+}
+</style>
+
+<script type='text/javascript'>
+$(document).ready(function() {
+
+    // zone click function
+    /*$(".zone").click(function() {
+        if ($('.selected').length != 0 && $(this).has($('.selected')).length == 0) {
+            console.log("Request move " + $('.selected').attr('id'));
+            requestMoveCard($('.selected').attr('id'), $(this).attr('id'));
+        }
+    });*/
+
+    $("#play_zone").click(function() {
+        socket.emit('action', {'action_name': 'take_trick'});
+    });
+});
+
+function convert_game_id_to_player_order_id(game_id) {
+  my_ordered_game_ids = [my_game_id].concat(_.filter(player_ids, function (x) { return x > my_game_id; })).concat(_.filter(player_ids, function (x) { return x < my_game_id; }));
+  return my_ordered_game_ids.indexOf(game_id) + 1;
+}
+
+socket.on('state', function (data) {
+
+    console.log(data);
+
+    for (i = 0; i < data.cards.length; i++) {
+        d = data.cards[i];
+        d.class = "card";
+        d.id = "card" + d.game_id;
+        addCard(d, "staging_area");
+    }
+
+    // Add all cards to the proper zones
+    for (i = 0; i < data.zones.length; i++) {
+
+        zone = data.zones[i];
+        // Fix the zone names
+        if (zone.owner == null) {
+            $("#" + zone.name).attr('id', "zone" + zone.game_id);
+        } else {
+            // Find the zone with the name + the player order id
+            z = $("#" + zone.name + convert_game_id_to_player_order_id(zone.owner));
+            z.attr('id', 'zone' + zone.game_id);
+            //z.append('owned by' + player_mapping[zone.owner]);
+        }
+
+        for (j = 0; j < zone.cards.length; j++) {
+            moveCard("card" + zone.cards[j], "zone" + zone.game_id, 0);
+        }
+    }
+
+    $(".deck").click(function() {
+        data = Object();
+        data.action_name = 'draw';
+        socket.emit('action', data);
+        $('.selected').removeClass('selected');
+    });
+
+    // Make sure we register all callbacks
+    $(".card").click(function() {
+        socket.emit('action', {'action_name': 'play_card',
+                               'card': $(this).attr('id').substring(4)});
+    });
+});
+/*
+function zoneOnClick() {
+    if ($('.selected').length != 0 && $(this).has($('.selected')).length == 0) {
+        console.log("Request move " + $('.selected').attr('id'));
+        requestMoveCard($('.selected').attr('id'), $(this).attr('id'));
+    }
+}
+function deckOnClick() {
+    data = Object();
+    data.action_name = 'draw';
+    socket.emit('action', data);
+    $('.selected').removeClass('selected');
+}
+function cardOnClick() {
+    if($(this).attr('face_up') == 'false') {
+        console.log('Clicked on face down card.');
+        return
+    }
+    if ($('.selected').length == 0) {
+        $(this).addClass('selected');
+    } else if ($(this).hasClass('selected')) {
+        $(this).removeClass('selected');
+    } else {
+        parent = $(this).parent();
+        parent.click.apply(parent);
+    }
+    console.log($('.selected').attr('id') + " is selected.");
+}
+socket.on('state', function (data) {
+    setupInitialState(data);
+    setupClickEvents({
+        ".deck": deckOnClick,
+        ".card": cardOnClick,
+        ".zone": zoneOnClick
+    });
+}); */
+</script>
+
+<div class="layout">
+    <button onclick="socket.emit('start');">Start</button>
+    <div clas="horizontal-fan zone" id="hand1"></div>
+    <div clas="horizontal-fan zone" id="hand2"></div>
+    <div clas="horizontal-fan zone" id="hand3"></div>
+    <div clas="horizontal-fan zone" id="hand4"></div>
+
+    <div class="stacked zone" id="discard1"></div>
+    <div class="stacked zone" id="discard2"></div>
+    <div class="stacked zone" id="discard3"></div>
+    <div class="stacked zone" id="discard4"></div>
+
+    <div class="zone" id="play_zone1"></div>
+    <div class="zone" id="play_zone2"></div>
+    <div class="zone" id="play_zone3"></div>
+    <div class="zone" id="play_zone4"></div>
+
+    <div class="stacked zone" id="treasure0"></div>
+    <div class="stacked zone" id="treasure1"></div>
+    <div class="stacked zone" id="treasure2"></div>
+
+    <div class="stacked zone" id="victory0"></div>
+    <div class="stacked zone" id="victory1"></div>
+    <div class="stacked zone" id="victory2"></div>
+
+    <div class="stacked zone" id="trash"></div>
+    <div class="stacked zone" id="curses"></div>
+
+    <div class="stacked zone" id="kingdom0"></div>
+    <div class="stacked zone" id="kingdom1"></div>
+    <div class="stacked zone" id="kingdom2"></div>
+    <div class="stacked zone" id="kingdom3"></div>
+    <div class="stacked zone" id="kingdom4"></div>
+    <div class="stacked zone" id="kingdom5"></div>
+    <div class="stacked zone" id="kingdom6"></div>
+    <div class="stacked zone" id="kingdom7"></div>
+    <div class="stacked zone" id="kingdom8"></div>
+    <div class="stacked zone" id="kingdom9"></div>
+</div>

@@ -1,0 +1,146 @@
+---
+game_file: "dominion"
+game_class: "Dominion"
+max_players: 4
+zones:
+    - name: "hand"
+      owner: "player"
+    - name: "discard"
+      owner: "player"
+    - name: "play_zone"
+      owner: "player"
+    - name: "kingdom"
+      multiplicity: 10
+    - name: "treasure"
+      multiplicity: 3
+    - name: "victory"
+      multiplicity: 3
+    - name: "curses"
+    - name: "trash"
+card_set:
+    - name: "Copper"
+      front_face: "copper.jpg"
+      back_face: "b1fv.png"
+      card_type: ["treasure"]
+      kingdom_card: True
+      cost: 0
+      value: 1
+
+    - name: "Silver"
+      front_face: "silver.jpg"
+      back_face: "b1fv.png"
+      card_type: ["treasure"]
+      kingdom_card: True
+      cost: 3
+      value: 2
+
+    - name: "Gold"
+      front_face: "gold.jpg"
+      back_face: "b1fv.png"
+      card_type: ["treasure"]
+      kingdom_card: True
+      cost: 6
+      value: 3
+
+    - name: "Estate"
+      front_face: "estate.jpg"
+      back_face: "b1fv.png"
+      card_type: ["victory"]
+      kingdom_card: True
+      cost: 2
+      victory_points: 1
+
+    - name: "Duchy"
+      front_face: "duchy.jpg"
+      back_face: "b1fv.png"
+      card_type: ["victory"]
+      kingdom_card: True
+      cost: 5
+      victory_points: 2
+
+    - name: "Province"
+      front_face: "province.jpg"
+      back_face: "b1fv.png"
+      card_type: ["victory"]
+      kingdom_card: False
+      cost: 8
+      victory_points: 6
+
+    - name: "Curse"
+      front_face: "curse.jpg"
+      back_face: "b1fv.png"
+      card_type: ["curse"]
+      kingdom_card: False
+      cost: 0
+      victory_points: -1
+
+    # Begin kindgom cards
+    - name: "Cellar"
+      front_face: "cellar.jpg"
+      back_face: "b1fv.png"
+      card_type: ["action"]
+      kingdom_card: True
+      cost: 2
+
+    - name: "Chapel"
+      front_face: "chapel.jpg"
+      back_face: "b1fv.png"
+      card_type: ["action"]
+      kingdom_card: True
+      cost: 2
+
+    - name: "Moat"
+      front_face: "moat.jpg"
+      back_face: "b1fv.png"
+      card_type: ["action", "reaction"]
+      kingdom_card: True
+      cost: 2
+
+    - name: "Chancellor"
+      front_face: "chancellor.jpg"
+      back_face: "b1fv.png"
+      card_type: ["action"]
+      kingdom_card: True
+      cost: 2
+
+    - name: "Village"
+      front_face: "village.jpg"
+      back_face: "b1fv.png"
+      card_type: ["action"]
+      kingdom_card: True
+      cost: 3
+
+    - name: "Woodcutter"
+      front_face: "woodcutter.jpg"
+      back_face: "b1fv.png"
+      card_type: ["action"]
+      kingdom_card: True
+      cost: 3
+
+    - name: "Workshop"
+      front_face: "workshop.jpg"
+      back_face: "b1fv.png"
+      card_type: ["action"]
+      kingdom_card: True
+      cost: 3
+
+    - name: "Bureaucrat"
+      front_face: "bureaucrat.jpg"
+      back_face: "b1fv.png"
+      card_type: ["action"]
+      kingdom_card: True
+      cost: 4
+
+    - name: "Feast"
+      front_face: "feast.jpg"
+      back_face: "b1fv.png"
+      card_type: ["action"]
+      kingdom_card: True
+      cost: 4
+
+    - name: "Gardens"
+      front_face: "gardens.jpg"
+      back_face: "b1fv.png"
+      card_type: ["victory"]
+      kingdom_card: True
+      cost: 4
