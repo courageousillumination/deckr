@@ -357,6 +357,33 @@ class GameTestCase(TestCase):
 
         self.game.load_config(invalid_configuration)
 
+    def test_invalid_card_set_config(self):
+        """
+        This test will try to load an invalid configuration with an embeded card
+        set.
+        This should only load valid cards into the game.
+        """
+
+        config = {
+            "max_players": 1,
+            "card_set": [
+                {"name": "card1",
+                 "value": 1},
+                {"value": 2}
+            ]
+        }
+
+        self.game.load_config(config)
+
+        card = Card()
+        card.name = "card1"
+
+        self.assertTrue(hasattr(self.game, 'card_set'))
+        self.assertEqual(len(self.game.card_set.all_cards()), 1)
+
+        # The valid card should be the one with a name
+        self.assertTrue(hasattr(self.game.card_set.all_cards()[0], "name"))
+
     def test_invalid_owner(self):
         """
         This test makes sure we can process a configuration
