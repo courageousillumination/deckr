@@ -2,8 +2,20 @@
 This module contains the CardSet class.
 """
 
-from copy import deepcopy
 from engine.card import Card
+
+
+def create_card_from_dict(card_def):
+    """
+    This is a simple function that will make a card from a dictionary of
+    attributes.
+    """
+
+    card = Card()
+    for attribute in card_def:
+        setattr(card, attribute, card_def[attribute])
+
+    return card
 
 
 class CardSet(object):
@@ -28,12 +40,9 @@ class CardSet(object):
         """
 
         for card_def in card_list:
-            card = Card()
-            for attribute in card_def:
-                setattr(card, attribute, card_def[attribute])
-
-            if hasattr(card, "name"):
-                self.cards[card.name] = card
+            card_name = card_def.get('name', None)
+            if card_name is not None:
+                self.cards[card_name] = card_def
 
     def all_cards(self):
         """
@@ -50,10 +59,14 @@ class CardSet(object):
         card_name in the card set, then an error will be thrown.
         """
 
+        card_name = self.cards.get(card_name, None)
+        if card_name is None:
+            raise ValueError("Unable to get card {0}".format(card_name))
+
         if number == 1:
-            return deepcopy(self.cards.get(card_name, Card()))
+            return create_card_from_dict(card_name)
         elif number > 1:
-            return [deepcopy(self.cards.get(card_name, Card()))] * number
+            return [create_card_from_dict(card_name) for _ in range(number)]
 
     def create_set(self):
         """
@@ -61,4 +74,4 @@ class CardSet(object):
         list which contains a Card object for every card in this set.
         """
 
-        return [deepcopy(card) for card in self.cards.values()]
+        return [create_card_from_dict(self.cards[x]) for x in self.cards]

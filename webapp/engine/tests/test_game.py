@@ -375,14 +375,12 @@ class GameTestCase(TestCase):
 
         self.game.load_config(config)
 
-        card = Card()
-        card.name = "card1"
-
         self.assertTrue(hasattr(self.game, 'card_set'))
         self.assertEqual(len(self.game.card_set.all_cards()), 1)
 
         # The valid card should be the one with a name
-        self.assertTrue(hasattr(self.game.card_set.all_cards()[0], "name"))
+        card_name = self.game.card_set.all_cards()[0].get("name", None)
+        self.assertEqual(card_name, "card1")
 
     def test_invalid_owner(self):
         """
