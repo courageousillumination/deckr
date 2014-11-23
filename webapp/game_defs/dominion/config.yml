@@ -5,6 +5,8 @@ max_players: 4
 zones:
     - name: "hand"
       owner: "player"
+    - name: "deck"
+      owner: "player"
     - name: "discard"
       owner: "player"
     - name: "play_zone"
@@ -22,7 +24,7 @@ card_set:
       front_face: "copper.jpg"
       back_face: "b1fv.png"
       card_type: ["treasure"]
-      kingdom_card: True
+      kingdom_card: False
       cost: 0
       value: 1
 
@@ -30,7 +32,7 @@ card_set:
       front_face: "silver.jpg"
       back_face: "b1fv.png"
       card_type: ["treasure"]
-      kingdom_card: True
+      kingdom_card: False
       cost: 3
       value: 2
 
@@ -38,7 +40,7 @@ card_set:
       front_face: "gold.jpg"
       back_face: "b1fv.png"
       card_type: ["treasure"]
-      kingdom_card: True
+      kingdom_card: False
       cost: 6
       value: 3
 
@@ -46,7 +48,7 @@ card_set:
       front_face: "estate.jpg"
       back_face: "b1fv.png"
       card_type: ["victory"]
-      kingdom_card: True
+      kingdom_card: False
       cost: 2
       victory_points: 1
 
@@ -54,7 +56,7 @@ card_set:
       front_face: "duchy.jpg"
       back_face: "b1fv.png"
       card_type: ["victory"]
-      kingdom_card: True
+      kingdom_card: False
       cost: 5
       victory_points: 2
 
@@ -144,3 +146,108 @@ card_set:
       card_type: ["victory"]
       kingdom_card: True
       cost: 4
+
+    - name: "Militia"
+      front_face: "militia.jpg"
+      back_face: "b1fv.png"
+      card_type: ["action", "attack"]
+      kingdom_card: True
+      cost: 4
+
+    - name: "Moneylender"
+      front_face: "moneylender.jpg"
+      back_face: "b1fv.png"
+      card_type: ["action"]
+      kingdom_card: True
+      cost: 4
+
+    - name: "Remodel"
+      front_face: "remodel.jpg"
+      back_face: "b1fv.png"
+      card_type: ["action"]
+      kingdom_card: True
+      cost: 4
+
+    - name: "Smithy"
+      front_face: "smithy.jpg"
+      back_face: "b1fv.png"
+      card_type: ["action"]
+      kingdom_card: True
+      cost: 4
+
+    - name: "Spy"
+      front_face: "spy.jpg"
+      back_face: "b1fv.png"
+      card_type: ["action", "attack"]
+      kingdom_card: True
+      cost: 4
+
+    - name: "Thief"
+      front_face: "thief.jpg"
+      back_face: "b1fv.png"
+      card_type: ["action", "attack"]
+      kingdom_card: True
+      cost: 4
+
+    - name: "Throne Room"
+      front_face: "throneroom.jpg"
+      back_face: "b1fv.png"
+      card_type: ["action"]
+      kingdom_card: True
+      cost: 4
+
+    - name: "Council Room"
+      front_face: "councilroom.jpg"
+      back_face: "b1fv.png"
+      card_type: ["action"]
+      kingdom_card: True
+      cost: 5
+
+    - name: "Festival"
+      front_face: "festival.jpg"
+      back_face: "b1fv.png"
+      card_type: ["action"]
+      kingdom_card: True
+      cost: 5
+
+    - name: "Laboratory"
+      front_face: "laboratory.jpg"
+      back_face: "b1fv.png"
+      card_type: ["action"]
+      kingdom_card: True
+      cost: 5
+
+    - name: "Library"
+      front_face: "library.jpg"
+      back_face: "b1fv.png"
+      card_type: ["action"]
+      kingdom_card: True
+      cost: 5
+
+    - name: "Market"
+      front_face: "market.jpg"
+      back_face: "b1fv.png"
+      card_type: ["action"]
+      kingdom_card: True
+      cost: 5
+
+    - name: "Mine"
+      front_face: "mine.jpg"
+      back_face: "b1fv.png"
+      card_type: ["action"]
+      kingdom_card: True
+      cost: 5
+
+    - name: "Witch"
+      front_face: "witch.jpg"
+      back_face: "b1fv.png"
+      card_type: ["action"]
+      kingdom_card: True
+      cost: 5
+
+    - name: "Adventurer"
+      front_face: "adventurer.jpg"
+      back_face: "b1fv.png"
+      card_type: ["action"]
+      kingdom_card: True
+      cost: 5

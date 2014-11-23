@@ -97,9 +97,9 @@ class MockGame(Game):
         Test a simple multistep action.
         """
 
-        self.add_step("step1")
-        self.add_step("step2")
-        self.add_step("step3")
+        self.add_step(self.step1)
+        self.add_step(self.step2)
+        self.add_step(self.step3)
 
     @game_step(requires=None)
     def step1(self, **kwargs):
@@ -109,7 +109,9 @@ class MockGame(Game):
 
         self.add_transition(("step1",))
 
-    @game_step(requires='num')
+    @game_step(requires=[('num',
+                          'Number',
+                          lambda self, num, **kwargs: True)])
     def step2(self, num, **kwargs):
         """
         Test step 2. Requires input.
@@ -117,7 +119,9 @@ class MockGame(Game):
 
         self.add_transition(("step2", num))
 
-    @game_step(requires=None)
+    @game_step(requires=[('num',
+                          'Number',
+                          lambda self, num, **kwargs: True)])
     def step3(self, num, **kwargs):
         """
         Tests step 3. Requires input from previous
@@ -135,6 +139,23 @@ class MockGame(Game):
 
         self.add_transition(("public", "foobar"))
         self.add_transition(("private", "foobaz"), player)
+
+    @game_step(requires=None)
+    def simple_step(self):
+        """
+        Adds a simple transition to the game.
+        """
+        self.add_transition(("simple_step",))
+
+    @game_step(requires=None)
+    def save_step1(self):
+        return 10
+
+    @game_step(requires=[("result",
+                          "Number",
+                          lambda self, result: True)])
+    def save_step2(self, result):
+        self.add_transition((result,))
 
     def get_magic(self):
         """
