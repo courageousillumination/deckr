@@ -84,24 +84,39 @@ function parseAction(data) {
     transitions = data[1];
     state = data[2];
 
-    card = "";
-    action = "";
+    tricks = [];
 
     for(i = 0; i < transitions.length; i++) {
+        console.log(transitions[i]);
         transition = transitions[i];
+        event_box = document.getElementById("eventbox");
+
+        // IDs start at 0 in dictionary
         zone_id = transition[2] - 1;
+        card_id = transition[1] - 1;
+
         if(transition[0] == "add") {
-            card_id = transition[1] - 1;
             if(state.zones[zone_id].name == "play_zone") {
-                console.log("play zone");
                 card = "the " + state.cards[card_id].number + " of " + state.cards[card_id].suit;
-                document.getElementById("eventbox").innerHTML += nickname + " played " + card + ".&#10;";
+                event_box.innerHTML += nickname + " played " + card + ".&#13;";
             }
-            break;
+            if(state.zones[zone_id].name == "discard") {
+                console.log("found a card");
+                tricks.push(state.cards[card_id]);
+                console.log(tricks);
+            }
         }
-        if(transition[0] == "add") {
-            document.getElementById("eventbox").innerHTML += "";
+    }
+
+    if((tricks.length) > 0) {
+        event_box.innerHTML += nickname + " won ";
+        for(i = 0; i < tricks.length; i++) {
+            console.log(i);
+            card = "the " + tricks[i].number + " of " + tricks[i].suit;
+            if(i != tricks.length - 1) {card += " and ";}
+            event_box.innerHTML += card;
         }
+        event_box.innerHTML += ".&#13;";
     }
 }
 
@@ -208,7 +223,7 @@ socket.on('state', function (data) {
 
 <div class="layout">
     <button onclick="socket.emit('start');">Start</button><br />
-    <textarea readonly rows="5" cols="50" id="eventbox">Welcome to the game!&#10;></textarea>
+    <textarea readonly rows="5" cols="50" id="eventbox">Welcome to the game!&#13;></textarea>
     <div class="table" id="region0">
         <div class="row" id="region1">
             <div class="stacked zone" id="discard3"></div>
