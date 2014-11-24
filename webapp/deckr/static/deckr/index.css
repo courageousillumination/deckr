@@ -109,31 +109,30 @@ h2 {
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
   border-radius: 5px;
-  height: 80%;
 }
-/* line 49, scss/index.scss */
+/* line 48, scss/index.scss */
 #content .header {
   padding-bottom: 5px;
   margin-bottom: 20px;
   border-bottom: 1px solid #ccc;
 }
 
-/* line 56, scss/index.scss */
+/* line 55, scss/index.scss */
 .center {
   text-align: center;
 }
 
-/* line 60, scss/index.scss */
+/* line 59, scss/index.scss */
 .right {
   float: right;
 }
 
-/* line 64, scss/index.scss */
+/* line 63, scss/index.scss */
 .big-btn {
   color: #fff;
   text-decoration: none;
 }
-/* line 67, scss/index.scss */
+/* line 66, scss/index.scss */
 .big-btn div {
   display: inline-block;
   padding: 15px;
@@ -145,17 +144,17 @@ h2 {
   -webkit-border-radius: 5px;
   border-radius: 5px;
 }
-/* line 76, scss/index.scss */
+/* line 75, scss/index.scss */
 .big-btn div:hover {
   background-color: #4c699f;
 }
 
-/* line 82, scss/index.scss */
+/* line 81, scss/index.scss */
 .card {
   margin: 5px;
 }
 
-/* line 86, scss/index.scss */
+/* line 85, scss/index.scss */
 .zone {
   float: left;
   width: 80px;
@@ -165,50 +164,45 @@ h2 {
   border: 1px dotted #ccc;
 }
 
-/* line 95, scss/index.scss */
+/* line 94, scss/index.scss */
 .zone#hand {
   width: 200px;
 }
 
-/* line 99, scss/index.scss */
+/* line 98, scss/index.scss */
 .zone.last {
   float: right;
 }
 
-/* line 103, scss/index.scss */
+/* line 102, scss/index.scss */
 .victory {
   float: right;
 }
 
-/* line 107, scss/index.scss */
+/* line 106, scss/index.scss */
 .vertical-fan {
   height: 77%;
 }
 
-/* line 112, scss/index.scss */
+/* line 111, scss/index.scss */
 .vertical-fan img {
   margin-bottom: -68px;
 }
 
-/* line 116, scss/index.scss */
+/* line 115, scss/index.scss */
 .stacked img {
   position: absolute;
 }
 
-/* line 120, scss/index.scss */
+/* line 119, scss/index.scss */
 .row {
   clear: both;
   width: 100%;
   overflow: hidden;
 }
 
-/* line 126, scss/index.scss */
+/* line 125, scss/index.scss */
 .selected {
   border: solid;
   border-color: yellow;
-}
-
-/* line 131, scss/index.scss */
-#region2 {
-  height: 77%;
 }

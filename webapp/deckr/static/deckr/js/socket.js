@@ -1,6 +1,12 @@
 // Globals
-var socket = io.connect("/game");
 var player_mapping = {};
+var player_ids = [];
+var my_game_id = 0;
+
+socket.on('start', function() {
+    /* When the server says that we're starting we need to get the state. */
+    socket.emit('request_state');
+});
 
 socket.on('move_card', function(data) {
     /* Responds to move_card message from server */
@@ -87,14 +93,17 @@ socket.on('player_names', function(players) {
 
     var playersLength = players.length;
     innerHTML = "";
+    player_ids = []
     for(var i = 0; i < playersLength; i++){
         innerHTML += "<li>" + players[i].nickname + "</li>";
+        player_ids.push(players[i].id);
         player_mapping[players[i].id] = players[i].nickname;
     }
 
     $('#player_names').html(innerHTML);
 });
 
-socket.on('player_nick', function(nickname){
-    $('#player_nick').html("Welcome " + nickname);
+socket.on('player_nick', function(data){
+    $('#player_nick').html("Welcome " + data.nickname);
+    my_game_id = data.id;
 });

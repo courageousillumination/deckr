@@ -81,12 +81,8 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         """
 
         self.runner.start_game(self.game_room.room_id)
-        # Boadcast the state to all clients
-        state = self.runner.get_state(self.game_room.room_id,
-                                      self.player.player_id)
         self.emit_to_room(self.room,
-                          "state",
-                          state)
+                          "start")
 
     def on_join(self, join_request):
         """
@@ -128,7 +124,8 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         self.game_room = game_room
         self.room = room
         self.join(room)
-        self.emit('player_nick', player.nickname)
+        self.emit('player_nick', {'nickname': player.nickname,
+                                  'id': player.player_id})
         self.update_player_list()
 
         return True
@@ -159,6 +156,7 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
 
         # pylint: disable=W0142
         valid, message = self.runner.make_action(self.game_room.room_id,
+                                                 player=self.player.player_id,
                                                  **data)
         if not valid:
             self.emit("error", message)
