@@ -12,12 +12,16 @@ zones:
     - name: "play_zone"
       owner: "player"
     - name: "kingdom"
+      zone_type: "supply"
       multiplicity: 10
     - name: "treasure"
+      zone_type: "supply"
       multiplicity: 3
     - name: "victory"
+      zone_type: "supply"
       multiplicity: 3
     - name: "curses"
+      zone_type: "supply"
     - name: "trash"
 card_set:
     - name: "Copper"
