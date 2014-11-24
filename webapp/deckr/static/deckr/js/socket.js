@@ -35,27 +35,7 @@ socket.on('make_action', function(data) {
 });
 
 socket.on('info_string', function(data) {
-    nickname = data[0];
-    trans = data[1];
-
-    console.log(trans);
-    console.log(nickname);
-
-    move_from = '';
-    target = '';
-    card = '';
-    action = '';
-
-    for (i = 0; i < trans.length; i++) {
-        the_event = trans[i];
-
-        if(the_event[0] == 'add')
-            target = document.getElementById("zone" + the_event[2]).id;
-        if(the_event[0] == 'set')
-            card_name = document.getElementById("card" + the_event[2]).id;
-    }
-
-    document.getElementById("eventbox").innerHTML += data[0] + " moved " + card_name + " to " + target + ".&#10;";
+    parseAction(data);
 });
 
 socket.on('state_transitions', function(data) {

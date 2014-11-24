@@ -78,6 +78,34 @@ div.horizontal-fan{
 </style>
 
 <script type='text/javascript'>
+    function parseAction(data) {
+        nickname = data[0];
+        trans = data[1];
+
+        console.log(trans);
+        console.log(nickname);
+
+        move_from = '';
+        target = '';
+        card = '';
+        action = '';
+
+        for (i = 0; i < trans.length; i++) {
+            the_event = trans[i];
+
+            if(the_event[0] == 'add') {
+                target = document.getElementById("zone" + the_event[2]);
+                card_name = document.getElementById("card" + the_event[2]);
+
+                document.getElementById("eventbox").innerHTML += nickname + " played " + card_name + ".&#10;";
+            }
+            if(the_event[0] == 'set') {
+                card_name = document.getElementById("card" + the_event[3]);
+                document.getElementById("eventbox").innerHTML += nickname + " took " + card_name + "in a trick. &#10;";
+            }
+        }
+    }
+
 $(document).ready(function() {
 
     // zone click function
