@@ -70,7 +70,7 @@ socket.on('state_transitions', function(data) {
             }
         } else if (transition[0] == 'is_over') {
             winner = player_mapping[transition[1][0]];
-            alert("You won " +  winner);
+            document.getElementById("eventbox").innerHTML += winner + " has won the game!";
         }
     }
 });
