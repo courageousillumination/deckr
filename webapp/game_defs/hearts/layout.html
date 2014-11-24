@@ -75,6 +75,12 @@ div.horizontal-fan{
     border: solid;
     border-color: yellow;
 }
+
+textarea {
+    overflow: scroll;
+    resize: none;
+}
+
 </style>
 
 <script type='text/javascript'>
@@ -87,15 +93,12 @@ function parseAction(data) {
     tricks = [];
 
     for(i = 0; i < transitions.length; i++) {
-        console.log(transitions[i]);
         transition = transitions[i];
         event_box = document.getElementById("eventbox");
 
         // IDs start at 0 in dictionary
         zone_id = transition[2] - 1;
         card_id = transition[1] - 1;
-
-        console.log(state.zones[zone_id]);
 
         switch(state.cards[card_id].number) {
             case 11: number = "jack"; break;
@@ -131,6 +134,8 @@ function parseAction(data) {
         }
         event_box.innerHTML += ".&#13;";
     }
+
+    event_box.scrollTop = event_box.scrollHeight;
 }
 
 $(document).ready(function() {
@@ -146,6 +151,9 @@ $(document).ready(function() {
     $("#play_zone").click(function() {
         socket.emit('action', {'action_name': 'take_trick'});
     });
+
+    event_box = document.getElementById("eventbox");
+    event_box.scrollTop = event_box.scrollHeight;
 });
 
 function convert_game_id_to_player_order_id(game_id) {
