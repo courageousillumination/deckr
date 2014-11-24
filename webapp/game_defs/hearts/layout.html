@@ -95,15 +95,24 @@ function parseAction(data) {
         zone_id = transition[2] - 1;
         card_id = transition[1] - 1;
 
+        console.log(state.zones[zone_id]);
+
+        switch(state.cards[card_id].number) {
+            case 11: number = "jack"; break;
+            case 12: number = "queen"; break;
+            case 13: number = "king"; break;
+            case 14: number = "ace"; break;
+            default: number = state.cards[card_id].number.toString();
+        }
+
+        card_name = "the " + number + " of " + state.cards[card_id].suit;
+
         if(transition[0] == "add") {
             if(state.zones[zone_id].name == "play_zone") {
-                card = "the " + state.cards[card_id].number + " of " + state.cards[card_id].suit;
-                event_box.innerHTML += nickname + " played " + card + ".&#13;";
+                event_box.innerHTML += nickname + " played " + card_name + ".&#13;";
             }
             if(state.zones[zone_id].name == "discard") {
-                console.log("found a card");
-                tricks.push(state.cards[card_id]);
-                console.log(tricks);
+                tricks.push(card_name);
             }
         }
     }
@@ -111,9 +120,13 @@ function parseAction(data) {
     if((tricks.length) > 0) {
         event_box.innerHTML += nickname + " won ";
         for(i = 0; i < tricks.length; i++) {
-            console.log(i);
-            card = "the " + tricks[i].number + " of " + tricks[i].suit;
-            if(i != tricks.length - 1) {card += " and ";}
+            card = tricks[i];
+            if(i < tricks.length - 1) {
+                if(i < tricks.length - 2)
+                    card += ", ";
+                else
+                    card += " and ";
+            }
             event_box.innerHTML += card;
         }
         event_box.innerHTML += ".&#13;";
