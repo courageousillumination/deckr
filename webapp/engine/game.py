@@ -106,6 +106,7 @@ class Game(HasZones):
         self.registered_objects = {}
         self.player_zones = []
         self.max_players = 0
+        self.min_players = 0
         self.players = []
 
         # transitions is a dictionary of lists of tuples. The dictionary keys
@@ -123,6 +124,8 @@ class Game(HasZones):
         """
 
         self.max_players = config.get('max_players', 0)
+        self.min_players = config.get('min_players', 0)
+
         zones = config.get('zones', [])
 
         game_zones = [x for x in zones if x.get('owner', None) is None]
