@@ -160,6 +160,13 @@ socket.on('expected_action', function(data){
     information_name = data[1];
     expecting_type = data[2];
     currently_selected = [];
+
+    if (expecting_type == "Bool" && my_game_id == data[3]) {
+      val = confirm("Do you want to do whatever?");
+      dict = {'action_name': 'send_information'}
+      dict[information_name] =  val;
+      socket.emit('action', dict);
+    }
   }
 });
 

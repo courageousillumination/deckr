@@ -351,7 +351,6 @@ class Game(HasZones):
 
         while len(self.steps) > 0:
             step, player, save_result_as, kwargs = self.steps[0]
-            print self.steps[0]
             # See if the step has any specific arguments that should
             # be passed in.
             if kwargs is None:
@@ -360,14 +359,13 @@ class Game(HasZones):
                 all_kwargs = dict(kwargs.items() + self.current_kwargs.items())
             # Try to run the step, catching any NeedsMoreInfo execptions that
             # are raised
-            print all_kwargs
             try:
                 result = step(player, **all_kwargs)
             except NeedsMoreInfo as exception:
                 self.expected_action = ("send_information",
                                         exception.requirement[0],
-                                        exception.requirement[1])
-                print "Bailing", exception
+                                        exception.requirement[1],
+                                        player.game_id)
                 return
             if save_result_as is not None:
                 self.current_kwargs[save_result_as] = result
@@ -399,6 +397,15 @@ class Game(HasZones):
         for key, value in kwargs.items():
             self.current_kwargs[key] = value
 
+    def clear_keyword_argument(self, key):
+        """
+        Remove a keyword argument from the current arguments being passed into
+        the steps. This can be needed when a step needs to get the value
+        multiple times.
+        """
+
+        if (self.current_kwargs.get(key, None) is not None):
+            del self.current_kwargs[key]
     # Actions after this point should be implemented by subclasses
 
     def set_up(self):
