@@ -117,9 +117,8 @@ class GameRunnerTestCase(TestCase):
 
         game_runner.start_game(self.game_id)
         self.assertTrue(game_runner.get_game(self.game_id).is_setup)
-        self.assertEqual(game_runner.get_game(self.game_id).transitions, [])
+        self.assertEqual(game_runner.get_game(self.game_id).transitions, {})
 
-    @skip
     def test_make_action(self):
         """
         Make sure that we can make actions through the GameRunner.
@@ -144,7 +143,6 @@ class GameRunnerTestCase(TestCase):
                                                  action_name=action,
                                                  player_id=player.game_id))
 
-    @skip
     def test_get_transitions(self):
         """
         Make sure that we can get public and private transitions
@@ -159,7 +157,7 @@ class GameRunnerTestCase(TestCase):
         game1.register((player1, player2))
         self.assertTrue(game_runner.make_action(self.game_id,
                                                 action_name=action_name,
-                                                player_id=player1.game_id))
+                                                player=player1.game_id))
 
         # Now we expect a list of public transitions
         self.assertListEqual([("public", "foobar")],

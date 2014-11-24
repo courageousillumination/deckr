@@ -2,10 +2,11 @@
 This module defines the player class.
 """
 
+from engine.has_zones import HasZones
 from engine.stateful_game_object import StatefulGameObject
 
 
-class Player(StatefulGameObject):
+class Player(StatefulGameObject, HasZones):
 
     """
     This class basically represents a player in the game.

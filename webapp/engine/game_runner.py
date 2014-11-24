@@ -11,10 +11,10 @@ into this module.
 # but it's what we've got right now. No need to yell at us for it.
 # pylint: disable=W0603
 
-import yaml
-import sys
 import os.path
+import sys
 
+import yaml
 from engine.game import InvalidMoveException
 
 CACHE = {}
@@ -97,12 +97,12 @@ def get_game(game_id):
     return CACHE.get(game_id, None)
 
 
-def get_state(game_id):
+def get_state(game_id, player_id=None):
     """
     Returns the state of the given game.
     """
 
-    return get_game(game_id).get_state()
+    return get_game(game_id).get_state(player_id)
 
 
 def add_player(game_id):
@@ -125,16 +125,33 @@ def remove_player(game_id, player_id):
 
 def make_action(game_id, **kwargs):
     """
-    Makes an action in the game. Returns a tuple of (ERROR, DATA)
-    ERROR will be a boolean to indicator if the function was successful
-    if True, then DATA will be an error string. Otherwise DATA will
-    be a list of transitons.
+    Makes an action in the game. Returns a tuple of (VALID, MESSAGE)
+    VAILD is a boolean flag that will be set to true if the action was
+    valid and false otherwise. If VALID is True, then MESSAGE should be None.
+    Othewise it will contain a descriptive string of what the error was.
     """
 
     try:
-        return False, get_game(game_id).make_action(**kwargs)
+        get_game(game_id).make_action(**kwargs)
+        return True, None
     except InvalidMoveException:
-        return True, "Illegal Action"
+        return False, "Illegal Action"
+
+
+def get_public_transitions(game_id):
+    """
+    Get all of the public transitions from the game.
+    """
+
+    return get_game(game_id).get_public_transitions()
+
+
+def get_player_transitions(game_id, player_id):
+    """
+    Get all the transitions for a specific player.
+    """
+
+    return get_game(game_id).get_player_transitions(player_id)
 
 
 def has_game(game_id):

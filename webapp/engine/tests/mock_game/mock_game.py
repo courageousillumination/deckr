@@ -3,10 +3,10 @@ This module provides a very simple MockGame for testing. It has basic actions,
 setup, and game ending conditions.
 """
 
-from engine.game import Game, action
 from engine.card import Card
-from engine.zone import Zone
+from engine.game import action, Game, game_step
 from engine.player import Player
+from engine.zone import Zone
 
 
 class MockGame(Game):
@@ -89,6 +89,42 @@ class MockGame(Game):
         assert isinstance(card, Card)
         assert isinstance(zone, Zone)
         assert isinstance(player, Player)
+
+    # pylint: disable=unused-argument
+    @action(restriction=None)
+    def test_multi_step(self, **kwargs):
+        """
+        Test a simple multistep action.
+        """
+
+        self.add_step("step1")
+        self.add_step("step2")
+        self.add_step("step3")
+
+    @game_step(requires=None)
+    def step1(self, **kwargs):
+        """
+        Test step 1.
+        """
+
+        self.add_transition(("step1",))
+
+    @game_step(requires='num')
+    def step2(self, num, **kwargs):
+        """
+        Test step 2. Requires input.
+        """
+
+        self.add_transition(("step2", num))
+
+    @game_step(requires=None)
+    def step3(self, num, **kwargs):
+        """
+        Tests step 3. Requires input from previous
+        step.
+        """
+
+        self.add_transition(("step3", num))
 
     @action(restriction=None)
     def private_public_action(self, player):
