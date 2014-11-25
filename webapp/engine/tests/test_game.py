@@ -583,7 +583,8 @@ class GameTestCase(TestCase):
         self.game.make_action("test_multi_step", player=self.player.game_id)
         self.assertEqual(self.game.get_expected_action(),
                          ("send_information", "num",
-                          "Number", self.player.game_id))
+                          "Number", self.player.game_id,
+                          "Need more information"))
 
     def test_add_step(self):
         """
@@ -624,7 +625,8 @@ class GameTestCase(TestCase):
         self.assertEqual(self.game.get_public_transitions(), [])
         self.assertEqual(self.game.get_expected_action(),
                          ("send_information", "result",
-                          "Number", self.player.game_id))
+                          "Number", self.player.game_id,
+                          "Need more information"))
 
     def test_game_step_decorator(self):
         """

@@ -111,7 +111,7 @@ class MockGame(Game):
 
     @game_step(requires=[('num',
                           'Number',
-                          lambda self, player, num, **kwargs: True)])
+                          lambda *args, **kwargs: True)])
     def step2(self, player, num, **kwargs):
         """
         Test step 2. Requires input.
@@ -121,7 +121,7 @@ class MockGame(Game):
 
     @game_step(requires=[('num',
                           'Number',
-                          lambda self, player, num, **kwargs: True)])
+                          lambda *args, **kwargs: True)])
     def step3(self, player, num, **kwargs):
         """
         Tests step 3. Requires input from previous

@@ -381,7 +381,7 @@ class Game(HasZones):
                                         player.game_id,
                                         message)
                 return
-                
+
             if save_result_as is not None:
                 self.current_kwargs[save_result_as] = result
             # Now that it's actually been resovled we can clear it
@@ -409,19 +409,6 @@ class Game(HasZones):
 
         return self.expected_action
 
-    @action(restriction=None)
-    def send_information(self, player, **kwargs):
-        """
-        This is a bulit in action to send more information. This will update
-        the current information and then return, hoping that self.run will
-        continue where it left off.
-
-        """
-
-        # TODO: Make sure this is coming from the right player
-        for key, value in kwargs.items():
-            self.current_kwargs[key] = value
-
     def clear_keyword_argument(self, key):
         """
         Remove a keyword argument from the current arguments being passed into
@@ -431,6 +418,22 @@ class Game(HasZones):
 
         if (self.current_kwargs.get(key, None) is not None):
             del self.current_kwargs[key]
+
+    #pylint: disable=unused-argument
+    def send_information_restriction(self, player, **kwargs):
+        return player.game_id == self.expected_action[3]
+
+    @action(restriction=send_information_restriction)
+    def send_information(self, player, **kwargs):
+        """
+        This is a bulit in action to send more information. This will update
+        the current information and then return, hoping that self.run will
+        continue where it left off.
+
+        """
+
+        for key, value in kwargs.items():
+            self.current_kwargs[key] = value
 
     @game_step(requires=None)
     def clear_keyword_step(self, player, key, **kwargs):
