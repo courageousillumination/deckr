@@ -1,5 +1,5 @@
 @import url("http://fonts.googleapis.com/css?family=Courgette|Patua+One");
-/* line 7, scss/reset.scss */
+/* line 1, scss/reset.scss */
 html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p,
 blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img,
 ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i,
@@ -16,7 +16,7 @@ summary, time, mark, audio, video {
 }
 
 /* HTML5 display-role reset for older browsers */
-/* line 19, scss/reset.scss */
+/* line 18, scss/reset.scss */
 article, aside, details, figcaption, figure,
 footer, header, hgroup, menu, nav, section {
   display: block;
@@ -58,7 +58,7 @@ table {
 /* line 6, scss/index.scss */
 body {
   font-family: Helvetica, San-Serif;
-  background-color: #eeeeee;
+  background-color: #eee;
   background-image: url("images/cream_pixels.png");
   padding-bottom: 20px;
 }
@@ -75,8 +75,8 @@ h2 {
   border-bottom: 1px solid #445d8e;
   padding: 20px 40px;
   margin-bottom: 50px;
-  -webkit-box-shadow: #999999 0px 5px 10px;
   -moz-box-shadow: #999999 0px 5px 10px;
+  -webkit-box-shadow: #999999 0px 5px 10px;
   box-shadow: #999999 0px 5px 10px;
 }
 
@@ -99,17 +99,15 @@ h2 {
 
 /* line 40, scss/index.scss */
 #content {
-  background-color: white;
+  background-color: #fff;
   padding: 20px;
   border: 1px solid #ddd;
   border-bottom: 1px solid #999;
-  -webkit-box-shadow: #b3b3b3 10px 10px 15px;
   -moz-box-shadow: #b3b3b3 10px 10px 15px;
+  -webkit-box-shadow: #b3b3b3 10px 10px 15px;
   box-shadow: #b3b3b3 10px 10px 15px;
-  -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
-  -ms-border-radius: 5px;
-  -o-border-radius: 5px;
+  -webkit-border-radius: 5px;
   border-radius: 5px;
 }
 /* line 48, scss/index.scss */
@@ -142,10 +140,8 @@ h2 {
   background-color: #7991bf;
   border: 1px solid #445d8e;
   border-bottom: 2px solid #121927;
-  -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
-  -ms-border-radius: 5px;
-  -o-border-radius: 5px;
+  -webkit-border-radius: 5px;
   border-radius: 5px;
 }
 /* line 75, scss/index.scss */
@@ -209,9 +205,4 @@ h2 {
 .selected {
   border: solid;
   border-color: yellow;
-}
-
-/* line 130, scss/index.scss */
-#region2 {
-  height: 77%;
 }

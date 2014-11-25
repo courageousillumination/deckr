@@ -75,9 +75,72 @@ div.horizontal-fan{
     border: solid;
     border-color: yellow;
 }
+
+textarea {
+    overflow: scroll;
+    resize: none;
+}
+
 </style>
 
 <script type='text/javascript'>
+
+function parseAction(data) {
+    nickname = data[0];
+    transitions = data[1];
+    state = data[2];
+
+    tricks = [];
+
+    for(i = 0; i < transitions.length; i++) {
+        transition = transitions[i];
+        event_box = document.getElementById("eventbox");
+        console.log(state.cards)
+
+        if(transition[0] == "add") {
+            // IDs start at 0 in dictionary
+            zone_id = transition[2] - 1;
+            card_id = transition[1] - 1;
+
+            switch(state.cards[card_id].number) {
+                case 11: number = "jack"; break;
+                case 12: number = "queen"; break;
+                case 13: number = "king"; break;
+                case 14: number = "ace"; break;
+                default: number = state.cards[card_id].number.toString();
+            }
+
+            card_name = "the " + number + " of " + state.cards[card_id].suit;
+
+            console.log(state.zones[zone_id].name)
+            
+            if(state.zones[zone_id].name == "play_zone") {
+                event_box.innerHTML += nickname + " played " + card_name + ".&#13;";
+            }
+            if(state.zones[zone_id].name == "discard") {
+                tricks.push(card_name);
+            }
+        }
+    }
+
+    if((tricks.length) > 0) {
+        event_box.innerHTML += nickname + " won ";
+        for(i = 0; i < tricks.length; i++) {
+            card = tricks[i];
+            if(i < tricks.length - 1) {
+                if(i < tricks.length - 2)
+                    card += ", ";
+                else
+                    card += " and ";
+            }
+            event_box.innerHTML += card;
+        }
+        event_box.innerHTML += ".&#13;";
+    }
+
+    event_box.scrollTop = event_box.scrollHeight;
+}
+
 $(document).ready(function() {
 
     // zone click function
@@ -91,6 +154,9 @@ $(document).ready(function() {
     $("#play_zone").click(function() {
         socket.emit('action', {'action_name': 'take_trick'});
     });
+
+    event_box = document.getElementById("eventbox");
+    event_box.scrollTop = event_box.scrollHeight;
 });
 
 function convert_game_id_to_player_order_id(game_id) {
@@ -180,7 +246,8 @@ socket.on('state', function (data) {
 </script>
 
 <div class="layout">
-    <button onclick="socket.emit('start');">Start</button>
+    <button onclick="socket.emit('start');">Start</button><br />
+    <textarea readonly rows="5" cols="50" id="eventbox">Welcome to the game!&#13;></textarea>
     <div class="table" id="region0">
         <div class="row" id="region1">
             <div class="stacked zone" id="discard3"></div>
