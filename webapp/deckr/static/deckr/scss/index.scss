@@ -11,7 +11,6 @@ body {
     font-family: $text-font;
     background-color: $background-color;
     background-image: $background-image;
-    padding-bottom: 20px;
 }
 
 h1 {
@@ -61,7 +60,6 @@ input[type="text"] {
     }
 
     #player-names {
-        padding: 5px;
         position: absolute;
         top: 53px;
         right: 50px;
@@ -69,6 +67,11 @@ input[type="text"] {
         font-size: 0.8em;
         background-color: lighten($deckr, 30%);
         @include box-shadow(rgba(0,0,0,0.4) 0px 5px 10px);
+
+        li {
+            padding: 5px;
+            border-bottom: 1px solid lighten($deckr, 15%);
+        }
     }
 }
 
@@ -165,6 +168,10 @@ input[type="text"] {
 //
 
 .game-body {
+    height: 100%;
+}
+
+.game-wrapper {
     height: 100%;
 }
 

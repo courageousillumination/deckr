@@ -4,6 +4,7 @@
 
 .layout {
     padding: 50px;
+    padding-bottom: 0px;
     margin: 0 auto;
     width: 855px;
 }
@@ -48,5 +49,4 @@
 .row {
     clear: both;
     width: 100%;
-    overflow: hidden;
 }

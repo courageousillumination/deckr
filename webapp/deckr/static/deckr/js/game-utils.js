@@ -1,5 +1,9 @@
 // game-utils.js
 
+function hoverInfo() {
+    return;
+}
+
 function unselectAll() {
     /* Unselects everything that is selected. */
     $('.selected').removeClass('selected');

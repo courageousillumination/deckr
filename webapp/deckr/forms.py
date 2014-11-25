@@ -13,7 +13,9 @@ class CreateGameRoomForm(forms.Form):
     A simple form that can be used to create a game room.
     """
 
-    game_id = forms.ModelChoiceField(queryset=GameDefinition.objects.all())
+    game_id = forms.ModelChoiceField(
+        queryset=GameDefinition.objects.all(),
+        label='Game')
 
 
 class PlayerForm(forms.ModelForm):

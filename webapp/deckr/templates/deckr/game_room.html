@@ -18,7 +18,7 @@
 <div class="right" style="position:relative;">
 <div id="player-info">
     <h2>Hello <span class="logo name">{{ player.nickname }}</span></h2>
-    <div id="player-names-btn">Players ({{ game.player_set.all|length }})</div>
+    <div id="player-names-btn">Players (<span id="n-players">{{ game.player_set.all|length }}</span>)</div>
 </div>
 <ul id="player-names" style="display: none;">
   {% for name in game.player_set.all %}

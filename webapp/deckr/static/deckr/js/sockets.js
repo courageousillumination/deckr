@@ -30,6 +30,7 @@ function setupSockets() {
 
 function onStart() {
     socket.emit('request_state');
+    $("#start-btn").hide();
 }
 
 function onAddCard(data) {
@@ -126,10 +127,12 @@ function onPlayerNames(players) {
         player_ids.push(player.id);
         player_mapping[player.id] = player.nickname;
     });
-    $('#player_names').html(innerHTML);
+    $('#player-names').html(innerHTML);
+    console.log($('#n-players'));
+    $('#n-players').html(players.length);
 }
 
 function onPlayerNick(data){
-    $('#player_nick').html("Welcome " + data.nickname);
+    // $('#player_nick').html("Welcome " + data.nickname);
     my_game_id = data.id;
 }

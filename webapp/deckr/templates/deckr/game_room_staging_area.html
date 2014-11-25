@@ -1,8 +1,8 @@
 {% extends "deckr/deckr.html" %}
-{% block title %}Deckr | Game room for {{ game_room.game_definition.name }}{% endblock %}
+{% block title %}Deckr | Game room for {{ game_room.game_definition }}{% endblock %}
 {% block content %}
 <div class="center">
-    <h1 class="header bold">Your Game Room for {{ game_room.game_definition.name }} has been created!</h1>
+    <h1 class="header bold">Your Game Room for {{ game_room.game_definition }} has been created!</h1>
 
     <ul id="player-names">
       {% for name in game.player_set.all %}
@@ -16,5 +16,12 @@
         {{ form.as_p }}
         <a href="#" id="submit" class="big-btn"><div>Choose nickname</div></a>
     </form>
+
+    <br />
+    Share the following URL to invite other players: <a id="game-room-url"></a>
+    <script type="text/javascript">
+        $("#game-room-url").attr('href', document.URL);
+        $("#game-room-url").html(document.URL);
+    </script>
 </div>
 {% endblock %}
