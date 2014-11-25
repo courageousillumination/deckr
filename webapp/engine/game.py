@@ -181,9 +181,6 @@ class Game(HasZones):
         # We make some substitutions in the kwargs. These can be a little
         # dangerous, but generally make life a lot easier later on.
         for key, value in kwargs.items():
-            if not (isinstance(value, int) or isinstance(value, list)):
-                continue
-
             if ("card" == key or "_card" in key or
                 "cards" == key or "_cards" in key):
                 object_type = "Card"
