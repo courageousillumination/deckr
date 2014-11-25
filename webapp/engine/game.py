@@ -428,6 +428,14 @@ class Game(HasZones):
         """
 
         self.clear_keyword_argument(key)
+
+    @game_step(requires=None)
+    def clear_all_keywords(self, player, **kwargs):
+        """
+        This will allow the entire dictionary to be cleared at some point.
+        """
+
+        self.current_kwargs = {}
     # Actions after this point should be implemented by subclasses
 
     def set_up(self):

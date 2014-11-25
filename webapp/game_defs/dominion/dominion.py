@@ -506,8 +506,12 @@ class Dominion(Game):
 
         player.hand.remove_card(card)
         player.play_zone.add_card(card)
+        # The card we're playing may need to get additional cards, so we can
+        # clear the state here.
+        self.clear_keyword_argument('card')
         card.face_up = True
         self.resolve(player, card)
+        self.add_step(player, self.clear_all_keywords)
         self.resolve(player, card)
 
     @game_step(requires=[("discard", "Bool", simple_test)])
