@@ -23,6 +23,7 @@ class Dominion(Game):
 
         self.current_phase = None
         self.current_player = None
+        self.is_set_up = False
 
     ##################
     # Base functions #
@@ -38,6 +39,9 @@ class Dominion(Game):
         * Gives each player a starting hand.
         * Sets the current player to be the first player to join the game.
         """
+
+        if self.is_set_up:
+            return
 
         # Cards that are part of every game
         cards_to_zones = [('Curse', 'curses', max((len(self.players) - 1)* 10, 0)),
@@ -78,6 +82,8 @@ class Dominion(Game):
 
         self.current_phase = "action"
         self.current_player = self.players[0]
+
+        is_set_up = True
 
     def is_over(self):
         """
