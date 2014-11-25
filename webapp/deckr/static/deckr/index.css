@@ -75,29 +75,73 @@ h2 {
   border-bottom: 1px solid #445d8e;
   padding: 20px 40px;
   margin-bottom: 50px;
+  position: relative;
   -moz-box-shadow: #999999 0px 5px 10px;
   -webkit-box-shadow: #999999 0px 5px 10px;
   box-shadow: #999999 0px 5px 10px;
 }
-
 /* line 26, scss/index.scss */
+#header #github {
+  position: absolute;
+  top: 20px;
+  right: 40px;
+}
+/* line 32, scss/index.scss */
+#header #player-names {
+  padding: 5px;
+  margin-top: 8px;
+  font-size: 0.8em;
+  background-color: #eee;
+}
+
+/* line 40, scss/index.scss */
 #logo {
   color: #000;
   font-family: "Courgette";
 }
-/* line 30, scss/index.scss */
+/* line 44, scss/index.scss */
 #header #logo {
   font-size: 2em;
   color: #fff;
 }
 
-/* line 36, scss/index.scss */
+/* line 51, scss/index.scss */
+#player-info h2 {
+  color: #fff;
+  font-size: 1.0em;
+  padding: 5px;
+}
+/* line 56, scss/index.scss */
+#player-info h2 span.name {
+  font-size: 1.2em;
+  font-family: "Courgette";
+}
+/* line 62, scss/index.scss */
+#header #player-info {
+  display: inline-block;
+  margin-top: -10px;
+  margin-right: 50px;
+  padding-right: 20px;
+  border-right: 1px solid #5675af;
+}
+/* line 69, scss/index.scss */
+#header #player-info #player-names-btn {
+  padding: 5px;
+  font-size: 1em;
+}
+/* line 73, scss/index.scss */
+#header #player-info #player-names-btn:hover {
+  background-color: #becae0;
+  cursor: pointer;
+}
+
+/* line 81, scss/index.scss */
 #wrapper {
   width: 900px;
   margin: 0 auto;
 }
 
-/* line 40, scss/index.scss */
+/* line 85, scss/index.scss */
 #content {
   background-color: #fff;
   padding: 20px;
@@ -110,29 +154,29 @@ h2 {
   -webkit-border-radius: 5px;
   border-radius: 5px;
 }
-/* line 48, scss/index.scss */
+/* line 93, scss/index.scss */
 #content .header {
   padding-bottom: 5px;
   margin-bottom: 20px;
   border-bottom: 1px solid #ccc;
 }
 
-/* line 55, scss/index.scss */
+/* line 100, scss/index.scss */
 .center {
   text-align: center;
 }
 
-/* line 59, scss/index.scss */
+/* line 104, scss/index.scss */
 .right {
   float: right;
 }
 
-/* line 63, scss/index.scss */
+/* line 108, scss/index.scss */
 .big-btn {
   color: #fff;
   text-decoration: none;
 }
-/* line 66, scss/index.scss */
+/* line 111, scss/index.scss */
 .big-btn div {
   display: inline-block;
   padding: 15px;
@@ -144,70 +188,7 @@ h2 {
   -webkit-border-radius: 5px;
   border-radius: 5px;
 }
-/* line 75, scss/index.scss */
+/* line 120, scss/index.scss */
 .big-btn div:hover {
   background-color: #4c699f;
-}
-
-/* line 81, scss/index.scss */
-.card {
-  margin: 5px;
-}
-
-/* line 85, scss/index.scss */
-.zone {
-  float: left;
-  width: 80px;
-  height: 100px;
-  margin: 5px;
-  padding: 15px;
-  border: 1px dotted #ccc;
-}
-
-/* line 94, scss/index.scss */
-.zone#hand {
-  width: 200px;
-}
-
-/* line 98, scss/index.scss */
-.zone.last {
-  float: right;
-}
-
-/* line 102, scss/index.scss */
-.victory {
-  float: right;
-}
-
-/* line 106, scss/index.scss */
-.vertical-fan {
-  height: 77%;
-}
-
-/* line 111, scss/index.scss */
-.vertical-fan img {
-  margin-bottom: -68px;
-}
-
-/* line 115, scss/index.scss */
-.stacked img {
-  position: absolute;
-}
-
-/* line 119, scss/index.scss */
-.row {
-  clear: both;
-  width: 100%;
-  overflow: hidden;
-}
-
-/* line 125, scss/index.scss */
-.selected {
-  border: solid;
-  border-color: yellow;
-}
-
-/* line 130, scss/index.scss */
-#region2 {
-  height: 77%;
 }

@@ -20,7 +20,21 @@ h2 {
     border-bottom: 1px solid darken($deckr, 20%);
     padding: 20px 40px;
     margin-bottom: 50px;
+    position: relative;
     @include box-shadow(lighten(#000, 60%) 0px 5px 10px);
+
+    #github {
+        position: absolute;
+        top: 20px;
+        right: 40px;
+    }
+
+    #player-names {
+        padding: 5px;
+        margin-top: 8px;
+        font-size: 0.8em;
+        background-color: #eee;
+    }
 }
 
 #logo {
@@ -30,6 +44,37 @@ h2 {
     #header & {
         font-size: 2em;
         color: #fff;
+    }
+}
+
+#player-info {
+    h2 {
+        color: #fff;
+        font-size: 1.0em;
+        padding: 5px;
+        
+        span.name {
+            font-size: 1.2em;
+            font-family: $logo-font;
+        }
+    }
+
+    #header & {
+        display: inline-block;
+        margin-top: -10px;
+        margin-right: 50px;
+        padding-right: 20px;
+        border-right: 1px solid darken($deckr, 10%);
+
+        #player-names-btn {
+            padding: 5px;
+            font-size: 1em;
+
+            &:hover {
+                background-color: lighten($deckr, 20%);
+                cursor: pointer;
+            }
+        }
     }
 }
 
@@ -76,53 +121,4 @@ h2 {
             background-color: darken($deckr, 15%);
         }
     }
-}
-
-.card {
-    margin: 5px;
-}
-
-.zone {
-    float: left;
-    width: 80px;
-    height: 100px;
-    margin: 5px;
-    padding: 15px;
-    border: 1px dotted #ccc;
-}
-
-.zone#hand {
-    width: 200px;
-}
-
-.zone.last {
-    float: right;
-}
-
-.victory {
-    float: right;
-}
-
-.vertical-fan {
-    height: 77%;
-
-}
-
-.vertical-fan img {
-    margin-bottom: -68px;
-}
-
-.stacked img {
-    position: absolute
-}
-
-.row {
-    clear: both;
-    width: 100%;
-    overflow: hidden;
-}
-
-.selected {
-    border: solid;
-    border-color: yellow;
 }

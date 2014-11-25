@@ -1,25 +1,40 @@
 {% extends "deckr/base.html" %}
-{% load staticfiles %}
 {% block morejs %}
+{% load staticfiles %}
 <script type="text/javascript" src="{% static 'deckr/js/sockets.js' %}"></script>
 <script type="text/javascript" src="{% static 'deckr/js/render.js' %}"></script>
 <script type="text/javascript" src="{% static 'deckr/js/game-utils.js' %}"></script>
 <script type="text/javascript" src="{% static 'deckr/js/game_room.js' %}"></script>
 {% endblock %}
-{% block title %}Deckr | Game{% endblock %}
-{% block body-classes %}game{% endblock %}
-{% block content %}
-<h1>You are: {{player.nickname}}</h1>
-<ul id="player_names">
+{% block morecss %}
+<style type="text/css">{{ game_css|safe }}</style>
+{% endblock %}
+{% block header %}
+<div class="right">
+<div id="player-info">
+    <h2>Hello <span class="name">{{ player.nickname }}</span></h2>
+    <div id="player-names-btn">Players</div>
+</div>
+<ul id="player-names">
   {% for name in game.player_set.all %}
     <li>{{ name }}</li>
   {% endfor %}
 </ul>
+{% endblock %}
+{% block body %}
 <div style="display: none;" id="staging_area"></div>
 <a href="#" id="destroy-game-room">End Game</a>
 <a href="#" id="leave-game-room">Leave Game</a>
-{% include sub_template %}
-<script>
-  socket.emit('join', {game_room_id: "{{game.id}}", player_id: {{player.id}}})
-</script>
+<button onclick="socket.emit('start');">Start</button>
+<div id="game-wrapper">
+    {% include sub_template %}
+    {% block game-wrapper %}{% endblock %}
+    <script>
+        socket.emit('join', {
+            game_room_id: "{{game.id}}", 
+            player_id: {{player.id}}}
+        );
+        {{ game_js|safe }}
+    </script>
+</div>
 {% endblock %}

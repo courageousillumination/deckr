@@ -3,29 +3,23 @@
         <meta charset="utf-8">
         {% load staticfiles %}
         <link rel="stylesheet" href="{% static 'deckr/index.css' %}">
-        <!-- External Libraries -->
         <script type="text/javascript" src="{% static 'deckr/js/socket.io.min.js' %}"></script>
         <script type="text/javascript" src="{% static 'deckr/js/jquery-2.1.1.min.js' %}"></script>
         <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.js"></script>
-        <!-- Deckr JS -->
         {% block preload %}{% endblock %}
-        <script type="text/javascript" src="{% static 'deckr/js/index.js' %}"></script>
         {% block morejs %}{% endblock %}
+        {% block morecss %}{% endblock %}
         <title>{% block title %}Deckr{% endblock %}</title>
     </head>
     <body class="{% block body-classes %}{% endblock %}">
         <header id="header">
             <a href="/" style="text-decoration: none;"><span id="logo">Deckr</span></a>
-            <div class="right">
-                <a href="https://github.com/courageousillumination/deckr/">
-                    <img src="{% static 'deckr/images/GitHub-Mark-Light-32px.png' %}" />
-                </a>
-            </div>
+            <a id="github" href="https://github.com/courageousillumination/deckr/">
+                <img src="{% static 'deckr/images/GitHub-Mark-Light-32px.png' %}" />
+            </a>
+            {% block header %}
+            {% endblock %}
         </header>
-        <div id="wrapper">
-            <section id="content">
-                {% block content %}{% endblock %}
-            </section>
-        </div>
+        {% block body %}{% endblock %}
     </body>
 </html>
