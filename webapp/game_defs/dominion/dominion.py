@@ -301,7 +301,7 @@ class Dominion(Game):
         Test to see if a players hand contains a card specified by test.
         """
 
-        for card in player.hand:
+        for card in player.hand.get_cards():
             if test(card):
                 return card
         return None
@@ -339,7 +339,7 @@ class Dominion(Game):
         return gain_test(player, gain_from_zone.peek(), **kwargs)
 
     def trash_test_wrapper(self, player, card, trash_test, **kwargs):
-        if (not self.card_in_hand(card) or not trash_test(card)):
+        if (not self.card_in_hand(card, player) or not trash_test(card)):
             return False
         return True
 
