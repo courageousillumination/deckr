@@ -57,7 +57,7 @@ class Dominion(Game):
         all_kingdom_cards = [x["name"] for x in self.card_set.all_cards() if
                              x["kingdom_card"]]
         kingdom_cards = random.sample(all_kingdom_cards, 10)
-        kingdom_cards[0] = "Remodel"
+        kingdom_cards[0] = "Militia"
         kingdom_cards = [(name, 'kingdom' + str(i), 10)
                          for i, name in enumerate(kingdom_cards)]
 
@@ -302,7 +302,7 @@ class Dominion(Game):
 
         for p in self.players:
             if p != player:
-                fun(player, **kwargs)
+                fun(p, **kwargs)
 
     def find_in_hand(self, player, test):
         """
@@ -651,8 +651,8 @@ class Dominion(Game):
 
     def resolve_militia(self, player, card):
         player.money_pool += 2
-        self.for_each_other_player(player,
-                                   self.discard_down_to_3)
+        self.for_each_other_player(player, self.add_step,
+                                   step = self.discard_down_to_3)
 
     def resolve_feast(self, player, card):
         self.trash_card(player, card = card, trash_test = self.simple_test)
