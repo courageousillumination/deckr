@@ -11,3 +11,15 @@ Feature: Performing game actions
         Given I create a game room
         When I move "card1" to "zone2"
         Then I should see "Error"
+
+    @skip
+    Scenario: Win
+        Given I create a game room
+        When I move "card1" to "win_zone"
+        Then I should see "You won"
+
+    @skip
+    Scenario: Lose
+        Given I create a game room
+        When I move "card1" to "lose_zone"
+        Then I should see "You lose"

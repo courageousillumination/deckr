@@ -1,101 +1,95 @@
-// You could argue that this function is superfluous...
-function addCard(cardDict, zoneId, place) {
-    /* Adds new card to a specified zone.
-       Generates element from cardDict.
-       We would ideally like to use jQuery data,
-       rather than attr. Would need an equivalent
-       to getElementById. */
-    var zone = document.getElementById(zoneId);
-    if (zone == null) {return;}
-    var siblings = zone.childNodes;
-    var newCard = document.createElement('img');
+// game-utils.js
 
-    if (!cardDict["id"]) {
-        var err = "No id attribute provided with card.";
-        console.log(err);
-        return err
-    } else if (document.getElementById(cardDict["id"])) {
-        var err = "Duplicate add. Card already in play.";
+function unselectAll() {
+    /* Unselects everything that is selected. */
+    $('.selected').removeClass('selected');
+}
+
+function getZoneById(zoneId) {
+    /* Gets element with id zoneId. If no such element exists,
+       an error string is returned. */
+    var zone, err;
+    zone = document.getElementById(zoneId);
+    // Validate zoneId
+    if (zone == null) {
+        err = "Zone not found: " + zoneId;
         console.log(err);
         return err;
     }
-    $(newCard).attr('id', cardDict["id"]);
-    // Should probably go into data
-    $(newCard).attr('face_up', cardDict['face_up']);
-    if (cardDict["face_up"]) {
-        $(newCard).attr('src', "/static/deckr/cards/" + cardDict["front_face"]);
-    } else {
-        $(newCard).attr('src', "/static/deckr/cards/" + cardDict["back_face"]);
+    return zone;
+}
+
+function invalidCardDict(cardDict) {
+    /* Given a cardDict, returns false if the cardDict is valid
+       (i.e. if the cardDict is not invalid). Otherwise, if the
+       card dict is invalid, it returns an error string. */
+    var err = false;
+    if (!cardDict['id']) {
+        err = "No id attribute provided with card."
+        return err;
+    } else if (document.getElementById(cardDict['id'])) {
+        err = "Duplicate add. Card already in play.";
     }
+    if (err) console.log(err);
+    return err;
+}
+
+function createNewCard(cardDict) {
+    /* Returns a img element for a given valid cardDict, populating
+       data of the img element with data from the cardDict. If the
+       cardDict is invalid, an error string is returned. */
+    var err, newCard, k, v, src;
+    // Validate cardDict
+    err = invalidCardDict(cardDict);
+    if (err) return err;
+
+    newCard = document.createElement('img');
+    $(newCard).attr('id', cardDict.id);
     $(newCard).addClass('card');
-    $(newCard).data("front_face", cardDict["front_face"]);
-    $(newCard).data("back_face", cardDict["back_face"]);
-
-
-    if (!place) {
-        zone.appendChild(newCard);
-    } else {
-        if (place < siblings.length) {
-                $('.selected').removeClass('selected');
-                zone.insertBefore(newCard, siblings[siblings.length - place]);
-        } else {
-            var err = "Place does not exist."
-            console.log(err);
-            return err;
-        }
-    }
+    // Set newCard data based on cardDict
+    _.each(_.pairs(cardDict), function(kv) {
+        k = kv[0];
+        v = kv[1];
+        $(newCard).data(k, v);
+    });
+    src = cardDict.face_up ? cardDict.front_face : cardDict.back_face;
+    $(newCard).attr('src', src);
+    return newCard;
 }
 
+function addCard(cardDict, zoneId) {
+    /* Given a valid cardDict and zoneId, creates a new card and adds
+       it to the specified zone. If the cardDict or zoneId is invalid,
+       an error string is returned. */
+    console.log("Adding card", cardDict, zoneId);
+    var zone, newCard, err;
+    zone = getZoneById(zoneId)
+    if (_.isString(zone)) return zone;
 
-function moveCard(cardId, toZoneId, place) {
-    /* Moves card from one zone to another, referenced by id.
-       place is optional argument. Zero indexed, pops zero
-       SLIGHTLY BUGGY. AFAIK you should have to say:
-       fromZone.removeChild(card);
-       But you don't. The code works fine without it,
-       and when you include it, the console randomly
-       throws "Node not found" errors on that line. */
-    console.log("Moving card");
-    console.log(cardId, toZoneId, place);
-    var card = document.getElementById(cardId);
-    var fromZone = card.parentElement;
-    var toZone = document.getElementById(toZoneId);
-    var siblings = toZone.children;
+    newCard = createNewCard(cardDict);
+    if (_.isString(newCard)) return newCard;
 
-    //COMPATABILITY PROBLEM
-    if ($(card).hasClass('card').length == 0) {
-        var err = "Please don't misuse our functions. That is not a card.";
-        console.log(err);
-        return err;
-    }
-
-    if (!toZone) {
-        err = "Zone not found: " + toZoneId;
-        console.log(err);
-        return;
-    }
-
-    if (!place) {
-        $('.selected').removeClass('selected');
-        toZone.appendChild(card);
-    } else {
-        if (place < siblings.length) {
-                $('.selected').removeClass('selected');
-                toZone.insertBefore(card, siblings[siblings.length - place]);
-        } else {
-            var err = "Place does not exist."
-            console.log(err);
-            return err;
-        }
-    }
-
+    zone.appendChild(newCard);
 }
 
-// Requests should probably be their own functions.
-// CHANGED: Removed fromZoneId from request!
+function moveCard(cardId, toZoneId) {
+    /* Moves card with id cardId to zone with id toZoneId. If the zoneId
+       is invalid, an error string is returned. */
+    console.log("Moving card", cardId, toZoneId);
+    var card, fromZone, toZone, err;
+    card = document.getElementById(cardId);
+    fromZone = card.parentElement;
+    toZone = getZoneById(toZoneId);
+    if (_.isString(toZone)) return toZone;
+    
+    unselectAll();
+    toZone.appendChild(card);
+}
+
 function requestMoveCard(cardId, toZoneId) {
-    /* Sends card movement request to server */
+    /* Sends a request to the server to perform moveCard. */
     console.log("Sending move request to server.");
+    console.log(cardId, cardId.substring(4));
     socket.emit('action', {'action_name': 'move_cards',
                            'card': cardId.substring(4),
                            'target_zone': toZoneId.substring(4)});
@@ -103,6 +97,4 @@ function requestMoveCard(cardId, toZoneId) {
 
 function gameOver(results) {
     /* Handles game_over */
-    // Format of results is [(nick, won_or_lost, rank)]
-    // except without the parens
 }

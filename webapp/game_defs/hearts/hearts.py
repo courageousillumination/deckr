@@ -40,9 +40,16 @@ class Hearts(Game):
         self.current_turn = None
         self.hearts_broken = False
         self.played_two_of_clubs = False
+        self.is_set_up = False
 
     def set_up(self):
         import random
+
+        # We need enough players to start
+        if(len(self.players) < self.min_players):
+            return
+        if(self.is_set_up):
+            return
 
         # Create our deck of cards
         all_cards = [create_playing_card(x, y)
@@ -71,6 +78,7 @@ class Hearts(Game):
             raise ValueError("2 of clubs was not in any hand")
 
         self.play_zone.suit = None
+        self.is_set_up = True
 
     def is_over(self):
         """

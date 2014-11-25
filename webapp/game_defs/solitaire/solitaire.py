@@ -2,10 +2,11 @@
 This module provides an implementation of a game of Solitaire
 """
 
-from engine.game import Game, action
 from engine.card import Card
+from engine.game import action, Game
 
 SUITS = ["clubs", "spades", "hearts", "diamonds"]
+img_location = '/static/deckr/cards/'
 
 def get_file_name(suit, number):
     if number == 1:
@@ -19,8 +20,8 @@ def create_playing_card(suit, number):
     card = Card()
     card.suit = suit
     card.number = number
-    card.front_face = get_file_name(suit, number)
-    card.back_face = "b1fv.png"
+    card.front_face = img_location + get_file_name(suit, number)
+    card.back_face = img_location + "b1fv.png"
     return card
 
 def compare_color(card1, card2):
@@ -34,6 +35,7 @@ class Solitaire(Game):
     """
     Solitaire is a simple one player game
     """
+    
     def set_up(self):
         """
         """
@@ -46,7 +48,7 @@ class Solitaire(Game):
             self.deck.shuffle()
             for i in range(1, 8):
                 zone = self.zones["play_zone"+str(i)]
-                for j in range(0, i):
+                for _ in range(0, i):
                     zone.push(self.deck.pop())
                 card = zone.peek()
                 card.face_up = True
@@ -77,7 +79,7 @@ class Solitaire(Game):
 
         return []
 
-    def move_card_restrictons(self, card, target_zone):
+    def move_card_restrictons(self, player, card, target_zone):
 
         if card.zone.zone_type == "victory" or card.face_up == False:
             return False
@@ -106,13 +108,13 @@ class Solitaire(Game):
 
         return compare_color(card, card_b) and card_b.number == card.number + 1
 
-    def draw_restrictions(self):
+    def draw_restrictions(self, player):
         return (self.deck.get_num_cards() +
                 self.deck_flipped.get_num_cards()) > 0
 
 
     @action(restriction=move_card_restrictons)
-    def move_cards(self, card, target_zone):
+    def move_cards(self, player, card, target_zone):
         """
         Move the top card from one zone to another.
         """
@@ -133,7 +135,7 @@ class Solitaire(Game):
             last_card.face_up = True
 
     @action(restriction=draw_restrictions)
-    def draw(self):
+    def draw(self, player):
 
         if self.deck.get_num_cards() == 0:
             self.deck.set_cards(self.deck_flipped.get_cards())

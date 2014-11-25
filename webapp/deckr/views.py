@@ -23,7 +23,7 @@ def index(request):
     Simply return the index page without any context.
     """
 
-    return render(request, "deckr/index.html", {'games': ['foo', 'bar']})
+    return render(request, "deckr/index.html", {})
 
 
 def test_game(request):

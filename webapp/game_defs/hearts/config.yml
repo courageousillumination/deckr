@@ -2,6 +2,7 @@
 game_file: "hearts"
 game_class: "Hearts"
 max_players: 4
+min_players: 2
 zones:
     - name: "hand"
       owner: "player"
