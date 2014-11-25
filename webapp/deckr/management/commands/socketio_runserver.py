@@ -7,20 +7,20 @@ original source: https://github.com/iamjem/socketio_runserver
 """
 
 from optparse import make_option
+from os import environ, getpid, kill
 from re import match
+from signal import SIGINT
 from thread import start_new_thread
 from time import sleep
-from os import getpid, kill, environ
-from signal import SIGINT
-import coverage
 
 from django.conf import settings
 from django.core.handlers.wsgi import WSGIHandler
 from django.core.management.base import BaseCommand, CommandError
-from django.core.management.commands.runserver import naiveip_re, DEFAULT_PORT
+from django.core.management.commands.runserver import DEFAULT_PORT, naiveip_re
 from django.utils.autoreload import code_changed, restart_with_reloader
-from socketio.server import SocketIOServer
 
+import coverage
+from socketio.server import SocketIOServer
 
 RELOAD = False
 
@@ -32,7 +32,7 @@ def reload_watcher():
     the running server.
     """
 
-    global RELOAD
+    global RELOAD  # pylint: disable=global-statement
     while True:
         RELOAD = code_changed()
         if RELOAD:

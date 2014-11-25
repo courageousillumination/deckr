@@ -187,11 +187,11 @@ class GameNamespaceTestCase(SocketTestCase):
                                                     "state_transitions",
                                                     transitions)
 
+        expected_text_box_data = (self.namespace.player.nickname, transitions,
+                                  self.namespace.runner.get_state())
         self.namespace.emit_to_room.assert_any_call(self.namespace.room,
                                                     "textbox_data",
-                                                    (self.namespace.player.nickname,
-                                                     transitions,
-                                                     self.namespace.runner.get_state()))
+                                                    expected_text_box_data)
 
     def test_private_transitions(self):
         """
@@ -222,11 +222,11 @@ class GameNamespaceTestCase(SocketTestCase):
                                                     "state_transitions",
                                                     transitions)
 
+        expected_text_box_data = (self.namespace.player.nickname, transitions,
+                                  self.namespace.runner.get_state())
         self.namespace.emit_to_room.assert_any_call(self.namespace.room,
                                                     "textbox_data",
-                                                    (self.namespace.player.nickname,
-                                                        transitions,
-                                                        self.namespace.runner.get_state()))
+                                                    expected_text_box_data)
 
         # Make sure that we emit private information
         self.namespace.emit.assert_any_call("state_transitions",

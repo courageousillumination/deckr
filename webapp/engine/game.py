@@ -178,15 +178,15 @@ class Game(HasZones):
         self.flush_transitions()
 
         if (not hasattr(self, action_name) or
-            (self.expected_action is not None and
-             action_name != self.expected_action[0])):
+                (self.expected_action is not None and
+                 action_name != self.expected_action[0])):
             raise InvalidMoveException
 
         # We make some substitutions in the kwargs. These can be a little
         # dangerous, but generally make life a lot easier later on.
         for key, value in kwargs.items():
             if ("card" == key or "_card" in key or
-                "cards" == key or "_cards" in key):
+                    "cards" == key or "_cards" in key):
                 object_type = "Card"
             elif "zone" in key:
                 object_type = "Zone"
@@ -416,11 +416,15 @@ class Game(HasZones):
         multiple times.
         """
 
-        if (self.current_kwargs.get(key, None) is not None):
+        if self.current_kwargs.get(key, None) is not None:
             del self.current_kwargs[key]
 
-    #pylint: disable=unused-argument
+    # pylint: disable=unused-argument
     def send_information_restriction(self, player, **kwargs):
+        """
+        We can only send information if the server is expecting it.
+        """
+
         return player.game_id == self.expected_action[3]
 
     @action(restriction=send_information_restriction)
@@ -429,7 +433,6 @@ class Game(HasZones):
         This is a bulit in action to send more information. This will update
         the current information and then return, hoping that self.run will
         continue where it left off.
-
         """
 
         for key, value in kwargs.items():
