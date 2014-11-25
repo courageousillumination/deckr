@@ -57,7 +57,7 @@ class Dominion(Game):
         all_kingdom_cards = [x["name"] for x in self.card_set.all_cards() if
                              x["kingdom_card"]]
         kingdom_cards = random.sample(all_kingdom_cards, 10)
-        kingdom_cards[0] = "Militia"
+        kingdom_cards[0] = "Witch"
         kingdom_cards = [(name, 'kingdom' + str(i), 10)
                          for i, name in enumerate(kingdom_cards)]
 
@@ -630,9 +630,13 @@ class Dominion(Game):
         self.pluses(player, num_actions=1, num_buys=1, num_coin=1, num_cards=1)
 
     def resolve_witch(self, player, card):
+        def gain_curse(player):
+            card = self.curses.pop()
+            if card is not None:
+                player.discard.push(card)
+
         self.pluses(player, num_cards=2)
-        self.for_each_other_player(player,
-                                   self.gain_a_curse)
+        self.for_each_other_player(player, gain_curse)
 
     def resolve_throne_room(self, player, card):
         self.add_step(player,
