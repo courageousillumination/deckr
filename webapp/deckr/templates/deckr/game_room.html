@@ -1,8 +1,10 @@
 {% extends "deckr/base.html" %}
 {% load staticfiles %}
 {% block morejs %}
+<script type="text/javascript" src="{% static 'deckr/js/sockets.js' %}"></script>
+<script type="text/javascript" src="{% static 'deckr/js/render.js' %}"></script>
+<script type="text/javascript" src="{% static 'deckr/js/game-utils.js' %}"></script>
 <script type="text/javascript" src="{% static 'deckr/js/game_room.js' %}"></script>
-<script type="text/javascript" src="{% static 'deckr/js/socket.js' %}"></script>
 {% endblock %}
 {% block title %}Deckr | Game{% endblock %}
 {% block body-classes %}game{% endblock %}

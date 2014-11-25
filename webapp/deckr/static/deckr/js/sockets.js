@@ -3,9 +3,13 @@
 
 var socket = io.connect("/game");
 var player_mapping = {};
+var player_ids = [];
+var my_game_id = 0;
 
 function setupSockets() {
+    console.log('Setting up sockets.');
     var socket_fn_mapping = {
+        'start': onStart,
         'add_card': onAddCard,
         'remove_card': onRemoveCard,
         'move_card': onMoveCard,
@@ -22,6 +26,10 @@ function setupSockets() {
         var fn = kv[1];
         socket.on(event, fn);
     });
+}
+
+function onStart() {
+    socket.emit('request_state');
 }
 
 function onAddCard(data) {
