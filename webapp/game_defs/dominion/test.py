@@ -17,10 +17,12 @@ class DominionTestCase(TestCase):
         self.player1.num_actions = 1
         self.player1.num_buys = 1
         self.player1.money_pool = 0
+        self.player1.protected = False
 
         self.player2.num_actions = 1
         self.player2.num_buys = 1
         self.player2.money_pool = 0
+        self.player2.protected = False
 
     def create_cards(self, card_name, num = 1):
         cards = self.game.card_set.create(card_name, num)
@@ -562,3 +564,24 @@ class DominionTestCase(TestCase):
         self.assertIn(estate, self.player1.discard)
         self.assertIn(coppers[0], self.player1.hand)
         self.assertIn(coppers[1], self.player1.hand)
+
+    def test_reveal_moat(self):
+        """
+        If I reveal a moat I shouldn't have to discard for the militia.
+        """
+
+        moat = self.create_cards("Moat")
+        militia = self.create_cards("Militia")
+        coppers = self.create_cards("Copper", 5)
+        self.player2.hand.set_cards(coppers)
+        self.player2.hand.push(moat)
+        self.player1.hand.push(militia)
+
+        self.game.make_action("play_card", player=self.player1.game_id,
+                              card=militia.game_id)
+
+        self.game.make_action("send_information", player=self.player2.game_id,
+                              reveal=True)
+
+        self.assertIsNone(self.game.get_expected_action())
+        self.assertEqual(self.player1.money_pool, 2)
