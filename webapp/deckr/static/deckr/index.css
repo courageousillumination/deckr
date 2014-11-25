@@ -206,3 +206,8 @@ h2 {
   border: solid;
   border-color: yellow;
 }
+
+/* line 130, scss/index.scss */
+#region2 {
+  height: 77%;
+}
