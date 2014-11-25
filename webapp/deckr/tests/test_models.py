@@ -37,7 +37,7 @@ class GameRoomTestCase(TestCase):
                                                         path="/bar")
         self.game_room = GameRoom.objects.create(room_id=1,
                                                  max_players=2,
-                                                 game_definition = self.definition)
+                                                 game_definition=self.definition)
 
     def test_string_representation(self):
         """

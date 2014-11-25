@@ -397,7 +397,7 @@ class Game(HasZones):
 
         return self.expected_action
 
-    @action(restriction = None)
+    @action(restriction=None)
     def send_information(self, player, **kwargs):
         """
         This is a bulit in action to send more information. This will update
@@ -406,7 +406,7 @@ class Game(HasZones):
 
         """
 
-        #TODO: Make sure this is coming from the right player
+        # TODO: Make sure this is coming from the right player
         for key, value in kwargs.items():
             self.current_kwargs[key] = value
 

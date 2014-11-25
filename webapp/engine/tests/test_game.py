@@ -558,7 +558,7 @@ class GameTestCase(TestCase):
         steps execute.
         """
 
-        self.game.make_action("test_multi_step", player = self.player.game_id)
+        self.game.make_action("test_multi_step", player=self.player.game_id)
         self.assertListEqual([("step1",)],
                              self.game.get_public_transitions())
 
@@ -595,7 +595,6 @@ class GameTestCase(TestCase):
         self.assertListEqual([("simple_step",)],
                              self.game.get_public_transitions())
 
-
     def test_add_step_with_arguments(self):
         """
         Make sure that we can add a step with arguments.
@@ -613,7 +612,7 @@ class GameTestCase(TestCase):
         """
 
         self.game.add_step(self.player, self.game.save_step1,
-                           save_result_as = "result")
+                           save_result_as="result")
         self.game.add_step(self.player, self.game.save_step2)
         self.game.run()
         self.assertEqual(self.game.get_public_transitions(), [(10,)])
@@ -635,8 +634,8 @@ class GameTestCase(TestCase):
 
         # pylint: disable=unused-argument
         @game_step(requires=[("num",
-                             "Number",
-                             lambda num: True)])
+                              "Number",
+                              lambda num: True)])
         def simple_step(num):
             """ Returns the input. """
             return num
@@ -655,7 +654,7 @@ class GameTestCase(TestCase):
 
         self.assertRaises(NeedsMoreInfo, simple_step_with_test)
         self.assertRaises(NeedsMoreInfo, simple_step_with_test,
-                          num=5, max_num = 3)
+                          num=5, max_num=3)
 
         self.assertEqual(simple_step_with_test(num=2, max_num=3), 2)
 
