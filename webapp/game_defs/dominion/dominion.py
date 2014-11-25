@@ -88,8 +88,8 @@ class Dominion(Game):
         if self.victory2.get_num_cards() == 0:
             return True
 
-        supply_zones = [x for x in self.zones if x.zone_type == 'supply' and
-                        x.get_num_cards() == 0]
+        supply_zones = [x for x in self.zones.values()
+                        if x.zone_type == 'supply' and x.get_num_cards() == 0]
         if len(supply_zones) >= 3:
             return True
         return False
@@ -333,10 +333,15 @@ class Dominion(Game):
 
     def gain_test_wrapper(self, player, gain_from_zone, gain_test, **kwargs):
         # We can only gain a card if it's there
-        if gain_from_zone.get_num_cards == 0:
+        if gain_from_zone.get_num_cards() == 0:
             return False
 
-        return gain_test(player, gain_from_zone, **kwargs)
+        return gain_test(player, gain_from_zone.peek(), **kwargs)
+
+    def trash_test_wrapper(self, player, card, trash_test, **kwargs):
+        if (not self.card_in_hand(card) or not trash_test(card)):
+            return False
+        return True
 
     def militia_card_test(self, player, cards, **kwargs):
         for card in cards:
@@ -358,6 +363,15 @@ class Dominion(Game):
     def victory_card_in_hand(self, player, card, **kwargs):
         return card in player.hand and "victory" in card.card_type
 
+    def costs_up_to_x(self, player, card, max_cost, **kwargs):
+        return card.cost <= max_cost
+
+    def costs_up_to_x_more(self, player, card, other_card, max_delta, **kwargs):
+        return card.cost <= other_card.cost + max_delta
+
+    def card_type_contians(self, player, card, card_type, **kwargs):
+        return card_type in card.card_type
+
     ##############
     # Game Steps #
     ##############
@@ -372,9 +386,23 @@ class Dominion(Game):
         card.set_value("face_up", True, player)
         player.hand.push(card)
 
+    @game_step(requires=None)
+    def draw_cards(self, player, num_cards, **kwargs):
+        """
+        Draws a specific number of cards. This is used by Cellar.
+        """
+
+        for _ in range(num_cards):
+            self.draw(player)
+        return num_cards
 
     @game_step(requires=None)
     def clean_up(self, player):
+        """
+        Execute the clean up phase. This involves resetting all values
+        discarding all cards and drawing a new hand.
+        """
+
         # Move everything from the play zone
         while player.play_zone.get_num_cards() > 0:
             player.discard.push(player.play_zone.pop())
@@ -397,8 +425,7 @@ class Dominion(Game):
     @game_step(requires=[("cards", "Cards", cards_in_hand)])
     def discard_cards(self, player, cards, **kwargs):
         """
-        Discard the cards in cards, and returns the
-        number of cards discarded.
+        Discard all cards, and returns the number of cards discarded.
         """
 
         for card in cards:
@@ -410,7 +437,8 @@ class Dominion(Game):
     @game_step(requires=[("cards", "Cards", cards_in_hand)])
     def trash_cards(self, player, cards, **kwargs):
         """
-        Trash a list of cards.
+        Trash a list of cards. The only requirement is that these cards
+        are in your hand.
         """
 
         for card in cards:
@@ -419,11 +447,26 @@ class Dominion(Game):
             card.face_up = True
         return cards
 
-    @game_step(requires=None)
-    def draw_cards(self, player, num_cards, **kwargs):
-        for _ in range(num_cards):
-            self.draw(player)
-        return num_cards
+    @game_step(requires=[("card", "Card", trash_test_wrapper)])
+    def trash_card(self, player, card, trash_test, **kwargs):
+        """
+        Trash a specific card. A test can be passed in and the card must
+        satisfy that test.
+        """
+
+        self.trash_cards(player, [card])
+        return card
+
+    @game_step(requires=[("gain_from_zone", "Zone", gain_test_wrapper)])
+    def gain(self, player, gain_from_zone, gain_test, **kwargs):
+        """
+        This can be used to gain a card. A gain_test should be passed in that
+        verifies that the card is legit.
+        """
+
+        card = gain_from_zone.pop()
+        if card is not None:
+            player.discard.push(card)
 
     @game_step(requires=[("flag", "Bool", simple_test)])
     def discard_deck(self, player, flag, **kwargs):
@@ -434,18 +477,6 @@ class Dominion(Game):
                 card.set_value("face_up", True, player)
                 player.discard.push(card)
 
-    @game_step(requires=[("gain_from_zone", "Zone", gain_test_wrapper)])
-    def gain(self, player, gain_from_zone, gain_test, **kwargs):
-        # Assumes that the requires check everything is solid in the \
-        # gain_from_zone
-        card = gain_from_zone.pop()
-        player.discard.push(card)
-
-    @game_step(requires=None)
-    def gain_a_curse(self, player):
-        if self.curses.get_num_cards() > 0:
-            player.discard.push(self.curses.pop())
-
     @game_step(requires=[("cards", "Cards", militia_card_test)])
     def discard_down_to_3(self, player, cards, **kwargs):
         for card in cards:
@@ -454,13 +485,19 @@ class Dominion(Game):
             card.face_up = True
         return len(cards)
 
-    @game_step(requires=[("target_card", "Card", card_in_hand)])
-    def throne_room_step(self, player, target_card, **kwargs):
-        self.play_card(player, target_card)
-        self.resolve(player, target_card)
+    @game_step(requires=[("card", "Card", card_in_hand)])
+    def select_throne_room_card(self, player, card, **kwargs):
+        """
+        This is a simple resolution of the Throne Room card.
+        """
 
+        player.hand.remove_card(card)
+        player.play_zone.add_card(card)
+        card.face_up = True
+        self.resolve(player, card)
+        self.resolve(player, card)
 
-    @game_step(requires=[("discard", "Bool", lambda *args, **kwargs: True)])
+    @game_step(requires=[("discard", "Bool", simple_test)])
     def spy_step(self, player, other_player, revealed_card, discard, **kwargs):
         if discard:
             other_player.discard.push(revealed_card)
@@ -558,11 +595,10 @@ class Dominion(Game):
         self.pluses(player, num_coin=2, num_buys=1)
 
     def resolve_workshop(self, player, card):
-        def costs_up_to_4(player, gain_from_zone, **kwargs):
-            return gain_from_zone.peek().cost <= 4
         self.add_step(player,
                       self.gain,
-                      kwargs = {'gain_test': costs_up_to_4})
+                      kwargs = {'gain_test': self.costs_up_to_x,
+                                'max_cost': 4})
 
     def resolve_smithy(self, player, card):
         self.pluses(player, num_cards=3)
@@ -602,8 +638,54 @@ class Dominion(Game):
 
         player.money_pool += 3
 
-    # TODO: Clean up everything below this.
+    def resolve_militia(self, player, card):
+        player.money_pool += 2
+        self.for_each_other_player(player,
+                                   self.discard_down_to_3)
 
+    def resolve_feast(self, player, card):
+        self.trash_card(player, card = card, trash_test = self.simple_test)
+        self.add_step(player,
+                      self.gain,
+                      kwargs = {'gain_test': self.costs_up_to_x,
+                                'max_cost': 5})
+
+    def resolve_remodel(self, player, card):
+        if player.hand.get_num_cards() == 0:
+            return
+        self.add_step(player,
+                      self.trash_cards,
+                      kwargs = {'max_cards': 1,
+                                'min_cards': 1},
+                      save_result_as = 'other_card')
+        self.add_step(player,
+                      self.gain,
+                      kwargs = {'gain_test': self.costs_up_to_x_more,
+                                'max_delta': 2})
+
+    def resolve_mine(self, player, card):
+
+        def treasure_and_cost(player, card, other_card, **kwargs):
+            if (self.card_type_contians(player, card, "treasure", **kwargs) and
+                self.costs_up_to_x_more(player, card, other_card, 3)):
+                return True
+            return False
+
+        if player.hand.get_num_cards() == 0:
+            return
+
+        self.add_step(player,
+                      self.trash_cards,
+                      kwargs = {'max_cards': 1,
+                                'min_cards': 1,
+                                'test': self.card_type_contians,
+                                'card_type': 'treasure'},
+                      save_result_as = 'other_card')
+        self.add_step(player,
+                      self.gain,
+                      kwargs = {'gain_test': treasure_and_cost})
+
+    # TODO: Clean up everything below this.
 
     def resolve_adventurer(self, player, card):
         set_asside = []
@@ -623,43 +705,6 @@ class Dominion(Game):
             card.set_value("face_up", True, player)
         for card in set_asside:
             player.discard.add_card(card)
-
-    def resolve_feast(self, player, card):
-        card.zone.remove_card(card)
-        self.trash.push(card)
-
-        def costs_up_to_5(player, gain_from_zone, **kwargs):
-            return gain_from_zone.peek().cost <= 5
-
-        self.add_step(player,
-                      self.gain,
-                      kwargs = {'gain_test': costs_up_to_5})
-
-
-
-    def resolve_remodel(self, player, card):
-        if player.hand.get_num_cards() == 0:
-            return
-
-        self.add_step(player,
-                      self.trash_cards,
-                      kwargs = {'max_cards': 1,
-                                'min_cards': 1},
-                      save_result_as = 'trashed_card')
-
-        def costs_up_to_2_more(player, gain_from_zone, trashed_card, **kwargs):
-            return trashed_card[0].cost + 2 >= gain_from_zone.peek().cost
-
-        self.add_step(player,
-                      self.gain,
-                      kwargs = {'gain_test': costs_up_to_2_more})
-
-    def resolve_militia(self, player, card):
-        player.money_pool += 2
-        for other_player in self.players:
-            if other_player != player:
-                self.add_step(other_player,
-                              self.discard_down_to_3)
 
     def resolve_spy(self, player, card):
         self.draw(player)
@@ -740,21 +785,3 @@ class Dominion(Game):
                 else:
                     other_player.discard.push(card1)
                     other_player.discard.push(card2)
-
-    def resolve_mine(self, player, card):
-        if player.hand.get_num_cards() == 0:
-            return
-
-        self.add_step(player,
-                      self.trash_cards,
-                      kwargs = {'max_cards': 1,
-                                'min_cards': 1,
-                                'test': lambda x: "treasure" in x.card_type},
-                      save_result_as = 'trashed_card')
-        def costs_up_to_3_more(player, gain_from_zone, trashed_card, **kwargs):
-            return (trashed_card[0].cost + 3 >= gain_from_zone.peek().cost and
-                    "treasure" in gain_from_zone.peek().card_type)
-
-        self.add_step(player,
-                      self.gain,
-                      kwargs = {'gain_test': costs_up_to_3_more})
