@@ -515,18 +515,28 @@ class Dominion(Game):
         self.resolve(player, card)
 
     @game_step(requires=[("discard", "Bool", simple_test)])
-    def spy_step(self, player, other_player, revealed_card, discard, **kwargs):
+    def spy_step(self, player, other_player, revealed_card, discard,
+                 **kwargs):
+        print player, other_player, revealed_card, discard
+        revealed_card.zone.remove_card(revealed_card)
         if discard:
             other_player.discard.push(revealed_card)
         else:
             revealed_card.face_up = False
             revealed_card.set_value("face_up", False, other_player)
             other_player.deck.push(revealed_card)
+        self.clear_keyword_argument('discard') # We may have other people
 
     @game_step(requires=[("card", "Card", in_possible_cards)])
     def thief_trash(self, player, card, possible_cards, **kwargs):
         card.zone.remove_card(card)
         self.trash.push(card)
+        # Discard the other possible card
+        for c in possible_cards:
+            if c != card:
+                owner = c.zone.owner
+                c.zone.remove_card(c)
+                owner.discard.push(c)
 
     @game_step(requires=[("steal", "Bool", lambda *args, **kwargs: True)])
     def thief_steal(self, player, card, steal, **kwargs):
@@ -621,8 +631,7 @@ class Dominion(Game):
         self.pluses(player, num_cards=3)
 
     def resolve_council_room(self, player, card):
-        self.pluses(player, num_cards=4, num_buys=4)
-
+        self.pluses(player, num_cards=4, num_buys=1)
         self.for_each_other_player(player,
                                    lambda x: self.pluses(x, num_cards=1))
 
@@ -736,20 +745,21 @@ class Dominion(Game):
     def resolve_spy(self, player, card):
         self.draw(player)
         player.num_actions += 1
-        for other_player in self.players:
+        other_player = player
+        count = 0
+        while count < len(self.players):
             # Reveal the top card of the deck
             revealed_card = self.get_next_card(other_player)
-            if revealed_card is None:
-                continue
-
-            revealed_card.face_up = True
-            revealed_card.set_value("face_up", True, other_player)
-            other_player.play_zone.push(revealed_card)
-            self.add_step(player,
-                          self.spy_step,
-                          kwargs = {'other_player': other_player,
-                                    'revealed_card': revealed_card})
-
+            if revealed_card is not None:
+                revealed_card.face_up = True
+                revealed_card.set_value("face_up", True, other_player)
+                other_player.play_zone.push(revealed_card)
+                self.add_step(player,
+                              self.spy_step,
+                              kwargs = {'other_player': other_player,
+                                        'revealed_card': revealed_card})
+            other_player = self.next_player(other_player)
+            count += 1
 
     def resolve_library(self, player, card):
         if player.hand.get_num_cards() >= 7:

@@ -178,9 +178,14 @@ class Game(HasZones):
              action_name != self.expected_action[0])):
             raise InvalidMoveException
 
-        # We make some substitutions in the kwargs
+        # We make some substitutions in the kwargs. These can be a little
+        # dangerous, but generally make life a lot easier later on.
         for key, value in kwargs.items():
-            if "card" in key:
+            if not (isinstance(value, int) or isinstance(value, list)):
+                continue
+
+            if ("card" == key or "_card" in key or
+                "cards" == key or "_cards" in key):
                 object_type = "Card"
             elif "zone" in key:
                 object_type = "Zone"
@@ -306,7 +311,7 @@ class Game(HasZones):
         # Add the per-player zones to our dictionary and add the owner to
         # each zone.
         for name, zone in player.zones.items():
-            zone.owner = player.game_id
+            zone.owner = player
             zone_name = name + '_' + str(player.game_id)
             self.zones[zone_name] = zone
             setattr(self, zone_name, zone)

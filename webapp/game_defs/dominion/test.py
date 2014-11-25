@@ -18,6 +18,10 @@ class DominionTestCase(TestCase):
         self.player1.num_buys = 1
         self.player1.money_pool = 0
 
+        self.player2.num_actions = 1
+        self.player2.num_buys = 1
+        self.player2.money_pool = 0
+
     def create_cards(self, card_name, num = 1):
         cards = self.game.card_set.create(card_name, num)
         if num  == 1:
@@ -329,7 +333,29 @@ class DominionTestCase(TestCase):
         and you get to choose to discard it or not.
         """
 
-        pass
+        spy = self.create_cards("Spy")
+        player_1_copper = self.create_cards("Copper", 2)
+        player_2_copper = self.create_cards("Copper")
+
+        self.player1.hand.push(spy)
+        self.player1.deck.set_cards(player_1_copper)
+        self.player2.deck.push(player_2_copper)
+
+        self.game.make_action("play_card", player=self.player1.game_id,
+                              card=spy.game_id)
+
+        # Keep our copper, and force player2 to discard his
+        self.game.make_action("send_information", player=self.player1.game_id,
+                              discard = False)
+        self.game.make_action("send_information", player=self.player1.game_id,
+                              discard = True)
+
+        self.assertEqual(self.player1.hand.get_num_cards(), 1)
+        self.assertEqual(self.player1.num_actions, 1)
+        self.assertIn(player_1_copper[1], self.player1.hand)
+        self.assertIn(player_1_copper[0], self.player1.deck)
+        self.assertIn(player_2_copper, self.player2.discard)
+
 
     def test_thief(self):
         """
@@ -337,14 +363,45 @@ class DominionTestCase(TestCase):
         then have the choice of gaining a treasure.
         """
 
-        pass
+        thief = self.create_cards("Thief")
+        coppers = self.create_cards("Copper", 2)
+
+        self.player1.hand.push(thief)
+        self.player2.deck.set_cards(coppers)
+
+        self.game.make_action("play_card", player=self.player1.game_id,
+                              card=thief.game_id)
+
+        # Keep our copper, and force player2 to discard his
+        self.game.make_action("send_information", player=self.player1.game_id,
+                              card = coppers[0].game_id)
+        self.game.make_action("send_information", player=self.player1.game_id,
+                              steal = True)
+
+
+        self.assertIn(coppers[0], self.player1.discard)
+        self.assertIn(coppers[1], self.player2.discard)
 
     def test_throne_room(self):
         """
-        The throneroom should allow you to play an aciton twice.
+        The throneroom should allow you to play an action twice.
         """
 
-        pass
+        throne_room = self.create_cards("Throne Room")
+        smithy = self.create_cards("Smithy")
+        coppers = self.create_cards("Copper", 6)
+        self.player1.hand.push(throne_room)
+        self.player1.hand.push(smithy)
+        self.player1.deck.set_cards(coppers)
+
+        self.game.make_action("play_card", player=self.player1.game_id,
+                              card=throne_room.game_id)
+        self.game.make_action("send_information", player=self.player1.game_id,
+                              card = smithy.game_id)
+
+        self.assertEqual(self.player1.hand.get_num_cards(), 6)
+        self.assertEqual(self.player1.deck.get_num_cards(), 0)
+
 
     def test_council_room(self):
         """
@@ -352,21 +409,47 @@ class DominionTestCase(TestCase):
         draws a card.
         """
 
-        pass
+        council_room = self.create_cards("Council Room")
+        coppers = self.create_cards("Copper", 4)
+        other_coppers = self.create_cards("Copper")
+        self.player1.hand.push(council_room)
+        self.player1.deck.set_cards(coppers)
+        self.player2.deck.push(other_coppers)
+        self.game.make_action("play_card", player=self.player1.game_id,
+                              card=council_room.game_id)
+
+        self.assertEqual(self.player1.hand.get_num_cards(), 4)
+        self.assertEqual(self.player1.num_buys, 2)
+        self.assertEqual(self.player2.hand.get_num_cards(), 1)
 
     def test_festival(self):
         """
         The festival shoud give +2 actions, + 1 buy, + $2
         """
 
-        pass
+        festival = self.create_cards("Festival")
+        self.player1.hand.push(festival)
+        self.game.make_action("play_card", player=self.player1.game_id,
+                              card=festival.game_id)
+
+        self.assertEqual(self.player1.num_buys, 2)
+        self.assertEqual(self.player1.num_actions, 2)
+        self.assertEqual(self.player1.money_pool, 2)
 
     def test_laboratory(self):
         """
         The lab should give +2 cards, +1 action.
         """
 
-        pass
+        lab = self.create_cards("Laboratory")
+        coppers = self.create_cards("Copper", 2)
+        self.player1.hand.push(lab)
+        self.player1.deck.set_cards(coppers)
+        self.game.make_action("play_card", player=self.player1.game_id,
+                              card=lab.game_id)
+
+        self.assertEqual(self.player1.hand.get_num_cards(), 2)
+        self.assertEqual(self.player1.num_actions, 1)
 
     def test_library(self):
         """
@@ -380,7 +463,17 @@ class DominionTestCase(TestCase):
         The market should give +1 card; +1 action; +1 buy; +$1
         """
 
-        pass
+        market = self.create_cards("Market")
+        coppers = self.create_cards("Copper")
+        self.player1.hand.push(market)
+        self.player1.deck.push(coppers)
+        self.game.make_action("play_card", player=self.player1.game_id,
+                              card=market.game_id)
+
+        self.assertEqual(self.player1.hand.get_num_cards(), 1)
+        self.assertEqual(self.player1.num_buys, 2)
+        self.assertEqual(self.player1.num_actions, 1)
+        self.assertEqual(self.player1.money_pool, 1)
 
     def test_mine(self):
         """
@@ -395,7 +488,19 @@ class DominionTestCase(TestCase):
         The witch should give +2 cards and give each other player a  curse.
         """
 
-        pass
+        witch = self.create_cards("Witch")
+        coppers = self.create_cards("Copper", 2)
+        curse = self.create_cards("Curse")
+
+        self.player1.hand.push(witch)
+        self.player1.deck.set_cards(coppers)
+        self.game.curses.push(curse)
+
+        self.game.make_action("play_card", player=self.player1.game_id,
+                              card=witch.game_id)
+
+        self.assertEqual(self.player1.hand.get_num_cards(), 2)
+        self.assertIn(curse, self.player2.discard)
 
     def test_adventurer(self):
         """
