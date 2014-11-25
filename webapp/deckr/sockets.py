@@ -2,6 +2,8 @@
 Stores all the socket logic for the deckr webapp.
 """
 
+import traceback
+
 from django.core.exceptions import ObjectDoesNotExist
 
 from deckr.models import GameRoom, Player
@@ -155,9 +157,18 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         """
 
         # pylint: disable=W0142
-        valid, message = self.runner.make_action(self.game_room.room_id,
-                                                 player=self.player.player_id,
-                                                 **data)
+        # We want to make sure that a engine error doesn't kill the entire
+        # socket. This is somewhat ugly, but hopefully we won't have engine
+        # errors.
+        try:
+            valid, message = self.runner.make_action(self.game_room.room_id,
+                                                     player=self.player.player_id,
+                                                     **data)
+        except:
+            traceback.print_exc()
+            self.emit("error", "Internal Server Error")
+            return False
+
         if not valid:
             self.emit("error", message)
             return False
@@ -258,6 +269,14 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
 
         self.player = None
         return True
+
+    def on_abandon_ship(self):
+        """
+        This should be called if there was an internal engine error and we
+        want to flush the current state of the engine.
+        """
+
+        self.runner.abandon_ship(self.game_room.room_id)
 
     def flush(self):
         """

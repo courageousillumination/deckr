@@ -15,7 +15,6 @@ import os.path
 import sys
 
 import yaml
-
 from engine.game import InvalidMoveException
 
 CACHE = {}
@@ -170,6 +169,12 @@ def has_game(game_id):
 
     return game_id in CACHE
 
+def abandon_ship(game_id):
+    """
+    Flush all current steps from a game.
+    """
+
+    return get_game(game_id).abandon_ship()
 
 def flush():
     """

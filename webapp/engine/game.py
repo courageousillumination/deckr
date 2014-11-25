@@ -379,6 +379,16 @@ class Game(HasZones):
         self.expected_action = None
         self.current_kwargs = {}
 
+    def abandon_ship(self):
+        """
+        Clear all kwargs and steps. Reset to a blank state. This should really
+        only be used in development.
+        """
+
+        self.expected_action = None
+        self.current_kwargs = {}
+        self.steps = []
+
     def get_expected_action(self):
         """
         This can give the client a hint about what is supposed to happen

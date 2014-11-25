@@ -59,7 +59,6 @@ class Dominion(Game):
         kingdom_cards = sorted(random.sample(all_kingdom_cards, 10),
                                key = lambda x: x["cost"], reverse = True)
         kingdom_cards = [x["name"] for x in kingdom_cards]
-        kingdom_cards[0] = "Feast"
         kingdom_cards = [(name, 'kingdom' + str(i), 10)
                          for i, name in enumerate(kingdom_cards)]
 
@@ -687,7 +686,6 @@ class Dominion(Game):
                                 'max_delta': 2})
 
     def resolve_mine(self, player, card):
-
         def treasure_and_cost(player, card, other_card, **kwargs):
             if (self.card_type_contains(player, card, "treasure", **kwargs) and
                 self.costs_up_to_x_more(player, card, other_card, 3)):
@@ -708,6 +706,7 @@ class Dominion(Game):
         self.add_step(player,
                       self.gain,
                       kwargs = {'gain_test': treasure_and_cost})
+        # TODO: Gain card it hand
 
     # TODO: Clean up everything below this.
 

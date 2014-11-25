@@ -212,6 +212,7 @@ function send_info() {
     <button onclick="socket.emit('start');">Start</button>
     <button onclick="socket.emit('action', {'action_name': 'next_phase'})">Next Phase</button>
     <button onclick="send_info()">Send Info</button>
+    <button onclick="socket.emit('abandon_ship');">Abandon Ship</button>
 
     <div class="row">
       <div class="stacked zone" id="discard3"></div>
