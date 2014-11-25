@@ -79,6 +79,19 @@
 </style>
 
 <script type='text/javascript'>
+
+function parseAction(data) {
+  console.log("parsing");
+  
+  nickname = data[0];
+  transitions = data[1];
+  state = data[2];
+
+  console.log(nickname);
+  console.log(transitions);
+  console.log(state);
+}
+
 $(document).ready(function() {
 
     // zone click function
@@ -213,6 +226,8 @@ function send_info() {
     <button onclick="socket.emit('action', {'action_name': 'next_phase'})">Next Phase</button>
     <button onclick="send_info()">Send Info</button>
     <button onclick="socket.emit('abandon_ship');">Abandon Ship</button>
+    <br />
+    <textarea readonly rows="5" cols="50" id="eventbox">Welcome to the game!&#13;></textarea>
 
     <div class="row">
       <div class="stacked zone" id="discard3"></div>

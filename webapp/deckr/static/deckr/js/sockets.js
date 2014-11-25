@@ -19,7 +19,8 @@ function setupSockets() {
         'game_over': onGameOver,
         'error': onGameError,
         'player_names': onPlayerNames,
-        'player_nick': onPlayerNick
+        'player_nick': onPlayerNick,
+        'textbox_data': onTextboxData
     };
     _.each(_.pairs(socket_fn_mapping), function (kv) {
         var event = kv[0];
@@ -132,4 +133,8 @@ function onPlayerNames(players) {
 function onPlayerNick(data){
     $('#player_nick').html("Welcome " + data.nickname);
     my_game_id = data.id;
+}
+
+function onTextboxData(data){
+    parseAction(data);
 }

@@ -156,6 +156,8 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         will then broadcast the message to the rest of the channel.
         """
 
+        print "making an action"
+
         # pylint: disable=W0142
         # We want to make sure that a engine error doesn't kill the entire
         # socket. This is somewhat ugly, but hopefully we won't have engine
@@ -184,6 +186,8 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
             (self.player.nickname,
              trans,
              state))
+
+        print "emitted actions"
 
         # Get all the private transitions
         trans = self.runner.get_player_transitions(self.game_room.room_id,
