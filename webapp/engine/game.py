@@ -107,6 +107,7 @@ class Game(HasZones):
         self.registered_objects = {}
         self.player_zones = []
         self.max_players = 0
+        self.min_players = 0
         self.players = []
         self.card_set = CardSet()
 
@@ -125,6 +126,8 @@ class Game(HasZones):
         """
 
         self.max_players = config.get('max_players', 0)
+        self.min_players = config.get('min_players', 0)
+
         zones = config.get('zones', [])
         self.card_set.load_from_list(config.get('card_set', []))
 

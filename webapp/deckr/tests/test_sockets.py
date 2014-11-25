@@ -343,7 +343,7 @@ class GameNamespaceTestCase(SocketTestCase):
 
         self.namespace.on_start()
         self.namespace.emit_to_room.assert_called_with(self.namespace.room,
-                                                       'state', state)
+                                                       'start')
 
     @skip('Not yet implemented')
     def test_join_as_spectator(self):
