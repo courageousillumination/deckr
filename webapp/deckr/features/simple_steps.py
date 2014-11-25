@@ -41,28 +41,6 @@ def my_friend_should_see_group1(step, text):
     pass
 
 
-@step(u'I should see the game')
-def i_should_see_the_game(step):
-    pass
-
-
-@step(u'"([^"]*)" should have texture "([^"]*)"')
-def card_should_have_texture(step, card, texture):
-    pass
-
-
-@step(u'I move "([^"]*)" to "([^"]*)"')
-def i_move_card_to_zone(step, card, zone):
-    pass
-
-
-@step(u'"([^"]*)" should be in "([^"]*)"')
-def check_card_in_zone(step, card, zone):
-    pass
-
-# Should be in separate file?
-
-
 @step(
     u'javascript adds a div to "([^"]*)" with class "([^"]*)" and id "([^"]*)"')
 def js_add_div(step, parentid, classname, elementid):
@@ -100,6 +78,12 @@ def is_child_of(step, childid, negation, parentid):
 
 # The "attributes" is the lesser of two evils. Takes a dict with
 # keys: id, class, src, among other optionals.
+
+@step(u'the element with id "([^"]*)" has the texture "([^"]*)"')
+def card_has_texture(step, card_id, texture):
+    e = world.browser.find_element_by_id(card_id)
+    src = e.get_attribute('src').split('/')[-1]
+    # assert src == texture, (texture, src)
 
 
 @step(u'javascript adds a card to "([^"]*)" with attributes "([^"]*)"')
