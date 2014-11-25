@@ -471,7 +471,8 @@ class Dominion(Game):
         return card
 
     @game_step(requires=[("gain_from_zone", "Zone", gain_test_wrapper)])
-    def gain(self, player, gain_from_zone, gain_test, **kwargs):
+    def gain(self, player, gain_from_zone, gain_test, gain_to_zone = None,
+             **kwargs):
         """
         This can be used to gain a card. A gain_test should be passed in that
         verifies that the card is legit.
@@ -479,7 +480,10 @@ class Dominion(Game):
 
         card = gain_from_zone.pop()
         if card is not None:
-            player.discard.push(card)
+            if gain_to_zone is None:
+                player.discard.push(card)
+            else:
+                gain_to_zone.push(card)
 
     @game_step(requires=[("flag", "Bool", simple_test)])
     def discard_deck(self, player, flag, **kwargs):
@@ -718,7 +722,8 @@ class Dominion(Game):
                       kwargs={'key': 'card'})
         self.add_step(player,
                       self.gain,
-                      kwargs = {'gain_test': treasure_and_cost})
+                      kwargs = {'gain_test': treasure_and_cost,
+                                'gain_to_zone': player.hand})
         # TODO: Gain card it hand
 
     # TODO: Clean up everything below this.

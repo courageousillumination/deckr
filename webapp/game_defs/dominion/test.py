@@ -456,7 +456,22 @@ class DominionTestCase(TestCase):
         The library should draw up to 7 cards, putting aside actions.
         """
 
-        pass
+        library = self.create_cards("Library")
+        coppers = self.create_cards("Copper", 7)
+        moat = self.create_cards("Moat")
+        self.player1.hand.push(library)
+        self.player1.deck.set_cards(coppers)
+        self.player1.deck.push(moat)
+
+        self.game.make_action("play_card", player=self.player1.game_id,
+                              card=library.game_id)
+        # Make sure we discard the Moat
+        self.game.make_action("send_information", player=self.player1.game_id,
+                              keep = False)
+
+        self.assertEqual(self.player1.hand.get_num_cards(), 7)
+        self.assertEqual(self.player1.deck.get_num_cards(), 0)
+        self.assertIn(moat, self.player1.discard)
 
     def test_market(self):
         """
@@ -481,7 +496,23 @@ class DominionTestCase(TestCase):
         costing up to 3 more.
         """
 
-        pass
+        mine = self.create_cards("Mine")
+        copper = self.create_cards("Copper")
+        silver = self.create_cards("Silver")
+
+        self.player1.hand.push(mine)
+        self.player1.hand.push(copper)
+        self.game.treasure1.push(silver)
+
+        self.game.make_action("play_card", player=self.player1.game_id,
+                              card=mine.game_id)
+        self.game.make_action("send_information", player=self.player1.game_id,
+                              card = copper.game_id)
+        self.game.make_action("send_information", player=self.player1.game_id,
+                              gain_from_zone = self.game.treasure1.game_id)
+
+        self.assertIn(copper, self.game.trash)
+        self.assertIn(silver, self.player1.hand)
 
     def test_witch(self):
         """
@@ -508,4 +539,16 @@ class DominionTestCase(TestCase):
         discard the rest.
         """
 
-        pass
+        adventurer = self.create_cards("Adventurer")
+        coppers = self.create_cards("Copper", 2)
+        estate = self.create_cards("Estate")
+        self.player1.hand.push(adventurer)
+        self.player1.deck.set_cards(coppers)
+        self.player1.deck.push(estate)
+
+        self.game.make_action("play_card", player=self.player1.game_id,
+                              card=adventurer.game_id)
+
+        self.assertIn(estate, self.player1.discard)
+        self.assertIn(coppers[0], self.player1.hand)
+        self.assertIn(coppers[1], self.player1.hand)
