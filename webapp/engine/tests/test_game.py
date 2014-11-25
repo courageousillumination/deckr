@@ -127,9 +127,10 @@ class GameTestCase(TestCase):
         self.assertEqual(self.game.get_object_with_id("Zone", 2), zone2)
 
         # Make sure we know what to do on edge cases
+        self.assertEqual(self.game.get_object_with_id("Zone", 3),
+        None)
         self.game.register([])
 
-    @skip
     def test_make_action(self):
         """
         Make sure that restrictions work on making actions.
