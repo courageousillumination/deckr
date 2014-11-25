@@ -485,7 +485,8 @@ class Dominion(Game):
             else:
                 gain_to_zone.push(card)
 
-    @game_step(requires=[("flag", "Bool", simple_test)])
+    @game_step(requires=[("flag", "Bool", simple_test,
+                          "Do you want to discard your deck")])
     def discard_deck(self, player, flag, **kwargs):
         if flag:
             while player.deck.get_num_cards() > 0:
@@ -518,7 +519,8 @@ class Dominion(Game):
         self.add_step(player, self.clear_all_keywords)
         self.resolve(player, card)
 
-    @game_step(requires=[("discard", "Bool", simple_test)])
+    @game_step(requires=[("discard", "Bool", simple_test,
+                          "Do you want to force a discard?")])
     def spy_step(self, player, other_player, revealed_card, discard,
                  **kwargs):
         print player, other_player, revealed_card, discard
@@ -542,7 +544,8 @@ class Dominion(Game):
                 c.zone.remove_card(c)
                 owner.discard.push(c)
 
-    @game_step(requires=[("steal", "Bool", lambda *args, **kwargs: True)])
+    @game_step(requires=[("steal", "Bool", simple_test,
+                          "Do you want to steal the trashed card?")])
     def thief_steal(self, player, card, steal, **kwargs):
         if steal:
             card.zone.remove_card(card)
@@ -550,7 +553,8 @@ class Dominion(Game):
         self.clear_keyword_argument('card')
         self.clear_keyword_argument('steal')
 
-    @game_step(requires=[("keep", "Bool", lambda *args, **kwargs: True)])
+    @game_step(requires=[("keep", "Bool", simple_test,
+                          "Do you want to keep this action?")])
     def library_step(self, player, next_card, keep, **kwargs):
         """
         This will only be called next_card is an action card.
