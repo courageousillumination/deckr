@@ -34,7 +34,7 @@ socket.on('make_action', function(data) {
     }
 });
 
-socket.on('info_string', function(data) {
+socket.on('textbox_data', function(data) {
     parseAction(data);
 });
 
