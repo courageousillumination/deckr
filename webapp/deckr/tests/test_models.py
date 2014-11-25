@@ -3,7 +3,8 @@ Test cases for all of our models.
 """
 
 from django.test import TestCase
-from deckr.models import GameRoom, Player, GameDefinition
+
+from deckr.models import GameDefinition, GameRoom, Player
 
 
 class GameDefinitionTestCase(TestCase):
@@ -32,8 +33,11 @@ class GameRoomTestCase(TestCase):
     """
 
     def setUp(self):
+        self.definition = GameDefinition.objects.create(name="Foo",
+                                                        path="/bar")
         self.game_room = GameRoom.objects.create(room_id=1,
-                                                 max_players=2)
+                                                 max_players=2,
+                                                 game_definition = self.definition)
 
     def test_string_representation(self):
         """
@@ -41,7 +45,7 @@ class GameRoomTestCase(TestCase):
         """
 
         self.assertEqual(self.game_room.__unicode__(),
-                         "Game room 1 for the game Solitaire")
+                         "Game room 1 for the game Foo")
 
     def test_add_players(self):
         """

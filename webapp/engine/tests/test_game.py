@@ -558,7 +558,7 @@ class GameTestCase(TestCase):
         steps execute.
         """
 
-        self.game.make_action("test_multi_step")
+        self.game.make_action("test_multi_step", player = self.player.game_id)
         self.assertListEqual([("step1",)],
                              self.game.get_public_transitions())
 
@@ -580,16 +580,17 @@ class GameTestCase(TestCase):
         self.assertIsNone(self.game.get_expected_action())
 
         # Now if we make a multistep action we should expect send_information
-        self.game.make_action("test_multi_step")
+        self.game.make_action("test_multi_step", player=self.player.game_id)
         self.assertEqual(self.game.get_expected_action(),
-                         ("send_information", "num", "Number"))
+                         ("send_information", "num",
+                          "Number", self.player.game_id))
 
     def test_add_step(self):
         """
         Test to see if we can add a step and run it.
         """
 
-        self.game.add_step(self.game.simple_step)
+        self.game.add_step(self.player, self.game.simple_step)
         self.game.run()
         self.assertListEqual([("simple_step",)],
                              self.game.get_public_transitions())
@@ -600,29 +601,31 @@ class GameTestCase(TestCase):
         Make sure that we can add a step with arguments.
         """
 
-        self.game.add_step(self.game.step3, kwargs={'num': 10})
+        self.game.add_step(self.player, self.game.step3, kwargs={'num': 10})
         self.game.run()
         self.assertEqual(self.game.get_public_transitions(),
                          [("step3", 10)])
-                         
+
     def test_step_save_result(self):
         """
         We should be able to save the result of a step and pass it into
         the next step. This should be cleared out when the steps are done.
         """
 
-        self.game.add_step(self.game.save_step1, save_result_as = "result")
-        self.game.add_step(self.game.save_step2)
+        self.game.add_step(self.player, self.game.save_step1,
+                           save_result_as = "result")
+        self.game.add_step(self.player, self.game.save_step2)
         self.game.run()
         self.assertEqual(self.game.get_public_transitions(), [(10,)])
 
         # Make sure the state has been cleared out
         self.game.flush_transitions()
-        self.game.add_step(self.game.save_step2)
+        self.game.add_step(self.player, self.game.save_step2)
         self.game.run()
         self.assertEqual(self.game.get_public_transitions(), [])
         self.assertEqual(self.game.get_expected_action(),
-                         ("send_information", "result", "Number"))
+                         ("send_information", "result",
+                          "Number", self.player.game_id))
 
     def test_game_step_decorator(self):
         """

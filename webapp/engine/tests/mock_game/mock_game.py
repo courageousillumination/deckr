@@ -92,17 +92,17 @@ class MockGame(Game):
 
     # pylint: disable=unused-argument
     @action(restriction=None)
-    def test_multi_step(self, **kwargs):
+    def test_multi_step(self, player, **kwargs):
         """
         Test a simple multistep action.
         """
 
-        self.add_step(self.step1)
-        self.add_step(self.step2)
-        self.add_step(self.step3)
+        self.add_step(player, self.step1)
+        self.add_step(player, self.step2)
+        self.add_step(player, self.step3)
 
     @game_step(requires=None)
-    def step1(self, **kwargs):
+    def step1(self, player, **kwargs):
         """
         Test step 1.
         """
@@ -111,8 +111,8 @@ class MockGame(Game):
 
     @game_step(requires=[('num',
                           'Number',
-                          lambda self, num, **kwargs: True)])
-    def step2(self, num, **kwargs):
+                          lambda self, player, num, **kwargs: True)])
+    def step2(self, player, num, **kwargs):
         """
         Test step 2. Requires input.
         """
@@ -121,8 +121,8 @@ class MockGame(Game):
 
     @game_step(requires=[('num',
                           'Number',
-                          lambda self, num, **kwargs: True)])
-    def step3(self, num, **kwargs):
+                          lambda self, player, num, **kwargs: True)])
+    def step3(self, player, num, **kwargs):
         """
         Tests step 3. Requires input from previous
         step.
@@ -141,20 +141,20 @@ class MockGame(Game):
         self.add_transition(("private", "foobaz"), player)
 
     @game_step(requires=None)
-    def simple_step(self):
+    def simple_step(self, player, **kwargs):
         """
         Adds a simple transition to the game.
         """
         self.add_transition(("simple_step",))
 
     @game_step(requires=None)
-    def save_step1(self):
+    def save_step1(self, player, **kwargs):
         return 10
 
     @game_step(requires=[("result",
                           "Number",
-                          lambda self, result: True)])
-    def save_step2(self, result):
+                          lambda *args, **kwargs: True)])
+    def save_step2(self, player, result, **kwargs):
         self.add_transition((result,))
 
     def get_magic(self):

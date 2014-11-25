@@ -187,11 +187,11 @@ class GameNamespaceTestCase(SocketTestCase):
                                                     "state_transitions",
                                                     transitions)
 
-        self.namespace.emit_to_room.assert_called_with(self.namespace.room,
-                                                       "textbox_data",
-                                                       (self.namespace.player.nickname,
-                                                        transitions,
-                                                        self.namespace.runner.get_state()))
+        self.namespace.emit_to_room.assert_any_call(self.namespace.room,
+                                                    "textbox_data",
+                                                    (self.namespace.player.nickname,
+                                                     transitions,
+                                                     self.namespace.runner.get_state()))
 
     def test_private_transitions(self):
         """
