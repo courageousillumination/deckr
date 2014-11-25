@@ -1,4 +1,4 @@
-@import url("http://fonts.googleapis.com/css?family=Courgette|Patua+One");
+@import url("http://fonts.googleapis.com/css?family=Courgette|Patua+One|Lato:300,400,700");
 /* line 1, scss/reset.scss */
 html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p,
 blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img,
@@ -55,93 +55,86 @@ table {
   border-spacing: 0;
 }
 
-/* line 6, scss/index.scss */
+/* line 10, scss/index.scss */
 body {
-  font-family: Helvetica, San-Serif;
+  font-family: "Lato", Helvetica, San-Serif;
   background-color: #eee;
   background-image: url("images/cream_pixels.png");
   padding-bottom: 20px;
 }
 
-/* line 13, scss/index.scss */
-h2 {
+/* line 17, scss/index.scss */
+h1 {
   font-weight: 300;
   font-size: 1.5em;
+  margin-bottom: 10px;
+}
+/* line 22, scss/index.scss */
+h1.bold {
+  font-weight: bold;
 }
 
-/* line 18, scss/index.scss */
+/* line 27, scss/index.scss */
+h2 {
+  font-weight: 300;
+  font-size: 1.3em;
+}
+
+/* line 32, scss/index.scss */
+input[type="text"] {
+  font-family: "Courgette";
+  font-size: 1.5em;
+  padding: 10px;
+  margin: 10px;
+  border: 1px solid #ccc;
+}
+/* line 39, scss/index.scss */
+input[type="text"]:focus {
+  outline: none;
+  border: 1px solid #7991bf;
+  -moz-box-shadow: #becae0 0px 0px 5px;
+  -webkit-box-shadow: #becae0 0px 0px 5px;
+  box-shadow: #becae0 0px 0px 5px;
+}
+
+/* line 50, scss/index.scss */
 #header {
   background-color: #7991bf;
   border-bottom: 1px solid #445d8e;
   padding: 20px 40px;
-  margin-bottom: 50px;
   position: relative;
-  -moz-box-shadow: #999999 0px 5px 10px;
-  -webkit-box-shadow: #999999 0px 5px 10px;
-  box-shadow: #999999 0px 5px 10px;
+  -moz-box-shadow: rgba(0, 0, 0, 0.4) 0px 5px 10px;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.4) 0px 5px 10px;
+  box-shadow: rgba(0, 0, 0, 0.4) 0px 5px 10px;
 }
-/* line 26, scss/index.scss */
+/* line 57, scss/index.scss */
 #header #github {
   position: absolute;
   top: 20px;
   right: 40px;
 }
-/* line 32, scss/index.scss */
+/* line 63, scss/index.scss */
 #header #player-names {
   padding: 5px;
-  margin-top: 8px;
+  position: absolute;
+  top: 53px;
+  right: 50px;
+  min-width: 200px;
   font-size: 0.8em;
-  background-color: #eee;
+  background-color: #e1e6f0;
+  -moz-box-shadow: rgba(0, 0, 0, 0.4) 0px 5px 10px;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.4) 0px 5px 10px;
+  box-shadow: rgba(0, 0, 0, 0.4) 0px 5px 10px;
 }
 
-/* line 40, scss/index.scss */
-#logo {
-  color: #000;
-  font-family: "Courgette";
-}
-/* line 44, scss/index.scss */
-#header #logo {
-  font-size: 2em;
-  color: #fff;
-}
-
-/* line 51, scss/index.scss */
-#player-info h2 {
-  color: #fff;
-  font-size: 1.0em;
-  padding: 5px;
-}
-/* line 56, scss/index.scss */
-#player-info h2 span.name {
-  font-size: 1.2em;
-  font-family: "Courgette";
-}
-/* line 62, scss/index.scss */
-#header #player-info {
-  display: inline-block;
-  margin-top: -10px;
-  margin-right: 50px;
-  padding-right: 20px;
-  border-right: 1px solid #5675af;
-}
-/* line 69, scss/index.scss */
-#header #player-info #player-names-btn {
-  padding: 5px;
-  font-size: 1em;
-}
-/* line 73, scss/index.scss */
-#header #player-info #player-names-btn:hover {
-  background-color: #becae0;
-  cursor: pointer;
-}
-
-/* line 81, scss/index.scss */
+/* line 79, scss/index.scss */
 #wrapper {
   width: 1200px;
   margin: 0 auto;
+  margin-top: 50px;
 }
 
-/* line 85, scss/index.scss */
+/* line 84, scss/index.scss */
 #content {
   background-color: #fff;
   padding: 20px;
@@ -154,33 +147,34 @@ h2 {
   -webkit-border-radius: 5px;
   border-radius: 5px;
 }
-/* line 93, scss/index.scss */
+/* line 92, scss/index.scss */
 #content .header {
   padding-bottom: 5px;
   margin-bottom: 20px;
   border-bottom: 1px solid #ccc;
 }
 
-/* line 100, scss/index.scss */
-.center {
-  text-align: center;
+/* line 103, scss/index.scss */
+.logo {
+  color: #000;
+  font-family: "Courgette";
+}
+/* line 107, scss/index.scss */
+#header .logo {
+  font-size: 2em;
+  color: #fff;
+  text-shadow: #445d8e 3px 3px 5px;
 }
 
-/* line 104, scss/index.scss */
-.right {
-  float: right;
-}
-
-/* line 108, scss/index.scss */
+/* line 114, scss/index.scss */
 .big-btn {
+  font-weight: 300;
   color: #fff;
   text-decoration: none;
 }
-/* line 111, scss/index.scss */
+/* line 10, scss/mixins.scss */
 .big-btn div {
   display: inline-block;
-  padding: 15px;
-  margin: 10px 0;
   background-color: #7991bf;
   border: 1px solid #445d8e;
   border-bottom: 2px solid #121927;
@@ -188,7 +182,120 @@ h2 {
   -webkit-border-radius: 5px;
   border-radius: 5px;
 }
-/* line 120, scss/index.scss */
+/* line 17, scss/mixins.scss */
 .big-btn div:hover {
   background-color: #4c699f;
+}
+/* line 116, scss/index.scss */
+.big-btn div {
+  padding: 15px;
+  margin: 10px 0;
+}
+
+/* line 122, scss/index.scss */
+.small-btn {
+  font-weight: 300;
+  color: #fff;
+  text-decoration: none;
+}
+/* line 10, scss/mixins.scss */
+.small-btn div {
+  display: inline-block;
+  background-color: #7991bf;
+  border: 1px solid #445d8e;
+  border-bottom: 2px solid #121927;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+}
+/* line 17, scss/mixins.scss */
+.small-btn div:hover {
+  background-color: #4c699f;
+}
+/* line 124, scss/index.scss */
+.small-btn div {
+  padding: 5px 10px;
+}
+
+/* line 130, scss/index.scss */
+#player-info h2 {
+  color: #fff;
+  font-size: 1.0em;
+  padding: 5px;
+}
+/* line 135, scss/index.scss */
+#player-info h2 span.name {
+  margin-left: 5px;
+  font-size: 1.2em;
+}
+/* line 141, scss/index.scss */
+#header #player-info {
+  display: inline-block;
+  margin-top: -10px;
+  margin-right: 50px;
+  padding-right: 20px;
+  border-right: 1px solid #5675af;
+}
+/* line 148, scss/index.scss */
+#header #player-info #player-names-btn {
+  text-align: right;
+  color: #becae0;
+  padding: 5px;
+  font-size: 1em;
+}
+/* line 154, scss/index.scss */
+#header #player-info #player-names-btn:hover {
+  color: white;
+  background-color: #8a9fc7;
+  cursor: pointer;
+}
+
+/* line 167, scss/index.scss */
+.game-body {
+  height: 100%;
+}
+
+/* line 171, scss/index.scss */
+#start-end-btns {
+  display: inline-block;
+  padding: 10px 20px;
+  position: absolute;
+  left: 150px;
+  top: 12px;
+  border-left: 1px solid #5675af;
+}
+
+/* line 180, scss/index.scss */
+#start-btn {
+  color: #000;
+  font-weight: 400;
+}
+/* line 183, scss/index.scss */
+#start-btn div {
+  background-color: #becae0;
+}
+/* line 185, scss/index.scss */
+#start-btn div:hover {
+  color: #fff;
+  background-color: #445d8e;
+}
+
+/* line 192, scss/index.scss */
+.card.selected {
+  margin-left: 3px;
+  margin-top: 3px;
+  border: 2px solid yellow;
+  -moz-box-shadow: 0px 0px 5px yellow;
+  -webkit-box-shadow: 0px 0px 5px yellow;
+  box-shadow: 0px 0px 5px yellow;
+}
+
+/* line 204, scss/index.scss */
+.center {
+  text-align: center;
+}
+
+/* line 208, scss/index.scss */
+.right {
+  float: right;
 }

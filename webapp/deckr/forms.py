@@ -22,7 +22,7 @@ class PlayerForm(forms.ModelForm):
     A simple form that will allow a user to choose their nickname.
     """
 
-    nickname = forms.CharField(label='Nickname')
+    nickname = forms.CharField(label='')
 
     class Meta:  # pylint: disable=C1001,W0232,C0111
         model = Player

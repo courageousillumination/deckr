@@ -1,19 +1,20 @@
 {% extends "deckr/deckr.html" %}
-{% block title %}Deckr | Game room for {{ game }}{% endblock %}
+{% block title %}Deckr | Game room for {{ game_room.game_definition.name }}{% endblock %}
 {% block content %}
-<h1>Welcome to: {{ game_room }}</h1>
+<div class="center">
+    <h1 class="header bold">Your Game Room for {{ game_room.game_definition.name }} has been created!</h1>
 
-<ul id="player_names">
-  {% for name in game.player_set.all %}
-    <li>{{ name }}</li>
-  {% endfor %}
-</ul>
+    <ul id="player-names">
+      {% for name in game.player_set.all %}
+        <li>{{ name }}</li>
+      {% endfor %}
+    </ul>
 
-<h2>Set your nickname</h2>
-<form method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <input type="submit" name="submit" id="change_nickname_submit" value="Change nickname">
-</form>
-
+    <h2>Choose your nickname</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <a href="#" id="submit" class="big-btn"><div>Choose nickname</div></a>
+    </form>
+</div>
 {% endblock %}

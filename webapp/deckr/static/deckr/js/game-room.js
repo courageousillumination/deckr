@@ -32,6 +32,10 @@ function setupClickEvents(obj) {
 $(document).ready(function() {
     setupSockets();
     
+    $("#player-names-btn").click(function() {
+        $("#player-names").fadeToggle();
+    });
+
     $('#destroy-game-room').click(function(){
         socket.emit('destroy_game');
     });

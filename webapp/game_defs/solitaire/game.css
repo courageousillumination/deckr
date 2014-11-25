@@ -1,3 +1,13 @@
+.game-body {
+    background: url(http://subtlepatterns.com/patterns/pool_table.png);
+}
+
+.layout {
+    padding: 50px;
+    margin: 0 auto;
+    width: 855px;
+}
+
 .card {
     margin: 5px;
 }
@@ -8,7 +18,7 @@
     height: 100px;
     margin: 5px;
     padding: 15px;
-    border: 1px dotted #ccc;
+    border: 1px dotted #000;
 }
 
 .zone#hand {
@@ -39,9 +49,4 @@
     clear: both;
     width: 100%;
     overflow: hidden;
-}
-
-.selected {
-    border: solid;
-    border-color: yellow;
 }

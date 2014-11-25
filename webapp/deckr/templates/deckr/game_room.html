@@ -4,37 +4,41 @@
 <script type="text/javascript" src="{% static 'deckr/js/sockets.js' %}"></script>
 <script type="text/javascript" src="{% static 'deckr/js/render.js' %}"></script>
 <script type="text/javascript" src="{% static 'deckr/js/game-utils.js' %}"></script>
-<script type="text/javascript" src="{% static 'deckr/js/game_room.js' %}"></script>
+<script type="text/javascript" src="{% static 'deckr/js/game-room.js' %}"></script>
 {% endblock %}
 {% block morecss %}
 <style type="text/css">{{ game_css|safe }}</style>
 {% endblock %}
 {% block header %}
-<div class="right">
-<div id="player-info">
-    <h2>Hello <span class="name">{{ player.nickname }}</span></h2>
-    <div id="player-names-btn">Players</div>
+<div id="start-end-btns">
+    <a href="#" id="start-btn" onclick="socket.emit('start');" class="small-btn"><div>Start</div></a>
+    <a href="#" class="small-btn" id="destroy-game-room"><div>End Game</div></a>
+    <a href="#" class="small-btn" id="leave-game-room"><div>Leave Game</div></a>
 </div>
-<ul id="player-names">
+<div class="right" style="position:relative;">
+<div id="player-info">
+    <h2>Hello <span class="logo name">{{ player.nickname }}</span></h2>
+    <div id="player-names-btn">Players ({{ game.player_set.all|length }})</div>
+</div>
+<ul id="player-names" style="display: none;">
   {% for name in game.player_set.all %}
     <li>{{ name }}</li>
   {% endfor %}
 </ul>
 {% endblock %}
 {% block body %}
-<div style="display: none;" id="staging_area"></div>
-<a href="#" id="destroy-game-room">End Game</a>
-<a href="#" id="leave-game-room">Leave Game</a>
-<button onclick="socket.emit('start');">Start</button>
-<div id="game-wrapper">
-    {% include sub_template %}
-    {% block game-wrapper %}{% endblock %}
-    <script>
-        socket.emit('join', {
-            game_room_id: "{{game.id}}", 
-            player_id: {{player.id}}}
-        );
-        {{ game_js|safe }}
-    </script>
+<div class="game-body">
+    <div style="display: none;" id="staging_area"></div>
+    <div id="game-wrapper">
+        {% include sub_template %}
+        {% block game-wrapper %}{% endblock %}
+        <script>
+            socket.emit('join', {
+                game_room_id: "{{game.id}}", 
+                player_id: {{player.id}}}
+            );
+            {{ game_js|safe }}
+        </script>
+    </div>
 </div>
 {% endblock %}
