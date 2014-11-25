@@ -320,7 +320,9 @@ class Dominion(Game):
 
     # pylint: disable=unused-argument
 
-    def cards_in_hand(self, player, cards, min_cards, max_cards, test = None, **kwargs):
+    def cards_in_hand(self, player, cards,
+                      min_cards = None, max_cards = None,
+                      test = None, **kwargs):
         if not isinstance(cards, list):
             return False
 
@@ -346,8 +348,9 @@ class Dominion(Game):
 
         return gain_test(player, gain_from_zone.peek(), **kwargs)
 
-    def trash_test_wrapper(self, player, card, trash_test, **kwargs):
-        if (not self.card_in_hand(card, player) or not trash_test(card)):
+    def trash_test_wrapper(self, player, card, trash_test = None, **kwargs):
+        if (not self.card_in_hand(player, card) or
+            (trash_test is not None and not trash_test(card))):
             return False
         return True
 
@@ -462,7 +465,7 @@ class Dominion(Game):
         satisfy that test.
         """
 
-        self.trash_cards(player, [card])
+        self.trash_cards(player, cards = [card])
         return card
 
     @game_step(requires=[("gain_from_zone", "Zone", gain_test_wrapper)])
@@ -659,13 +662,18 @@ class Dominion(Game):
                                 'max_cost': 5})
 
     def resolve_remodel(self, player, card):
+        clear = lambda self, *args, **kwargs: self.clear_keyword_argument('card')
         if player.hand.get_num_cards() == 0:
             return
         self.add_step(player,
-                      self.trash_cards,
-                      kwargs = {'max_cards': 1,
-                                'min_cards': 1},
+                      self.trash_card,
+                      kwargs = {'trash_test': self.simple_test},
                       save_result_as = 'other_card')
+        # Make sure we remove the card keyword argument since it will be used
+        # later.
+        self.add_step(player,
+                      self.clear_keyword_step,
+                      kwargs={'key': 'card'})
         self.add_step(player,
                       self.gain,
                       kwargs = {'gain_test': self.costs_up_to_x_more,
@@ -683,10 +691,8 @@ class Dominion(Game):
             return
 
         self.add_step(player,
-                      self.trash_cards,
-                      kwargs = {'max_cards': 1,
-                                'min_cards': 1,
-                                'test': self.card_type_contians,
+                      self.trash_card,
+                      kwargs = {'test': self.card_type_contians,
                                 'card_type': 'treasure'},
                       save_result_as = 'other_card')
         self.add_step(player,
@@ -759,7 +765,9 @@ class Dominion(Game):
 
         # Gain a silver
         if self.treasure1.get_num_cards() > 0:
-            player.deck.push(self.treasure1.pop())
+            card = self.treasure1.pop()
+            player.deck.push(card)
+            card.face_up = False
 
         for other_player in self.players:
             if other_player != player:

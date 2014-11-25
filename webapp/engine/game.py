@@ -409,6 +409,15 @@ class Game(HasZones):
 
         if (self.current_kwargs.get(key, None) is not None):
             del self.current_kwargs[key]
+
+    @game_step(requires=None)
+    def clear_keyword_step(self, player, key, **kwargs):
+        """
+        Sometimes we need to clean up the kwargs in the steps. This facilitates
+        that.
+        """
+
+        self.clear_keyword_argument(key)
     # Actions after this point should be implemented by subclasses
 
     def set_up(self):
