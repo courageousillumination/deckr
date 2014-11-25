@@ -78,7 +78,10 @@ def game_step(requires=None):
 
     Each argument to requires should be a tuple of the following form:
 
-        parameter_name, expected_type, test
+        parameter_name, expected_type, test, (String)
+
+    The final argument is optional. If given it will be returned to the client
+    to give them some idea of what is being asked for.
     """
 
     def wrapper(func):
@@ -100,6 +103,7 @@ def game_step(requires=None):
                     # Make sure we pass the test
                     if not requirement[2](*args, **kwargs):
                         raise NeedsMoreInfo(requirement)
+
             return func(*args, **kwargs)
         return inner
     return wrapper
@@ -367,11 +371,17 @@ class Game(HasZones):
             try:
                 result = step(player, **all_kwargs)
             except NeedsMoreInfo as exception:
+                if len(exception.requirement) > 3:
+                    message = exception.requirement[3]
+                else:
+                    message = "Need more information"
                 self.expected_action = ("send_information",
                                         exception.requirement[0],
                                         exception.requirement[1],
-                                        player.game_id)
+                                        player.game_id,
+                                        message)
                 return
+                
             if save_result_as is not None:
                 self.current_kwargs[save_result_as] = result
             # Now that it's actually been resovled we can clear it
