@@ -54,10 +54,12 @@ class Dominion(Game):
                           ]
 
         # Select 10 random kindom cards
-        all_kingdom_cards = [x["name"] for x in self.card_set.all_cards() if
+        all_kingdom_cards = [x for x in self.card_set.all_cards() if
                              x["kingdom_card"]]
-        kingdom_cards = random.sample(all_kingdom_cards, 10)
-        kingdom_cards[0] = "Witch"
+        kingdom_cards = sorted(random.sample(all_kingdom_cards, 10),
+                               key = lambda x: x["cost"], reverse = True)
+        kingdom_cards = [x["name"] for x in kingdom_cards]
+        kingdom_cards[0] = "Mine"
         kingdom_cards = [(name, 'kingdom' + str(i), 10)
                          for i, name in enumerate(kingdom_cards)]
 
@@ -350,7 +352,8 @@ class Dominion(Game):
 
     def trash_test_wrapper(self, player, card, trash_test = None, **kwargs):
         if (not self.card_in_hand(player, card) or
-            (trash_test is not None and not trash_test(card))):
+            (trash_test is not None and
+             not trash_test(player, card, **kwargs))):
             return False
         return True
 
@@ -380,7 +383,7 @@ class Dominion(Game):
     def costs_up_to_x_more(self, player, card, other_card, max_delta, **kwargs):
         return card.cost <= other_card.cost + max_delta
 
-    def card_type_contians(self, player, card, card_type, **kwargs):
+    def card_type_contains(self, player, card, card_type, **kwargs):
         return card_type in card.card_type
 
     ##############
@@ -666,7 +669,6 @@ class Dominion(Game):
                                 'max_cost': 5})
 
     def resolve_remodel(self, player, card):
-        clear = lambda self, *args, **kwargs: self.clear_keyword_argument('card')
         if player.hand.get_num_cards() == 0:
             return
         self.add_step(player,
@@ -686,7 +688,7 @@ class Dominion(Game):
     def resolve_mine(self, player, card):
 
         def treasure_and_cost(player, card, other_card, **kwargs):
-            if (self.card_type_contians(player, card, "treasure", **kwargs) and
+            if (self.card_type_contains(player, card, "treasure", **kwargs) and
                 self.costs_up_to_x_more(player, card, other_card, 3)):
                 return True
             return False
@@ -696,9 +698,12 @@ class Dominion(Game):
 
         self.add_step(player,
                       self.trash_card,
-                      kwargs = {'test': self.card_type_contians,
+                      kwargs = {'trash_test': self.card_type_contains,
                                 'card_type': 'treasure'},
                       save_result_as = 'other_card')
+        self.add_step(player,
+                      self.clear_keyword_step,
+                      kwargs={'key': 'card'})
         self.add_step(player,
                       self.gain,
                       kwargs = {'gain_test': treasure_and_cost})
