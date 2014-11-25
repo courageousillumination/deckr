@@ -59,7 +59,7 @@ class Dominion(Game):
         kingdom_cards = sorted(random.sample(all_kingdom_cards, 10),
                                key = lambda x: x["cost"], reverse = True)
         kingdom_cards = [x["name"] for x in kingdom_cards]
-        kingdom_cards[0] = "Mine"
+        kingdom_cards[0] = "Feast"
         kingdom_cards = [(name, 'kingdom' + str(i), 10)
                          for i, name in enumerate(kingdom_cards)]
 
@@ -662,7 +662,8 @@ class Dominion(Game):
                                    step = self.discard_down_to_3)
 
     def resolve_feast(self, player, card):
-        self.trash_card(player, card = card, trash_test = self.simple_test)
+        card.zone.remove_card(card)
+        self.trash.push(card)
         self.add_step(player,
                       self.gain,
                       kwargs = {'gain_test': self.costs_up_to_x,
