@@ -254,4 +254,4 @@ card_set:
       back_face: "/static/deckr/cards/b1fv.png"
       card_type: ["action"]
       kingdom_card: True
-      cost: 5
+      cost: 6

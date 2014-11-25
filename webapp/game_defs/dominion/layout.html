@@ -159,6 +159,7 @@ socket.on('expected_action', function(data){
     expecting_select = false;
     return;
   }
+  console.log(data);
   if (data[0] == 'send_information') {
     expecting_select = true;
     information_name = data[1];
@@ -166,7 +167,7 @@ socket.on('expected_action', function(data){
     currently_selected = [];
 
     if (expecting_type == "Bool" && my_game_id == data[3]) {
-      val = confirm("Do you want to do whatever?");
+      val = confirm(data[4]);
       dict = {'action_name': 'send_information'}
       dict[information_name] =  val;
       socket.emit('action', dict);
@@ -212,6 +213,7 @@ function send_info() {
     <button onclick="socket.emit('start');">Start</button>
     <button onclick="socket.emit('action', {'action_name': 'next_phase'})">Next Phase</button>
     <button onclick="send_info()">Send Info</button>
+    <button onclick="socket.emit('abandon_ship');">Abandon Ship</button>
 
     <div class="row">
       <div class="stacked zone" id="discard3"></div>

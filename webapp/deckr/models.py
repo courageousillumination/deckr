@@ -73,7 +73,7 @@ class Player(models.Model):
 
 
 @receiver(pre_save, sender=Player)
-def validate_save(instance, **kwargs):
+def validate_save(instance, **kwargs):  # pylint: disable=unused-argument
     """
     Validate player object and ability to join game room
     """

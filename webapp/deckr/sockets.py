@@ -2,6 +2,8 @@
 Stores all the socket logic for the deckr webapp.
 """
 
+import traceback
+
 from django.core.exceptions import ObjectDoesNotExist
 
 from deckr.models import GameRoom, Player
@@ -154,12 +156,21 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         will then broadcast the message to the rest of the channel.
         """
 
-        # pylint: disable=W0142
-        valid, message = self.runner.make_action(self.game_room.room_id,
+        # pylint: disable=W0142,bare-except
+        # We want to make sure that a engine error doesn't kill the entire
+        # socket. This is somewhat ugly, but hopefully we won't have engine
+        # errors.
+        try:
+            valid, msg = self.runner.make_action(self.game_room.room_id,
                                                  player=self.player.player_id,
                                                  **data)
+        except:
+            traceback.print_exc()
+            self.emit("error", "Internal Server Error")
+            return False
+
         if not valid:
-            self.emit("error", message)
+            self.emit("error", msg)
             return False
 
         trans = self.runner.get_public_transitions(self.game_room.room_id)
@@ -167,7 +178,12 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
 
         state = self.runner.get_state(self.game_room.room_id,
                                       self.player.player_id)
-        self.emit_to_room(self.room, 'textbox_data', (self.player.nickname, trans, state))
+        self.emit_to_room(
+            self.room,
+            'textbox_data',
+            (self.player.nickname,
+             trans,
+             state))
 
         # Get all the private transitions
         trans = self.runner.get_player_transitions(self.game_room.room_id,
@@ -258,6 +274,14 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
 
         self.player = None
         return True
+
+    def on_abandon_ship(self):
+        """
+        This should be called if there was an internal engine error and we
+        want to flush the current state of the engine.
+        """
+
+        self.runner.abandon_ship(self.game_room.room_id)
 
     def flush(self):
         """

@@ -78,7 +78,10 @@ def game_step(requires=None):
 
     Each argument to requires should be a tuple of the following form:
 
-        parameter_name, expected_type, test
+        parameter_name, expected_type, test, (String)
+
+    The final argument is optional. If given it will be returned to the client
+    to give them some idea of what is being asked for.
     """
 
     def wrapper(func):
@@ -100,6 +103,7 @@ def game_step(requires=None):
                     # Make sure we pass the test
                     if not requirement[2](*args, **kwargs):
                         raise NeedsMoreInfo(requirement)
+
             return func(*args, **kwargs)
         return inner
     return wrapper
@@ -174,13 +178,15 @@ class Game(HasZones):
         self.flush_transitions()
 
         if (not hasattr(self, action_name) or
-            (self.expected_action is not None and
-             action_name != self.expected_action[0])):
+                (self.expected_action is not None and
+                 action_name != self.expected_action[0])):
             raise InvalidMoveException
 
-        # We make some substitutions in the kwargs
+        # We make some substitutions in the kwargs. These can be a little
+        # dangerous, but generally make life a lot easier later on.
         for key, value in kwargs.items():
-            if "card" in key:
+            if ("card" == key or "_card" in key or
+                    "cards" == key or "_cards" in key):
                 object_type = "Card"
             elif "zone" in key:
                 object_type = "Zone"
@@ -306,7 +312,7 @@ class Game(HasZones):
         # Add the per-player zones to our dictionary and add the owner to
         # each zone.
         for name, zone in player.zones.items():
-            zone.owner = player.game_id
+            zone.owner = player
             zone_name = name + '_' + str(player.game_id)
             self.zones[zone_name] = zone
             setattr(self, zone_name, zone)
@@ -365,11 +371,17 @@ class Game(HasZones):
             try:
                 result = step(player, **all_kwargs)
             except NeedsMoreInfo as exception:
+                if len(exception.requirement) > 3:
+                    message = exception.requirement[3]
+                else:
+                    message = "Need more information"
                 self.expected_action = ("send_information",
                                         exception.requirement[0],
                                         exception.requirement[1],
-                                        player.game_id)
+                                        player.game_id,
+                                        message)
                 return
+
             if save_result_as is not None:
                 self.current_kwargs[save_result_as] = result
             # Now that it's actually been resovled we can clear it
@@ -379,6 +391,16 @@ class Game(HasZones):
         self.expected_action = None
         self.current_kwargs = {}
 
+    def abandon_ship(self):
+        """
+        Clear all kwargs and steps. Reset to a blank state. This should really
+        only be used in development.
+        """
+
+        self.expected_action = None
+        self.current_kwargs = {}
+        self.steps = []
+
     def get_expected_action(self):
         """
         This can give the client a hint about what is supposed to happen
@@ -387,19 +409,6 @@ class Game(HasZones):
 
         return self.expected_action
 
-    @action(restriction = None)
-    def send_information(self, player, **kwargs):
-        """
-        This is a bulit in action to send more information. This will update
-        the current information and then return, hoping that self.run will
-        continue where it left off.
-
-        """
-
-        #TODO: Make sure this is coming from the right player
-        for key, value in kwargs.items():
-            self.current_kwargs[key] = value
-
     def clear_keyword_argument(self, key):
         """
         Remove a keyword argument from the current arguments being passed into
@@ -407,8 +416,27 @@ class Game(HasZones):
         multiple times.
         """
 
-        if (self.current_kwargs.get(key, None) is not None):
+        if self.current_kwargs.get(key, None) is not None:
             del self.current_kwargs[key]
+
+    # pylint: disable=unused-argument
+    def send_information_restriction(self, player, **kwargs):
+        """
+        We can only send information if the server is expecting it.
+        """
+
+        return player.game_id == self.expected_action[3]
+
+    @action(restriction=send_information_restriction)
+    def send_information(self, player, **kwargs):
+        """
+        This is a bulit in action to send more information. This will update
+        the current information and then return, hoping that self.run will
+        continue where it left off.
+        """
+
+        for key, value in kwargs.items():
+            self.current_kwargs[key] = value
 
     @game_step(requires=None)
     def clear_keyword_step(self, player, key, **kwargs):
@@ -418,6 +446,14 @@ class Game(HasZones):
         """
 
         self.clear_keyword_argument(key)
+
+    @game_step(requires=None)
+    def clear_all_keywords(self, player, **kwargs):
+        """
+        This will allow the entire dictionary to be cleared at some point.
+        """
+
+        self.current_kwargs = {}
     # Actions after this point should be implemented by subclasses
 
     def set_up(self):
