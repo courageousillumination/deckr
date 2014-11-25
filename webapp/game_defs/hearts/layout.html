@@ -95,22 +95,25 @@ function parseAction(data) {
     for(i = 0; i < transitions.length; i++) {
         transition = transitions[i];
         event_box = document.getElementById("eventbox");
-
-        // IDs start at 0 in dictionary
-        zone_id = transition[2] - 1;
-        card_id = transition[1] - 1;
-
-        switch(state.cards[card_id].number) {
-            case 11: number = "jack"; break;
-            case 12: number = "queen"; break;
-            case 13: number = "king"; break;
-            case 14: number = "ace"; break;
-            default: number = state.cards[card_id].number.toString();
-        }
-
-        card_name = "the " + number + " of " + state.cards[card_id].suit;
+        console.log(state.cards)
 
         if(transition[0] == "add") {
+            // IDs start at 0 in dictionary
+            zone_id = transition[2] - 1;
+            card_id = transition[1] - 1;
+
+            switch(state.cards[card_id].number) {
+                case 11: number = "jack"; break;
+                case 12: number = "queen"; break;
+                case 13: number = "king"; break;
+                case 14: number = "ace"; break;
+                default: number = state.cards[card_id].number.toString();
+            }
+
+            card_name = "the " + number + " of " + state.cards[card_id].suit;
+
+            console.log(state.zones[zone_id].name)
+            
             if(state.zones[zone_id].name == "play_zone") {
                 event_box.innerHTML += nickname + " played " + card_name + ".&#13;";
             }
