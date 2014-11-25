@@ -109,6 +109,7 @@ var information_name = null;
 var currently_selected = []
 
 socket.on('state', function (data) {
+    console.log(data);
     for (i = 0; i < data.cards.length; i++) {
         d = data.cards[i];
         d.class = "card";
@@ -118,16 +119,18 @@ socket.on('state', function (data) {
 
     // Add all cards to the proper zones
     for (i = 0; i < data.zones.length; i++) {
-
         zone = data.zones[i];
         // Fix the zone names
         if (zone.owner == null) {
             $("#" + zone.name).attr('id', "zone" + zone.game_id);
+            console.log("In here")
         } else {
             // Find the zone with the name + the player order id
             z = $("#" + zone.name + convert_game_id_to_player_order_id(zone.owner));
             z.attr('id', 'zone' + zone.game_id);
             //z.append('owned by' + player_mapping[zone.owner]);
+            console.log("Owner specific");
+            console.log("#" + zone.name + convert_game_id_to_player_order_id(zone.owner));
         }
 
         for (j = 0; j < zone.cards.length; j++) {

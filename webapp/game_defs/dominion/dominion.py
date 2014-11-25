@@ -53,8 +53,10 @@ class Dominion(Game):
         all_kingdom_cards = [x["name"] for x in self.card_set.all_cards() if
                              x["kingdom_card"]]
         kingdom_cards = random.sample(all_kingdom_cards, 10)
+        kingdom_cards[0] = "Remodel"
         kingdom_cards = [(name, 'kingdom' + str(i), 10)
                          for i, name in enumerate(kingdom_cards)]
+
         # Combine the base cards and the kingdom cards to get the kingdom
         all_cards = cards_to_zones + kingdom_cards
 
