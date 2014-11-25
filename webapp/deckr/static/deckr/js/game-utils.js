@@ -81,7 +81,7 @@ function moveCard(cardId, toZoneId) {
     fromZone = card.parentElement;
     toZone = getZoneById(toZoneId);
     if (_.isString(toZone)) return toZone;
-    
+
     unselectAll();
     toZone.appendChild(card);
 }

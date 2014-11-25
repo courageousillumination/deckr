@@ -15,6 +15,7 @@ import os.path
 import sys
 
 import yaml
+
 from engine.game import InvalidMoveException
 
 CACHE = {}
@@ -152,6 +153,13 @@ def get_player_transitions(game_id, player_id):
     """
 
     return get_game(game_id).get_player_transitions(player_id)
+
+def get_expected_action(game_id):
+    """
+    Returns the expected action for a specific game.
+    """
+
+    return get_game(game_id).get_expected_action()
 
 
 def has_game(game_id):

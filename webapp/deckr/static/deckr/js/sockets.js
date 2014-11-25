@@ -1,5 +1,5 @@
 // sockets.js
-// Has all the functions for 
+// Has all the functions for
 
 var socket = io.connect("/game");
 var player_mapping = {};
@@ -120,13 +120,16 @@ function onPlayerNames(players) {
     /* Responds to list of players names from server
      and replaces player list dynamically */
     innerHTML = "";
+    player_ids = [];
     _.each(players, function(player) {
         innerHTML += '<li>' + player.nickname + '</li>';
+        player_ids.push(player.id);
         player_mapping[player.id] = player.nickname;
     });
     $('#player_names').html(innerHTML);
 }
 
-function onPlayerNick(nickname){
-    $('#player_nick').html("Welcome " + nickname);
+function onPlayerNick(data){
+    $('#player_nick').html("Welcome " + data.nickname);
+    my_game_id = data.id;
 }

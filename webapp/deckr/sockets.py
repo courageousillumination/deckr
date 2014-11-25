@@ -174,6 +174,10 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
                                                    self.player.player_id)
         self.emit('state_transitions', trans)
 
+        # Broadcast what the Game is expecting
+        expected = self.runner.get_expected_action(self.game_room.room_id)
+        self.emit_to_room(self.room, 'expected_action', expected)
+
         return True
 
     def on_request_state(self):
