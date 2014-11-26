@@ -318,18 +318,14 @@ function send_info() {
 </script>
 
 <div class="layout">
-    <button onclick="socket.emit('start');">Start</button>
-    <button onclick="socket.emit('action', {'action_name': 'next_phase'});">Next Phase</button>
-    <button onclick="send_info()">Send Info</button>
-    <button onclick="socket.emit('abandon_ship');">Abandon Ship</button>
-    <br />
     <textarea readonly rows="5" cols="50" id="eventbox">Welcome to the game!&#13;></textarea>
-
-    <div class="row">
-      <div class="stacked zone" id="discard3"></div>
-      <div class="horizontal-fan zone" id="hand3"></div>
-      <div class="stacked zone" id="deck3"></div>
-      <div class="zone" id="play_zone3"></div>
+    <div class="other-player facing-up">
+      <div class="row">
+        <div class="stacked zone" id="discard3"></div>
+        <div class="horizontal-fan zone" id="hand3"></div>
+        <div class="stacked zone" id="deck3"></div>
+        <div class="zone" id="play_zone3"></div>
+      </div>
     </div>
     <!-- End Player 3 -->
   </div>

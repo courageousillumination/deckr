@@ -20,8 +20,7 @@ function setupSockets() {
         'error': onGameError,
         'player_names': onPlayerNames,
         'player_nick': onPlayerNick,
-        'chat': onChat,
-        'textbox_data': onTextboxData
+        'chat': onChat
     };
     _.each(_.pairs(socket_fn_mapping), function (kv) {
         var event = kv[0];
@@ -151,9 +150,4 @@ function onChat(data) {
     if (sender === player_mapping[my_game_id])  {
         $('#chat-input').val('');
     }
-}
-
-function onTextboxData(data){
-    console.log(data);
-    parseAction(data);
 }
