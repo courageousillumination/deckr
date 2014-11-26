@@ -29,9 +29,7 @@ function setupSockets() {
     });
 }
 
-function onStart(data) {
-    console.log('in start');
-    parseAction(data);
+function onStart() {
     socket.emit('request_state');
 }
 
@@ -138,6 +136,5 @@ function onPlayerNick(data){
 }
 
 function onTextboxData(data){
-    console.log(data);
     parseAction(data);
 }
