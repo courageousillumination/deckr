@@ -205,7 +205,8 @@ socket.on('state', function (data) {
         d = data.cards[i];
         d.class = "card";
         d.id = "card" + d.game_id;
-        d.alt = "Name: " + d.name + "\nType: " + capitaliseFirstLetter(d.card_type[0]) + "\nCost: " + d.cost;
+        if(d.face_up)
+          d.alt = "Name: " + d.name + "\nType: " + capitaliseFirstLetter(d.card_type[0]) + "\nCost: " + d.cost + "\nEffect: " + d.effect;
         console.log(d);
         addCard(d, "staging_area");
     }

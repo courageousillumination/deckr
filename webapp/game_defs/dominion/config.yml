@@ -29,6 +29,7 @@ card_set:
       back_face: "/static/deckr/cards/b1fv.png"
       card_type: ["treasure"]
       kingdom_card: False
+      effect: "Provides 1 Coin."
       cost: 0
       value: 1
 
@@ -37,6 +38,7 @@ card_set:
       back_face: "/static/deckr/cards/b1fv.png"
       card_type: ["treasure"]
       kingdom_card: False
+      effect: "Provides 2 Coins."
       cost: 3
       value: 2
 
@@ -45,6 +47,7 @@ card_set:
       back_face: "/static/deckr/cards/b1fv.png"
       card_type: ["treasure"]
       kingdom_card: False
+      effect: "Provides 3 Coins."
       cost: 6
       value: 3
 
@@ -55,12 +58,14 @@ card_set:
       kingdom_card: False
       cost: 2
       victory_points: 1
+      effect: "Provides 1 VP."
 
     - name: "Duchy"
       front_face: "/static/deckr/cards/duchy.jpg"
       back_face: "/static/deckr/cards/b1fv.png"
       card_type: ["victory"]
       kingdom_card: False
+      effect: "Provides 3 VP."
       cost: 5
       victory_points: 2
 
@@ -69,6 +74,7 @@ card_set:
       back_face: "/static/deckr/cards/b1fv.png"
       card_type: ["victory"]
       kingdom_card: False
+      effect: "Provides 6 VP."
       cost: 8
       victory_points: 6
 
@@ -77,6 +83,7 @@ card_set:
       back_face: "/static/deckr/cards/b1fv.png"
       card_type: ["curse"]
       kingdom_card: False
+      effect: "Provides -1 VP." 
       cost: 0
       victory_points: -1
 
@@ -86,6 +93,7 @@ card_set:
       back_face: "/static/deckr/cards/b1fv.png"
       card_type: ["action"]
       kingdom_card: True
+      effect: "+1 Action / Discard any number of cards. +1 Card per card discarded."
       cost: 2
 
     - name: "Chapel"
@@ -93,6 +101,7 @@ card_set:
       back_face: "/static/deckr/cards/b1fv.png"
       card_type: ["action"]
       kingdom_card: True
+      effect: "Trash up to 4 cards from your hand."
       cost: 2
 
     - name: "Moat"
@@ -100,12 +109,14 @@ card_set:
       back_face: "/static/deckr/cards/b1fv.png"
       card_type: ["action", "reaction"]
       kingdom_card: True
+      effect: "+2 Cards / When another player plays an Attack card, you may reveal this from your hand. If you do, you are unaffected by that Attack."
       cost: 2
 
     - name: "Chancellor"
       front_face: "/static/deckr/cards/chancellor.jpg"
       back_face: "/static/deckr/cards/b1fv.png"
       card_type: ["action"]
+      effect: "+2 Coins / You may immediately put your deck into your discard pile."
       kingdom_card: True
       cost: 2
 
@@ -114,6 +125,7 @@ card_set:
       back_face: "/static/deckr/cards/b1fv.png"
       card_type: ["action"]
       kingdom_card: True
+      effect: "+1 Card, +2 Actions."
       cost: 3
 
     - name: "Woodcutter"
@@ -121,6 +133,7 @@ card_set:
       back_face: "/static/deckr/cards/b1fv.png"
       card_type: ["action"]
       kingdom_card: True
+      effect: "+1 Buy, +2 Coins."
       cost: 3
 
     - name: "Workshop"
@@ -128,6 +141,7 @@ card_set:
       back_face: "/static/deckr/cards/b1fv.png"
       card_type: ["action"]
       kingdom_card: True
+      effect: "Gain a card costing up to 4 Coins."
       cost: 3
 
     - name: "Bureaucrat"
@@ -135,6 +149,7 @@ card_set:
       back_face: "/static/deckr/cards/b1fv.png"
       card_type: ["action"]
       kingdom_card: True
+      effect: "Gain a Silver card, put it on top of your deck. Each other player reveals a Victory card and puts it on top of his deck. (or reveals a hand with no Victory cards)."
       cost: 4
 
     - name: "Feast"
@@ -142,6 +157,7 @@ card_set:
       back_face: "/static/deckr/cards/b1fv.png"
       card_type: ["action"]
       kingdom_card: True
+      effect: "Trash this card. Gain a card costing up to 5 Coins."
       cost: 4
 
     - name: "Gardens"
@@ -149,6 +165,7 @@ card_set:
       back_face: "/static/deckr/cards/b1fv.png"
       card_type: ["victory"]
       kingdom_card: True
+      effect: "Worth 1 VP for every 10 cards in your deck (rounded down)."
       cost: 4
 
     - name: "Militia"
@@ -156,6 +173,7 @@ card_set:
       back_face: "/static/deckr/cards/b1fv.png"
       card_type: ["action", "attack"]
       kingdom_card: True
+      effect: "+2 Coins. Each other player discards down to 3 cards in his hand."
       cost: 4
 
     - name: "Moneylender"
@@ -163,6 +181,7 @@ card_set:
       back_face: "/static/deckr/cards/b1fv.png"
       card_type: ["action"]
       kingdom_card: True
+      effect: "Trash a Copper card from your hand. If you do, +3 Coins."
       cost: 4
 
     - name: "Remodel"
@@ -170,6 +189,7 @@ card_set:
       back_face: "/static/deckr/cards/b1fv.png"
       card_type: ["action"]
       kingdom_card: True
+      effect: "Trash a card from your hand. Gain a card costing up to 2 Coins more than the trashed card."
       cost: 4
 
     - name: "Smithy"
@@ -177,6 +197,7 @@ card_set:
       back_face: "/static/deckr/cards/b1fv.png"
       card_type: ["action"]
       kingdom_card: True
+      effect: "+3 Cards."
       cost: 4
 
     - name: "Spy"
@@ -184,6 +205,7 @@ card_set:
       back_face: "/static/deckr/cards/b1fv.png"
       card_type: ["action", "attack"]
       kingdom_card: True
+      effect: "+1 Card, +1 Action, Each player (including you) reveals the top card of his deck and either discards it or puts it back, your choice."
       cost: 4
 
     - name: "Thief"
@@ -191,6 +213,7 @@ card_set:
       back_face: "/static/deckr/cards/b1fv.png"
       card_type: ["action", "attack"]
       kingdom_card: True
+      effect: "Each other player reveals the top 2 cards of his deck. If they revealed any Treasure cards, they trash one of them that you choose. You may gain any or all of these trashed cards. They discard the other revealed cards."
       cost: 4
 
     - name: "Throne Room"
@@ -198,6 +221,7 @@ card_set:
       back_face: "/static/deckr/cards/b1fv.png"
       card_type: ["action"]
       kingdom_card: True
+      effect: "Choose an Action card in your hand. Play it twice."
       cost: 4
 
     - name: "Council Room"
@@ -205,6 +229,7 @@ card_set:
       back_face: "/static/deckr/cards/b1fv.png"
       card_type: ["action"]
       kingdom_card: True
+      effect: "+4 Cards, +1 Buy, Each other player draws a card."
       cost: 5
 
     - name: "Festival"
@@ -212,6 +237,7 @@ card_set:
       back_face: "/static/deckr/cards/b1fv.png"
       card_type: ["action"]
       kingdom_card: True
+      effect: "+2 Actions, +1 Buy, +2 Coins."
       cost: 5
 
     - name: "Laboratory"
@@ -219,6 +245,7 @@ card_set:
       back_face: "/static/deckr/cards/b1fv.png"
       card_type: ["action"]
       kingdom_card: True
+      effect: "+2 Cards, +1 Action."
       cost: 5
 
     - name: "Library"
@@ -226,6 +253,7 @@ card_set:
       back_face: "/static/deckr/cards/b1fv.png"
       card_type: ["action"]
       kingdom_card: True
+      effect: "Draw until you have 7 cards in hand. You may set aside any Action cards drawn this way, as you draw them; discard the set aside cards after you finish drawing."
       cost: 5
 
     - name: "Market"
@@ -233,6 +261,7 @@ card_set:
       back_face: "/static/deckr/cards/b1fv.png"
       card_type: ["action"]
       kingdom_card: True
+      effect: "+1 Card, +1 Action, +1 Buy, +1 Coin."
       cost: 5
 
     - name: "Mine"
@@ -240,6 +269,7 @@ card_set:
       back_face: "/static/deckr/cards/b1fv.png"
       card_type: ["action"]
       kingdom_card: True
+      effect: "Trash a Treasure card from your hand. Gain a Treasure card costing up to 3 Coins more; put it into your hand."
       cost: 5
 
     - name: "Witch"
@@ -247,6 +277,7 @@ card_set:
       back_face: "/static/deckr/cards/b1fv.png"
       card_type: ["action"]
       kingdom_card: True
+      effect: "+2 Cards, Each other player gains a Curse card."
       cost: 5
 
     - name: "Adventurer"
@@ -254,4 +285,5 @@ card_set:
       back_face: "/static/deckr/cards/b1fv.png"
       card_type: ["action"]
       kingdom_card: True
+      effect: "Reveal cards from your deck until you reveal 2 Treasure cards. Put those Treasure cards in your hand and discard the other revealed cards."
       cost: 6
