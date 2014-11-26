@@ -56,7 +56,8 @@ class StatefulGameObjectTestCase(TestCase):
         self.game.register([player])
 
         # Make sure that we can't get any values from a default player object
-        self.assertIsNone(self.stateful_game_object.get_value("visible", player))
+        self.assertIsNone(self.stateful_game_object.get_value("visible",
+                                                              player))
 
         expected_state_changes = [("set",
                                    "foo",
