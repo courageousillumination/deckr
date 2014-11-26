@@ -9,11 +9,14 @@ function capitaliseFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-function setupAltText(card) {
-    if (card.face_up) {
-        card.alt = "Name: " + card.name;
-        card.alt += "\nType: " + capitaliseFirstLetter(card.card_type[0]);
-        card.alt += "\nCost: " + card.cost + "\nEffect: " + card.effect;
+function setupAltText(cardData) {
+    var card = $("#card" + cardData.game_id);
+    var alt = "";
+    if (cardData.face_up) {
+        alt = "Name: " + cardData.name;
+        alt += "\nType: " + capitaliseFirstLetter(cardData.card_type[0]);
+        alt += "\nCost: " + cardData.cost + "\nEffect: " + cardData.effect;
+        card.attr("alt", alt);
     }
 }
 
