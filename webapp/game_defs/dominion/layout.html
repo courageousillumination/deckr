@@ -91,7 +91,13 @@ function findTransition(name, transitionList) {
   return -1;
 }
 
+var phase;
+phase = "action";
+
 function parseAction(data) {
+  if(data == null)
+    return;
+
   console.log("parsing");
   
   nickname = data[0];
@@ -109,13 +115,13 @@ function parseAction(data) {
     return;
   }
 
-  /*if((index = findTransition("Phase", transitions)) > -1) {
+  if((index = findTransition("Phase", transitions)) > -1) {
       switch(transitions[index][1]) {
         case "action": textbox.innerHTML += "**Action Phase**&#13;";
+                       phase = "action";
                        break;
         case "buy": textbox.innerHTML += "**Buy Phase**&#13;";
-                       break;
-        case "clean-up": textbox.innerHTML += "**Clean-Up Phase**&#13;";
+                       phase = "buy";
                        break;
       }
       return;
@@ -123,9 +129,13 @@ function parseAction(data) {
 
   for(i = 0; i < transitions.length; i++) {
     transition = transitions[i];
+
+    if(transition[0] == "add") {
+      
+    }
   }
 
-  textbox.scrollTop = textbox.scrollHeight;*/
+  textbox.scrollTop = textbox.scrollHeight;
 }
 
 $(document).ready(function() {
