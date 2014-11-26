@@ -56,8 +56,8 @@ textarea {
 }
 
 #player1 .hand {
-    padding: 5px;
-    width: 350px;
+    padding-left: 15px;
+    width: 335px;
     overflow-y: scroll;
 }
 

@@ -9,6 +9,30 @@ function capitaliseFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
+function setPhase(new_phase) {
+    phase = new_phase;
+}
+
+function addToEventBox(eventbox, text, without_newline) {
+    var n = (without_newline === true) ? "" : "&#13;";
+    eventbox.innerHTML += text + n;
+}
+
+function scrollEventBoxToBottom(eventbox) {
+    eventbox.scrollTop = eventbox.scrollHeight;
+}
+
+function specialEventBoxCardText(card_name) {
+    return {
+        "Bureaucrat": "Waiting for players to reveal a victory card.",
+        "Militia": "Waiting for players to discard or counter-attack.",
+        "Spy": "Waiting for players to reveal a card.",
+        "Thief": "Waiting for players to reveal 2 treasure cards.",
+        "Witch": "Everyone gains 1 curse.",
+        "Council Room": "Everyone draws 1 card."
+    }[card_name];
+}
+
 function setupAltText(cardData) {
     var card = $("#card" + cardData.game_id);
     var alt = "";
@@ -20,100 +44,103 @@ function setupAltText(cardData) {
     }
 }
 
-function findTransition(name, transitionList) {
-  for(i=0; i<transitionList.length; i++) {
-    if(transitionList[i].indexOf(name) > -1) {
-      console.log("found");
-      return i;
-    }
-  }
-
-  return -1;
+function findTransition(name, transitions) {
+    return _.findIndex(transitions, function(t) {
+        return _.indexOf(t, name) > -1;
+    });
 }
 
-function parseAction(data) {
+function updateEventBoxPhaseTransition(transition, data, eventbox) {
+    var i, next_player;
+    if (transition[1] === "action") {
+        i = transition[2]-1;
+        next_player = document.getElementById("player-names").children[i].innerHTML;
+        addToEventBox(eventbox, "---------------------------");
+        addToEventBox(eventbox, "It is " + next_player + "\'s turn.");
+        addToEventBox(eventbox, "**Action Phase**");
 
-  nickname = data[0];
-  transitions = data[1];
-  state = data[2];
+        // Set the phase for later
+        setPhase("action");
+    } else if (transition[1] === "buy") {
+        addToEventBox(eventbox, "**Buy Phase**");
+        setPhase("buy");
+    }
+}
 
-  textbox = document.getElementById("eventbox");
+function updateEventBoxStartTransition(transition, data, eventbox) {
+    var starter = document.getElementById("player-names").children[transition[1]-1].innerHTML;
+    addToEventBox(eventbox, data.nickname + " has begun the game.");
+    addToEventBox(eventbox, "It is " + starter + "\'s turn.");
+    addToEventBox(eventbox, "**Action Phase**");
+}
 
-  // If there is a phase transitino, we can ignore other transitions
-  if((index = findTransition("Phase",transitions)) > -1) {
-    if(transitions[index][1] == "action") {
-      // For action phase, we need to say whose turn it is
-      next_player = document.getElementById("player-names").children[transitions[index][2]-1].innerHTML;
-      
-      textbox.innerHTML += "---------------------------&#13;";
-      textbox.innerHTML += "It is " + next_player + "\'s turn.&#13;";
-      textbox.innerHTML += "**Action Phase**&#13;";
+function updateEventBoxAddTransition(transition, data, eventbox) {
+    var card, zone, card_name, state, verbs;
+    state = data.state;
+    card = transition[1] - 1;
+    zone = transition[2] - 1;
+    card_name = state.cards[card].name;
+    zone_name = state.zones[zone].name;
+    verb = {
+        "play_zone": " player a ",
+        "discard": " bought a(n) "
+    }[zone_name];
 
-      // Set the phase for later
-      phase = "action";
-     }
-     else if(transitions[index][1] == "buy") {
-      textbox.innerHTML += "**Buy Phase**&#13;";
-      phase = "buy";
+    if (phase === "action")
+        updateEventBoxAddActionTransition(transition, data, eventbox);
+    else if (phase === "buy")
+        addToEventBox(eventbox, data.nickname + verb + card_name + ".");
+}
+
+function updateEventBoxAddActionTransition(transition, data, eventbox) {
+    var card, zone, card_name, state, verbs;
+    state = data.state;
+    card = transition[1] - 1;
+    zone = transition[2] - 1;
+    card_name = state.cards[card].name;
+    zone_name = state.zones[zone].name;
+    verb = {
+        "trash": " trashed a(n) ",
+        "hand": " drew a(n) ",
+        "discard": " obtained a(n) "
+    }[zone_name];
+    
+    if (zone_name == "hand") {
+        addToEventBox(eventbox, data.nickname + " drew a card.");
+    } else if (zone_name === "play_zone") {
+        addToEventBox(eventbox, data.nickname + " played a(n) " + card_name + ".");
+        addToEventBox(eventbox, specialEventBoxCardText(card_name));
+    } else {
+        addToEventBox(eventbox, data.nickname + verb + card_name + ".");
+    }
+}
+
+function updateEventBox(data) {
+    var eventbox, _data, transitions, i;
+    eventbox = document.getElementById("eventbox");
+    _data = {
+        nickname: data[0],
+        transitions: data[1],
+        state: data[2]
+    };
+    transitions = {
+        "start": updateEventBoxStartTransition,
+        "add": updateEventBoxAddTransition
+    };
+
+    // If there is a phase transition, we can ignore other transitions
+    i = findTransition("Phase", _data.transitions);
+    if (i > -1) {
+        updateEventBoxPhaseTransition(_data.transitions[i], _data, eventbox);
+        scrollEventBoxToBottom(eventbox);
+        return;
     }
 
-    textbox.scrollTop = textbox.scrollHeight;
-    return;
-  }
-
-  for(i = 0; i < transitions.length; i++) {
-    transition = transitions[i];
-
-    // This should be the only transition, if it exists
-    if(transition[0] == "start") {
-      // Find out who gets to play first
-      starter = document.getElementById("player-names").children[transition[1]-1].innerHTML;
-
-      textbox.innerHTML += nickname + " has begun the game.&#13;";
-      textbox.innerHTML += "It is " + starter + "\'s turn.&#13;";
-      textbox.innerHTML += "**Action Phase**&#13;"
-    }
-
-    if(transition[0] == "add") {
-      card = transition[1] - 1;
-      zone = transition[2] - 1;
-
-      card_name = state.cards[card].name;
-
-      if(phase == "action") {
-        if(state.zones[zone].name == "play_zone") {
-          textbox.innerHTML += nickname + " played a(n) " + card_name + ".&#13;";
-
-          if(card_name == "Bureaucrat")
-            textbox.innerHTML += "Waiting for players to reveal a victory card.";
-          else if(card_name == "Militia")
-            textbox.innerHTML += "Waiting for players to discard or counter-attack.";
-          else if(card_name == "Spy")
-            textbox.innerHTML += "Waiting for players to reveal a card.";
-          else if(card_name == "Thief")
-            textbox.innerHTML += "Waiting for players to reveal 2 treasure cards.";
-          else if(card_name == "Witch")
-            textbox.innerHTML += "Everyone gains 1 curse.";
-          else if(card_name == "Council Room")
-            textbox.innerHTML += "Everyone draws 1 card.";
-        }
-        else if(state.zones[zone].name == "trash") 
-          textbox.innerHTML += nickname + " trashed a(n) " + card_name + ".&#13;";
-        else if(state.zones[zone].name == "hand")
-          textbox.innerHTML += nickname + " drew a card.&#13;";
-        else if(state.zones[zone].name == "discard")
-          textbox.innerHTML += nickname + " obtained a(n) " + card_name + ".&#13;";
-      }
-      else if(phase == "buy") {
-        // Buying can involve multiple actions
-        if(state.zones[zone].name == "play_zone")
-          textbox.innerHTML += nickname + " played a " + card_name + ".&#13;";
-        else if(state.zones[zone].name == "discard")
-          textbox.innerHTML += nickname + " bought a(n) " + card_name + ".&#13;";
-      }
-    }
-  }
-  textbox.scrollTop = textbox.scrollHeight;
+    _.each(_data.transitions, function(transition) {
+        if (_.has(transitions, transition[0]))
+            transitions[transition[0]](transition, _data, eventbox);
+    });
+    scrollEventBoxToBottom(eventbox);
 }
 
 function validateAddSelected(selected) {
@@ -214,7 +241,7 @@ function sendInfoOnClick() {
 
 function onTextboxData(data){
     console.log(data);
-    parseAction(data);
+    updateEventBox(data);
 }
 
 socket.on('textbox_data', onTextboxData);
