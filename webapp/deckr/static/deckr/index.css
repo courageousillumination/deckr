@@ -328,15 +328,24 @@ input[type="text"]:focus {
 /* line 234, scss/index.scss */
 #chat-box {
   position: fixed;
-  width: 50px;
-  height: 500px;
   top: 20px;
   left: 10px;
   border: 1px solid black;
   overflow-y: scroll;
 }
 
-/* line 244, scss/index.scss */
+/* line 242, scss/index.scss */
 span.un {
   font-weight: bold;
+}
+
+/* line 246, scss/index.scss */
+#chat-input {
+  position: fixed;
+  overflow-y: scroll;
+}
+
+/* line 251, scss/index.scss */
+#chat-btn {
+  position: fixed;
 }

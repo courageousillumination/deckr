@@ -233,8 +233,6 @@ input[type="text"] {
 
 #chat-box {
     position: fixed;
-    width:  50px;
-    height: 500px;
     top: 20px; // Added to height of #header in js
     left:  10px;
     border: 1px solid black;
@@ -243,4 +241,13 @@ input[type="text"] {
 
 span.un {
     font-weight: bold;
+}
+
+#chat-input { 
+    position: fixed;
+    overflow-y: scroll;
+}
+
+#chat-btn {
+    position: fixed;
 }
