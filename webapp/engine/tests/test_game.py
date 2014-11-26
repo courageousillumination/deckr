@@ -6,6 +6,7 @@ from unittest import skip, TestCase
 
 from engine.card import Card
 from engine.game import action, game_step, InvalidMoveException, NeedsMoreInfo
+from engine.game_object import GameObject
 from engine.player import Player
 from engine.tests.mock_game.mock_game import MockGame
 from engine.zone import Zone
@@ -714,3 +715,23 @@ class GameTestCase(TestCase):
         self.assertDictEqual(expected_state, self.game.get_state())
         self.assertDictEqual(player_expected_state,
                              self.game.get_state(self.player.game_id))
+
+    def test_deregister(self):
+        """
+        Make sure that we can properly deregister objects.
+        """
+
+        player = Player()
+        card = Card()
+        zone = Zone()
+        other = GameObject()
+        unregistered = GameObject()
+
+        self.game.register([player, card, zone, other])
+
+        self.game.deregister([player, card, zone, other, unregistered])
+        print self.game.registered_objects
+        self.assertEqual(self.game.registered_objects["Player"][0], 2)
+        self.assertEqual(self.game.registered_objects["Card"][0], 1)
+        self.assertEqual(self.game.registered_objects["Zone"][0], 1)
+        self.assertEqual(self.game.registered_objects["GameObject"][0], 1)
