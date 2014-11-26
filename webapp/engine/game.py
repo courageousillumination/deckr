@@ -320,8 +320,9 @@ class Game(HasZones):
             return False
         self.deregister([player])
         self.deregister(player.zones.values())
-        for name, zone in player.zones.items():
+        for name in player.zones:
             del self.zones[name + '_' + str(player.game_id)]
+        self.players.remove(player)
         return True
 
     def add_player(self):
