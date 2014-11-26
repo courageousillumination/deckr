@@ -35,25 +35,25 @@ function onStart() {
 
 function onAddCard(data) {
     /* Responds to add_card message from server */
-    console.log('Adding new card to ' + data.zoneId);
+    //console.log('Adding new card to ' + data.zoneId);
     addCard(data.cardDict, data.zoneId);
 }
 
 function onRemoveCard(data) {
     /* Responds to remove_card message from server */
-    console.log('Removing ' + data.cardId + ' from ' + data.zoneId);
+    //console.log('Removing ' + data.cardId + ' from ' + data.zoneId);
     removeCard(data.zoneId, data.cardId);
 }
 
 function onMoveCard(data) {
     /* Responds to move_card message from server */
-    console.log('Moving ' + data.cardId + ' to ' + data.toZoneId);
+    //console.log('Moving ' + data.cardId + ' to ' + data.toZoneId);
     moveCard(data.cardId, data.toZoneId);
 }
 
 function onMakeAction(data) {
     /* Responds to make_action actions */
-    console.log('Making action ' + data.action);
+    //console.log('Making action ' + data.action);
     // lol what...
     if (data.action === 'move_card') {
         socket.emit('move_card', data);
@@ -61,7 +61,7 @@ function onMakeAction(data) {
 }
 
 function onStateTransitions(data) {
-    console.log(data);
+    //console.log(data);
     _.each(data, performTransition);
 }
 

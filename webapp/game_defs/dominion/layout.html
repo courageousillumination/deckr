@@ -144,7 +144,14 @@ function parseAction(data) {
       card_name = state.cards[card].name;
 
       if(phase == "action") {
-        textbox.innerHTML += nickname + " played a(n) " + card_name + ".&#13;";
+        if(state.zones[zone].name == "play_zone") 
+          textbox.innerHTML += nickname + " played a(n) " + card_name + ".&#13;";
+        if(state.zones[zone].name == "trash") 
+          textbox.innerHTML += nickname + " trashed a(n) " + card_name + ".&#13;";
+        else if(state.zones[zone].name == "hand")
+          textbox.innerHTML += nickname + " drew a card.&#13;";
+        else if(state.zones[zone].name == "discard")
+          textbox.innerHTML += nickname + " obtaineda(n) " + card_name + ".&#13;";
       }
       else if(phase == "buy") {
         // Buying can involve multiple actions
