@@ -117,7 +117,6 @@ function addSelected(selected) {
 }
 
 function supplyOnHover(e) {
-    console.log("hover", this.id);
     var img, src, hover_id;
     hover_id = this.id + "-hover";
     // Create big image
@@ -132,22 +131,18 @@ function supplyOnHover(e) {
 }
 
 function supplyOnMouseMove(e) {
-    var ele = $("#"+this.id+"-hover");
-    var wH = $(window).height();
-    var wW = $(window).width();
-    var mY = e.pageY + mouse_offset;
-    var mX = e.pageX + mouse_offset;
-    if (mX > (wW/2)) {
-        mX -= ele.width();
-    }
-    if (mY > (wH/2)) {
-        mY -= ele.height();
-    }
+    var ele, wH, wW, mY, mX;
+    ele = $("#"+this.id+"-hover");
+    wH = $(window).height();
+    wW = $(window).width();
+    mY = e.pageY + mouse_offset;
+    mX = e.pageX + mouse_offset;
+    if (mX > (wW/2)) mX -= ele.width();
+    if (mY > (wH/2)) mY -= ele.height();
     ele.css("top", mY + "px").css("left", mX + "px");
 }
 
 function supplyOnMouseOut(e) {
-    console.log("out");
     $("#"+this.id+"-hover").remove();
 }
 
