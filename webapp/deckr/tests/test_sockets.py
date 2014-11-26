@@ -2,8 +2,6 @@
 Unit tests for deckr websockets.
 """
 
-from unittest import skip
-
 from django.test import TestCase
 
 from deckr.models import GameDefinition, GameRoom, Player
@@ -418,20 +416,45 @@ class GameNamespaceTestCase(SocketTestCase):
 
         self.assertIsNone(ROOMS.get(room_name, None))
 
-    @skip('Not yet implemented')
-    def test_join_as_spectator(self):
+    def test_on_join_as_spectator(self):
         """
         Create a socket with no player
         """
 
         room = self.namespace.room
         old_count = Player.objects.all().count()
-        self.assertTrue(self.namespace.join_as_spectator())
+        self.assertTrue(self.namespace.on_join_as_spectator(
+            str(self.game_room.pk)))
         self.assertEqual(Player.objects.all().count(), old_count)
         self.assertEqual(self.namespace.player, None)
         self.assertEqual(self.namespace.room, room)
 
-    @skip
+    def test_spectator_request_state(self):
+        """
+        If a spectator requests the state, send back another player 1's state
+        """
+        state = {'foo': 'bar'}
+
+        # Mock out the runner
+
+        runner = self.namespace.runner
+        runner.get_state.return_value = state
+
+        # When there is one player in the room
+        player = self.game_room.player_set.all()[0]
+
+        self.player = None
+        self.namespace.player = None
+        self.assertTrue(self.namespace.on_request_state())
+        self.namespace.emit.assert_called_with("state", state)
+        runner.get_state.assert_called_with(self.game_room.room_id,
+                                            player.player_id)
+
+        # When no one is in the room
+        player.delete()
+        self.assertFalse(self.namespace.on_request_state())
+
+
     def test_spectator_move(self):
         """
         If spectator makes a move, reject it

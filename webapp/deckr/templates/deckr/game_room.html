@@ -18,7 +18,11 @@
 <div class="right" style="position:relative;">
 <img id="open-chat-btn" src="{% static 'deckr/images/chat.png' %}">
 <div id="player-info">
-    <h2>Hello <span class="logo name">{{ player.nickname }}</span></h2>
+    {% if player %}
+      <h2>Hello <span class="logo name">{{ player.nickname }}</span></h2>
+    {% else %}
+      <h2>You are spectating</h2>
+    {% endif %}
     <div id="player-names-btn">Players (<span id="n-players">{{ game.player_set.all|length }}</span>)</div>
 </div>
 <ul id="player-names" style="display: none;">
@@ -41,11 +45,15 @@
         {% include sub_template %}
         {% block game-wrapper %}{% endblock %}
         <script>
+          {% if player %}
             socket.emit('join', {
-                game_room_id: "{{game.id}}", 
+                game_room_id: "{{game.id}}",
                 player_id: {{player.id}}}
             );
             {{ game_js|safe }}
+          {% else %}
+            socket.emit('join_as_spectator', "{{game.id}}")
+          {% endif %}
         </script>
     </div>
 </div>

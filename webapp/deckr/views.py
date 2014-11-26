@@ -9,6 +9,7 @@ Stores all the view logic for deckr.
 from os.path import join as pjoin
 
 from django.core.urlresolvers import reverse
+from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template import Template
 
@@ -77,8 +78,11 @@ def game_room(request, game_room_id):
 
     # Get Player info
     player_id = request.GET.get('player_id')
-    player = get_object_or_404(Player, pk=player_id)
-    # Get GameRoom info
+    try:
+        player = Player.objects.get(pk=player_id)
+    except ObjectDoesNotExist:
+        player = None
+
     game = get_object_or_404(GameRoom, pk=game_room_id)
     # Get GameDefinition info
     fin = open(pjoin(game.game_definition.path, 'layout.html')).read()
