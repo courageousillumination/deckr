@@ -222,3 +222,7 @@ class ZoneTestCase(TestCase):
         cards = [self.card1, self.card2, self.card3]
         self.zone.set_cards(cards)
         self.assertListEqual(self.zone.get_cards(), cards)
+
+        cards = []
+        self.zone.set_cards(cards)
+        self.assertListEqual(self.zone.get_cards(), cards)
