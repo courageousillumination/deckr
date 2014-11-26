@@ -5,6 +5,10 @@ var currently_selected = [];
 var mouse_offset = 5;
 var phase = "action";
 
+function capitaliseFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 function findTransition(name, transitionList) {
   for(i=0; i<transitionList.length; i++) {
     if(transitionList[i].indexOf(name) > -1) {
