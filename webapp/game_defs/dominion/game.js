@@ -3,6 +3,89 @@ var expecting_type = null;
 var information_name = null;
 var currently_selected = [];
 var mouse_offset = 5;
+var phase = "action";
+
+function findTransition(name, transitionList) {
+  for(i=0; i<transitionList.length; i++) {
+    if(transitionList[i].indexOf(name) > -1) {
+      console.log("found");
+      return i;
+    }
+  }
+
+  return -1;
+}
+
+function parseAction(data) {
+
+  nickname = data[0];
+  transitions = data[1];
+  state = data[2];
+
+  textbox = document.getElementById("eventbox");
+
+  // If there is a phase transitino, we can ignore other transitions
+  if((index = findTransition("Phase",transitions)) > -1) {
+    if(transitions[index][1] == "action") {
+      // For action phase, we need to say whose turn it is
+      next_player = document.getElementById("player-names").children[transitions[index][2]-1].innerHTML;
+      
+      textbox.innerHTML += "---------------------------&#13;";
+      textbox.innerHTML += "It is " + next_player + "\'s turn.&#13;";
+      textbox.innerHTML += "**Action Phase**&#13;";
+
+      // Set the phase for later
+      phase = "action";
+     }
+     else if(transitions[index][1] == "buy") {
+      textbox.innerHTML += "**Buy Phase**&#13;";
+      phase = "buy";
+    }
+
+    textbox.scrollTop = textbox.scrollHeight;
+    return;
+  }
+
+  for(i = 0; i < transitions.length; i++) {
+    transition = transitions[i];
+
+    // This should be the only transition, if it exists
+    if(transition[0] == "start") {
+      // Find out who gets to play first
+      starter = document.getElementById("player-names").children[transition[1]-1].innerHTML;
+
+      textbox.innerHTML += nickname + " has begun the game.&#13;";
+      textbox.innerHTML += "It is " + starter + "\'s turn.&#13;";
+      textbox.innerHTML += "**Action Phase**&#13;"
+    }
+
+    if(transition[0] == "add") {
+      card = transition[1] - 1;
+      zone = transition[2] - 1;
+
+      card_name = state.cards[card].name;
+
+      if(phase == "action") {
+        if(state.zones[zone].name == "play_zone") 
+          textbox.innerHTML += nickname + " played a(n) " + card_name + ".&#13;";
+        if(state.zones[zone].name == "trash") 
+          textbox.innerHTML += nickname + " trashed a(n) " + card_name + ".&#13;";
+        else if(state.zones[zone].name == "hand")
+          textbox.innerHTML += nickname + " drew a card.&#13;";
+        else if(state.zones[zone].name == "discard")
+          textbox.innerHTML += nickname + " obtained a(n) " + card_name + ".&#13;";
+      }
+      else if(phase == "buy") {
+        // Buying can involve multiple actions
+        if(state.zones[zone].name == "play_zone")
+          textbox.innerHTML += nickname + " played a " + card_name + ".&#13;";
+        else if(state.zones[zone].name == "discard")
+          textbox.innerHTML += nickname + " bought a(n) " + card_name + ".&#13;";
+      }
+    }
+  }
+  textbox.scrollTop = textbox.scrollHeight;
+}
 
 function validateAddSelected(selected) {
     // Make sure it's of the right type
@@ -103,6 +186,13 @@ function sendInfoOnClick() {
     dict[information_name] =  currently_selected;
     socket.emit('action', dict);
 }
+
+function onTextboxData(data){
+    console.log(data);
+    parseAction(data);
+}
+
+socket.on('textbox_data', onTextboxData);
 
 socket.on('state', function(data) {
     var click_fn_map = {
