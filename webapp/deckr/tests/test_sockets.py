@@ -2,12 +2,10 @@
 Unit tests for deckr websockets.
 """
 
-from unittest import skip
-
 from django.test import TestCase
 
 from deckr.models import GameDefinition, GameRoom, Player
-from deckr.sockets import ChatNamespace, GameNamespace
+from deckr.sockets import ChatNamespace, GameNamespace, ROOMS
 from mock import MagicMock
 from socketio.virtsocket import Socket
 
@@ -364,6 +362,37 @@ class GameNamespaceTestCase(SocketTestCase):
         self.namespace.on_start()
         self.namespace.emit_to_room.assert_called_with(self.namespace.room,
                                                        'start')
+
+    def test_room_functionality(self):
+        """
+        Make sure that we can join a room, broadcast to only that room and
+        leave it if necessary.
+        """
+
+        room_name = 'my_room'
+        namespace1 = GameNamespace(self.environ, '/game')
+        namespace2 = GameNamespace(self.environ, '/game')
+
+        namespace1.emit = MagicMock()
+        namespace2.emit = MagicMock()
+        namespace1.broadcast_event = MagicMock()
+        namespace2.broadcast_event = MagicMock()
+
+        namespace1.join_room(room_name)
+        namespace2.join_room(room_name)
+
+        self.assertEqual(len(ROOMS[room_name]), 2)
+
+        namespace1.emit_to_room(room_name, 'foo')
+        namespace1.emit.assert_any_call('foo')
+        namespace2.emit.assert_any_call('foo')
+
+        # Try both ways of disconnecting
+        namespace1.disconnect()
+        namespace2.recv_disconnect()
+
+        print ROOMS
+        self.assertIsNone(ROOMS.get(room_name, None))
 
     @skip('Not yet implemented')
     def test_join_as_spectator(self):
