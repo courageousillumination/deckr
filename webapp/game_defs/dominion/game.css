@@ -36,6 +36,22 @@
     width: 350px;
 }
 
+div.horizontal-fan{
+    padding-left: 85px;
+}
+
+.horizontal-fan img {
+    margin-left: -60px;
+}
+
+.vertical-fan img {
+    margin-bottom: -78px;
+}
+
+.horizontal-fan .facing-up img {
+    margin-right: -60px;
+}
+
 .facing-top img {
     transform: rotate(180deg);
 }
