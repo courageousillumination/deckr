@@ -4,9 +4,9 @@
 }
 
 @mixin deckr-btn () {
-    font-weight: 300;
     color: #fff;
     text-decoration: none;
+
     div {
         display: inline-block;
         background-color: $deckr;
@@ -16,6 +16,17 @@
 
         &:hover {
             background-color: darken($deckr, 15%);
+        }
+    }
+
+    &.light {
+        color: #000;
+        div {
+            background-color: lighten($deckr, 20%);
+            &:hover {
+                color: #fff;
+                background-color: darken($deckr, 20%);
+            }
         }
     }
 }

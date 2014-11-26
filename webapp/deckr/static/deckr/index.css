@@ -171,7 +171,6 @@ input[type="text"]:focus {
 
 /* line 117, scss/index.scss */
 .big-btn {
-  font-weight: 300;
   color: #fff;
   text-decoration: none;
 }
@@ -189,6 +188,19 @@ input[type="text"]:focus {
 .big-btn div:hover {
   background-color: #4c699f;
 }
+/* line 22, scss/mixins.scss */
+.big-btn.light {
+  color: #000;
+}
+/* line 24, scss/mixins.scss */
+.big-btn.light div {
+  background-color: #becae0;
+}
+/* line 26, scss/mixins.scss */
+.big-btn.light div:hover {
+  color: #fff;
+  background-color: #445d8e;
+}
 /* line 119, scss/index.scss */
 .big-btn div {
   padding: 15px;
@@ -197,7 +209,6 @@ input[type="text"]:focus {
 
 /* line 125, scss/index.scss */
 .small-btn {
-  font-weight: 300;
   color: #fff;
   text-decoration: none;
 }
@@ -214,6 +225,19 @@ input[type="text"]:focus {
 /* line 17, scss/mixins.scss */
 .small-btn div:hover {
   background-color: #4c699f;
+}
+/* line 22, scss/mixins.scss */
+.small-btn.light {
+  color: #000;
+}
+/* line 24, scss/mixins.scss */
+.small-btn.light div {
+  background-color: #becae0;
+}
+/* line 26, scss/mixins.scss */
+.small-btn.light div:hover {
+  color: #fff;
+  background-color: #445d8e;
 }
 /* line 127, scss/index.scss */
 .small-btn div {
@@ -255,16 +279,19 @@ input[type="text"]:focus {
 
 /* line 170, scss/index.scss */
 .game-body {
+  padding-top: 50px;
+  display: table;
   height: 100%;
+  width: 100%;
 }
 
-/* line 174, scss/index.scss */
+/* line 177, scss/index.scss */
 .game-wrapper {
   height: 100%;
 }
 
-/* line 178, scss/index.scss */
-#start-end-btns {
+/* line 181, scss/index.scss */
+#game-btns {
   display: inline-block;
   padding: 10px 20px;
   position: absolute;
@@ -273,22 +300,7 @@ input[type="text"]:focus {
   border-left: 1px solid #5675af;
 }
 
-/* line 187, scss/index.scss */
-#start-btn {
-  color: #000;
-  font-weight: 400;
-}
 /* line 190, scss/index.scss */
-#start-btn div {
-  background-color: #becae0;
-}
-/* line 192, scss/index.scss */
-#start-btn div:hover {
-  color: #fff;
-  background-color: #445d8e;
-}
-
-/* line 199, scss/index.scss */
 .card.selected {
   margin-left: 3px;
   margin-top: 3px;
@@ -298,12 +310,17 @@ input[type="text"]:focus {
   box-shadow: 0px 0px 5px yellow;
 }
 
-/* line 211, scss/index.scss */
+/* line 202, scss/index.scss */
 .center {
   text-align: center;
 }
 
-/* line 215, scss/index.scss */
+/* line 206, scss/index.scss */
 .right {
   float: right;
+}
+
+/* line 214, scss/index.scss */
+.vex-dialog-button.vex-dialog-button-primary {
+  background-color: #7991bf !important;
 }

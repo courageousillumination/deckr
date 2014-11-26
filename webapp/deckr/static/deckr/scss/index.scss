@@ -168,32 +168,23 @@ input[type="text"] {
 //
 
 .game-body {
+    padding-top: 50px;
+    display: table;
     height: 100%;
+    width: 100%;
 }
 
 .game-wrapper {
     height: 100%;
 }
 
-#start-end-btns {
+#game-btns {
     display: inline-block;
     padding: 10px 20px;
     position: absolute;
     left: 150px;
     top: 12px;
     border-left: 1px solid darken($deckr, 10%);
-}
-
-#start-btn {
-    color: #000;
-    font-weight: 400;
-    div {
-        background-color: lighten($deckr, 20%);
-        &:hover {
-            color: #fff;
-            background-color: darken($deckr, 20%);
-        }
-    }
 }
 
 .card.selected {
@@ -214,4 +205,12 @@ input[type="text"] {
 
 .right {
     float: right;
+}
+
+//
+// Plugin classes
+//
+
+.vex-dialog-button.vex-dialog-button-primary {
+    background-color: $deckr !important;
 }

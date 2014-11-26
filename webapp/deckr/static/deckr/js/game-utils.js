@@ -4,6 +4,17 @@ function hoverInfo() {
     return;
 }
 
+function gameAlert(msg, data) {
+    alert(msg);
+}
+
+function addBtn(label, btnId, fn) {
+    if (!document.getElementById(btnId)) {
+        $('#game-btns').append('<a href="#" id="'+btnId+'" class="small-btn"><div>'+label+'</div></a> ');
+        if (fn) $('#'+btnId).click(fn);
+    }
+}
+
 function unselectAll() {
     /* Unselects everything that is selected. */
     $('.selected').removeClass('selected');

@@ -1,5 +1,5 @@
 // sockets.js
-// Has all the functions for
+// Has all the functions for sockets...
 
 var socket = io.connect("/game");
 var player_mapping = {};
@@ -84,6 +84,8 @@ function transitionSet(transition) {
             card.attr('src', card.data('back_face'));
             card.attr('face_up', 'false');
         }
+    } else if (transition[1] === 'Player') {
+        // something...
     }
 }
 

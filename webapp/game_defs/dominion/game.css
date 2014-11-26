@@ -1,0 +1,69 @@
+.game-body {
+    background: url(http://subtlepatterns.com/patterns/footer_lodyas.png);
+}
+
+.layout {
+    margin: 0 auto;
+    width: 1000px;
+}
+
+.zone {
+    float: left;
+    width: 80px;
+    height: 100px;
+    margin: 5px;
+    padding: 15px;
+    border: 1px dotted #ccc;
+}
+
+.zone#hand {
+    width: 200px;
+}
+
+.zone.last {
+    float: right;
+}
+
+.victory {
+    float: right;
+}
+
+.vertical-fan {
+    height: 350px;
+}
+
+.horizontal-fan {
+    width: 350px;
+}
+
+.facing-top img {
+    transform: rotate(180deg);
+}
+
+.facing-left img {
+    transform: rotate(90deg);
+}
+
+.facing-right img {
+    transform: rotate(270deg);
+}
+
+.center-field {
+    height: 350px;
+    width: 350px;
+}
+
+.stacked img {
+    position: absolute
+}
+
+.row {
+    clear: both;
+    width: 100%;
+    overflow: hidden;
+}
+
+.selected {
+    border: solid;
+    border-color: yellow;
+}

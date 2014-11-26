@@ -10,10 +10,10 @@
 <style type="text/css">{{ game_css|safe }}</style>
 {% endblock %}
 {% block header %}
-<div id="start-end-btns">
-    <a href="#" id="start-btn" onclick="socket.emit('start');" class="small-btn"><div>Start</div></a>
-    <a href="#" class="small-btn" id="destroy-game-room"><div>End Game</div></a>
-    <a href="#" class="small-btn" id="leave-game-room"><div>Leave Game</div></a>
+<div id="game-btns">
+    <a href="#" id="start-btn" onclick="socket.emit('start');" class="small-btn light"><div>Start</div></a>
+    <a href="#" class="small-btn light" id="destroy-game-room"><div>End Game</div></a>
+    <a href="#" class="small-btn light" id="leave-game-room"><div>Leave Game</div></a>
 </div>
 <div class="right" style="position:relative;">
 <div id="player-info">
