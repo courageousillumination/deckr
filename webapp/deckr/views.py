@@ -97,13 +97,18 @@ def upload_game_definition(request):
         if form.is_valid():
             # Save the file to the game_defs folder
             game_name = form.cleaned_data['game_name']
-            path = process_uploaded_file(game_name,
-                                         request.FILES['file'])
-            # Create a new GameDefinition
-            GameDefinition.objects.create(name=game_name,
-                                          path=path)
-            # Return to the index
-            return redirect(reverse('deckr.index'))
+            try:
+                path = process_uploaded_file(game_name,
+                                             request.FILES['file'])
+                # Create a new GameDefinition
+                GameDefinition.objects.create(name=game_name,
+                                              path=path)
+                # Return to the index
+                return redirect(reverse('deckr.index'))
+            except ValueError as exception:
+                # If there was an error with the zipped file we catch it and
+                # add it as an error to the form.
+                form.add_error('file', exception.args[0])
     else:
         form = UploadGameDefinitionForm()
     return render(request, "deckr/upload_game_definition.html", {'form': form})

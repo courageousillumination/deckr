@@ -230,3 +230,12 @@ class UploadGameDefTestCase(TestCase):
         self.assertFormError(response, 'form', 'file',
                              'This field is required.')
         self.assertEqual(GameDefinition.objects.all().count(), old_count)
+
+        old_count = GameDefinition.objects.all().count()
+
+        # Test a zipped file that is missing the layout.html
+        form_data = {'game_name': 'Solitaire',
+                     'file': open('deckr/tests/failing_solitaire.zip')}
+        response = self.client.post(reverse('deckr.upload_game_definition',),
+                                    form_data)
+        self.assertEqual(GameDefinition.objects.all().count(), old_count)
