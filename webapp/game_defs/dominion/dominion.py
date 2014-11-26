@@ -73,6 +73,7 @@ class Dominion(Game):
 
         # Give each player a deck
         for player in self.players:
+            player.protected = False
             deck = (self.card_set.create("Copper", 7) +
                     self.card_set.create("Estate", 3))
             random.shuffle(deck)
@@ -214,6 +215,11 @@ class Dominion(Game):
         card.face_up = True
         if "action" in card.card_type:
             player.num_actions -= 1
+
+        # Give all players a chance to reveal a Moat for attacks
+        if "attack" in card.card_type:
+            self.for_each_other_player(player, self.reveal_moat_util)
+
         self.resolve(player, card)
 
     @action(restriction = buy_restrictions)
@@ -308,9 +314,24 @@ class Dominion(Game):
         argument and any keyword arguments will be passed along.
         """
 
-        for p in self.players:
-            if p != player:
-                fun(p, **kwargs)
+        current_player = self.next_player(player)
+        while current_player != player:
+            fun(current_player, **kwargs)
+            current_player = self.next_player(current_player)
+
+    def for_each_other_player_attack(self, player, fun, **kwargs):
+        """
+        Attack each other player. Same as above but checks if the player is
+        protected.
+        """
+
+        current_player = self.next_player(player)
+        while current_player != player:
+            if not current_player.protected:
+                fun(current_player, **kwargs)
+            # Now that we've done the attack we can remove the protection
+            current_player.protected = False
+            current_player = self.next_player(current_player)
 
     def find_in_hand(self, player, test):
         """
@@ -321,6 +342,16 @@ class Dominion(Game):
             if test(card):
                 return card
         return None
+
+    def reveal_moat_util(self, player):
+        """
+        Check if the player has a moat and offer them a chance to reveal it.
+        """
+
+        for card in player.hand.get_cards():
+            if card.name == "Moat":
+                self.add_step(player,
+                              self.reveal_moat)
 
     ###################
     # Game Step Tests #
@@ -530,7 +561,6 @@ class Dominion(Game):
                           "Do you want to force a discard?")])
     def spy_step(self, player, other_player, revealed_card, discard,
                  **kwargs):
-        print player, other_player, revealed_card, discard
         revealed_card.zone.remove_card(revealed_card)
         if discard:
             other_player.discard.push(revealed_card)
@@ -594,6 +624,12 @@ class Dominion(Game):
         player.deck.push(card)
         card.face_up = False
         card.set_value("face_up", False, player)
+
+    @game_step(requires=[("reveal", "Bool", simple_test,
+                          "Do you want to reveal your moat?")])
+    def reveal_moat(self, player, reveal, **kwargs):
+        if reveal:
+            player.protected = True
 
     ###############################
     # Individual Card Resolutions #
@@ -666,7 +702,9 @@ class Dominion(Game):
                 player.discard.push(card)
 
         self.pluses(player, num_cards=2)
-        self.for_each_other_player(player, gain_curse)
+        self.add_step(player,
+                      self.for_each_other_player_attack,
+                      kwargs={'fun' : gain_curse})
 
     def resolve_throne_room(self, player, card):
         self.add_step(player,
@@ -685,8 +723,10 @@ class Dominion(Game):
 
     def resolve_militia(self, player, card):
         player.money_pool += 2
-        self.for_each_other_player(player, self.add_step,
-                                   step = self.discard_down_to_3)
+        self.add_step(player,
+                      self.for_each_other_player_attack,
+                      kwargs={'fun' : self.add_step,
+                              'step': self.discard_down_to_3})
 
     def resolve_feast(self, player, card):
         card.zone.remove_card(card)
@@ -758,25 +798,6 @@ class Dominion(Game):
         for card in set_asside:
             player.discard.add_card(card)
 
-    def resolve_spy(self, player, card):
-        self.draw(player)
-        player.num_actions += 1
-        other_player = player
-        count = 0
-        while count < len(self.players):
-            # Reveal the top card of the deck
-            revealed_card = self.get_next_card(other_player)
-            if revealed_card is not None:
-                revealed_card.face_up = True
-                revealed_card.set_value("face_up", True, other_player)
-                other_player.play_zone.push(revealed_card)
-                self.add_step(player,
-                              self.spy_step,
-                              kwargs = {'other_player': other_player,
-                                        'revealed_card': revealed_card})
-            other_player = self.next_player(other_player)
-            count += 1
-
     def resolve_library(self, player, card):
         if player.hand.get_num_cards() >= 7:
             return
@@ -795,48 +816,78 @@ class Dominion(Game):
                               kwargs = {"next_card": next_card})
                 return
 
-    def resolve_bureaucrat(self, player, card):
+    def spy_func(self, player, attacker, **kwargs):
+        """
+        Simple utility function for the spy.
+        """
+        revealed_card = self.get_next_card(player)
+        if revealed_card is not None:
+            revealed_card.face_up = True
+            revealed_card.set_value("face_up", True, player)
+            player.play_zone.push(revealed_card)
+            self.add_step(attacker,
+                          self.spy_step,
+                          kwargs = {'other_player': player,
+                                    'revealed_card': revealed_card})
+
+    def resolve_spy(self, player, card):
+        self.draw(player)
+        player.num_actions += 1
+        self.spy_func(player, player)
+        self.add_step(player,
+                      self.for_each_other_player_attack,
+                      kwargs={'fun' : self.spy_func,
+                              'attacker': player})
+
+    def bureaucrat_util(self, player):
         def has_victory_card(player):
             for card in player.hand.get_cards():
                 if "victory" in card.card_type:
                     return True
             return False
 
+        if has_victory_card(player):
+            self.add_step(player,
+                          self.put_back_victory_card)
+
+    def resolve_bureaucrat(self, player, card):
         # Gain a silver
         if self.treasure1.get_num_cards() > 0:
             card = self.treasure1.pop()
             player.deck.push(card)
             card.face_up = False
 
-        for other_player in self.players:
-            if other_player != player:
-                if has_victory_card(other_player):
-                    self.add_step(other_player,
-                                  self.put_back_victory_card)
+        self.add_step(player,
+                      self.for_each_other_player_attack,
+                      kwargs={'fun' : self.bureaucrat_util})
+
+    def thief_util(self, player, attacker):
+        card1 = self.get_next_card(player)
+        card2 = self.get_next_card(player)
+
+        if card1 is not None:
+            card1.face_up = True
+            card1.set_value("face_up", True, player)
+        if card2 is not None:
+            card2.face_up = True
+            card2.set_value("face_up", True, player)
+
+        if ("treasure" in card1.card_type or
+            "treasure" in card2.card_type):
+            player.play_zone.push(card1)
+            player.play_zone.push(card2)
+            self.add_step(attacker,
+                          self.thief_trash,
+                          kwargs={"possible_cards": [card1, card2]})
+            self.add_step(attacker,
+                          self.thief_steal)
+        else:
+            player.discard.push(card1)
+            player.discard.push(card2)
+
 
     def resolve_thief(self, player, card):
-        for other_player in self.players:
-            if other_player != player:
-                card1 = self.get_next_card(other_player)
-                card2 = self.get_next_card(other_player)
-
-                if card1 is not None:
-                    card1.face_up = True
-                    card1.set_value("face_up", True, player)
-                if card2 is not None:
-                    card2.face_up = True
-                    card2.set_value("face_up", True, player)
-
-                if ("treasure" in card1.card_type or
-                    "treasure" in card2.card_type):
-
-                    other_player.play_zone.push(card1)
-                    other_player.play_zone.push(card2)
-                    self.add_step(player,
-                                  self.thief_trash,
-                                  kwargs={"possible_cards": [card1, card2]})
-                    self.add_step(player,
-                                  self.thief_steal)
-                else:
-                    other_player.discard.push(card1)
-                    other_player.discard.push(card2)
+        self.add_step(player,
+                      self.for_each_other_player_attack,
+                      kwargs={'fun' : self.thief_util,
+                              'attacker': player})

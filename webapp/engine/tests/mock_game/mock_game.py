@@ -111,7 +111,7 @@ class MockGame(Game):
 
     @game_step(requires=[('num',
                           'Number',
-                          lambda self, player, num, **kwargs: True)])
+                          lambda *args, **kwargs: True)])
     def step2(self, player, num, **kwargs):
         """
         Test step 2. Requires input.
@@ -121,7 +121,7 @@ class MockGame(Game):
 
     @game_step(requires=[('num',
                           'Number',
-                          lambda self, player, num, **kwargs: True)])
+                          lambda *args, **kwargs: True)])
     def step3(self, player, num, **kwargs):
         """
         Tests step 3. Requires input from previous
@@ -149,12 +149,20 @@ class MockGame(Game):
 
     @game_step(requires=None)
     def save_step1(self, player, **kwargs):
+        """
+        Returns the value 10. Used to save input from a step.
+        """
         return 10
 
     @game_step(requires=[("result",
                           "Number",
                           lambda *args, **kwargs: True)])
     def save_step2(self, player, result, **kwargs):
+        """
+        Justs adds a transition using the value in result. Used to test
+        saving the result of a step.
+        """
+
         self.add_transition((result,))
 
     def get_magic(self):

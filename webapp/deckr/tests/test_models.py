@@ -33,11 +33,11 @@ class GameRoomTestCase(TestCase):
     """
 
     def setUp(self):
-        self.definition = GameDefinition.objects.create(name="Foo",
-                                                        path="/bar")
+        self.game_def = GameDefinition.objects.create(name="Foo",
+                                                      path="/bar")
         self.game_room = GameRoom.objects.create(room_id=1,
                                                  max_players=2,
-                                                 game_definition=self.definition)
+                                                 game_definition=self.game_def)
 
     def test_string_representation(self):
         """

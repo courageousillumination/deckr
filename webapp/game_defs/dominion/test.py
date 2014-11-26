@@ -17,10 +17,12 @@ class DominionTestCase(TestCase):
         self.player1.num_actions = 1
         self.player1.num_buys = 1
         self.player1.money_pool = 0
+        self.player1.protected = False
 
         self.player2.num_actions = 1
         self.player2.num_buys = 1
         self.player2.money_pool = 0
+        self.player2.protected = False
 
     def create_cards(self, card_name, num = 1):
         cards = self.game.card_set.create(card_name, num)
@@ -48,7 +50,8 @@ class DominionTestCase(TestCase):
         # Make sure we're expecting some information back
         self.assertEqual(self.game.get_expected_action(),
                          ('send_information', 'cards',
-                          'Cards', self.player1.game_id))
+                          'Cards', self.player1.game_id,
+                          "Need more information"))
         # Make sure when we send the information the cards get discarded
         self.game.make_action("send_information", player=self.player1.game_id,
                               cards=[x.game_id for x in cellars])
@@ -74,7 +77,8 @@ class DominionTestCase(TestCase):
         # Make sure we're expecting some information back
         self.assertEqual(self.game.get_expected_action(),
                          ('send_information', 'cards',
-                          'Cards', self.player1.game_id))
+                          'Cards', self.player1.game_id,
+                          "Need more information"))
         self.game.make_action("send_information", player=self.player1.game_id,
                               cards=[x.game_id for x in coppers])
 
@@ -129,7 +133,8 @@ class DominionTestCase(TestCase):
 
         self.assertEqual(self.game.get_expected_action(),
                          ('send_information', 'flag',
-                          'Bool', self.player1.game_id))
+                          'Bool', self.player1.game_id,
+                          "Do you want to discard your deck"))
         # Make sure when we send the information the cards get discarded
         self.game.make_action("send_information", player=self.player1.game_id,
                               flag=True)
@@ -169,7 +174,8 @@ class DominionTestCase(TestCase):
 
         self.assertEqual(self.game.get_expected_action(),
                          ('send_information', 'gain_from_zone',
-                          'Zone', self.player1.game_id))
+                          'Zone', self.player1.game_id,
+                          "Need more information"))
         self.game.make_action("send_information", player=self.player1.game_id,
                               gain_from_zone=self.game.treasure0.game_id)
 
@@ -194,8 +200,10 @@ class DominionTestCase(TestCase):
 
         self.assertEqual(self.game.get_expected_action(),
                          ('send_information', 'card',
-                          'Card', self.player2.game_id))
-        self.game.make_action("send_information", player=self.player1.game_id,
+                          'Card', self.player2.game_id,
+                          "Need more information"))
+
+        self.game.make_action("send_information", player=self.player2.game_id,
                               card=estate.game_id)
 
         self.assertEqual(self.game.treasure1.get_num_cards(), 0)
@@ -218,7 +226,8 @@ class DominionTestCase(TestCase):
 
         self.assertEqual(self.game.get_expected_action(),
                          ('send_information', 'gain_from_zone',
-                          'Zone', self.player1.game_id))
+                          'Zone', self.player1.game_id,
+                          "Need more information"))
         self.game.make_action("send_information", player=self.player1.game_id,
                               gain_from_zone=self.game.kingdom0.game_id)
 
@@ -255,7 +264,8 @@ class DominionTestCase(TestCase):
 
         self.assertEqual(self.game.get_expected_action(),
                          ('send_information', 'cards',
-                          'Cards', self.player2.game_id))
+                          'Cards', self.player2.game_id,
+                          "Need more information"))
         self.game.make_action("send_information", player=self.player2.game_id,
                               cards=[coppers[0].game_id, coppers[1].game_id])
 
@@ -298,13 +308,15 @@ class DominionTestCase(TestCase):
 
         self.assertEqual(self.game.get_expected_action(),
                          ('send_information', 'card',
-                          'Card', self.player1.game_id))
+                          'Card', self.player1.game_id,
+                          "Need more information"))
         self.game.make_action("send_information", player=self.player1.game_id,
                               card = copper.game_id)
 
         self.assertEqual(self.game.get_expected_action(),
                          ('send_information', 'gain_from_zone',
-                          'Zone', self.player1.game_id))
+                          'Zone', self.player1.game_id,
+                          "Need more information"))
         self.game.make_action("send_information", player=self.player1.game_id,
                               gain_from_zone = self.game.kingdom0.game_id)
 
@@ -552,3 +564,24 @@ class DominionTestCase(TestCase):
         self.assertIn(estate, self.player1.discard)
         self.assertIn(coppers[0], self.player1.hand)
         self.assertIn(coppers[1], self.player1.hand)
+
+    def test_reveal_moat(self):
+        """
+        If I reveal a moat I shouldn't have to discard for the militia.
+        """
+
+        moat = self.create_cards("Moat")
+        militia = self.create_cards("Militia")
+        coppers = self.create_cards("Copper", 5)
+        self.player2.hand.set_cards(coppers)
+        self.player2.hand.push(moat)
+        self.player1.hand.push(militia)
+
+        self.game.make_action("play_card", player=self.player1.game_id,
+                              card=militia.game_id)
+
+        self.game.make_action("send_information", player=self.player2.game_id,
+                              reveal=True)
+
+        self.assertIsNone(self.game.get_expected_action())
+        self.assertEqual(self.player1.money_pool, 2)
