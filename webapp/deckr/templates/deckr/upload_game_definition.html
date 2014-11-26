@@ -1,6 +1,7 @@
 {% extends "deckr/deckr.html" %}
 {% block title %}Deckr | Upload new game{% endblock %}
 {% block content %}
+<h1>Upload a New Game Definition</h1>
 <div class="center">
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
@@ -8,4 +9,22 @@
         <input type="submit" value="Upload" name="submit">
     </form>
 </div>
+
+<p>In order to upload a game, you must include 6 files</p></br>
+
+<ul>
+  <li>__init__.py: This can be empty</li></br>
+  <li>config.yml: This specifies the basic rules of the game. Some attributes are game_file, game_class, max_players, min_players, zones, card_set.</br>
+    The zones key can specify a list of possible attributes including name, zone_type, owner, and multiplicity. </br>
+    The card_set key can specify a list of possible attributes including - name, front_face, back_face, card_type, kingdom_card, cost, and value.</li></br>
+  <li>layout.html: This file specifies the layout of the game which rows, zones (stacked or vertical), and more.</li></br>
+  <li>game.css: This file describes the styles that should apply to the HTML in the previous file.</li></br>
+  <li>game.js: This file describes the scripts that interact with the sockets and the DOM to coordinate moves and states.</li></br>
+  <li><game_name>.py: This file outlines the logic of the game by specifying how players, cards, zones, and game objects interact with each other. </li></br>
+</ul>
+
+</br>
+
+<p>Find example games like Solitaire, Hearts, and Dominion <a href="https://github.com/courageousillumination/deckr/tree/master/webapp/game_defs">here</a></p>
+
 {% endblock %}
