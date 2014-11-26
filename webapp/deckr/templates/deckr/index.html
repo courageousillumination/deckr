@@ -1,7 +1,7 @@
-{% extends "deckr/base.html" %}
+{% extends "deckr/deckr.html" %}
 {% block content %}
 <div class="header">
-    <h2>Welcome to <span id="logo">Deckr</span></h2>
+    <h1>Welcome to <span class="logo">Deckr</span></h1>
 </div>
 <div class="center">
     <a class="big-btn" href="{% url "deckr.create_game_room" %}">

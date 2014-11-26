@@ -2,3 +2,31 @@
     width: $width;
     margin: 0 auto;
 }
+
+@mixin deckr-btn () {
+    color: #fff;
+    text-decoration: none;
+
+    div {
+        display: inline-block;
+        background-color: $deckr;
+        border: 1px solid darken($deckr, 20%);
+        border-bottom: 2px solid darken($deckr, 50%);
+        @include border-radius(5px);
+
+        &:hover {
+            background-color: darken($deckr, 15%);
+        }
+    }
+
+    &.light {
+        color: #000;
+        div {
+            background-color: lighten($deckr, 20%);
+            &:hover {
+                color: #fff;
+                background-color: darken($deckr, 20%);
+            }
+        }
+    }
+}

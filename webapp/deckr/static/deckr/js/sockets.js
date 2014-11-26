@@ -1,5 +1,5 @@
 // sockets.js
-// Has all the functions for
+// Has all the functions for sockets...
 
 var socket = io.connect("/game");
 var player_mapping = {};
@@ -19,7 +19,8 @@ function setupSockets() {
         'game_over': onGameOver,
         'error': onGameError,
         'player_names': onPlayerNames,
-        'player_nick': onPlayerNick
+        'player_nick': onPlayerNick,
+        'chat': onChat
     };
     _.each(_.pairs(socket_fn_mapping), function (kv) {
         var event = kv[0];
@@ -30,6 +31,7 @@ function setupSockets() {
 
 function onStart() {
     socket.emit('request_state');
+    $("#start-btn").hide();
 }
 
 function onAddCard(data) {
@@ -83,6 +85,8 @@ function transitionSet(transition) {
             card.attr('src', card.data('back_face'));
             card.attr('face_up', 'false');
         }
+    } else if (transition[1] === 'Player') {
+        // something...
     }
 }
 
@@ -126,10 +130,24 @@ function onPlayerNames(players) {
         player_ids.push(player.id);
         player_mapping[player.id] = player.nickname;
     });
-    $('#player_names').html(innerHTML);
+    $('#player-names').html(innerHTML);
+    console.log($('#n-players'));
+    $('#n-players').html(players.length);
 }
 
 function onPlayerNick(data){
-    $('#player_nick').html("Welcome " + data.nickname);
+    // $('#player_nick').html("Welcome " + data.nickname);
     my_game_id = data.id;
+}
+
+function onChat(data) {
+    sender = data.sender;
+    msg = data.msg;
+
+    $('#chat-box').append('<div>'+'<span class="un">'+sender+'</span>'
+                            + ': ' + msg+'</div>');
+
+    if (sender === player_mapping[my_game_id])  {
+        $('#chat-input').val('');
+    }
 }

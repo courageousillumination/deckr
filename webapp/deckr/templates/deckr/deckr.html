@@ -1,0 +1,12 @@
+{% extends "deckr/base.html" %}
+{% block morejs %}
+{% load staticfiles %}
+<script type="text/javascript" src="{% static 'deckr/js/index.js' %}"></script>
+{% endblock %}
+{% block body %}
+<div id="wrapper">
+    <section id="content">
+        {% block content %}{% endblock %}
+    </section>
+</div>
+{% endblock %}

@@ -1,25 +1,52 @@
 {% extends "deckr/base.html" %}
-{% load staticfiles %}
 {% block morejs %}
+{% load staticfiles %}
 <script type="text/javascript" src="{% static 'deckr/js/sockets.js' %}"></script>
 <script type="text/javascript" src="{% static 'deckr/js/render.js' %}"></script>
 <script type="text/javascript" src="{% static 'deckr/js/game-utils.js' %}"></script>
-<script type="text/javascript" src="{% static 'deckr/js/game_room.js' %}"></script>
+<script type="text/javascript" src="{% static 'deckr/js/game-room.js' %}"></script>
 {% endblock %}
-{% block title %}Deckr | Game{% endblock %}
-{% block body-classes %}game{% endblock %}
-{% block content %}
-<h1>You are: {{player.nickname}}</h1>
-<ul id="player_names">
+{% block morecss %}
+<style type="text/css">{{ game_css|safe }}</style>
+{% endblock %}
+{% block header %}
+<div id="game-btns">
+    <a href="#" id="start-btn" onclick="socket.emit('start');" class="small-btn light"><div>Start</div></a>
+    <a href="#" class="small-btn light" id="destroy-game-room"><div>End Game</div></a>
+    <a href="#" class="small-btn light" id="leave-game-room"><div>Leave Game</div></a>
+</div>
+<div class="right" style="position:relative;">
+<img id="open-chat-btn" src="{% static 'deckr/images/chat.png' %}">
+<div id="player-info">
+    <h2>Hello <span class="logo name">{{ player.nickname }}</span></h2>
+    <div id="player-names-btn">Players (<span id="n-players">{{ game.player_set.all|length }}</span>)</div>
+</div>
+<ul id="player-names" style="display: none;">
   {% for name in game.player_set.all %}
     <li>{{ name }}</li>
   {% endfor %}
 </ul>
-<div style="display: none;" id="staging_area"></div>
-<a href="#" id="destroy-game-room">End Game</a>
-<a href="#" id="leave-game-room">Leave Game</a>
-{% include sub_template %}
-<script>
-  socket.emit('join', {game_room_id: "{{game.id}}", player_id: {{player.id}}})
-</script>
+{% endblock %}
+{% block body %}
+<div class="game-body">
+    <div style="display: none;" id="staging_area"></div>
+    <div id="game-wrapper">
+        <div id="sidebar" style="display:none;">
+            <div id="chat-box">
+            </div>
+                <textarea id="chat-input"></textarea>
+                <a class="big-btn" id='chat-btn'><div>Send message</div></a>
+          </div>
+
+        {% include sub_template %}
+        {% block game-wrapper %}{% endblock %}
+        <script>
+            socket.emit('join', {
+                game_room_id: "{{game.id}}", 
+                player_id: {{player.id}}}
+            );
+            {{ game_js|safe }}
+        </script>
+    </div>
+</div>
 {% endblock %}

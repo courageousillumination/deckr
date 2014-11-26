@@ -1,4 +1,4 @@
-@import url("http://fonts.googleapis.com/css?family=Courgette|Patua+One");
+@import url("http://fonts.googleapis.com/css?family=Courgette|Patua+One|Lato:300,400,700");
 /* line 1, scss/reset.scss */
 html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p,
 blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img,
@@ -55,49 +55,95 @@ table {
   border-spacing: 0;
 }
 
-/* line 6, scss/index.scss */
+/* line 10, scss/index.scss */
+html, body {
+  height: 100%;
+}
+
+/* line 14, scss/index.scss */
 body {
-  font-family: Helvetica, San-Serif;
+  font-family: "Lato", Helvetica, San-Serif;
   background-color: #eee;
   background-image: url("images/cream_pixels.png");
-  padding-bottom: 20px;
 }
 
-/* line 13, scss/index.scss */
-h2 {
+/* line 20, scss/index.scss */
+h1 {
   font-weight: 300;
   font-size: 1.5em;
+  margin-bottom: 10px;
+}
+/* line 25, scss/index.scss */
+h1.bold {
+  font-weight: bold;
 }
 
-/* line 18, scss/index.scss */
+/* line 30, scss/index.scss */
+h2 {
+  font-weight: 300;
+  font-size: 1.3em;
+}
+
+/* line 35, scss/index.scss */
+input[type="text"] {
+  font-family: "Courgette";
+  font-size: 1.5em;
+  padding: 10px;
+  margin: 10px;
+  border: 1px solid #ccc;
+}
+/* line 42, scss/index.scss */
+input[type="text"]:focus {
+  outline: none;
+  border: 1px solid #7991bf;
+  -moz-box-shadow: #becae0 0px 0px 5px;
+  -webkit-box-shadow: #becae0 0px 0px 5px;
+  box-shadow: #becae0 0px 0px 5px;
+}
+
+/* line 53, scss/index.scss */
 #header {
   background-color: #7991bf;
   border-bottom: 1px solid #445d8e;
   padding: 20px 40px;
-  margin-bottom: 50px;
-  -moz-box-shadow: #999999 0px 5px 10px;
-  -webkit-box-shadow: #999999 0px 5px 10px;
-  box-shadow: #999999 0px 5px 10px;
+  position: relative;
+  -moz-box-shadow: rgba(0, 0, 0, 0.4) 0px 5px 10px;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.4) 0px 5px 10px;
+  box-shadow: rgba(0, 0, 0, 0.4) 0px 5px 10px;
+  z-index: 2;
+}
+/* line 61, scss/index.scss */
+#header #github {
+  position: absolute;
+  top: 20px;
+  right: 40px;
+}
+/* line 67, scss/index.scss */
+#header #player-names {
+  position: absolute;
+  top: 53px;
+  right: 50px;
+  min-width: 200px;
+  font-size: 0.8em;
+  background-color: #e1e6f0;
+  -moz-box-shadow: rgba(0, 0, 0, 0.4) 0px 5px 10px;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.4) 0px 5px 10px;
+  box-shadow: rgba(0, 0, 0, 0.4) 0px 5px 10px;
+}
+/* line 76, scss/index.scss */
+#header #player-names li {
+  padding: 5px;
+  border-bottom: 1px solid #adbbd8;
 }
 
-/* line 26, scss/index.scss */
-#logo {
-  color: #000;
-  font-family: "Courgette";
-}
-/* line 30, scss/index.scss */
-#header #logo {
-  font-size: 2em;
-  color: #fff;
-}
-
-/* line 36, scss/index.scss */
+/* line 87, scss/index.scss */
 #wrapper {
   width: 1200px;
   margin: 0 auto;
+  margin-top: 50px;
 }
 
-/* line 40, scss/index.scss */
+/* line 92, scss/index.scss */
 #content {
   background-color: #fff;
   padding: 20px;
@@ -110,33 +156,79 @@ h2 {
   -webkit-border-radius: 5px;
   border-radius: 5px;
 }
-/* line 48, scss/index.scss */
+/* line 100, scss/index.scss */
 #content .header {
   padding-bottom: 5px;
   margin-bottom: 20px;
   border-bottom: 1px solid #ccc;
 }
 
-/* line 55, scss/index.scss */
-.center {
-  text-align: center;
+/* line 111, scss/index.scss */
+#open-chat-btn {
+  width: 30px;
+  padding-bottom: 5px;
+  margin-right: 10px;
+}
+/* line 116, scss/index.scss */
+#open-chat-btn:hover {
+  cursor: pointer;
 }
 
-/* line 59, scss/index.scss */
-.right {
-  float: right;
+/* line 121, scss/index.scss */
+#sidebar {
+  position: fixed;
+  background: white;
+  height: 100%;
+  top: 0px;
+  z-index: 1;
+  width: 150px;
+  border-right: 1px solid black;
 }
 
-/* line 63, scss/index.scss */
+/* line 131, scss/index.scss */
+#chat-box {
+  position: fixed;
+  border: 1px solid black;
+  overflow-y: scroll;
+}
+
+/* line 137, scss/index.scss */
+span.un {
+  font-weight: bold;
+}
+
+/* line 141, scss/index.scss */
+#chat-input {
+  position: fixed;
+  overflow-y: scroll;
+}
+
+/* line 146, scss/index.scss */
+#chat-btn {
+  position: fixed;
+  overflow-x: hidden;
+}
+
+/* line 155, scss/index.scss */
+.logo {
+  color: #000;
+  font-family: "Courgette";
+}
+/* line 159, scss/index.scss */
+#header .logo {
+  font-size: 2em;
+  color: #fff;
+  text-shadow: #445d8e 3px 3px 5px;
+}
+
+/* line 166, scss/index.scss */
 .big-btn {
   color: #fff;
   text-decoration: none;
 }
-/* line 66, scss/index.scss */
+/* line 10, scss/mixins.scss */
 .big-btn div {
   display: inline-block;
-  padding: 15px;
-  margin: 10px 0;
   background-color: #7991bf;
   border: 1px solid #445d8e;
   border-bottom: 2px solid #121927;
@@ -144,70 +236,143 @@ h2 {
   -webkit-border-radius: 5px;
   border-radius: 5px;
 }
-/* line 75, scss/index.scss */
+/* line 17, scss/mixins.scss */
 .big-btn div:hover {
   background-color: #4c699f;
 }
-
-/* line 81, scss/index.scss */
-.card {
-  margin: 5px;
+/* line 22, scss/mixins.scss */
+.big-btn.light {
+  color: #000;
 }
-
-/* line 85, scss/index.scss */
-.zone {
-  float: left;
-  width: 80px;
-  height: 100px;
-  margin: 5px;
+/* line 24, scss/mixins.scss */
+.big-btn.light div {
+  background-color: #becae0;
+}
+/* line 26, scss/mixins.scss */
+.big-btn.light div:hover {
+  color: #fff;
+  background-color: #445d8e;
+}
+/* line 168, scss/index.scss */
+.big-btn div {
   padding: 15px;
-  border: 1px dotted #ccc;
+  margin: 10px 0;
 }
 
-/* line 94, scss/index.scss */
-.zone#hand {
-  width: 200px;
+/* line 174, scss/index.scss */
+.small-btn {
+  color: #fff;
+  text-decoration: none;
+}
+/* line 10, scss/mixins.scss */
+.small-btn div {
+  display: inline-block;
+  background-color: #7991bf;
+  border: 1px solid #445d8e;
+  border-bottom: 2px solid #121927;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+}
+/* line 17, scss/mixins.scss */
+.small-btn div:hover {
+  background-color: #4c699f;
+}
+/* line 22, scss/mixins.scss */
+.small-btn.light {
+  color: #000;
+}
+/* line 24, scss/mixins.scss */
+.small-btn.light div {
+  background-color: #becae0;
+}
+/* line 26, scss/mixins.scss */
+.small-btn.light div:hover {
+  color: #fff;
+  background-color: #445d8e;
+}
+/* line 176, scss/index.scss */
+.small-btn div {
+  padding: 5px 10px;
 }
 
-/* line 98, scss/index.scss */
-.zone.last {
-  float: right;
+/* line 182, scss/index.scss */
+#player-info h2 {
+  color: #fff;
+  font-size: 1.0em;
+  padding: 5px;
+}
+/* line 187, scss/index.scss */
+#player-info h2 span.name {
+  margin-left: 5px;
+  font-size: 1.2em;
+}
+/* line 193, scss/index.scss */
+#header #player-info {
+  display: inline-block;
+  margin-top: -10px;
+  margin-right: 50px;
+  padding-right: 20px;
+  border-right: 1px solid #5675af;
+}
+/* line 200, scss/index.scss */
+#header #player-info #player-names-btn {
+  text-align: right;
+  color: #becae0;
+  padding: 5px;
+  font-size: 1em;
+}
+/* line 206, scss/index.scss */
+#header #player-info #player-names-btn:hover {
+  color: white;
+  background-color: #8a9fc7;
+  cursor: pointer;
 }
 
-/* line 102, scss/index.scss */
-.victory {
-  float: right;
-}
-
-/* line 106, scss/index.scss */
-.vertical-fan {
-  height: 77%;
-}
-
-/* line 111, scss/index.scss */
-.vertical-fan img {
-  margin-bottom: -68px;
-}
-
-/* line 115, scss/index.scss */
-.stacked img {
-  position: absolute;
-}
-
-/* line 119, scss/index.scss */
-.row {
-  clear: both;
+/* line 219, scss/index.scss */
+.game-body {
+  padding-top: 50px;
+  display: table;
+  height: 100%;
   width: 100%;
-  overflow: hidden;
 }
 
-/* line 125, scss/index.scss */
-.selected {
-  border: solid;
-  border-color: yellow;
+/* line 226, scss/index.scss */
+.game-wrapper {
+  height: 100%;
 }
 
-/* line 130, scss/index.scss */
-#region2 {
-  height: 77%;
+/* line 230, scss/index.scss */
+#game-btns {
+  display: inline-block;
+  padding: 10px 20px;
+  position: absolute;
+  left: 150px;
+  top: 12px;
+  border-left: 1px solid #5675af;
+}
+
+/* line 239, scss/index.scss */
+.card.selected {
+  margin-left: 3px;
+  margin-top: 3px;
+  border: 2px solid yellow;
+  -moz-box-shadow: 0px 0px 5px yellow;
+  -webkit-box-shadow: 0px 0px 5px yellow;
+  box-shadow: 0px 0px 5px yellow;
+}
+
+/* line 251, scss/index.scss */
+.center {
+  text-align: center;
+}
+
+/* line 255, scss/index.scss */
+.right {
+  float: right;
+}
+
+/* line 263, scss/index.scss */
+.vex-dialog-button.vex-dialog-button-primary {
+  background-color: #7991bf !important;
 }

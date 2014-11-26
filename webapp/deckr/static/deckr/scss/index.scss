@@ -3,38 +3,90 @@
 @import "variables";
 @import "mixins";
 
+//
+// General tags
+//
+
+html,body {
+    height: 100%;
+}
+
 body {
     font-family: $text-font;
     background-color: $background-color;
     background-image: $background-image;
-    padding-bottom: 20px;
+}
+
+h1 {
+    font-weight: 300;
+    font-size: 1.5em;
+    margin-bottom: 10px;
+
+    &.bold {
+        font-weight: bold;
+    }
 }
 
 h2 {
     font-weight: 300;
-    font-size: 1.5em;
+    font-size: 1.3em;
 }
+
+input[type="text"] {
+    font-family: $logo-font;
+    font-size: 1.5em;
+    padding: 10px;
+    margin: 10px;
+    border: 1px solid #ccc;
+
+    &:focus {
+        outline: none;
+        border: 1px solid $deckr;
+        @include box-shadow(lighten($deckr, 20%) 0px 0px 5px);
+    }
+}
+
+//
+// Header
+//
 
 #header {
     background-color: $deckr;
     border-bottom: 1px solid darken($deckr, 20%);
     padding: 20px 40px;
-    margin-bottom: 50px;
-    @include box-shadow(lighten(#000, 60%) 0px 5px 10px);
-}
+    position: relative;
+    @include box-shadow(rgba(0,0,0,0.4) 0px 5px 10px);
+    z-index: 2;
 
-#logo {
-    color: #000;
-    font-family: $logo-font;
+    #github {
+        position: absolute;
+        top: 20px;
+        right: 40px;
+    }
 
-    #header & {
-        font-size: 2em;
-        color: #fff;
+    #player-names {
+        position: absolute;
+        top: 53px;
+        right: 50px;
+        min-width: 200px;
+        font-size: 0.8em;
+        background-color: lighten($deckr, 30%);
+        @include box-shadow(rgba(0,0,0,0.4) 0px 5px 10px);
+
+        li {
+            padding: 5px;
+            border-bottom: 1px solid lighten($deckr, 15%);
+        }
     }
 }
 
+//
+// Content
+//
+
 #wrapper {
     @include auto-margin-center($max-width);
+    margin-top: 50px;
 }
 
 #content {
@@ -52,6 +104,150 @@ h2 {
     }
 }
 
+//
+// Sidebar
+//
+
+#open-chat-btn {
+    width: 30px;
+    padding-bottom: 5px;
+    margin-right: 10px;
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+#sidebar {
+    position: fixed;
+    background:  white;
+    height:  100%;
+    top: 0px;
+    z-index: 1;
+    width:  150px;
+    border-right: 1px solid black;
+}
+
+#chat-box {
+    position: fixed; // Added to height of #header in js
+    border: 1px solid black;
+    overflow-y: scroll;
+}
+
+span.un {
+    font-weight: bold;
+}
+
+#chat-input { 
+    position: fixed;
+    overflow-y: scroll;
+}
+
+#chat-btn {
+    position: fixed;
+    overflow-x: hidden;
+}
+
+//
+// Deckr classes
+//
+
+.logo {
+    color: #000;
+    font-family: $logo-font;
+
+    #header & {
+        font-size: 2em;
+        color: #fff;
+        @include text-shadow(darken($deckr, 20%) 3px 3px 5px);
+    }
+}
+
+.big-btn {
+    @include deckr-btn();
+    div {
+        padding: 15px;
+        margin: 10px 0;
+    }
+}
+
+.small-btn {
+    @include deckr-btn();
+    div {
+        padding: 5px 10px;
+    }
+}
+
+#player-info {
+    h2 {
+        color: #fff;
+        font-size: 1.0em;
+        padding: 5px;
+        
+        span.name {
+            margin-left: 5px;
+            font-size: 1.2em;
+        }
+    }
+
+    #header & {
+        display: inline-block;
+        margin-top: -10px;
+        margin-right: 50px;
+        padding-right: 20px;
+        border-right: 1px solid darken($deckr, 10%);
+
+        #player-names-btn {
+            text-align: right;
+            color: lighten($deckr, 20%);
+            padding: 5px;
+            font-size: 1em;
+
+            &:hover {
+                color: lighten($deckr, 50%);
+                background-color: lighten($deckr, 5%);
+                cursor: pointer;
+            }
+        }
+    }
+}
+
+//
+// General game classes
+//
+
+.game-body {
+    padding-top: 50px;
+    display: table;
+    height: 100%;
+    width: 100%;
+}
+
+.game-wrapper {
+    height: 100%;
+}
+
+#game-btns {
+    display: inline-block;
+    padding: 10px 20px;
+    position: absolute;
+    left: 150px;
+    top: 12px;
+    border-left: 1px solid darken($deckr, 10%);
+}
+
+.card.selected {
+    margin-left: 3px;
+    margin-top: 3px;
+    border: 2px solid yellow;
+    @include box-shadow(0px 0px 5px yellow);
+}
+
+
+//
+// Utility classes
+//
+
 .center {
     text-align: center;
 }
@@ -60,69 +256,10 @@ h2 {
     float: right;
 }
 
-.big-btn {
-    color: #fff;
-    text-decoration: none;
-    div {
-        display: inline-block;
-        padding: 15px;
-        margin: 10px 0;
-        background-color: $deckr;
-        border: 1px solid darken($deckr, 20%);
-        border-bottom: 2px solid darken($deckr, 50%);
-        @include border-radius(5px);
+//
+// Plugin classes
+//
 
-        &:hover {
-            background-color: darken($deckr, 15%);
-        }
-    }
-}
-
-.card {
-    margin: 5px;
-}
-
-.zone {
-    float: left;
-    width: 80px;
-    height: 100px;
-    margin: 5px;
-    padding: 15px;
-    border: 1px dotted #ccc;
-}
-
-.zone#hand {
-    width: 200px;
-}
-
-.zone.last {
-    float: right;
-}
-
-.victory {
-    float: right;
-}
-
-.vertical-fan {
-    height: 77%;
-
-}
-
-.vertical-fan img {
-    margin-bottom: -68px;
-}
-
-.stacked img {
-    position: absolute
-}
-
-.row {
-    clear: both;
-    width: 100%;
-    overflow: hidden;
-}
-
-.selected {
-    border: solid;
-    border-color: yellow;
+.vex-dialog-button.vex-dialog-button-primary {
+    background-color: $deckr !important;
 }

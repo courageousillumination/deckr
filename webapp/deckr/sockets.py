@@ -291,6 +291,14 @@ class GameNamespace(BaseNamespace, BroadcastMixin):
 
         self.runner.abandon_ship(self.game_room.room_id)
 
+    def on_chat(self, data):
+        """
+        Receive chat message from client.
+        """
+
+        self.emit_to_room(self.room, 'chat', data)
+        return True
+
     def flush(self):
         """
         Clear out all internal state and trigger a disconnect. Should only be
