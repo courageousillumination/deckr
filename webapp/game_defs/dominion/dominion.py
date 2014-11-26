@@ -84,6 +84,8 @@ class Dominion(Game):
         self.current_phase = "action"
         self.current_player = self.players[0]
 
+        self.add_transition(['start', self.current_player])
+        
         is_set_up = True
 
     def is_over(self):
@@ -240,6 +242,8 @@ class Dominion(Game):
             self.clean_up(player)
             self.current_phase = "action"
             self.current_player = self.next_player(self.current_player)
+
+        self.add_transition(['Phase',self.current_phase],None)
 
     #####################
     # Utility Functions #

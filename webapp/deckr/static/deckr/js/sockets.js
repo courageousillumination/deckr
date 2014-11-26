@@ -29,7 +29,9 @@ function setupSockets() {
     });
 }
 
-function onStart() {
+function onStart(data) {
+    console.log('in start');
+    parseAction(data);
     socket.emit('request_state');
 }
 
@@ -136,5 +138,6 @@ function onPlayerNick(data){
 }
 
 function onTextboxData(data){
+    console.log(data);
     parseAction(data);
 }

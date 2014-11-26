@@ -80,6 +80,17 @@
 
 <script type='text/javascript'>
 
+function findTransition(name, transitionList) {
+  for(i=0; i<transitionList.length; i++) {
+    if(transitionList[i].indexOf(name) > -1) {
+      console.log("found");
+      return i;
+    }
+  }
+
+  return -1;
+}
+
 function parseAction(data) {
   console.log("parsing");
   
@@ -87,9 +98,34 @@ function parseAction(data) {
   transitions = data[1];
   state = data[2];
 
+  textbox = document.getElementById("eventbox");
+
   console.log(nickname);
   console.log(transitions);
   console.log(state);
+
+  if(findTransition("start", transitions) > -1) {
+    textbox.innerHTML += "It is now " + nickname + "\'s turn.&#13;**Action Phase**&#13;"
+    return;
+  }
+
+  /*if((index = findTransition("Phase", transitions)) > -1) {
+      switch(transitions[index][1]) {
+        case "action": textbox.innerHTML += "**Action Phase**&#13;";
+                       break;
+        case "buy": textbox.innerHTML += "**Buy Phase**&#13;";
+                       break;
+        case "clean-up": textbox.innerHTML += "**Clean-Up Phase**&#13;";
+                       break;
+      }
+      return;
+  }
+
+  for(i = 0; i < transitions.length; i++) {
+    transition = transitions[i];
+  }
+
+  textbox.scrollTop = textbox.scrollHeight;*/
 }
 
 $(document).ready(function() {

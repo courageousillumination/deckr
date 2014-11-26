@@ -83,8 +83,14 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         """
 
         self.runner.start_game(self.game_room.room_id)
-        self.emit_to_room(self.room,
-                          "start")
+
+        trans = self.runner.get_public_transitions(self.game_room.room_id)
+        state = self.runner.get_state(self.game_room.room_id,
+                                      self.player.player_id)
+
+        self.emit_to_room(self.room, "start",(self.player.nickname,
+             trans,
+             state))
 
     def on_join(self, join_request):
         """
@@ -156,8 +162,6 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         will then broadcast the message to the rest of the channel.
         """
 
-        print "making an action"
-
         # pylint: disable=W0142
         # We want to make sure that a engine error doesn't kill the entire
         # socket. This is somewhat ugly, but hopefully we won't have engine
@@ -186,8 +190,6 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
             (self.player.nickname,
              trans,
              state))
-
-        print "emitted actions"
 
         # Get all the private transitions
         trans = self.runner.get_player_transitions(self.game_room.room_id,
