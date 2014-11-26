@@ -11,6 +11,13 @@
     margin: 50px;
 }
 
+.zone.supply {
+    padding: 5px;
+    margin: 5px;
+    width: 70px;
+    height: 105px;
+}
+
 .victory {
     float: left;
 }

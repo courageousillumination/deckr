@@ -1,0 +1,96 @@
+@import "compass";
+@import "variables";
+@import "mixins";
+
+.game-body {
+    padding-top: 50px;
+    display: table;
+    height: 100%;
+    width: 100%;
+}
+
+.game-wrapper {
+    height: 100%;
+}
+
+#game-btns {
+    display: inline-block;
+    padding: 10px 20px;
+    position: absolute;
+    left: 150px;
+    top: 12px;
+    border-left: 1px solid darken($deckr, 10%);
+}
+
+.zone {
+    float: left;
+    width: 80px;
+    height: 100px;
+    margin: 5px;
+    padding: 15px;
+    border: 1px dotted #ccc;
+    
+    &.last {
+        float: right;
+    }
+}
+
+.card {
+    margin: 5px;
+    &.selected {
+        margin-left: 3px;
+        margin-top: 3px;
+        border: 2px solid yellow;
+        @include box-shadow(0px 0px 5px yellow);
+    }
+}
+
+.stacked {
+    img.card {
+        position: absolute
+    }
+}
+
+.horizontal-fan {
+    img.card {
+        margin-left: -10px;
+
+        .facing-up & {
+            margin-right: -10px;
+        }
+    }
+}
+
+.vertical-fan {
+    img.card {
+        margin-bottom: -68px;
+    }
+}
+
+.facing-top {
+    img.card {
+        transform: rotate(180deg);
+    }
+}
+
+.facing-left {
+    img.card {
+        transform: rotate(90deg);
+    }
+}
+
+.facing-right {
+    img.card {
+        transform: rotate(270deg);
+    }
+}
+
+.row {
+    clear: both;
+    width: 100%;
+    overflow: hidden;
+}
+
+.hover {
+    position: absolute;
+}

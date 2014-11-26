@@ -70,9 +70,23 @@ function parseAction(data) {
       card_name = state.cards[card].name;
 
       if(phase == "action") {
-        if(state.zones[zone].name == "play_zone") 
+        if(state.zones[zone].name == "play_zone") {
           textbox.innerHTML += nickname + " played a(n) " + card_name + ".&#13;";
-        if(state.zones[zone].name == "trash") 
+
+          if(card_name == "Bureaucrat")
+            textbox.innerHTML += "Waiting for players to reveal a victory card.";
+          else if(card_name == "Militia")
+            textbox.innerHTML += "Waiting for players to discard or counter-attack.";
+          else if(card_name == "Spy")
+            textbox.innerHTML += "Waiting for players to reveal a card.";
+          else if(card_name == "Thief")
+            textbox.innerHTML += "Waiting for players to reveal 2 treasure cards.";
+          else if(card_name == "Witch")
+            textbox.innerHTML += "Everyone gains 1 curse.";
+          else if(card_name == "Council Room")
+            textbox.innerHTML += "Everyone draws 1 card.";
+        }
+        else if(state.zones[zone].name == "trash") 
           textbox.innerHTML += nickname + " trashed a(n) " + card_name + ".&#13;";
         else if(state.zones[zone].name == "hand")
           textbox.innerHTML += nickname + " drew a card.&#13;";
