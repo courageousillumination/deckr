@@ -3,7 +3,6 @@ Test all of the Django views used by deckr.
 """
 
 import tempfile
-from unittest import skip
 
 from django.core.urlresolvers import reverse
 from django.test import Client, TestCase

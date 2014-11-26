@@ -77,8 +77,11 @@ def game_room(request, game_room_id):
 
     # Get Player info
     player_id = request.GET.get('player_id')
-    player = get_object_or_404(Player, pk=player_id)
-    # Get GameRoom info
+    if player_id is None:
+        player = None
+    else:
+        player = get_object_or_404(Player, pk=player_id)
+
     game = get_object_or_404(GameRoom, pk=game_room_id)
     # Get GameDefinition info
     fin = open(pjoin(game.game_definition.path, 'layout.html')).read()
