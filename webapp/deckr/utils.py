@@ -26,7 +26,8 @@ def process_uploaded_file(game_name, fin):
         'config.yml',
         'layout.html',
         game_file_name + '.py',
-        game_file_name + '.js']
+        'game.js',
+        'game.css']
     files = zipped_file.namelist()
     folder = files[0]
 

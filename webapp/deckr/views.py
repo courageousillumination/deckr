@@ -82,15 +82,15 @@ def game_room(request, game_room_id):
     game = get_object_or_404(GameRoom, pk=game_room_id)
     # Get GameDefinition info
     fin = open(pjoin(game.game_definition.path, 'layout.html')).read()
-    js = open(pjoin(game.game_definition.path, 'game.js')).read()
-    css = open(pjoin(game.game_definition.path, 'game.css')).read()
+    js_file = open(pjoin(game.game_definition.path, 'game.js')).read()
+    css_file = open(pjoin(game.game_definition.path, 'game.css')).read()
     sub_template = Template(fin)
 
     return render(request, "deckr/game_room.html",
                   {'sub_template': sub_template,
                    'game': game,
-                   'game_js': js,
-                   'game_css': css,
+                   'game_js': js_file,
+                   'game_css': css_file,
                    'player': player})
 
 
