@@ -312,7 +312,6 @@ class GameNamespace(BaseNamespace, BroadcastMixin):
 
         self.runner.abandon_ship(self.game_room.room_id)
 
-
     def on_chat(self, data):
         """
         Receive chat message from client.

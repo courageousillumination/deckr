@@ -463,7 +463,6 @@ class GameNamespaceTestCase(SocketTestCase):
         self.assertTrue(self.namespace.on_leave_game())
         self.namespace.emit.assert_called_with('leave_game')
 
-
     def test_spectator_move(self):
         """
         If spectator makes a move, reject it
