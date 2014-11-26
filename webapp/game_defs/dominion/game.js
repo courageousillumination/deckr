@@ -2,6 +2,7 @@ var expecting_select = false;
 var expecting_type = null;
 var information_name = null;
 var currently_selected = [];
+var mouse_offset = 5;
 
 function validateAddSelected(selected) {
     // Make sure it's of the right type
@@ -38,15 +39,15 @@ function supplyOnHover(e) {
     img = '<img id="'+hover_id+'" class="hover" src="'+big_src+'" />';
     $('body').append(img);
     $("#"+hover_id)
-        .css("top", (e.pageY) + "px")
-        .css("left", (e.pageX) + "px")
+        .css("top", (e.pageY + mouse_offset) + "px")
+        .css("left", (e.pageX + mouse_offset) + "px")
         .fadeIn("fast");
 }
 
 function supplyOnMouseMove(e) {
     $("#"+this.id+"-hover")
-        .css("top", (e.pageY) + "px")
-        .css("left", (e.pageX) + "px");
+        .css("top", (e.pageY + mouse_offset) + "px")
+        .css("left", (e.pageX + mouse_offset) + "px");
 }
 
 function supplyOnMouseOut(e) {
