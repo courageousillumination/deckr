@@ -61,14 +61,6 @@ class GameNamespace(BaseNamespace, BroadcastMixin):
         for connection in ROOMS.get(room, []):
             connection.emit(event, *args)
 
-    def initialize(self):
-        """
-        Mainly for debug.
-        """
-
-        print len(self.socket.server.sockets)
-        print "Got socket connection 2."
-
     def on_start(self):
         """
         Starts the game. Can be called by any player.
@@ -163,14 +155,6 @@ class GameNamespace(BaseNamespace, BroadcastMixin):
             player_names = [{'id': p.player_id, 'nickname': p.nickname}
                             for p in self.game_room.player_set.all()]
             self.emit_to_room(self.room, 'player_names', player_names)
-
-    # This is extremely temporary.
-    def on_move_card(self, data):
-        """
-        This should call the engine to determine if this is a valid move
-        """
-        self.emit('move_card', data)
-        return True
 
     def on_action(self, data):
         """

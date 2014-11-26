@@ -165,6 +165,17 @@ class GameNamespaceTestCase(SocketTestCase):
         error_message = "Game room id is not an integer."
         self.namespace.emit.assert_called_with("error", error_message)
 
+        # Make sure we get an error if there was a bad/invalid player id
+        request = {'game_room_id': self.game_room.pk, 'player_id': 'foo'}
+        self.assertFalse(self.namespace.on_join(request))
+        error_message = "Player id is not an integer."
+        self.namespace.emit.assert_called_with("error", error_message)
+
+        request = {'game_room_id': self.game_room.pk, 'player_id': '0'}
+        self.assertFalse(self.namespace.on_join(request))
+        error_message = "Can not find player"
+        self.namespace.emit.assert_called_with("error", error_message)
+
     def test_invalid_move(self):
         """
         If we send an invalid move we should get an error.
@@ -325,6 +336,12 @@ class GameNamespaceTestCase(SocketTestCase):
         self.namespace.emit_to_room.assert_called_with(str(self.game_room.id),
                                                        'leave_game')
 
+        # Test error conditions
+        self.assertFalse(self.namespace.on_destroy_game())
+        self.namespace.emit.assert_called_with(
+            "error",
+            "Please connect to a game room first.")
+
     def test_on_leave_game(self):
         """
         If a player leaves the room, handle clean up
@@ -352,6 +369,12 @@ class GameNamespaceTestCase(SocketTestCase):
         self.assertEqual(Player.objects.all().count(), 0)
         self.assertEqual(GameRoom.objects.all().count(), 0)
         self.namespace.emit.assert_called_with('leave_game')
+
+        # Test error conditions
+        self.assertFalse(self.namespace.on_destroy_game())
+        self.namespace.emit.assert_called_with(
+            "error",
+            "Please connect to a game room first.")
 
     def test_on_start(self):
         """
@@ -393,7 +416,6 @@ class GameNamespaceTestCase(SocketTestCase):
         namespace1.disconnect()
         namespace2.recv_disconnect()
 
-        print ROOMS
         self.assertIsNone(ROOMS.get(room_name, None))
 
     @skip('Not yet implemented')
