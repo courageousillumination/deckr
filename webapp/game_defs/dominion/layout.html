@@ -106,7 +106,7 @@ function parseAction(data) {
   if((index = findTransition("Phase",transitions)) > -1) {
     if(transitions[index][1] == "action") {
       // For action phase, we need to say whose turn it is
-      next_player = document.getElementById("player_names").children[transitions[index][2]-1].innerHTML;
+      next_player = document.getElementById("player-names").children[transitions[index][2]-1].innerHTML;
       
       textbox.innerHTML += "---------------------------&#13;";
       textbox.innerHTML += "It is " + next_player + "\'s turn.&#13;";
@@ -130,7 +130,7 @@ function parseAction(data) {
     // This should be the only transition, if it exists
     if(transition[0] == "start") {
       // Find out who gets to play first
-      starter = document.getElementById("player_names").children[transition[1]-1].innerHTML;
+      starter = document.getElementById("player-names").children[transition[1]-1].innerHTML;
 
       textbox.innerHTML += nickname + " has begun the game.&#13;";
       textbox.innerHTML += "It is " + starter + "\'s turn.&#13;";
