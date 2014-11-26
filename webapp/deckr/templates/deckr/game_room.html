@@ -16,6 +16,7 @@
     <a href="#" class="small-btn light" id="leave-game-room"><div>Leave Game</div></a>
 </div>
 <div class="right" style="position:relative;">
+<img id="open-chat-btn" src="{% static 'deckr/images/chat.png' %}">
 <div id="player-info">
     <h2>Hello <span class="logo name">{{ player.nickname }}</span></h2>
     <div id="player-names-btn">Players (<span id="n-players">{{ game.player_set.all|length }}</span>)</div>
@@ -30,7 +31,7 @@
 <div class="game-body">
     <div style="display: none;" id="staging_area"></div>
     <div id="game-wrapper">
-        <div id="sidebar">
+        <div id="sidebar" style="display:none;">
             <div id="chat-box">
             </div>
                 <textarea id="chat-input"></textarea>

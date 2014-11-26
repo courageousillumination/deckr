@@ -97,6 +97,11 @@ $(document).ready(function() {
         socket.emit('leave_game');
     });
 
+    $("#open-chat-btn").click(function () {
+        $("#sidebar").toggle();
+        createSidebar();
+    });
+
     $('#chat-input').keypress(function(input){
         console.log("Hi I'm here");
         if (input.keyCode == 13 && !input.shiftKey) {
