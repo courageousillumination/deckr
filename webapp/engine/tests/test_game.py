@@ -2,7 +2,7 @@
 This module contains all test for the Game class.
 """
 
-from unittest import skip, TestCase
+from unittest import TestCase
 
 from engine.card import Card
 from engine.game import action, game_step, InvalidMoveException, NeedsMoreInfo
@@ -675,7 +675,6 @@ class GameTestCase(TestCase):
         transitions = self.game.get_player_transitions(self.player.game_id)
         self.assertListEqual([("baz",)], transitions)
 
-    @skip
     def test_remove_player(self):
         """
         Make sure players can be removed by player_id
