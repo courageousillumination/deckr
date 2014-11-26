@@ -2,6 +2,8 @@
 Unit tests for deckr websockets.
 """
 
+from unittest import skip
+
 from django.test import TestCase
 
 from deckr.models import GameDefinition, GameRoom, Player
