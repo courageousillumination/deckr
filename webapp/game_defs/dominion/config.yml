@@ -1,0 +1,257 @@
+---
+game_file: "dominion"
+game_class: "Dominion"
+max_players: 4
+zones:
+    - name: "hand"
+      owner: "player"
+    - name: "deck"
+      owner: "player"
+    - name: "discard"
+      owner: "player"
+    - name: "play_zone"
+      owner: "player"
+    - name: "kingdom"
+      zone_type: "supply"
+      multiplicity: 10
+    - name: "treasure"
+      zone_type: "supply"
+      multiplicity: 3
+    - name: "victory"
+      zone_type: "supply"
+      multiplicity: 3
+    - name: "curses"
+      zone_type: "supply"
+    - name: "trash"
+card_set:
+    - name: "Copper"
+      front_face: "/static/deckr/cards/copper.jpg"
+      back_face: "/static/deckr/cards/b1fv.png"
+      card_type: ["treasure"]
+      kingdom_card: False
+      cost: 0
+      value: 1
+
+    - name: "Silver"
+      front_face: "/static/deckr/cards/silver.jpg"
+      back_face: "/static/deckr/cards/b1fv.png"
+      card_type: ["treasure"]
+      kingdom_card: False
+      cost: 3
+      value: 2
+
+    - name: "Gold"
+      front_face: "/static/deckr/cards/gold.jpg"
+      back_face: "/static/deckr/cards/b1fv.png"
+      card_type: ["treasure"]
+      kingdom_card: False
+      cost: 6
+      value: 3
+
+    - name: "Estate"
+      front_face: "/static/deckr/cards/estate.jpg"
+      back_face: "/static/deckr/cards/b1fv.png"
+      card_type: ["victory"]
+      kingdom_card: False
+      cost: 2
+      victory_points: 1
+
+    - name: "Duchy"
+      front_face: "/static/deckr/cards/duchy.jpg"
+      back_face: "/static/deckr/cards/b1fv.png"
+      card_type: ["victory"]
+      kingdom_card: False
+      cost: 5
+      victory_points: 2
+
+    - name: "Province"
+      front_face: "/static/deckr/cards/province.jpg"
+      back_face: "/static/deckr/cards/b1fv.png"
+      card_type: ["victory"]
+      kingdom_card: False
+      cost: 8
+      victory_points: 6
+
+    - name: "Curse"
+      front_face: "/static/deckr/cards/curse.jpg"
+      back_face: "/static/deckr/cards/b1fv.png"
+      card_type: ["curse"]
+      kingdom_card: False
+      cost: 0
+      victory_points: -1
+
+    # Begin kindgom cards
+    - name: "Cellar"
+      front_face: "/static/deckr/cards/cellar.jpg"
+      back_face: "/static/deckr/cards/b1fv.png"
+      card_type: ["action"]
+      kingdom_card: True
+      cost: 2
+
+    - name: "Chapel"
+      front_face: "/static/deckr/cards/chapel.jpg"
+      back_face: "/static/deckr/cards/b1fv.png"
+      card_type: ["action"]
+      kingdom_card: True
+      cost: 2
+
+    - name: "Moat"
+      front_face: "/static/deckr/cards/moat.jpg"
+      back_face: "/static/deckr/cards/b1fv.png"
+      card_type: ["action", "reaction"]
+      kingdom_card: True
+      cost: 2
+
+    - name: "Chancellor"
+      front_face: "/static/deckr/cards/chancellor.jpg"
+      back_face: "/static/deckr/cards/b1fv.png"
+      card_type: ["action"]
+      kingdom_card: True
+      cost: 2
+
+    - name: "Village"
+      front_face: "/static/deckr/cards/village.jpg"
+      back_face: "/static/deckr/cards/b1fv.png"
+      card_type: ["action"]
+      kingdom_card: True
+      cost: 3
+
+    - name: "Woodcutter"
+      front_face: "/static/deckr/cards/woodcutter.jpg"
+      back_face: "/static/deckr/cards/b1fv.png"
+      card_type: ["action"]
+      kingdom_card: True
+      cost: 3
+
+    - name: "Workshop"
+      front_face: "/static/deckr/cards/workshop.jpg"
+      back_face: "/static/deckr/cards/b1fv.png"
+      card_type: ["action"]
+      kingdom_card: True
+      cost: 3
+
+    - name: "Bureaucrat"
+      front_face: "/static/deckr/cards/bureaucrat.jpg"
+      back_face: "/static/deckr/cards/b1fv.png"
+      card_type: ["action"]
+      kingdom_card: True
+      cost: 4
+
+    - name: "Feast"
+      front_face: "/static/deckr/cards/feast.jpg"
+      back_face: "/static/deckr/cards/b1fv.png"
+      card_type: ["action"]
+      kingdom_card: True
+      cost: 4
+
+    - name: "Gardens"
+      front_face: "/static/deckr/cards/gardens.jpg"
+      back_face: "/static/deckr/cards/b1fv.png"
+      card_type: ["victory"]
+      kingdom_card: True
+      cost: 4
+
+    - name: "Militia"
+      front_face: "/static/deckr/cards/militia.jpg"
+      back_face: "/static/deckr/cards/b1fv.png"
+      card_type: ["action", "attack"]
+      kingdom_card: True
+      cost: 4
+
+    - name: "Moneylender"
+      front_face: "/static/deckr/cards/moneylender.jpg"
+      back_face: "/static/deckr/cards/b1fv.png"
+      card_type: ["action"]
+      kingdom_card: True
+      cost: 4
+
+    - name: "Remodel"
+      front_face: "/static/deckr/cards/remodel.jpg"
+      back_face: "/static/deckr/cards/b1fv.png"
+      card_type: ["action"]
+      kingdom_card: True
+      cost: 4
+
+    - name: "Smithy"
+      front_face: "/static/deckr/cards/smithy.jpg"
+      back_face: "/static/deckr/cards/b1fv.png"
+      card_type: ["action"]
+      kingdom_card: True
+      cost: 4
+
+    - name: "Spy"
+      front_face: "/static/deckr/cards/spy.jpg"
+      back_face: "/static/deckr/cards/b1fv.png"
+      card_type: ["action", "attack"]
+      kingdom_card: True
+      cost: 4
+
+    - name: "Thief"
+      front_face: "/static/deckr/cards/thief.jpg"
+      back_face: "/static/deckr/cards/b1fv.png"
+      card_type: ["action", "attack"]
+      kingdom_card: True
+      cost: 4
+
+    - name: "Throne Room"
+      front_face: "/static/deckr/cards/throneroom.jpg"
+      back_face: "/static/deckr/cards/b1fv.png"
+      card_type: ["action"]
+      kingdom_card: True
+      cost: 4
+
+    - name: "Council Room"
+      front_face: "/static/deckr/cards/councilroom.jpg"
+      back_face: "/static/deckr/cards/b1fv.png"
+      card_type: ["action"]
+      kingdom_card: True
+      cost: 5
+
+    - name: "Festival"
+      front_face: "/static/deckr/cards/festival.jpg"
+      back_face: "/static/deckr/cards/b1fv.png"
+      card_type: ["action"]
+      kingdom_card: True
+      cost: 5
+
+    - name: "Laboratory"
+      front_face: "/static/deckr/cards/laboratory.jpg"
+      back_face: "/static/deckr/cards/b1fv.png"
+      card_type: ["action"]
+      kingdom_card: True
+      cost: 5
+
+    - name: "Library"
+      front_face: "/static/deckr/cards/library.jpg"
+      back_face: "/static/deckr/cards/b1fv.png"
+      card_type: ["action"]
+      kingdom_card: True
+      cost: 5
+
+    - name: "Market"
+      front_face: "/static/deckr/cards/market.jpg"
+      back_face: "/static/deckr/cards/b1fv.png"
+      card_type: ["action"]
+      kingdom_card: True
+      cost: 5
+
+    - name: "Mine"
+      front_face: "/static/deckr/cards/mine.jpg"
+      back_face: "/static/deckr/cards/b1fv.png"
+      card_type: ["action"]
+      kingdom_card: True
+      cost: 5
+
+    - name: "Witch"
+      front_face: "/static/deckr/cards/witch.jpg"
+      back_face: "/static/deckr/cards/b1fv.png"
+      card_type: ["action"]
+      kingdom_card: True
+      cost: 5
+
+    - name: "Adventurer"
+      front_face: "/static/deckr/cards/adventurer.jpg"
+      back_face: "/static/deckr/cards/b1fv.png"
+      card_type: ["action"]
+      kingdom_card: True
+      cost: 6

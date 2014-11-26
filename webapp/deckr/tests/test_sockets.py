@@ -6,7 +6,7 @@ from unittest import skip
 
 from django.test import TestCase
 
-from deckr.models import GameRoom, Player
+from deckr.models import GameDefinition, GameRoom, Player
 from deckr.sockets import ChatNamespace, GameNamespace
 from mock import MagicMock
 from socketio.virtsocket import Socket
@@ -110,17 +110,24 @@ class GameNamespaceTestCase(SocketTestCase):
         self.namespace.runner.start_game = MagicMock()
         self.namespace.runner.get_public_transitions = MagicMock()
         self.namespace.runner.get_player_transitions = MagicMock()
+        self.namespace.runner.get_expected_action = MagicMock()
+        self.game_def = GameDefinition.objects.create(name="test",
+                                                      path="test")
         self.game_room = GameRoom.objects.create(room_id=0,
-                                                 max_players=1)
+                                                 max_players=1,
+                                                 game_definition=self.game_def)
         self.player = Player.objects.create(player_id=1,
                                             nickname="Player 1",
                                             game_room=self.game_room)
 
         request = {
-            'game_room_id': str(
-                self.game_room.pk),
-            'player_id': self.player.id}
+            'game_room_id': str(self.game_room.pk),
+            'player_id': self.player.id
+        }
         self.namespace.on_join(request)
+
+    def tearDown(self):
+        self.namespace.flush()
 
     def test_join(self):
         """
@@ -183,14 +190,14 @@ class GameNamespaceTestCase(SocketTestCase):
 
         self.namespace.on_action(valid_move)
         self.namespace.emit_to_room.assert_any_call(self.namespace.room,
-                                                      "state_transitions",
-                                                       transitions)
+                                                    "state_transitions",
+                                                    transitions)
 
-        self.namespace.emit_to_room.assert_called_with(self.namespace.room,
-                                                       "textbox_data",
-                                                       (self.namespace.player.nickname,
-                                                        transitions,
-                                                        self.namespace.runner.get_state()))
+        expected_text_box_data = (self.namespace.player.nickname, transitions,
+                                  self.namespace.runner.get_state())
+        self.namespace.emit_to_room.assert_any_call(self.namespace.room,
+                                                    "textbox_data",
+                                                    expected_text_box_data)
 
     def test_private_transitions(self):
         """
@@ -216,21 +223,20 @@ class GameNamespaceTestCase(SocketTestCase):
         runner.get_player_transitions.side_effect = per_player_transitions
 
         self.namespace.on_action(valid_move)
-
-        #Make sure that we broadcast public information
+        # Make sure that we broadcast public information
         self.namespace.emit_to_room.assert_any_call(self.namespace.room,
-                                                      "state_transitions",
-                                                       transitions)
+                                                    "state_transitions",
+                                                    transitions)
 
+        expected_text_box_data = (self.namespace.player.nickname, transitions,
+                                  self.namespace.runner.get_state())
         self.namespace.emit_to_room.assert_any_call(self.namespace.room,
-                                                       "textbox_data",
-                                                       (self.namespace.player.nickname,
-                                                        transitions,
-                                                        self.namespace.runner.get_state()))
+                                                    "textbox_data",
+                                                    expected_text_box_data)
 
-        #Make sure that we emit private information
+        # Make sure that we emit private information
         self.namespace.emit.assert_any_call("state_transitions",
-                                               player_1_transitions)
+                                            player_1_transitions)
 
     def test_request_state(self):
         """

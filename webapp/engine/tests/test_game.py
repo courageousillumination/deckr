@@ -549,7 +549,6 @@ class GameTestCase(TestCase):
         self.assertDictEqual(self.game.get_state(),
                              expected_state)
 
-    @skip
     def test_multi_step_action(self):
         """
         Make sure that all of the actions on a card get resolved when it is
@@ -559,18 +558,19 @@ class GameTestCase(TestCase):
         steps execute.
         """
 
-        self.game.make_action("test_multi_step")
+        self.game.make_action("test_multi_step", player=self.player.game_id)
         self.assertListEqual([("step1",)],
-                             self.game.get_transitions())
+                             self.game.get_public_transitions())
 
         self.game.flush_transitions()
         # Now we send the additional information
-        self.game.make_action("send_information", num=6)
+        self.game.make_action("send_information",
+                              player=self.player.game_id,
+                              num=6)
         self.assertListEqual([("step2", 6),
                               ("step3", 6)],
-                             self.game.get_transitions())
+                             self.game.get_public_transitions())
 
-    @skip
     def test_expected_action(self):
         """
         Make sure that we can query the game to see what it thinks
@@ -580,42 +580,86 @@ class GameTestCase(TestCase):
         self.assertIsNone(self.game.get_expected_action())
 
         # Now if we make a multistep action we should expect send_information
-        self.game.make_action("test_multi_step")
+        self.game.make_action("test_multi_step", player=self.player.game_id)
         self.assertEqual(self.game.get_expected_action(),
-                         ("send_information", "num"))
+                         ("send_information", "num",
+                          "Number", self.player.game_id,
+                          "Need more information"))
 
-    @skip
     def test_add_step(self):
         """
         Test to see if we can add a step and run it.
         """
 
-        @game_step(requires=None)
-        def simple_step(self):
-            """ Adds a simple transition to the game."""
-            self.add_transition(("simple_step",))
-
-        self.game.add_step(simple_step)
+        self.game.add_step(self.player, self.game.simple_step)
         self.game.run()
         self.assertListEqual([("simple_step",)],
-                             self.game.get_transitions())
+                             self.game.get_public_transitions())
 
-    @skip
+    def test_add_step_with_arguments(self):
+        """
+        Make sure that we can add a step with arguments.
+        """
+
+        self.game.add_step(self.player, self.game.step3, kwargs={'num': 10})
+        self.game.run()
+        self.assertEqual(self.game.get_public_transitions(),
+                         [("step3", 10)])
+
+    def test_step_save_result(self):
+        """
+        We should be able to save the result of a step and pass it into
+        the next step. This should be cleared out when the steps are done.
+        """
+
+        self.game.add_step(self.player, self.game.save_step1,
+                           save_result_as="result")
+        self.game.add_step(self.player, self.game.save_step2)
+        self.game.run()
+        self.assertEqual(self.game.get_public_transitions(), [(10,)])
+
+        # Make sure the state has been cleared out
+        self.game.flush_transitions()
+        self.game.add_step(self.player, self.game.save_step2)
+        self.game.run()
+        self.assertEqual(self.game.get_public_transitions(), [])
+        self.assertEqual(self.game.get_expected_action(),
+                         ("send_information", "result",
+                          "Number", self.player.game_id,
+                          "Need more information"))
+
     def test_game_step_decorator(self):
         """
         Test that the game_Step decorator does what we expect it to (run if
         it has the right arguments or throw an exception otherwise).
         """
 
-        @game_step(requires="num")
+        # pylint: disable=unused-argument
+        @game_step(requires=[("num",
+                              "Number",
+                              lambda num: True)])
         def simple_step(num):
             """ Returns the input. """
+            return num
+
+        @game_step(requires=[("num",
+                              "Number",
+                              lambda num, max_num: num < max_num)])
+        def simple_step_with_test(num, max_num):
+            """
+            A function that should only run if max_num < num
+            """
             return num
 
         self.assertRaises(NeedsMoreInfo, simple_step)
         self.assertEqual(simple_step(num=10), 10)
 
-    @skip
+        self.assertRaises(NeedsMoreInfo, simple_step_with_test)
+        self.assertRaises(NeedsMoreInfo, simple_step_with_test,
+                          num=5, max_num=3)
+
+        self.assertEqual(simple_step_with_test(num=2, max_num=3), 2)
+
     def test_add_transition(self):
         """
         Make sure that we can add transitions, both publicly and on a per player

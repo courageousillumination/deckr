@@ -2,6 +2,8 @@
 Stores all the socket logic for the deckr webapp.
 """
 
+import traceback
+
 from django.core.exceptions import ObjectDoesNotExist
 
 from deckr.models import GameRoom, Player
@@ -35,9 +37,14 @@ class ChatNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
 
         self.broadcast_event('chat', msg)
 
+# Used to store all the rooms. We use this instead of the RoomsMixin because
+# it allows us to get state that's bulit into each GameNamespace (mainly the
+# player).
+ROOMS = {}
+
 
 @namespace('/game')
-class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
+class GameNamespace(BaseNamespace, BroadcastMixin):
 
     """
     Represents simple socket logic for a Chat Room. Whenever it
@@ -57,22 +64,16 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         """
         We override this so that it will actually broadcast to self.
         """
-        pkt = dict(type="event",
-                   name=event,
-                   args=args,
-                   endpoint=self.ns_name)
-        room_name = self._get_room_name(room)
-        for _, socket in self.socket.server.sockets.iteritems():
-            if 'rooms' not in socket.session:
-                continue
-            if room_name in socket.session['rooms']:
-                socket.send_packet(pkt)
+
+        for connection in ROOMS.get(room, []):
+            connection.emit(event, *args)
 
     def initialize(self):
         """
         Mainly for debug.
         """
 
+        print len(self.socket.server.sockets)
         print "Got socket connection 2."
 
     def on_start(self):
@@ -83,6 +84,24 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         self.runner.start_game(self.game_room.room_id)
         self.emit_to_room(self.room,
                           "start")
+
+    def recv_disconnect(self):
+        self.disconnect()
+
+    def disconnect(self, silent=False):
+        """
+        Make sure when we disconnect that we remove ourselves from the room.
+        """
+
+        print "Disconnecting...."
+        super(GameNamespace, self).disconnect(silent)
+
+        if self.room is None:
+            return
+
+        ROOMS[self.room].remove(self)
+        if len(ROOMS[self.room]) == 0:
+            del ROOMS[self.room]
 
     def on_join(self, join_request):
         """
@@ -123,10 +142,13 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         self.player = player
         self.game_room = game_room
         self.room = room
-        self.join(room)
         self.emit('player_nick', {'nickname': player.nickname,
                                   'id': player.player_id})
         self.update_player_list()
+
+        if ROOMS.get(room, None) is None:
+            ROOMS[room] = set()
+        ROOMS[room].add(self)
 
         return True
 
@@ -154,12 +176,21 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         will then broadcast the message to the rest of the channel.
         """
 
-        # pylint: disable=W0142
-        valid, message = self.runner.make_action(self.game_room.room_id,
+        # pylint: disable=W0142,bare-except
+        # We want to make sure that a engine error doesn't kill the entire
+        # socket. This is somewhat ugly, but hopefully we won't have engine
+        # errors.
+        try:
+            valid, msg = self.runner.make_action(self.game_room.room_id,
                                                  player=self.player.player_id,
                                                  **data)
+        except:
+            traceback.print_exc()
+            self.emit("error", "Internal Server Error")
+            return False
+
         if not valid:
-            self.emit("error", message)
+            self.emit("error", msg)
             return False
 
         trans = self.runner.get_public_transitions(self.game_room.room_id)
@@ -167,12 +198,23 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
 
         state = self.runner.get_state(self.game_room.room_id,
                                       self.player.player_id)
-        self.emit_to_room(self.room, 'textbox_data', (self.player.nickname, trans, state))
+        self.emit_to_room(
+            self.room,
+            'textbox_data',
+            (self.player.nickname,
+             trans,
+             state))
 
-        # Get all the private transitions
-        trans = self.runner.get_player_transitions(self.game_room.room_id,
-                                                   self.player.player_id)
-        self.emit('state_transitions', trans)
+        # Get all the private transitions for all players
+        for ns in ROOMS[self.room]:
+            if ns.player is not None:
+                trans = self.runner.get_player_transitions(ns.game_room.room_id,
+                                                           ns.player.player_id)
+                ns.emit('state_transitions', trans)
+
+        # Broadcast what the Game is expecting
+        expected = self.runner.get_expected_action(self.game_room.room_id)
+        self.emit_to_room(self.room, 'expected_action', expected)
 
         return True
 
@@ -255,10 +297,18 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         self.player = None
         return True
 
+    def on_abandon_ship(self):
+        """
+        This should be called if there was an internal engine error and we
+        want to flush the current state of the engine.
+        """
+
+        self.runner.abandon_ship(self.game_room.room_id)
+
     def flush(self):
         """
-        Clear out all internal state. Should only be used
-        for testing.
+        Clear out all internal state and trigger a disconnect. Should only be
+        used for testing.
         """
 
         if self.player is not None:
@@ -267,3 +317,5 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         self.player = None
         self.game_room = None
         self.room = None
+
+        self.disconnect()

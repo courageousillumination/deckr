@@ -67,6 +67,8 @@ class CardSet(object):
             return create_card_from_dict(card_name)
         elif number > 1:
             return [create_card_from_dict(card_name) for _ in range(number)]
+        else:
+            return []
 
     def create_set(self):
         """

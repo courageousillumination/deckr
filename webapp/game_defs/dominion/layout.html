@@ -1,0 +1,291 @@
+<style type="text/css">
+.zone {
+    float: left;
+    width: 80px;
+    height: 100px;
+    margin: 5px;
+    padding: 15px;
+    border: 1px dotted #ccc;
+}
+
+.zone#hand {
+    width: 200px;
+}
+
+.zone.last {
+    float: right;
+}
+
+.victory {
+    float: right;
+}
+
+.vertical-fan {
+    height: 350px;
+}
+
+/*()
+.vertical-fan img {
+    margin-bottom: -78px;
+}*/
+
+.horizontal-fan {
+    width: 350px;
+}
+
+/*div.horizontal-fan{
+    padding-left: 85px;
+}*/
+/*
+.horizontal-fan img {
+    margin-left: -60px;
+}
+
+.horizontal-fan .facing-up img {
+    margin-right: -60px;
+}*/
+
+.facing-top img{
+    transform: rotate(180deg);
+}
+
+.facing-left img{
+    transform: rotate(90deg);
+}
+
+.facing-right img{
+    transform: rotate(270deg);
+}
+
+.center-field {
+    height: 350px;
+    width: 350px;
+}
+
+.stacked img {
+    position: absolute
+}
+
+.row {
+    clear: both;
+    width: 100%;
+    overflow: hidden;
+}
+
+.selected {
+    border: solid;
+    border-color: yellow;
+}
+</style>
+
+<script type='text/javascript'>
+$(document).ready(function() {
+
+    // zone click function
+    /*$(".zone").click(function() {
+        if ($('.selected').length != 0 && $(this).has($('.selected')).length == 0) {
+            console.log("Request move " + $('.selected').attr('id'));
+            requestMoveCard($('.selected').attr('id'), $(this).attr('id'));
+        }
+    });*/
+    $(".supply").click(function() {
+        if (!expecting_select) {
+          socket.emit('action', {'action_name': 'buy',
+                                 'buy_zone': $(this).attr('id').substring(4)});
+        } else {
+          add_selected($(this));
+        }
+    });
+});
+
+function convert_game_id_to_player_order_id(game_id) {
+  my_ordered_game_ids = [my_game_id].concat(_.filter(player_ids, function (x) { return x > my_game_id; })).concat(_.filter(player_ids, function (x) { return x < my_game_id; }));
+  return my_ordered_game_ids.indexOf(game_id) + 1;
+}
+
+var expecting_select = false;
+var expecting_type = null;
+var information_name = null;
+var currently_selected = []
+
+socket.on('state', function (data) {
+    console.log(data);
+    for (i = 0; i < data.cards.length; i++) {
+        d = data.cards[i];
+        d.class = "card";
+        d.id = "card" + d.game_id;
+        addCard(d, "staging_area");
+    }
+
+    // Add all cards to the proper zones
+    for (i = 0; i < data.zones.length; i++) {
+        zone = data.zones[i];
+        // Fix the zone names
+        if (zone.owner == null) {
+            $("#" + zone.name).attr('id', "zone" + zone.game_id);
+            console.log("In here")
+        } else {
+            // Find the zone with the name + the player order id
+            z = $("#" + zone.name + convert_game_id_to_player_order_id(zone.owner));
+            z.attr('id', 'zone' + zone.game_id);
+            //z.append('owned by' + player_mapping[zone.owner]);
+            console.log("Owner specific");
+            console.log("#" + zone.name + convert_game_id_to_player_order_id(zone.owner));
+        }
+
+        for (j = 0; j < zone.cards.length; j++) {
+            moveCard("card" + zone.cards[j], "zone" + zone.game_id, 0);
+        }
+    }
+
+    // Make sure we register all callbacks
+    $(".card").click(function() {
+        if (!expecting_select) {
+          socket.emit('action', {'action_name': 'play_card',
+                                 'card': $(this).attr('id').substring(4)});
+        } else {
+          if ($(this).hasClass("selected")) {
+            $(this).removeClass("selected");
+          } else {
+            $(this).addClass("selected");
+          }
+          add_selected($(this));
+        }
+    });
+});
+
+socket.on('expected_action', function(data){
+  if (data == null) {
+    expecting_select = false;
+    return;
+  }
+  console.log(data);
+  if (data[0] == 'send_information') {
+    expecting_select = true;
+    information_name = data[1];
+    expecting_type = data[2];
+    currently_selected = [];
+
+    if (expecting_type == "Bool" && my_game_id == data[3]) {
+      val = confirm(data[4]);
+      dict = {'action_name': 'send_information'}
+      dict[information_name] =  val;
+      socket.emit('action', dict);
+    }
+  }
+});
+
+function add_selected(selected) {
+  if (expecting_select == false) {
+    return;
+  }
+  // Make sure it's of the right type
+  value = parseInt(selected.attr('id').substring(4));
+  if (expecting_type == 'Card' && !selected.hasClass('card')) {
+    return;
+  }
+  if (expecting_type == 'Zone' && !selected.hasClass('zone')) {
+    return;
+  }
+  if (expecting_type != 'Cards') {
+    dict = {'action_name': 'send_information'}
+    dict[information_name] =  value;
+    socket.emit('action', dict);
+  } else {
+    // We have to deal with the list here
+    index = currently_selected.indexOf(value)
+    if (index > -1) {
+      currently_selected.splice(index, 1);
+    } else {
+      currently_selected.push(value)
+    }
+  }
+}
+
+function send_info() {
+    dict = {'action_name': 'send_information'}
+    dict[information_name] =  currently_selected;
+    socket.emit('action', dict);
+}
+</script>
+
+<div class="layout">
+    <button onclick="socket.emit('start');">Start</button>
+    <button onclick="socket.emit('action', {'action_name': 'next_phase'})">Next Phase</button>
+    <button onclick="send_info()">Send Info</button>
+    <button onclick="socket.emit('abandon_ship');">Abandon Ship</button>
+
+    <div class="row">
+      <div class="stacked zone" id="discard3"></div>
+      <div class="horizontal-fan zone" id="hand3"></div>
+      <div class="stacked zone" id="deck3"></div>
+      <div class="zone" id="play_zone3"></div>
+    </div>
+
+    <div class="row">
+      <div style="float: left;">
+        <div class="stacked zone" id="deck2" style="float: None;"></div>
+        <div class="vertical-fan zone" id="hand2" style="float: None;"></div>
+        <div class="stacked zone" id="discard2" style="float: None;"></div>
+      </div> <!-- player 2 hand -->
+      <div class="zone" style="float:left; height: 350px;" id="play_zone2"></div>
+      <div style="float: left;"><!-- Main board -->
+          <div class="row">
+            <div class="stacked zone supply" id="treasure0"></div>
+            <div class="stacked zone supply" id="treasure1"></div>
+            <div class="stacked zone supply" id="treasure2"></div>
+            <div class="stacked zone" id="trash"></div>
+          </div>
+          <div class="row">
+            <div class="stacked zone supply" id="victory0"></div>
+            <div class="stacked zone supply" id="victory1"></div>
+            <div class="stacked zone supply" id="victory2"></div>
+            <div class="stacked zone supply" id="curses"></div>
+          </div>
+
+          <div class="row">
+            <div class="stacked zone supply" id="kingdom0"></div>
+            <div class="stacked zone supply" id="kingdom1"></div>
+            <div class="stacked zone supply" id="kingdom2"></div>
+            <div class="stacked zone supply" id="kingdom3"></div>
+          </div>
+          <div class="row">
+            <div class="stacked zone supply" id="kingdom4"></div>
+            <div class="stacked zone supply" id="kingdom5"></div>
+            <div class="stacked zone supply" id="kingdom6"></div>
+            <div class="stacked zone supply" id="kingdom7"></div>
+          </div>
+
+          <div class="row">
+            <div class="stacked zone supply" id="kingdom8"></div>
+            <div class="stacked zone supply" id="kingdom9"></div>
+          </div>
+      </div>
+      <div class="zone" style="float:left; height: 350px;" id="play_zone4"></div>
+      <div style="float: left;">
+        <div class="stacked zone" id="deck4" style="float: None;"></div>
+        <div class="vertical-fan zone" id="hand4" style="float: None;"></div>
+        <div class="stacked zone" id="discard4" style="float: None;"></div>
+      </div> <!-- player4 hand -->
+    </div>
+
+    <div class="row">
+      <div class="zone" style="width: 450px;" id="play_zone1"></div>
+    </div>
+
+    <div class="row">
+      <div class="stacked zone" id="deck1"></div>
+      <div class="horizontal-fan zone" id="hand1"></div>
+      <div class="stacked zone" id="discard1"></div>
+    </div>
+
+    <!--<div clas="horizontal-fan zone" id="hand2"></div>
+    <div clas="horizontal-fan zone" id="hand4"></div>
+
+    <div class="zone" id="play_zone1"></div>
+    <div class="zone" id="play_zone2"></div>
+    <div class="zone" id="play_zone3"></div>
+    <div class="zone" id="play_zone4"></div>-->
+
+
+</div>

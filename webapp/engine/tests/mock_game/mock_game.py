@@ -92,33 +92,37 @@ class MockGame(Game):
 
     # pylint: disable=unused-argument
     @action(restriction=None)
-    def test_multi_step(self, **kwargs):
+    def test_multi_step(self, player, **kwargs):
         """
         Test a simple multistep action.
         """
 
-        self.add_step("step1")
-        self.add_step("step2")
-        self.add_step("step3")
+        self.add_step(player, self.step1)
+        self.add_step(player, self.step2)
+        self.add_step(player, self.step3)
 
     @game_step(requires=None)
-    def step1(self, **kwargs):
+    def step1(self, player, **kwargs):
         """
         Test step 1.
         """
 
         self.add_transition(("step1",))
 
-    @game_step(requires='num')
-    def step2(self, num, **kwargs):
+    @game_step(requires=[('num',
+                          'Number',
+                          lambda *args, **kwargs: True)])
+    def step2(self, player, num, **kwargs):
         """
         Test step 2. Requires input.
         """
 
         self.add_transition(("step2", num))
 
-    @game_step(requires=None)
-    def step3(self, num, **kwargs):
+    @game_step(requires=[('num',
+                          'Number',
+                          lambda *args, **kwargs: True)])
+    def step3(self, player, num, **kwargs):
         """
         Tests step 3. Requires input from previous
         step.
@@ -135,6 +139,31 @@ class MockGame(Game):
 
         self.add_transition(("public", "foobar"))
         self.add_transition(("private", "foobaz"), player)
+
+    @game_step(requires=None)
+    def simple_step(self, player, **kwargs):
+        """
+        Adds a simple transition to the game.
+        """
+        self.add_transition(("simple_step",))
+
+    @game_step(requires=None)
+    def save_step1(self, player, **kwargs):
+        """
+        Returns the value 10. Used to save input from a step.
+        """
+        return 10
+
+    @game_step(requires=[("result",
+                          "Number",
+                          lambda *args, **kwargs: True)])
+    def save_step2(self, player, result, **kwargs):
+        """
+        Justs adds a transition using the value in result. Used to test
+        saving the result of a step.
+        """
+
+        self.add_transition((result,))
 
     def get_magic(self):
         """

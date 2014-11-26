@@ -41,7 +41,7 @@ class GameRoom(models.Model):
         Unicode representation of GameRoom object
         """
         return "Game room {0} for the game {1}".format(
-            str(self.room_id), "Solitaire")
+            str(self.room_id), self.game_definition.name)
 
     def maximum_occupancy(self):
         """
@@ -73,7 +73,7 @@ class Player(models.Model):
 
 
 @receiver(pre_save, sender=Player)
-def validate_save(instance, **kwargs):
+def validate_save(instance, **kwargs):  # pylint: disable=unused-argument
     """
     Validate player object and ability to join game room
     """
