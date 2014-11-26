@@ -52,10 +52,10 @@
                 game_room_id: "{{game.id}}",
                 player_id: {{player.id}}}
             );
-            {{ game_js|safe }}
           {% else %}
             socket.emit('join_as_spectator', "{{game.id}}")
           {% endif %}
+          {{ game_js|safe }}
         </script>
     </div>
 </div>
