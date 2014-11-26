@@ -19,7 +19,8 @@ function setupSockets() {
         'game_over': onGameOver,
         'error': onGameError,
         'player_names': onPlayerNames,
-        'player_nick': onPlayerNick
+        'player_nick': onPlayerNick,
+        'chat': onChat
     };
     _.each(_.pairs(socket_fn_mapping), function (kv) {
         var event = kv[0];
@@ -137,4 +138,16 @@ function onPlayerNames(players) {
 function onPlayerNick(data){
     // $('#player_nick').html("Welcome " + data.nickname);
     my_game_id = data.id;
+}
+
+function onChat(data) {
+    sender = data.sender;
+    msg = data.msg;
+
+    $('#chat-box').append('<div>'+'<span class="un">'+sender+'</span>'
+                            + ': ' + msg+'</div>');
+
+    if (sender === player_mapping[my_game_id])  {
+        $('#chat-input').val('');
+    }
 }

@@ -30,6 +30,13 @@
 <div class="game-body">
     <div style="display: none;" id="staging_area"></div>
     <div id="game-wrapper">
+        <div id="sidebar">
+            <div id="chat-box">
+            </div>
+                <textarea id="chat-input"></textarea>
+                <a class="big-btn" id='chat-btn'><div>Send message</div></a>
+          </div>
+
         {% include sub_template %}
         {% block game-wrapper %}{% endblock %}
         <script>

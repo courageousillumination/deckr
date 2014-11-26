@@ -37,6 +37,49 @@ function setupClickEvents(obj) {
     });
 }
 
+
+function createSidebar() {
+    var sidebar = $('#sidebar');
+    var gameWrapper = $('#game-wrapper');
+    var chatBox = $('#chat-box');
+    var chatInput = $('#chat-input');
+    var header = $('#header');
+    var button = $('#chat-btn')
+
+    sidebar.css('width', Math.floor(gameWrapper.width() * .15) + 'px')
+    sidebar.css('height', '100%')
+
+    var chatBoxFirstTop = 20;
+
+    chatBox.css('top',(chatBoxFirstTop 
+        + header.outerHeight()) + 'px');
+
+    var sidebarWidth = sidebar.width();
+    var sidebarHeight = sidebar.height();
+
+    var offsetV = 10;
+
+    var boxWidth = Math.floor(sidebarWidth * .95);
+    var boxOffsetH = Math.floor((sidebarWidth - boxWidth) / 2);
+
+    var boxHeight = Math.floor(sidebarHeight * .65);
+    var buttonHeight = Math.floor(sidebarHeight * .2);
+    var inputHeight = sidebarHeight - boxHeight - offsetV * 3 - buttonHeight;
+
+    chatBox.css('left', boxOffsetH);
+    chatBox.css('width', boxWidth);
+
+    chatInput.css('left', boxOffsetH);
+    chatInput.css('width', boxWidth);
+
+    chatBox.css('height', boxHeight);
+    chatInput.css('height', inputHeight);
+    chatInput.css('top', chatBox.offset().top + boxHeight + offsetV)
+
+    button.css('top', chatInput.offset().top + inputHeight + offsetV * 2);
+    button.css('left', Math.floor((sidebarWidth - button.outerWidth()) / 2));
+}
+
 $(document).ready(function() {
     setupSockets();
     
@@ -51,4 +94,21 @@ $(document).ready(function() {
     $('#leave-game-room').click(function(){
         socket.emit('leave_game');
     });
+
+    $('#chat-input').keypress(function(input){
+        console.log("Hi I'm here");
+        if (input.keyCode == 13 && !input.shiftKey) {
+            console.log("Now I'm here");
+            $('#chat-btn').click();
+        }
+    })
+
+    $('#chat-btn').click(function(){
+        socket.emit('chat', {'msg': $('#chat-input').val(),
+                            'sender': player_mapping[my_game_id] });
+    });
+
+    createSidebar();
+    $(window).resize(createSidebar)
+
 });
