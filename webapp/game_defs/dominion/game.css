@@ -1,3 +1,8 @@
+textarea {
+    position: absolute;
+    left: 50;
+}
+
 .game-body {
     background: url(http://subtlepatterns.com/patterns/footer_lodyas.png);
 }
@@ -6,16 +11,25 @@
     margin-left: 50px;
 }
 
-#main-board {
-    float: left;
+.vertical-fan {
+    height: 350px;
 }
 
-.zone.supply {
+.horizontal-fan {
+    width: 350px;
+}
+
+#main-board {
+    width: 675px;
+    margin: 0 auto;
+}
+
+/*.zone.supply {
     padding: 5px;
     margin: 5px;
     width: 70px;
     height: 105px;
-}
+}*/
 
 .victory {
     float: left;
@@ -25,23 +39,27 @@
 }
 .victory .zone, .treasure .zone {
     float: none;
+    padding: 5px;
+    margin: 5px;
+    width: 70px;
+    height: 105px;
 }
 .center-board {
     float: left;
+    background-color: rgba(0,0,0,0.3);
+}
+
+#player1 {
+    width: 650px;
+    margin: 0 auto;
+}
+
+#player1 .play-zone {
+    width: 540px;
+    float: none;
+    margin: 0 auto;
 }
 
 .other-player {
     display: none;
-}
-
-#hand1 {
-    width: 350px;
-}
-
-.vertical-fan {
-    height: 350px;
-}
-
-.horizontal-fan {
-    width: 350px;
 }

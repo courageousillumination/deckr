@@ -1,6 +1,7 @@
 <div class="layout">
-    <textarea readonly rows="5" cols="50" id="eventbox">Welcome to the game!&#13;></textarea>
-    <div class="other-player facing-up">
+    <textarea readonly rows="5" cols="45" id="eventbox">Welcome to the game!&#13;></textarea>
+    <!-- Player 3 -->
+    <div id="player3" class="other-player facing-up">
       <div class="row">
         <div class="stacked zone" id="discard3"></div>
         <div class="horizontal-fan zone" id="hand3"></div>
@@ -12,7 +13,7 @@
 
   <div class="row">
     <!-- Player 2 -->
-    <div class="other-player facing-left">
+    <div id="player2" class="other-player facing-left">
       <div style="float: left;">
         <div class="stacked zone" id="deck2" style="float: None;"></div>
         <div class="vertical-fan zone" id="hand2" style="float: None;"></div>
@@ -58,7 +59,7 @@
     </div>
     <!-- End Main Board -->
     <!-- Player 4 -->
-    <div class="other-player facing-left">
+    <div id="player4" class="other-player facing-left">
       <div class="zone" style="float:left; height: 350px;" id="play_zone4"></div>
       <div style="float: left;">
         <div class="stacked zone" id="deck4" style="float: None;"></div>
@@ -69,13 +70,15 @@
     <!-- End Player 4 -->
   </div>
   <!-- Player 1 -->
-  <div class="row">
-    <div class="zone" style="width: 450px;" id="play_zone1"></div>
-  </div>
-  <div class="row">
-    <div class="stacked zone" id="deck1"></div>
-    <div class="horizontal-fan zone" id="hand1"></div>
-    <div class="stacked zone" id="discard1"></div>
+  <div id="player1">
+    <div class="row">
+      <div class="zone play-zone"></div>
+    </div>
+    <div class="row">
+      <div class="zone stacked deck"></div>
+      <div class="zone horizontal-fan hand"></div>
+      <div class="zone stacked discard"></div>
+    </div>
   </div>
   <!-- End Player 1 -->
 </div>

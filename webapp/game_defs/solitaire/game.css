@@ -15,6 +15,14 @@
     float: right;
 }
 
+#player1 {
+
+}
+
+#player1 .play-zone {
+    width: 450px;
+}
+
 .play-zone {
     height: 350px;
 }
