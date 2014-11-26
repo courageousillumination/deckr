@@ -45,9 +45,18 @@ function supplyOnHover(e) {
 }
 
 function supplyOnMouseMove(e) {
-    $("#"+this.id+"-hover")
-        .css("top", (e.pageY + mouse_offset) + "px")
-        .css("left", (e.pageX + mouse_offset) + "px");
+    var ele = $("#"+this.id+"-hover");
+    var wH = $(window).height();
+    var wW = $(window).width();
+    var mY = e.pageY + mouse_offset;
+    var mX = e.pageX + mouse_offset;
+    if (mX > (wW/2)) {
+        mX -= ele.width();
+    }
+    if (mY > (wH/2)) {
+        mY -= ele.height();
+    }
+    ele.css("top", mY + "px").css("left", mX + "px");
 }
 
 function supplyOnMouseOut(e) {
