@@ -2,6 +2,7 @@
 Contains definitions of all models for deckr.
 """
 
+from django.conf import settings
 from django.db import models
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
@@ -15,7 +16,7 @@ class GameDefinition(models.Model):
     """
 
     name = models.CharField(max_length=256)
-    path = models.FilePathField(path="game_defs",
+    path = models.FilePathField(path=settings.GAME_DEFINITION_PATH,
                                 allow_folders=True,
                                 allow_files=False)
 

@@ -12,9 +12,11 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template import Template
 
-from deckr.forms import CreateGameRoomForm, PlayerForm
-from deckr.models import GameRoom, Player
+from deckr.forms import (CreateGameRoomForm, PlayerForm,
+                         UploadGameDefinitionForm)
+from deckr.models import GameDefinition, GameRoom, Player
 from deckr.sockets import ChatNamespace  # pylint: disable=unused-import
+from deckr.utils import process_uploaded_file
 from engine import game_runner
 
 
@@ -85,12 +87,31 @@ def game_room(request, game_room_id):
                    'player': player})
 
 
-def upload_new_game(request):
+def upload_game_definition(request):
     """
     Returns the view to upload a new game.
     """
 
-    return render(request, "deckr/upload_new_game.html", {})
+    if request.method == "POST":
+        form = UploadGameDefinitionForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Save the file to the game_defs folder
+            game_name = form.cleaned_data['game_name']
+            try:
+                path = process_uploaded_file(game_name,
+                                             request.FILES['file'])
+                # Create a new GameDefinition
+                GameDefinition.objects.create(name=game_name,
+                                              path=path)
+                # Return to the index
+                return redirect(reverse('deckr.index'))
+            except ValueError as exception:
+                # If there was an error with the zipped file we catch it and
+                # add it as an error to the form.
+                form.add_error('file', exception.args[0])
+    else:
+        form = UploadGameDefinitionForm()
+    return render(request, "deckr/upload_game_definition.html", {'form': form})
 
 
 def create_game_room(request):

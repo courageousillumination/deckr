@@ -2,9 +2,9 @@
 {% block title %}Deckr | Upload new game{% endblock %}
 {% block content %}
 <div class="center">
-    <form action="/" method="post">
+    <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        <input type="file" name="file">
+        {{ form.as_p }}
         <input type="submit" value="Upload" name="submit">
     </form>
 </div>

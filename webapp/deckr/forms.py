@@ -27,3 +27,14 @@ class PlayerForm(forms.ModelForm):
     class Meta:  # pylint: disable=C1001,W0232,C0111
         model = Player
         fields = ['nickname']
+
+
+class UploadGameDefinitionForm(forms.Form):
+
+    """
+    This form will allow a user to upload a ZIP file that contains
+    a game.
+    """
+
+    game_name = forms.CharField()
+    file = forms.FileField()

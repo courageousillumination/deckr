@@ -2,7 +2,7 @@
 Configure all of the URL patterns for deckr.
 """
 
-from django.conf.urls import patterns, url, include
+from django.conf.urls import include, patterns, url
 
 import socketio.sdjango
 
@@ -22,11 +22,13 @@ GAME_ROOM = url(r'^game_room/(?P<game_room_id>[0-9]+)/',
                 'deckr.views.game_room',
                 name='deckr.game_room')
 
-UPLOAD_NEW_GAME = url(r'^upload_new_game/',
-                      'deckr.views.upload_new_game',
-                      name='deckr.upload_new_game')
+UPLOAD_GAME_DEFINITION = url(r'^upload_game_definition/',
+                             'deckr.views.upload_game_definition',
+                             name='deckr.upload_game_definition')
 
-TEST_GAME = url(r'test_game/', 'deckr.views.test_game', name='deckr.test_game')
+TEST_GAME = url(r'test_game/',
+                'deckr.views.test_game',
+                name='deckr.test_game')
 
 SOCKETS = url(r'^socket\.io', include(socketio.sdjango.urls))
 
@@ -36,6 +38,6 @@ urlpatterns = patterns(  # pylint: disable=C0103
     INDEX,
     STAGING_AREA,
     CREATE_GAME_ROOM,
-    UPLOAD_NEW_GAME,
+    UPLOAD_GAME_DEFINITION,
     GAME_ROOM,
     TEST_GAME)
