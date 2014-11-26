@@ -189,6 +189,11 @@ function convert_game_id_to_player_order_id(game_id) {
   return my_ordered_game_ids.indexOf(game_id) + 1;
 }
 
+function capitaliseFirstLetter(string)
+{
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 var expecting_select = false;
 var expecting_type = null;
 var information_name = null;
@@ -200,6 +205,8 @@ socket.on('state', function (data) {
         d = data.cards[i];
         d.class = "card";
         d.id = "card" + d.game_id;
+        d.alt = "Name: " + d.name + "\nType: " + capitaliseFirstLetter(d.card_type[0]) + "\nCost: " + d.cost;
+        console.log(d);
         addCard(d, "staging_area");
     }
 
