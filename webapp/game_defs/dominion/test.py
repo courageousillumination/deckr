@@ -246,7 +246,7 @@ class DominionTestCase(TestCase):
         self.player1.hand.add_card(garden)
         self.player2.hand.add_card(estate)
 
-        self.assertEqual(self.game.winners(), [self.player1])
+        self.assertEqual(self.game.winners(), [self.player1.game_id])
 
     def test_militia(self):
         """

@@ -37,9 +37,14 @@ class ChatNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
 
         self.broadcast_event('chat', msg)
 
+# Used to store all the rooms. We use this instead of the RoomsMixin because
+# it allows us to get state that's bulit into each GameNamespace (mainly the
+# player).
+ROOMS = {}
+
 
 @namespace('/game')
-class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
+class GameNamespace(BaseNamespace, BroadcastMixin):
 
     """
     Represents simple socket logic for a Chat Room. Whenever it
@@ -59,22 +64,16 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         """
         We override this so that it will actually broadcast to self.
         """
-        pkt = dict(type="event",
-                   name=event,
-                   args=args,
-                   endpoint=self.ns_name)
-        room_name = self._get_room_name(room)
-        for _, socket in self.socket.server.sockets.iteritems():
-            if 'rooms' not in socket.session:
-                continue
-            if room_name in socket.session['rooms']:
-                socket.send_packet(pkt)
+
+        for connection in ROOMS.get(room, []):
+            connection.emit(event, *args)
 
     def initialize(self):
         """
         Mainly for debug.
         """
 
+        print len(self.socket.server.sockets)
         print "Got socket connection 2."
 
     def on_start(self):
@@ -85,6 +84,24 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         self.runner.start_game(self.game_room.room_id)
         self.emit_to_room(self.room,
                           "start")
+
+    def recv_disconnect(self):
+        self.disconnect()
+
+    def disconnect(self, silent=False):
+        """
+        Make sure when we disconnect that we remove ourselves from the room.
+        """
+
+        print "Disconnecting...."
+        super(GameNamespace, self).disconnect(silent)
+
+        if self.room is None:
+            return
+
+        ROOMS[self.room].remove(self)
+        if len(ROOMS[self.room]) == 0:
+            del ROOMS[self.room]
 
     def on_join(self, join_request):
         """
@@ -125,10 +142,13 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         self.player = player
         self.game_room = game_room
         self.room = room
-        self.join(room)
         self.emit('player_nick', {'nickname': player.nickname,
                                   'id': player.player_id})
         self.update_player_list()
+
+        if ROOMS.get(room, None) is None:
+            ROOMS[room] = set()
+        ROOMS[room].add(self)
 
         return True
 
@@ -185,10 +205,12 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
              trans,
              state))
 
-        # Get all the private transitions
-        trans = self.runner.get_player_transitions(self.game_room.room_id,
-                                                   self.player.player_id)
-        self.emit('state_transitions', trans)
+        # Get all the private transitions for all players
+        for ns in ROOMS[self.room]:
+            if ns.player is not None:
+                trans = self.runner.get_player_transitions(ns.game_room.room_id,
+                                                           ns.player.player_id)
+                ns.emit('state_transitions', trans)
 
         # Broadcast what the Game is expecting
         expected = self.runner.get_expected_action(self.game_room.room_id)
@@ -285,8 +307,8 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
 
     def flush(self):
         """
-        Clear out all internal state. Should only be used
-        for testing.
+        Clear out all internal state and trigger a disconnect. Should only be
+        used for testing.
         """
 
         if self.player is not None:
@@ -295,3 +317,5 @@ class GameNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         self.player = None
         self.game_room = None
         self.room = None
+
+        self.disconnect()
