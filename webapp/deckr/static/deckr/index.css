@@ -107,48 +107,52 @@ table {
   box-shadow: 0px 0px 5px yellow;
 }
 
-/* line 49, scss/game.scss */
+/* line 48, scss/game.scss */
+.stacked {
+  position: relative;
+}
+/* line 50, scss/game.scss */
 .stacked img.card {
   position: absolute;
 }
 
-/* line 55, scss/game.scss */
+/* line 56, scss/game.scss */
 .horizontal-fan img.card {
   margin-left: -10px;
 }
-/* line 58, scss/game.scss */
+/* line 59, scss/game.scss */
 .facing-up .horizontal-fan img.card {
   margin-right: -10px;
 }
 
-/* line 65, scss/game.scss */
+/* line 66, scss/game.scss */
 .vertical-fan img.card {
   margin-bottom: -68px;
 }
 
-/* line 71, scss/game.scss */
+/* line 72, scss/game.scss */
 .facing-top img.card {
   transform: rotate(180deg);
 }
 
-/* line 77, scss/game.scss */
+/* line 78, scss/game.scss */
 .facing-left img.card {
   transform: rotate(90deg);
 }
 
-/* line 83, scss/game.scss */
+/* line 84, scss/game.scss */
 .facing-right img.card {
   transform: rotate(270deg);
 }
 
-/* line 88, scss/game.scss */
+/* line 89, scss/game.scss */
 .row {
   clear: both;
   width: 100%;
   overflow: hidden;
 }
 
-/* line 94, scss/game.scss */
+/* line 95, scss/game.scss */
 .hover {
   position: absolute;
 }

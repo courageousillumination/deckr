@@ -1,6 +1,6 @@
 textarea {
     position: absolute;
-    left: 50;
+    left: 25;
 }
 
 .game-body {
@@ -8,20 +8,24 @@ textarea {
 }
 
 .layout {
-    margin-left: 50px;
-}
-
-.vertical-fan {
-    height: 350px;
-}
-
-.horizontal-fan {
-    width: 350px;
+    position: relative;
 }
 
 #main-board {
-    width: 675px;
+    width: 495px;
     margin: 0 auto;
+}
+
+.card {
+    margin: 0px;
+}
+
+.zone {
+    border: 1px dotted #000;
+    width: 60px;
+    height: 97px;
+    margin: 5px;
+    padding: 5px;
 }
 
 /*.zone.supply {
@@ -39,10 +43,6 @@ textarea {
 }
 .victory .zone, .treasure .zone {
     float: none;
-    padding: 5px;
-    margin: 5px;
-    width: 70px;
-    height: 105px;
 }
 .center-board {
     float: left;
@@ -50,16 +50,38 @@ textarea {
 }
 
 #player1 {
-    width: 650px;
+    width: 540px;
     margin: 0 auto;
+    margin-top: 20px;
+}
+
+#player1 .hand {
+    padding: 5px;
+    width: 350px;
+    overflow-y: scroll;
 }
 
 #player1 .play-zone {
-    width: 540px;
+    width: 475px;
     float: none;
     margin: 0 auto;
+    overflow-y: scroll;
 }
 
 .other-player {
+    clear: both;
     display: none;
 }
+
+#other-players {
+    display: table;
+    position: absolute;
+    top: 85px;
+}
+
+#other-players .hand, #other-players .play-zone {
+    float: none;
+    width: 330px;
+    overflow-y: scroll;
+}
+

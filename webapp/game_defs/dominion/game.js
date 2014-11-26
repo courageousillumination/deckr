@@ -143,6 +143,7 @@ function addSelected(selected) {
 
 function supplyOnHover(e) {
     var img, src, hover_id;
+    if (!$("#" + this.id).data("face_up")) return;
     hover_id = this.id + "-hover";
     // Create big image
     src = this.src;
