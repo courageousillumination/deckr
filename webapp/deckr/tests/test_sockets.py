@@ -371,7 +371,7 @@ class GameNamespaceTestCase(SocketTestCase):
         self.namespace.emit.assert_called_with('leave_game')
 
         # Test error conditions
-        self.assertFalse(self.namespace.on_destroy_game())
+        self.assertFalse(self.namespace.on_leave_game())
         self.namespace.emit.assert_called_with(
             "error",
             "Please connect to a game room first.")
