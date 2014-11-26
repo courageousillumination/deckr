@@ -28,6 +28,32 @@ function addSelected(selected) {
     }
 }
 
+function supplyOnHover(e) {
+    console.log("hover", this.id);
+    var img, src, hover_id;
+    hover_id = this.id + "-hover";
+    // Create big image
+    src = this.src;
+    big_src = this.src.substring(0, src.length-4) + "-big.jpg";
+    img = '<img id="'+hover_id+'" class="hover" src="'+big_src+'" />';
+    $('body').append(img);
+    $("#"+hover_id)
+        .css("top", (e.pageY) + "px")
+        .css("left", (e.pageX) + "px")
+        .fadeIn("fast");
+}
+
+function supplyOnMouseMove(e) {
+    $("#"+this.id+"-hover")
+        .css("top", (e.pageY) + "px")
+        .css("left", (e.pageX) + "px");
+}
+
+function supplyOnMouseOut(e) {
+    console.log("out");
+    $("#"+this.id+"-hover").remove();
+}
+
 function supplyOnClick() {
     if (!expecting_select) {
         socket.emit('action', {
@@ -78,6 +104,8 @@ socket.on('state', function(data) {
     addBtn('Abandon Ship', 'abandon-ship-btn', abandonShipOnClick);
     addBtn('Send Info', 'send-info-btn', sendInfoOnClick);
     addBtn('Next Phase', 'next-phase-btn', nextPhaseOnClick);
+    $('.supply img.card').hover(supplyOnHover, supplyOnMouseOut);
+    $('.supply img.card').mousemove(supplyOnMouseMove);
 });
 
 socket.on('expected_action', function(data){

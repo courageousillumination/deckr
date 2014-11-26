@@ -11,25 +11,35 @@
     margin: 50px;
 }
 
+.hover {
+    position: absolute;
+}
+
+.victory {
+    float: left;
+}
+.treasure {
+    float: right;;
+}
+.victory .zone, .treasure .zone {
+    float: none;
+}
+.center-board {
+    float: left;
+}
+
+
+.other-player {
+    display: none;
+}
+
 .zone {
     float: left;
-    width: 80px;
+    width: 70px;
     height: 100px;
     margin: 5px;
     padding: 15px;
     border: 1px dotted #ccc;
-}
-
-.zone#hand {
-    width: 200px;
-}
-
-.zone.last {
-    float: right;
-}
-
-.victory {
-    float: right;
 }
 
 .vertical-fan {
@@ -38,6 +48,26 @@
 
 .horizontal-fan {
     width: 350px;
+}
+
+.zone.last {
+    float: right;
+}
+
+div.horizontal-fan{
+    padding-left: 85px;
+}
+
+.horizontal-fan img {
+    margin-left: -10px;
+}
+
+.vertical-fan img {
+    margin-bottom: -78px;
+}
+
+.horizontal-fan .facing-up img {
+    margin-right: -10px;
 }
 
 .facing-top img {
@@ -50,11 +80,6 @@
 
 .facing-right img {
     transform: rotate(270deg);
-}
-
-.center-field {
-    height: 350px;
-    width: 350px;
 }
 
 .stacked img {

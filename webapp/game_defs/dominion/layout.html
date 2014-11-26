@@ -1,7 +1,7 @@
 <div class="layout">
   <div class="row">
     <!-- Player 3 -->
-    <div class="facing-top">
+    <div class="other-player facing-up">
       <div class="stacked zone" id="discard3"></div>
       <div class="horizontal-fan zone" id="hand3"></div>
       <div class="stacked zone" id="deck3"></div>
@@ -12,51 +12,53 @@
 
   <div class="row">
     <!-- Player 2 -->
-    <div class="facing-left">
+    <div class="other-player facing-left">
       <div style="float: left;">
         <div class="stacked zone" id="deck2" style="float: None;"></div>
         <div class="vertical-fan zone" id="hand2" style="float: None;"></div>
         <div class="stacked zone" id="discard2" style="float: None;"></div>
       </div>
-      <!-- End Player 2 -->
-      <div class="facing-left zone" style="float:left; height: 350px;" id="play_zone2"></div>
+      <div class="zone" style="float:left; height: 350px;" id="play_zone2"></div>
     </div>
+    <!-- End Player 2 -->
     <!-- Main board -->
     <div id="main-board">
       <div class="row">
-        <div class="stacked zone supply" id="treasure0"></div>
-        <div class="stacked zone supply" id="treasure1"></div>
-        <div class="stacked zone supply" id="treasure2"></div>
-        <div class="stacked zone" id="trash"></div>
-      </div>
-      <div class="row">
-        <div class="stacked zone supply" id="victory0"></div>
-        <div class="stacked zone supply" id="victory1"></div>
-        <div class="stacked zone supply" id="victory2"></div>
-        <div class="stacked zone supply" id="curses"></div>
-      </div>
-
-      <div class="row">
-        <div class="stacked zone supply" id="kingdom0"></div>
-        <div class="stacked zone supply" id="kingdom1"></div>
-        <div class="stacked zone supply" id="kingdom2"></div>
-        <div class="stacked zone supply" id="kingdom3"></div>
-      </div>
-      <div class="row">
-        <div class="stacked zone supply" id="kingdom4"></div>
-        <div class="stacked zone supply" id="kingdom5"></div>
-        <div class="stacked zone supply" id="kingdom6"></div>
-        <div class="stacked zone supply" id="kingdom7"></div>
-      </div>
-
-      <div class="row">
-        <div class="stacked zone supply" id="kingdom8"></div>
-        <div class="stacked zone supply" id="kingdom9"></div>
+        <div class="victory">
+          <div class="stacked zone supply" id="victory0"></div>
+          <div class="stacked zone supply" id="victory1"></div>
+          <div class="stacked zone supply" id="victory2"></div>
+          <div class="stacked zone supply" id="curses"></div>
+        </div>
+        <div class="center-board">
+          <div class="row">
+            <div class="stacked zone supply" id="kingdom0"></div>
+            <div class="stacked zone supply" id="kingdom1"></div>
+            <div class="stacked zone supply" id="kingdom2"></div>
+            <div class="stacked zone supply" id="kingdom3"></div>
+          </div>
+          <div class="row">
+            <div class="stacked zone supply" id="kingdom4"></div>
+            <div class="stacked zone supply" id="kingdom5"></div>
+            <div class="stacked zone supply" id="kingdom6"></div>
+            <div class="stacked zone supply" id="kingdom7"></div>
+          </div>
+          <div class="row">
+            <div class="stacked zone supply" id="kingdom8"></div>
+            <div class="stacked zone supply" id="kingdom9"></div>
+          </div>
+        </div>
+        <div class="treasure">
+          <div class="stacked zone supply" id="treasure0"></div>
+          <div class="stacked zone supply" id="treasure1"></div>
+          <div class="stacked zone supply" id="treasure2"></div>
+          <div class="stacked zone" id="trash"></div>
+        </div>
       </div>
     </div>
-    <!-- End Main board -->
+    <!-- End Main Board -->
     <!-- Player 4 -->
-    <div class="facing-right">
+    <div class="other-player facing-left">
       <div class="zone" style="float:left; height: 350px;" id="play_zone4"></div>
       <div style="float: left;">
         <div class="stacked zone" id="deck4" style="float: None;"></div>
@@ -70,7 +72,7 @@
   <div class="row">
     <div class="zone" style="width: 450px;" id="play_zone1"></div>
   </div>
-  <div id="hand" class="row">
+  <div class="row">
     <div class="stacked zone" id="deck1"></div>
     <div class="horizontal-fan zone" id="hand1"></div>
     <div class="stacked zone" id="discard1"></div>
