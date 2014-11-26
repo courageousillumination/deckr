@@ -30,6 +30,7 @@ function setupSockets() {
 }
 
 function onStart() {
+    console.log("what");
     socket.emit('request_state');
     $("#start-btn").hide();
 }
