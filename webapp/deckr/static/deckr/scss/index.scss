@@ -7,6 +7,10 @@
 // General tags
 //
 
+html,body {
+    height: 100%;
+}
+
 body {
     font-family: $text-font;
     background-color: $background-color;
@@ -52,6 +56,7 @@ input[type="text"] {
     padding: 20px 40px;
     position: relative;
     @include box-shadow(rgba(0,0,0,0.4) 0px 5px 10px);
+    z-index: 2;
 
     #github {
         position: absolute;
@@ -214,4 +219,28 @@ input[type="text"] {
 
 .right {
     float: right;
+}
+
+#sidebar {
+    position: fixed;
+    background:  white;
+    height:  100%;
+    top: 0px;
+    z-index: 1;
+    width:  150px;
+    border-right: 1px solid black;
+}
+
+#chat-box {
+    position: fixed;
+    width:  50px;
+    height: 500px;
+    top: 20px; // Added to height of #header in js
+    left:  10px;
+    border: 1px solid black;
+    overflow-y: scroll;
+}
+
+span.un {
+    font-weight: bold;
 }

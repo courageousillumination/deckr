@@ -43,4 +43,6 @@ $(document).ready(function() {
     $('#leave-game-room').click(function(){
         socket.emit('leave_game');
     });
+    $('#chat-box').css('top',($('#chat-box').offset().top + $('#header').outerHeight()) + 'px');
+    $('#chat-box').css('width', $('#sidebar').width() - 20 + 'px');
 });

@@ -56,30 +56,35 @@ table {
 }
 
 /* line 10, scss/index.scss */
+html, body {
+  height: 100%;
+}
+
+/* line 14, scss/index.scss */
 body {
   font-family: "Lato", Helvetica, San-Serif;
   background-color: #eee;
   background-image: url("images/cream_pixels.png");
 }
 
-/* line 16, scss/index.scss */
+/* line 20, scss/index.scss */
 h1 {
   font-weight: 300;
   font-size: 1.5em;
   margin-bottom: 10px;
 }
-/* line 21, scss/index.scss */
+/* line 25, scss/index.scss */
 h1.bold {
   font-weight: bold;
 }
 
-/* line 26, scss/index.scss */
+/* line 30, scss/index.scss */
 h2 {
   font-weight: 300;
   font-size: 1.3em;
 }
 
-/* line 31, scss/index.scss */
+/* line 35, scss/index.scss */
 input[type="text"] {
   font-family: "Courgette";
   font-size: 1.5em;
@@ -87,7 +92,7 @@ input[type="text"] {
   margin: 10px;
   border: 1px solid #ccc;
 }
-/* line 38, scss/index.scss */
+/* line 42, scss/index.scss */
 input[type="text"]:focus {
   outline: none;
   border: 1px solid #7991bf;
@@ -96,7 +101,7 @@ input[type="text"]:focus {
   box-shadow: #becae0 0px 0px 5px;
 }
 
-/* line 49, scss/index.scss */
+/* line 53, scss/index.scss */
 #header {
   background-color: #7991bf;
   border-bottom: 1px solid #445d8e;
@@ -105,14 +110,15 @@ input[type="text"]:focus {
   -moz-box-shadow: rgba(0, 0, 0, 0.4) 0px 5px 10px;
   -webkit-box-shadow: rgba(0, 0, 0, 0.4) 0px 5px 10px;
   box-shadow: rgba(0, 0, 0, 0.4) 0px 5px 10px;
+  z-index: 2;
 }
-/* line 56, scss/index.scss */
+/* line 61, scss/index.scss */
 #header #github {
   position: absolute;
   top: 20px;
   right: 40px;
 }
-/* line 62, scss/index.scss */
+/* line 67, scss/index.scss */
 #header #player-names {
   position: absolute;
   top: 53px;
@@ -124,20 +130,20 @@ input[type="text"]:focus {
   -webkit-box-shadow: rgba(0, 0, 0, 0.4) 0px 5px 10px;
   box-shadow: rgba(0, 0, 0, 0.4) 0px 5px 10px;
 }
-/* line 71, scss/index.scss */
+/* line 76, scss/index.scss */
 #header #player-names li {
   padding: 5px;
   border-bottom: 1px solid #adbbd8;
 }
 
-/* line 82, scss/index.scss */
+/* line 87, scss/index.scss */
 #wrapper {
   width: 1200px;
   margin: 0 auto;
   margin-top: 50px;
 }
 
-/* line 87, scss/index.scss */
+/* line 92, scss/index.scss */
 #content {
   background-color: #fff;
   padding: 20px;
@@ -150,26 +156,26 @@ input[type="text"]:focus {
   -webkit-border-radius: 5px;
   border-radius: 5px;
 }
-/* line 95, scss/index.scss */
+/* line 100, scss/index.scss */
 #content .header {
   padding-bottom: 5px;
   margin-bottom: 20px;
   border-bottom: 1px solid #ccc;
 }
 
-/* line 106, scss/index.scss */
+/* line 111, scss/index.scss */
 .logo {
   color: #000;
   font-family: "Courgette";
 }
-/* line 110, scss/index.scss */
+/* line 115, scss/index.scss */
 #header .logo {
   font-size: 2em;
   color: #fff;
   text-shadow: #445d8e 3px 3px 5px;
 }
 
-/* line 117, scss/index.scss */
+/* line 122, scss/index.scss */
 .big-btn {
   font-weight: 300;
   color: #fff;
@@ -189,13 +195,13 @@ input[type="text"]:focus {
 .big-btn div:hover {
   background-color: #4c699f;
 }
-/* line 119, scss/index.scss */
+/* line 124, scss/index.scss */
 .big-btn div {
   padding: 15px;
   margin: 10px 0;
 }
 
-/* line 125, scss/index.scss */
+/* line 130, scss/index.scss */
 .small-btn {
   font-weight: 300;
   color: #fff;
@@ -215,23 +221,23 @@ input[type="text"]:focus {
 .small-btn div:hover {
   background-color: #4c699f;
 }
-/* line 127, scss/index.scss */
+/* line 132, scss/index.scss */
 .small-btn div {
   padding: 5px 10px;
 }
 
-/* line 133, scss/index.scss */
+/* line 138, scss/index.scss */
 #player-info h2 {
   color: #fff;
   font-size: 1.0em;
   padding: 5px;
 }
-/* line 138, scss/index.scss */
+/* line 143, scss/index.scss */
 #player-info h2 span.name {
   margin-left: 5px;
   font-size: 1.2em;
 }
-/* line 144, scss/index.scss */
+/* line 149, scss/index.scss */
 #header #player-info {
   display: inline-block;
   margin-top: -10px;
@@ -239,31 +245,31 @@ input[type="text"]:focus {
   padding-right: 20px;
   border-right: 1px solid #5675af;
 }
-/* line 151, scss/index.scss */
+/* line 156, scss/index.scss */
 #header #player-info #player-names-btn {
   text-align: right;
   color: #becae0;
   padding: 5px;
   font-size: 1em;
 }
-/* line 157, scss/index.scss */
+/* line 162, scss/index.scss */
 #header #player-info #player-names-btn:hover {
   color: white;
   background-color: #8a9fc7;
   cursor: pointer;
 }
 
-/* line 170, scss/index.scss */
+/* line 175, scss/index.scss */
 .game-body {
   height: 100%;
 }
 
-/* line 174, scss/index.scss */
+/* line 179, scss/index.scss */
 .game-wrapper {
   height: 100%;
 }
 
-/* line 178, scss/index.scss */
+/* line 183, scss/index.scss */
 #start-end-btns {
   display: inline-block;
   padding: 10px 20px;
@@ -273,22 +279,22 @@ input[type="text"]:focus {
   border-left: 1px solid #5675af;
 }
 
-/* line 187, scss/index.scss */
+/* line 192, scss/index.scss */
 #start-btn {
   color: #000;
   font-weight: 400;
 }
-/* line 190, scss/index.scss */
+/* line 195, scss/index.scss */
 #start-btn div {
   background-color: #becae0;
 }
-/* line 192, scss/index.scss */
+/* line 197, scss/index.scss */
 #start-btn div:hover {
   color: #fff;
   background-color: #445d8e;
 }
 
-/* line 199, scss/index.scss */
+/* line 204, scss/index.scss */
 .card.selected {
   margin-left: 3px;
   margin-top: 3px;
@@ -298,12 +304,39 @@ input[type="text"]:focus {
   box-shadow: 0px 0px 5px yellow;
 }
 
-/* line 211, scss/index.scss */
+/* line 216, scss/index.scss */
 .center {
   text-align: center;
 }
 
-/* line 215, scss/index.scss */
+/* line 220, scss/index.scss */
 .right {
   float: right;
+}
+
+/* line 224, scss/index.scss */
+#sidebar {
+  position: fixed;
+  background: white;
+  height: 100%;
+  top: 0px;
+  z-index: 1;
+  width: 150px;
+  border-right: 1px solid black;
+}
+
+/* line 234, scss/index.scss */
+#chat-box {
+  position: fixed;
+  width: 50px;
+  height: 500px;
+  top: 20px;
+  left: 10px;
+  border: 1px solid black;
+  overflow-y: scroll;
+}
+
+/* line 244, scss/index.scss */
+span.un {
+  font-weight: bold;
 }

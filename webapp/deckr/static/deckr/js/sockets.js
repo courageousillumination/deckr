@@ -136,3 +136,11 @@ function onPlayerNick(data){
     // $('#player_nick').html("Welcome " + data.nickname);
     my_game_id = data.id;
 }
+
+function onChat(data) {
+    user = data.user;
+    msg = data.msg;
+
+    $('#chat-box').append('<div>'+'<span class="un">'+user+'</span>'
+                            + ': ' + msg+'</div>');
+}
