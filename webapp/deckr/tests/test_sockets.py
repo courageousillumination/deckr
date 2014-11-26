@@ -7,7 +7,7 @@ from unittest import skip
 from django.test import TestCase
 
 from deckr.models import GameDefinition, GameRoom, Player
-from deckr.sockets import ChatNamespace, GameNamespace
+from deckr.sockets import ChatNamespace, GameNamespace, ROOMS
 from mock import MagicMock
 from socketio.virtsocket import Socket
 
@@ -163,6 +163,17 @@ class GameNamespaceTestCase(SocketTestCase):
         request = {'game_room_id': "foo", 'player_id': self.player.id}
         self.assertFalse(self.namespace.on_join(request))
         error_message = "Game room id is not an integer."
+        self.namespace.emit.assert_called_with("error", error_message)
+
+        # Make sure we get an error if there was a bad/invalid player id
+        request = {'game_room_id': self.game_room.pk, 'player_id': 'foo'}
+        self.assertFalse(self.namespace.on_join(request))
+        error_message = "Player id is not an integer."
+        self.namespace.emit.assert_called_with("error", error_message)
+
+        request = {'game_room_id': self.game_room.pk, 'player_id': '0'}
+        self.assertFalse(self.namespace.on_join(request))
+        error_message = "Can not find player"
         self.namespace.emit.assert_called_with("error", error_message)
 
     def test_invalid_move(self):
@@ -325,6 +336,12 @@ class GameNamespaceTestCase(SocketTestCase):
         self.namespace.emit_to_room.assert_called_with(str(self.game_room.id),
                                                        'leave_game')
 
+        # Test error conditions
+        self.assertFalse(self.namespace.on_destroy_game())
+        self.namespace.emit.assert_called_with(
+            "error",
+            "Please connect to a game room first.")
+
     def test_on_leave_game(self):
         """
         If a player leaves the room, handle clean up
@@ -353,6 +370,12 @@ class GameNamespaceTestCase(SocketTestCase):
         self.assertEqual(GameRoom.objects.all().count(), 0)
         self.namespace.emit.assert_called_with('leave_game')
 
+        # Test error conditions
+        self.assertFalse(self.namespace.on_leave_game())
+        self.namespace.emit.assert_called_with(
+            "error",
+            "Please connect to a game room first.")
+
     def test_on_start(self):
         """
         Make sure that the socket can start a game.
@@ -364,6 +387,36 @@ class GameNamespaceTestCase(SocketTestCase):
         self.namespace.on_start()
         self.namespace.emit_to_room.assert_called_with(self.namespace.room,
                                                        'start')
+
+    def test_room_functionality(self):
+        """
+        Make sure that we can join a room, broadcast to only that room and
+        leave it if necessary.
+        """
+
+        room_name = 'my_room'
+        namespace1 = GameNamespace(self.environ, '/game')
+        namespace2 = GameNamespace(self.environ, '/game')
+
+        namespace1.emit = MagicMock()
+        namespace2.emit = MagicMock()
+        namespace1.broadcast_event = MagicMock()
+        namespace2.broadcast_event = MagicMock()
+
+        namespace1.join_room(room_name)
+        namespace2.join_room(room_name)
+
+        self.assertEqual(len(ROOMS[room_name]), 2)
+
+        namespace1.emit_to_room(room_name, 'foo')
+        namespace1.emit.assert_any_call('foo')
+        namespace2.emit.assert_any_call('foo')
+
+        # Try both ways of disconnecting
+        namespace1.disconnect()
+        namespace2.recv_disconnect()
+
+        self.assertIsNone(ROOMS.get(room_name, None))
 
     @skip('Not yet implemented')
     def test_join_as_spectator(self):

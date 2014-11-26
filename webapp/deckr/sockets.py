@@ -22,13 +22,6 @@ class ChatNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
     channel.
     """
 
-    def initialize(self):
-        """
-        Mainly for debug.
-        """
-
-        print "Got socket connection 1."
-
     def on_chat(self, msg):
         """
         Called whenever the socket recieves a chat message. It
@@ -68,14 +61,6 @@ class GameNamespace(BaseNamespace, BroadcastMixin):
         for connection in ROOMS.get(room, []):
             connection.emit(event, *args)
 
-    def initialize(self):
-        """
-        Mainly for debug.
-        """
-
-        print len(self.socket.server.sockets)
-        print "Got socket connection 2."
-
     def on_start(self):
         """
         Starts the game. Can be called by any player.
@@ -86,6 +71,10 @@ class GameNamespace(BaseNamespace, BroadcastMixin):
                           "start")
 
     def recv_disconnect(self):
+        """
+        Make sure we explicitly call disconnect.
+        """
+
         self.disconnect()
 
     def disconnect(self, silent=False):
@@ -93,15 +82,24 @@ class GameNamespace(BaseNamespace, BroadcastMixin):
         Make sure when we disconnect that we remove ourselves from the room.
         """
 
-        print "Disconnecting...."
         super(GameNamespace, self).disconnect(silent)
-
         if self.room is None:
             return
 
         ROOMS[self.room].remove(self)
         if len(ROOMS[self.room]) == 0:
             del ROOMS[self.room]
+
+    def join_room(self, room):
+        """
+        This will add the current socket to the ROOMS list under the specified
+        value.
+        """
+
+        self.room = room
+        if ROOMS.get(room, None) is None:
+            ROOMS[room] = set()
+        ROOMS[room].add(self)
 
     def on_join(self, join_request):
         """
@@ -139,16 +137,12 @@ class GameNamespace(BaseNamespace, BroadcastMixin):
             return False
 
         # join the room
+        self.join_room(room)
         self.player = player
         self.game_room = game_room
-        self.room = room
         self.emit('player_nick', {'nickname': player.nickname,
                                   'id': player.player_id})
         self.update_player_list()
-
-        if ROOMS.get(room, None) is None:
-            ROOMS[room] = set()
-        ROOMS[room].add(self)
 
         return True
 
@@ -161,14 +155,6 @@ class GameNamespace(BaseNamespace, BroadcastMixin):
             player_names = [{'id': p.player_id, 'nickname': p.nickname}
                             for p in self.game_room.player_set.all()]
             self.emit_to_room(self.room, 'player_names', player_names)
-
-    # This is extremely temporary.
-    def on_move_card(self, data):
-        """
-        This should call the engine to determine if this is a valid move
-        """
-        self.emit('move_card', data)
-        return True
 
     def on_action(self, data):
         """
@@ -322,8 +308,8 @@ class GameNamespace(BaseNamespace, BroadcastMixin):
         if self.player is not None:
             self.player.delete()
 
+        self.disconnect()
+
         self.player = None
         self.game_room = None
         self.room = None
-
-        self.disconnect()

@@ -5,7 +5,7 @@ that. Note that the game runner is a __module__ not a class (this is
 the best way we could think of to implement the singleton pattern).
 """
 
-from unittest import skip, TestCase
+from unittest import TestCase
 
 from engine import game_runner
 from engine.game import Game
@@ -96,15 +96,13 @@ class GameRunnerTestCase(TestCase):
         self.assertNotEqual(player_id,
                             game_runner.add_player(self.game_id))
 
-    @skip
     def test_remove_player(self):
         """
         Makes sure we can remove a player and it informs
         if we are successful or not
         """
 
-        game_runner.add_player(self.game_id)
-        player_id = game_runner.get_game(self.game_id).players[0].game_id
+        player_id = game_runner.add_player(self.game_id)
         self.assertTrue(game_runner.remove_player(self.game_id, player_id))
         self.assertFalse(game_runner.remove_player(self.game_id, player_id))
         player_id = game_runner.add_player(self.game_id)

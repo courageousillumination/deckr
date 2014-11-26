@@ -86,12 +86,12 @@ def game_step(requires=None):
 
     def wrapper(func):
         """
-        Woo decorators!
+        Part of the wrapper to make the decorator work.
         """
 
         def inner(*args, **kwargs):
             """
-            MOAR decorators!
+            Yet another part of the decorator.
             """
 
             if requires is not None:
@@ -140,9 +140,11 @@ class Game(HasZones):
         # Where action is one of "move", "add", "remove", "set", "over"
         self.transitions = {}
 
-        # Steps....
+        # steps are atomic units of what happens in a game.
         self.steps = []
         self.expected_action = None
+        # This will store something akin to a state as we work our way through
+        # the steps.
         self.current_kwargs = {}
 
     def load_config(self, config):
@@ -206,6 +208,29 @@ class Game(HasZones):
 
         if self.is_over():
             self.add_transition(('is_over', self.winners()))
+
+    def deregister(self, objects):
+        """
+        This function will deregister objects in the game, cleaning up anything
+        that register created.
+        """
+
+        for obj in objects:
+            if obj.game_id is None:
+                continue
+
+            if isinstance(obj, Card):
+                object_type = "Card"
+            elif isinstance(obj, Zone):
+                object_type = "Zone"
+            elif isinstance(obj, Player):
+                object_type = "Player"
+            else:
+                object_type = type(obj).__name__
+
+            if object_type in self.registered_objects:
+                del self.registered_objects[object_type][1][obj.game_id]
+                self.registered_objects[object_type][0] -= 1
 
     def register(self, objects):
         """
@@ -292,7 +317,15 @@ class Game(HasZones):
         Removes a player if possible and returns a
         boolean denoting success or failure
         """
-        pass
+        player = self.get_object_with_id("Player", player_id)
+        if player is None:
+            return False
+        self.deregister([player])
+        self.deregister(player.zones.values())
+        for name in player.zones:
+            del self.zones[name + '_' + str(player.game_id)]
+        self.players.remove(player)
+        return True
 
     def add_player(self):
         """
@@ -355,7 +388,10 @@ class Game(HasZones):
 
     def run(self):
         """
-        This will run all steps until it is impossible to do so anymore.
+        This will run all steps until it is impossible to do so anymore. The
+        output of the step can be stored, and we pass in the current list of
+        all my keyword argumnets to the step. This allows steps to communicate
+        with one another.
         """
 
         while len(self.steps) > 0:
@@ -387,7 +423,8 @@ class Game(HasZones):
             # Now that it's actually been resovled we can clear it
             self.steps.pop(0)
 
-        # If we get down here we're not really expecting any action.
+        # If we get down here we're not really expecting any action and we can
+        # clear out all of the state.
         self.expected_action = None
         self.current_kwargs = {}
 
@@ -422,7 +459,8 @@ class Game(HasZones):
     # pylint: disable=unused-argument
     def send_information_restriction(self, player, **kwargs):
         """
-        We can only send information if the server is expecting it.
+        We can only send information if the server is expecting it from this
+        player.
         """
 
         return player.game_id == self.expected_action[3]
@@ -454,8 +492,8 @@ class Game(HasZones):
         """
 
         self.current_kwargs = {}
-    # Actions after this point should be implemented by subclasses
 
+    # Actions after this point should be implemented by subclasses
     def set_up(self):
         """
         This will set up the actual game. This includes dealing cards, setting
