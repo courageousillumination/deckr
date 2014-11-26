@@ -53,5 +53,10 @@ class CardSetTestCase(TestCase):
         card_instances = self.card_set.create_set()
         self.assertEqual(len(card_instances), 2)
 
-        # Make sure no error is thrown if we create a card that doesn't exist
+        # Make sure no error is thrown if we try to create a non-positive number
+        # of cards
+        no_cards = self.card_set.create("Silver", -1)
+        self.assertEqual(no_cards, [])
+
+        # Make sure an error is thrown if we create a card that doesn't exist
         self.assertRaises(ValueError, self.card_set.create, "Gold")

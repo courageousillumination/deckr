@@ -14,5 +14,13 @@
     },
     "model": "deckr.gamedefinition",
     "pk": 2
+},
+{
+    "fields": {
+        "path": "game_defs/dominion",
+        "name": "Dominion"
+    },
+    "model": "deckr.gamedefinition",
+    "pk": 3
 }
 ]

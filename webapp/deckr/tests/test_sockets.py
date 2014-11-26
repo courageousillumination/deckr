@@ -6,7 +6,7 @@ from unittest import skip
 
 from django.test import TestCase
 
-from deckr.models import GameRoom, Player
+from deckr.models import GameDefinition, GameRoom, Player
 from deckr.sockets import ChatNamespace, GameNamespace
 from mock import MagicMock
 from socketio.virtsocket import Socket
@@ -111,17 +111,23 @@ class GameNamespaceTestCase(SocketTestCase):
         self.namespace.runner.get_public_transitions = MagicMock()
         self.namespace.runner.get_player_transitions = MagicMock()
         self.namespace.runner.get_expected_action = MagicMock()
+        self.game_def = GameDefinition.objects.create(name="test",
+                                                      path="test")
         self.game_room = GameRoom.objects.create(room_id=0,
-                                                 max_players=1)
+                                                 max_players=1,
+                                                 game_definition=self.game_def)
         self.player = Player.objects.create(player_id=1,
                                             nickname="Player 1",
                                             game_room=self.game_room)
 
         request = {
-            'game_room_id': str(
-                self.game_room.pk),
-            'player_id': self.player.id}
+            'game_room_id': str(self.game_room.pk),
+            'player_id': self.player.id
+        }
         self.namespace.on_join(request)
+
+    def tearDown(self):
+        self.namespace.flush()
 
     def test_join(self):
         """

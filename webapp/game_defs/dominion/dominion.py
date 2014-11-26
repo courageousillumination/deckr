@@ -85,7 +85,7 @@ class Dominion(Game):
         self.current_phase = "action"
         self.current_player = self.players[0]
 
-        is_set_up = True
+        self.is_set_up = True
 
     def is_over(self):
         """
@@ -138,7 +138,7 @@ class Dominion(Game):
             elif score == max_score:
                 max_players.append(player)
 
-        return max_players
+        return [x.game_id for x in max_players]
 
     #######################
     # Action Restrictions #
@@ -546,8 +546,15 @@ class Dominion(Game):
         # clear the state here.
         self.clear_keyword_argument('card')
         card.face_up = True
+
+        if "attack" in card.card_type:
+            self.for_each_other_player(player, self.reveal_moat_util)
         self.resolve(player, card)
+        
         self.add_step(player, self.clear_all_keywords)
+
+        if "attack" in card.card_type:
+            self.for_each_other_player(player, self.reveal_moat_util)
         self.resolve(player, card)
 
     @game_step(requires=[("discard", "Bool", simple_test,
@@ -768,7 +775,7 @@ class Dominion(Game):
                       self.gain,
                       kwargs = {'gain_test': treasure_and_cost,
                                 'gain_to_zone': player.hand})
-        # TODO: Gain card it hand
+
 
     # TODO: Clean up everything below this.
 
