@@ -5,7 +5,7 @@ that. Note that the game runner is a __module__ not a class (this is
 the best way we could think of to implement the singleton pattern).
 """
 
-from unittest import skip, TestCase
+from unittest import TestCase
 
 from engine import game_runner
 from engine.game import Game
