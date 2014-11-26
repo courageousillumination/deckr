@@ -244,7 +244,9 @@ class Dominion(Game):
             self.current_phase = "action"
             self.current_player = self.next_player(self.current_player)
 
-        self.add_transition(['Phase',self.current_phase],None)
+        self.add_transition(['Phase',self.current_phase,
+                              self.current_player.game_id],
+                              None)
 
     #####################
     # Utility Functions #
