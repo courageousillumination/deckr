@@ -84,6 +84,11 @@ $(document).ready(function() {
         socket.emit('leave_game');
     });
 
+    $('#chat-btn').click(function(){
+        socket.emit('chat', {'msg': $('#chat-input').val(),
+                            'sender': player_mapping[my_game_id] })
+    });
+
     createSidebar();
 
 });

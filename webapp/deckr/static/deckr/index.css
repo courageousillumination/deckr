@@ -348,4 +348,5 @@ span.un {
 /* line 251, scss/index.scss */
 #chat-btn {
   position: fixed;
+  overflow-x: hidden;
 }
