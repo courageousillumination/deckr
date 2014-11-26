@@ -60,6 +60,7 @@ function createNewCard(cardDict) {
 
     newCard = document.createElement('img');
     $(newCard).attr('id', cardDict.id);
+    $(newCard).attr('title', cardDict.alt);
     $(newCard).addClass('card');
     // Set newCard data based on cardDict
     _.each(_.pairs(cardDict), function(kv) {
@@ -76,7 +77,7 @@ function addCard(cardDict, zoneId) {
     /* Given a valid cardDict and zoneId, creates a new card and adds
        it to the specified zone. If the cardDict or zoneId is invalid,
        an error string is returned. */
-    console.log("Adding card", cardDict, zoneId);
+    //console.log("Adding card", cardDict, zoneId);
     var zone, newCard, err;
     zone = getZoneById(zoneId)
     if (_.isString(zone)) return zone;
@@ -90,7 +91,7 @@ function addCard(cardDict, zoneId) {
 function moveCard(cardId, toZoneId) {
     /* Moves card with id cardId to zone with id toZoneId. If the zoneId
        is invalid, an error string is returned. */
-    console.log("Moving card", cardId, toZoneId);
+    //console.log("Moving card", cardId, toZoneId);
     var card, fromZone, toZone, err;
     card = document.getElementById(cardId);
     fromZone = card.parentElement;
@@ -103,8 +104,8 @@ function moveCard(cardId, toZoneId) {
 
 function requestMoveCard(cardId, toZoneId) {
     /* Sends a request to the server to perform moveCard. */
-    console.log("Sending move request to server.");
-    console.log(cardId, cardId.substring(4));
+    //console.log("Sending move request to server.");
+    //console.log(cardId, cardId.substring(4));
     socket.emit('action', {'action_name': 'move_cards',
                            'card': cardId.substring(4),
                            'target_zone': toZoneId.substring(4)});

@@ -342,6 +342,7 @@ class Game(HasZones):
         # Register both the player and it's zones with the game.
         self.register([player])
         self.register(player.zones.values())
+        
         # Add the per-player zones to our dictionary and add the owner to
         # each zone.
         for name, zone in player.zones.items():
