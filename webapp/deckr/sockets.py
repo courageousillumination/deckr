@@ -139,16 +139,16 @@ class GameNamespace(BaseNamespace, BroadcastMixin):
             return False
 
         # join the room
+        if ROOMS.get(room, None) is None:
+            ROOMS[room] = set()
+        ROOMS[room].add(self)
+
         self.player = player
         self.game_room = game_room
         self.room = room
         self.emit('player_nick', {'nickname': player.nickname,
                                   'id': player.player_id})
         self.update_player_list()
-
-        if ROOMS.get(room, None) is None:
-            ROOMS[room] = set()
-        ROOMS[room].add(self)
 
         return True
 
