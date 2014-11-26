@@ -95,25 +95,12 @@ var phase;
 phase = "action";
 
 function parseAction(data) {
-  if(data == null)
-    return;
 
-  console.log("parsing");
-  
   nickname = data[0];
   transitions = data[1];
   state = data[2];
 
   textbox = document.getElementById("eventbox");
-
-  console.log(nickname);
-  console.log(transitions);
-  console.log(state);
-
-  if(findTransition("start", transitions) > -1) {
-    textbox.innerHTML += "It is now " + nickname + "\'s turn.&#13;**Action Phase**&#13;"
-    return;
-  }
 
   if((index = findTransition("Phase", transitions)) > -1) {
       switch(transitions[index][1]) {
@@ -127,11 +114,35 @@ function parseAction(data) {
       return;
   }
 
+
+
   for(i = 0; i < transitions.length; i++) {
     transition = transitions[i];
 
+    if(transition[0] == "start") {
+      starter = document.getElementById("player_names").children[0].innerHTML;
+
+      textbox.innerHTML += nickname + " has begun the game.&#13;";
+      textbox.innerHTML += "It is " + starter + "\'s turn.&#13;";
+      textbox.innerHTML += "**Action Phase**&#13;"
+      return;
+    }
+
+    if(transition[0] == "Phase") {
+        switch(transition[1]) {
+          case "action": textbox.innerHTML += "**Action Phase**&#13;";
+                         phase = "action";
+                         break;
+          case "buy": textbox.innerHTML += "**Buy Phase**&#13;";
+                      phase = "buy";
+                      break;
+      }
+      return;
+    }
     if(transition[0] == "add") {
-      
+      if(phase == "buy") {
+
+      }
     }
   }
 

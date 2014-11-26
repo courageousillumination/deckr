@@ -85,7 +85,7 @@ class Dominion(Game):
         self.current_player = self.players[0]
 
         self.flush_transitions()
-        self.add_transition(['start', self.current_player])
+        self.add_transition(['start', self.current_player.game_id])
         
         is_set_up = True
 
