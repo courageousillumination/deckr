@@ -16,7 +16,7 @@ function setupAltText(cardData) {
         alt += "Name: " + cardData.name;
         alt += "\nType: " + capitaliseFirstLetter(cardData.card_type[0]);
         alt += "\nCost: " + cardData.cost + "\nEffect: " + cardData.effect;
-        card.attr("alt", alt);
+        card.attr("title", alt);
     }
 }
 
