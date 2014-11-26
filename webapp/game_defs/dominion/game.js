@@ -75,9 +75,9 @@ socket.on('state', function(data) {
     };
     setupInitialState(data);
     setupClickEvents(click_fn_map); 
-    addBtn('Next Phase', 'next-phase-btn', nextPhaseOnClick);
-    addBtn('Send Info', 'send-info-btn', sendInfoOnClick);
     addBtn('Abandon Ship', 'abandon-ship-btn', abandonShipOnClick);
+    addBtn('Send Info', 'send-info-btn', sendInfoOnClick);
+    addBtn('Next Phase', 'next-phase-btn', nextPhaseOnClick);
 });
 
 socket.on('expected_action', function(data){

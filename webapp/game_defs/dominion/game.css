@@ -3,8 +3,12 @@
 }
 
 .layout {
-    margin: 0 auto;
-    width: 1000px;
+    margin-left: 50px;
+}
+
+#main-board {
+    float: left;
+    margin: 50px;
 }
 
 .zone {
