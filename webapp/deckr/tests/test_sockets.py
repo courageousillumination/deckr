@@ -454,6 +454,15 @@ class GameNamespaceTestCase(SocketTestCase):
         player.delete()
         self.assertFalse(self.namespace.on_request_state())
 
+    def test_spectator_leave_room(self):
+        """
+        If a spectator leaves the room, the socket closes
+        """
+
+        self.namespace.player = None
+        self.assertTrue(self.namespace.on_leave_game())
+        self.namespace.emit.assert_called_with('leave_game')
+
 
     def test_spectator_move(self):
         """

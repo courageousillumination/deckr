@@ -283,20 +283,25 @@ class GameNamespace(BaseNamespace, BroadcastMixin):
         The client will call this when a player decides to leave
         """
 
-        if self.game_room is None or self.player is None:
+        if self.game_room is None:
             self.emit("error", "Please connect to a game room first.")
             return False
 
-        self.player.delete()
-        self.update_player_list()
-        self.emit('leave_game')
+        # Spectator is leaving
+        if self.player is None:
+            self.emit('leave_game')
+        else:
+            self.player.delete()
+            self.update_player_list()
+            self.emit('leave_game')
 
-        if not self.game_room.player_set.all():
-            self.game_room.delete()
-            self.room = None
-            self.game_room = None
+            if not self.game_room.player_set.all():
+                self.game_room.delete()
+                self.room = None
+                self.game_room = None
 
-        self.player = None
+            self.player = None
+
         return True
 
     def on_abandon_ship(self):
