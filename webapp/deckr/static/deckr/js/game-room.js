@@ -29,6 +29,7 @@ function setupClickEvents(obj) {
     });
 }
 
+
 function createSidebar() {
     var sidebar = $('#sidebar');
     var gameWrapper = $('#game-wrapper');
@@ -40,7 +41,9 @@ function createSidebar() {
     sidebar.css('width', Math.floor(gameWrapper.width() * .15) + 'px')
     sidebar.css('height', '100%')
 
-    chatBox.css('top',(chatBox.offset().top 
+    var chatBoxFirstTop = 20;
+
+    chatBox.css('top',(chatBoxFirstTop 
         + header.outerHeight()) + 'px');
 
     var sidebarWidth = sidebar.width();
@@ -84,11 +87,20 @@ $(document).ready(function() {
         socket.emit('leave_game');
     });
 
+    $('#chat-input').keypress(function(input){
+        console.log("Hi I'm here");
+        if (input.keyCode == 13 && !input.shiftKey) {
+            console.log("Now I'm here");
+            $('#chat-btn').click();
+        }
+    })
+
     $('#chat-btn').click(function(){
         socket.emit('chat', {'msg': $('#chat-input').val(),
-                            'sender': player_mapping[my_game_id] })
+                            'sender': player_mapping[my_game_id] });
     });
 
     createSidebar();
+    $(window).resize(createSidebar)
 
 });
