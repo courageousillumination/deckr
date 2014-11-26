@@ -6,6 +6,7 @@ from engine.card import Card
 from engine.game import action, Game
 
 SUITS = ["clubs", "spades", "hearts", "diamonds"]
+img_location = '/static/deckr/cards/'
 
 def get_file_name(suit, number):
     if number == 14:
@@ -19,8 +20,8 @@ def create_playing_card(suit, number):
     card = Card()
     card.suit = suit
     card.number = number
-    card.front_face = get_file_name(suit, number)
-    card.back_face = "b1fv.png"
+    card.front_face = img_location + get_file_name(suit, number)
+    card.back_face = img_location + "b1fv.png"
     return card
 
 def compare_color(card1, card2):
@@ -68,7 +69,7 @@ class Hearts(Game):
             for card in player.hand.get_cards():
                 if card.number == 2 and card.suit == 'clubs':
                     self.current_turn = player
-                card.owner = player
+                card.owner = player.game_id
                 card.face_up = False
                 card.set_value("face_up", True, player)
 
