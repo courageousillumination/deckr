@@ -9,6 +9,14 @@ function capitaliseFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
+function setupAltText(card) {
+    if (card.face_up) {
+        card.alt = "Name: " + card.name;
+        card.alt += "\nType: " + capitaliseFirstLetter(card.card_type[0]);
+        card.alt += "\nCost: " + card.cost + "\nEffect: " + card.effect;
+    }
+}
+
 function findTransition(name, transitionList) {
   for(i=0; i<transitionList.length; i++) {
     if(transitionList[i].indexOf(name) > -1) {
@@ -147,8 +155,8 @@ function supplyOnHover(e) {
 function supplyOnMouseMove(e) {
     var ele, wH, wW, mY, mX;
     ele = $("#"+this.id+"-hover");
-    wH = $(window).height();
-    wW = $(window).width();
+    wH = $(window).innerHeight();
+    wW = $(window).innerWidth();
     mY = e.pageY + mouse_offset;
     mX = e.pageX + mouse_offset;
     if (mX > (wW/2)) mX -= ele.width();
@@ -213,12 +221,13 @@ socket.on('state', function(data) {
         ".supply": supplyOnClick
     };
     setupInitialState(data);
+    _.each(data.cards, setupAltText);
     setupClickEvents(click_fn_map); 
     addBtn('Abandon Ship', 'abandon-ship-btn', abandonShipOnClick);
     addBtn('Send Info', 'send-info-btn', sendInfoOnClick);
     addBtn('Next Phase', 'next-phase-btn', nextPhaseOnClick);
-    $('.supply img.card').hover(supplyOnHover, supplyOnMouseOut);
-    $('.supply img.card').mousemove(supplyOnMouseMove);
+    $('img.card').hover(supplyOnHover, supplyOnMouseOut);
+    $('img.card').mousemove(supplyOnMouseMove);
 });
 
 socket.on('expected_action', function(data){
