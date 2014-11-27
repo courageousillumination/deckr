@@ -6,6 +6,7 @@ from engine.card import Card
 from engine.game import action, Game
 
 SUITS = ["clubs", "spades", "hearts", "diamonds"]
+img_location = '/static/deckr/cards/'
 
 def get_file_name(suit, number):
     if number == 14:
@@ -19,8 +20,8 @@ def create_playing_card(suit, number):
     card = Card()
     card.suit = suit
     card.number = number
-    card.front_face = get_file_name(suit, number)
-    card.back_face = "b1fv.png"
+    card.front_face = img_location + get_file_name(suit, number)
+    card.back_face = img_location + "b1fv.png"
     return card
 
 def compare_color(card1, card2):
@@ -68,7 +69,7 @@ class Hearts(Game):
             for card in player.hand.get_cards():
                 if card.number == 2 and card.suit == 'clubs':
                     self.current_turn = player
-                card.owner = player
+                card.owner = player.game_id
                 card.face_up = False
                 card.set_value("face_up", True, player)
 
@@ -78,6 +79,8 @@ class Hearts(Game):
             raise ValueError("2 of clubs was not in any hand")
 
         self.play_zone.suit = None
+
+        self.add_transition(['start']);
         self.is_set_up = True
 
     def is_over(self):
@@ -167,7 +170,7 @@ class Hearts(Game):
                 max_card = card
                 max_value = card.number
 
-        if max_card.owner != player:
+        if max_card.owner != player.game_id:
             return False
 
         print "The maximum card is owned by the current player"
@@ -184,7 +187,10 @@ class Hearts(Game):
         if self.play_zone.suit is None:
             self.play_zone.suit = card.suit
 
-        self.current_turn = self.next_player(player)
+        if len(self.play_zone.cards) < len(self.players):
+            self.current_turn = self.next_player(player)
+        else:
+            self.add_transition(["trick"]);
 
         if card.number == 2 and card.suit == 'clubs':
             self.played_two_of_clubs = True
@@ -196,7 +202,10 @@ class Hearts(Game):
         while self.play_zone.get_num_cards() > 0:
             card = self.play_zone.pop()
             card.face_up = False
-            card.set_value("face_up", False, card.owner)
+            card.set_value("face_up",
+                           False,
+                           self.get_object_with_id("Player", 
+                                                   card.owner))
             player.discard.push(card)
 
             if (card.suit == 'hearts' or
@@ -220,6 +229,8 @@ class Hearts(Game):
         print self.players
         print player_index
         if player_index == (len(self.players) - 1):
+            self.add_transition(['player',self.players[0].game_id])
             return self.players[0]
         else:
+            self.add_transition(['player',self.players[player_index + 1].game_id])
             return self.players[player_index + 1]

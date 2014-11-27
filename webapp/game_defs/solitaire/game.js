@@ -30,6 +30,15 @@ function cardOnClick() {
     console.log($('.selected').attr('id') + " is selected.");
 }
 
+function readjustPlayZoneHeight() {
+    $(".play-zone").css("height", "auto");
+    var maxH = _.max(_.map($(".play-zone"), 
+        function(e) { return $(e).height(); }
+    ));
+    var h = maxH + 75;
+    $(".play-zone").css("height", h + "px");
+}
+
 socket.on('state', function(data) {
     var click_fn_map = {
         ".deck": deckOnClick,
@@ -37,5 +46,6 @@ socket.on('state', function(data) {
         ".zone": zoneOnClick
     };
     setupInitialState(data);
-    setupClickEvents(click_fn_map); 
+    setupClickEvents(click_fn_map);
+    $('body').mousemove(readjustPlayZoneHeight);
 });

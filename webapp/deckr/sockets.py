@@ -67,8 +67,19 @@ class GameNamespace(BaseNamespace, BroadcastMixin):
         """
 
         self.runner.start_game(self.game_room.room_id)
-        self.emit_to_room(self.room,
-                          "start")
+
+        self.emit_to_room(self.room, 'start')
+
+        trans = self.runner.get_public_transitions(self.game_room.room_id)
+        state = self.runner.get_state(self.game_room.room_id,
+                                      self.player.player_id)
+
+        self.emit_to_room(
+            self.room,
+            'textbox_data',
+            (self.player.nickname,
+             trans,
+             state))
 
     def recv_disconnect(self):
         """

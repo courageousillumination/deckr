@@ -1,0 +1,86 @@
+.zone {
+    float: left;
+    width: 80px;
+    height: 100px;
+    margin: 5px;
+    padding: 15px;
+    border: 1px dotted #ccc;
+}
+
+.zone.hand {
+    overflow: scroll;
+}
+
+.zone#hand {
+    width: 200px;
+    height: 300px;
+}
+
+.zone.last {
+    float: right;
+}
+
+.victory {
+    float: right;
+}
+
+.vertical-fan {
+    height: 350px;
+}
+
+.vertical-fan img {
+    margin-bottom: -78px;
+}
+
+.horizontal-fan {
+    width: 350px;
+}
+
+div.horizontal-fan{
+    padding-left: 85px;
+}
+
+.horizontal-fan img {
+    margin-left: -60px;
+}
+
+.horizontal-fan .facing-up img {
+    margin-right: -60px;
+}
+
+.facing-top img{
+    transform: rotate(180deg);
+}
+
+.facing-left img{
+    transform: rotate(90deg);
+}
+
+.facing-right img{
+    transform: rotate(270deg);
+}
+
+.center-field {
+    height: 350px;
+    width: 350px;
+}
+
+.stacked img {
+    position: absolute
+}
+
+.row {
+    clear: both;
+    width: 100%;
+    overflow: hidden;
+}
+
+.selected {
+    border: solid;
+    border-color: yellow;
+}
+
+textarea {
+    overflow: scroll;
+    resize: none;
+}

@@ -43,6 +43,9 @@ class Dominion(Game):
         if self.is_set_up:
             return
 
+        if len(self.players) < self.min_players:
+            return
+
         # Cards that are part of every game
         cards_to_zones = [('Curse', 'curses', max((len(self.players) - 1)* 10, 0)),
                           ('Estate', 'victory0', 12),
@@ -85,7 +88,10 @@ class Dominion(Game):
         self.current_phase = "action"
         self.current_player = self.players[0]
 
-        self.is_set_up = True
+        self.flush_transitions()
+        self.add_transition(['start', self.current_player.game_id])
+        
+        is_set_up = True
 
     def is_over(self):
         """
@@ -246,6 +252,10 @@ class Dominion(Game):
             self.clean_up(player)
             self.current_phase = "action"
             self.current_player = self.next_player(self.current_player)
+
+        self.add_transition(['Phase',self.current_phase,
+                              self.current_player.game_id],
+                              None)
 
     #####################
     # Utility Functions #
@@ -484,8 +494,10 @@ class Dominion(Game):
         Trash a list of cards. The only requirement is that these cards
         are in your hand.
         """
+        print "trashing cards"
 
         for card in cards:
+            print "in card list"
             player.hand.remove_card(card)
             self.trash.add_card(card)
             card.face_up = True
@@ -648,6 +660,7 @@ class Dominion(Game):
         self.pluses(player, num_cards=2)
 
     def resolve_chapel(self, player, card):
+        print "resolving chapel"
         self.add_step(player,
                       self.trash_cards,
                       kwargs = {'max_cards': 4,

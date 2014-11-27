@@ -1,11 +1,59 @@
 // game-utils.js
 
-function hoverInfo() {
-    return;
+function setJNotifyOptions(opt) {
+    var jNotify_options = {
+        autoHide: true,
+        clickOverlay: true,
+        MinWidth: 250,
+        TimeShown: 3000,
+        ShowTimeEffect: 200,
+        HideTimeEffect: 200,
+        LongTrip: 20,
+        HorizontalPosition: 'center',
+        VerticalPosition: 'top',
+        ShowOverlay: false,
+        ColorOverlay: '#000',
+        OpacityOverlay: 0.3,
+        onClosed: function(){},
+        onCompleted: function(){}
+    };
+    _.each(_.pairs(opt), function(kv) {
+        var k = kv[0];
+        var v = kv[1];
+       jNotify_options[k] = v;
+    });
+    return jNotify_options;
 }
 
-function gameAlert(msg, data) {
-    alert(msg);
+function hoverError(message, opt) {
+    jError(message, setJNotifyOptions(opt));
+}
+
+function hoverInfo(message, opt) {
+    jNotify(message, setJNotifyOptions(opt));
+}
+
+function tellCurrentPlayer(message, opt) {
+    if (my_game_id === current_player_id) hoverInfo(message, opt);
+}
+
+function scrollEventBoxToBottom(eventbox) {
+    eventbox.scrollTop = eventbox.scrollHeight;
+}
+
+function addToEventBox(eventbox, text, without_newline, extra) {
+    var n = (without_newline === true) ? "" : "&#13;";
+    if (!text)
+        console.log("Something went wrong!!", extra);
+    eventbox.innerHTML += text + n;
+}
+
+function getEventData(data) {
+    return {
+        nickname: data[0],
+        transitions: data[1],
+        state: data[2]
+    };
 }
 
 function addBtn(label, btnId, fn) {
@@ -13,6 +61,10 @@ function addBtn(label, btnId, fn) {
         $('#game-btns').append('<a href="#" id="'+btnId+'" class="small-btn"><div>'+label+'</div></a> ');
         if (fn) $('#'+btnId).click(fn);
     }
+}
+
+function changeBtnLabel(btnId, label) {
+    $("#" + btnId + " div").html(label);
 }
 
 function unselectAll() {
@@ -60,6 +112,7 @@ function createNewCard(cardDict) {
 
     newCard = document.createElement('img');
     $(newCard).attr('id', cardDict.id);
+    $(newCard).attr('title', cardDict.alt);
     $(newCard).addClass('card');
     // Set newCard data based on cardDict
     _.each(_.pairs(cardDict), function(kv) {
@@ -76,7 +129,7 @@ function addCard(cardDict, zoneId) {
     /* Given a valid cardDict and zoneId, creates a new card and adds
        it to the specified zone. If the cardDict or zoneId is invalid,
        an error string is returned. */
-    console.log("Adding card", cardDict, zoneId);
+    //console.log("Adding card", cardDict, zoneId);
     var zone, newCard, err;
     zone = getZoneById(zoneId)
     if (_.isString(zone)) return zone;
@@ -90,7 +143,7 @@ function addCard(cardDict, zoneId) {
 function moveCard(cardId, toZoneId) {
     /* Moves card with id cardId to zone with id toZoneId. If the zoneId
        is invalid, an error string is returned. */
-    console.log("Moving card", cardId, toZoneId);
+    //console.log("Moving card", cardId, toZoneId);
     var card, fromZone, toZone, err;
     card = document.getElementById(cardId);
     fromZone = card.parentElement;
@@ -103,8 +156,8 @@ function moveCard(cardId, toZoneId) {
 
 function requestMoveCard(cardId, toZoneId) {
     /* Sends a request to the server to perform moveCard. */
-    console.log("Sending move request to server.");
-    console.log(cardId, cardId.substring(4));
+    //console.log("Sending move request to server.");
+    //console.log(cardId, cardId.substring(4));
     socket.emit('action', {'action_name': 'move_cards',
                            'card': cardId.substring(4),
                            'target_zone': toZoneId.substring(4)});
