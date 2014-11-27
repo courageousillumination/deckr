@@ -168,7 +168,7 @@ class Hearts(Game):
                 max_card = card
                 max_value = card.number
 
-        if max_card.owner != player:
+        if max_card.owner != player.game_id:
             return False
 
         print "The maximum card is owned by the current player"
@@ -197,7 +197,10 @@ class Hearts(Game):
         while self.play_zone.get_num_cards() > 0:
             card = self.play_zone.pop()
             card.face_up = False
-            card.set_value("face_up", False, card.owner)
+            card.set_value("face_up",
+                           False,
+                           self.get_object_with_id("Player", 
+                                                   card.owner))
             player.discard.push(card)
 
             if (card.suit == 'hearts' or
