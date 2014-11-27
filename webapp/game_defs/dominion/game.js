@@ -191,8 +191,8 @@ function supplyOnMouseMove(e) {
     ele = $("#"+this.id+"-hover");
     wH = $(window).innerHeight();
     wW = $(window).innerWidth();
-    mY = e.clientY + mouse_offset;
-    mX = e.clientX + mouse_offset;
+    mY = e.pageX + mouse_offset;
+    mX = e.pageY + mouse_offset;
     if (mX > (wW/2)) mX -= ele.width() + 2*mouse_offset;
     if (mY > (wH/2)) mY -= ele.height() + 2*mouse_offset;
     ele.css("top", mY + "px").css("left", mX + "px");
