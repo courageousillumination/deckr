@@ -124,9 +124,11 @@ function updateEventBoxAddTransition(transition, data, eventbox) {
     if (phase === "action")
         updateEventBoxAddActionTransition(transition, data, eventbox);
     else if (phase === "buy") {
-        msg = verb + card_name + ".";
-        addToEventBox(eventbox, data.nickname + msg);
-        tellCurrentPlayer("You" + msg, {TimeShown: 1500});
+        if (verb) {
+            msg = verb + card_name + ".";
+            addToEventBox(eventbox, data.nickname + msg);
+            tellCurrentPlayer("You" + msg, {TimeShown: 1500});
+        }
     }
 }
 
@@ -151,7 +153,8 @@ function updateEventBoxAddActionTransition(transition, data, eventbox) {
         if (special_text)
             addToEventBox(eventbox, special_text);
     } else {
-        addToEventBox(eventbox, data.nickname + verb + card_name + ".");
+        if (verb)
+            addToEventBox(eventbox, data.nickname + verb + card_name + ".");
     }
 }
 
