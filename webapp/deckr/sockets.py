@@ -177,6 +177,8 @@ class GameNamespace(BaseNamespace, BroadcastMixin):
         # We want to make sure that a engine error doesn't kill the entire
         # socket. This is somewhat ugly, but hopefully we won't have engine
         # errors.
+        print data
+        
         try:
             valid, msg = self.runner.make_action(self.game_room.room_id,
                                                  player=self.player.player_id,

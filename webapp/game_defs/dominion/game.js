@@ -169,12 +169,21 @@ function updateEventBox(data) {
 
 function validateAddSelected(selected) {
     // Make sure it's of the right type
-    return !(expecting_select === false ||
-        !selected.hasClass(expecting_type.toLowerCase()))
+    console.log(expecting_select);
+    console.log(expecting_type)
+
+    valid_type = false;
+
+    if(expecting_type === "Card" || "Cards")
+      valid_type = selected.hasClass("card");
+    else
+      valid_type = selected.hasClass(expecting_type.toLowerCase());
+    return !(expecting_select === false || !valid_type)
 }
 
 function addSelected(selected) {
     var value, dict, index;
+    console.log("adding a selected card");
     if (!validateAddSelected(selected)) return;
 
     value = parseInt(selected.attr('id').substring(4));

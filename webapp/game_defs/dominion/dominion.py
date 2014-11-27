@@ -491,8 +491,10 @@ class Dominion(Game):
         Trash a list of cards. The only requirement is that these cards
         are in your hand.
         """
+        print "trashing cards"
 
         for card in cards:
+            print "in card list"
             player.hand.remove_card(card)
             self.trash.add_card(card)
             card.face_up = True
@@ -655,6 +657,7 @@ class Dominion(Game):
         self.pluses(player, num_cards=2)
 
     def resolve_chapel(self, player, card):
+        print "resolving chapel"
         self.add_step(player,
                       self.trash_cards,
                       kwargs = {'max_cards': 4,
