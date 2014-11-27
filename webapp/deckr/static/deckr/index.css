@@ -287,13 +287,16 @@ input[type="text"]:focus {
   height: 100%;
   z-index: 1;
   border-right: 1px solid black;
+  -moz-box-shadow: -1px 0px 5px rgba(0, 0, 0, 0.75);
+  -webkit-box-shadow: -1px 0px 5px rgba(0, 0, 0, 0.75);
+  box-shadow: -1px 0px 5px rgba(0, 0, 0, 0.75);
 }
-/* line 133, scss/index.scss */
+/* line 134, scss/index.scss */
 #sidebar #sidebar-padding {
   height: 75px;
 }
 
-/* line 138, scss/index.scss */
+/* line 139, scss/index.scss */
 #chat-box {
   border: 1px solid black;
   overflow-y: scroll;
@@ -302,12 +305,12 @@ input[type="text"]:focus {
   width: 94%;
 }
 
-/* line 147, scss/index.scss */
+/* line 148, scss/index.scss */
 span.un {
   font-weight: bold;
 }
 
-/* line 151, scss/index.scss */
+/* line 152, scss/index.scss */
 #chat-input {
   overflow-y: scroll;
   margin-top: 5px;
@@ -315,32 +318,32 @@ span.un {
   width: 100%;
 }
 
-/* line 159, scss/index.scss */
+/* line 160, scss/index.scss */
 #chat-btn {
   margin-top: 5px;
   overflow-x: hidden;
 }
 
-/* line 165, scss/index.scss */
+/* line 166, scss/index.scss */
 #eventbox {
   width: 100%;
   height: 100px;
   margin-bottom: 10px;
 }
 
-/* line 175, scss/index.scss */
+/* line 176, scss/index.scss */
 .logo {
   color: #000;
   font-family: "Courgette";
 }
-/* line 179, scss/index.scss */
+/* line 180, scss/index.scss */
 #header .logo {
   font-size: 2em;
   color: #fff;
   text-shadow: #445d8e 3px 3px 5px;
 }
 
-/* line 186, scss/index.scss */
+/* line 187, scss/index.scss */
 .big-btn {
   color: #fff;
   text-decoration: none;
@@ -372,13 +375,13 @@ span.un {
   color: #fff;
   background-color: #445d8e;
 }
-/* line 188, scss/index.scss */
+/* line 189, scss/index.scss */
 .big-btn div {
   padding: 15px;
   margin: 10px 0;
 }
 
-/* line 194, scss/index.scss */
+/* line 195, scss/index.scss */
 .small-btn {
   color: #fff;
   text-decoration: none;
@@ -410,23 +413,23 @@ span.un {
   color: #fff;
   background-color: #445d8e;
 }
-/* line 196, scss/index.scss */
+/* line 197, scss/index.scss */
 .small-btn div {
   padding: 5px 10px;
 }
 
-/* line 202, scss/index.scss */
+/* line 203, scss/index.scss */
 #player-info h2 {
   color: #fff;
   font-size: 1.0em;
   padding: 5px;
 }
-/* line 207, scss/index.scss */
+/* line 208, scss/index.scss */
 #player-info h2 span.name {
   margin-left: 5px;
   font-size: 1.2em;
 }
-/* line 213, scss/index.scss */
+/* line 214, scss/index.scss */
 #header #player-info {
   display: inline-block;
   margin-top: -10px;
@@ -434,31 +437,31 @@ span.un {
   padding-right: 20px;
   border-right: 1px solid #5675af;
 }
-/* line 220, scss/index.scss */
+/* line 221, scss/index.scss */
 #header #player-info #player-names-btn {
   text-align: right;
   color: #becae0;
   padding: 5px;
   font-size: 1em;
 }
-/* line 226, scss/index.scss */
+/* line 227, scss/index.scss */
 #header #player-info #player-names-btn:hover {
   color: white;
   background-color: #8a9fc7;
   cursor: pointer;
 }
 
-/* line 239, scss/index.scss */
+/* line 240, scss/index.scss */
 .center {
   text-align: center;
 }
 
-/* line 243, scss/index.scss */
+/* line 244, scss/index.scss */
 .right {
   float: right;
 }
 
-/* line 251, scss/index.scss */
+/* line 252, scss/index.scss */
 .vex-dialog-button.vex-dialog-button-primary {
   background-color: #7991bf !important;
 }
