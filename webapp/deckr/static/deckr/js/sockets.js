@@ -153,6 +153,7 @@ function onChat(data) {
 
     $('#chat-box').append('<div>'+'<span class="un">'+sender+'</span>'
                             + ': ' + msg+'</div>');
+    $("#chat-box").scrollTop($("#chat-box")[0].scrollHeight);
 
     if (sender === player_mapping[my_game_id])  {
         $('#chat-input').val('');
