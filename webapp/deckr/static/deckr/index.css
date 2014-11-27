@@ -1,4 +1,5 @@
 @import url("http://fonts.googleapis.com/css?family=Courgette|Patua+One|Lato:300,400,700");
+@import url("http://fonts.googleapis.com/css?family=Courgette|Patua+One|Lato:300,400,700");
 /* line 1, scss/reset.scss */
 html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p,
 blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img,
@@ -55,36 +56,137 @@ table {
   border-spacing: 0;
 }
 
-/* line 10, scss/index.scss */
+/* line 5, scss/game.scss */
+.game-body {
+  padding-top: 50px;
+  display: table;
+  height: 100%;
+  width: 100%;
+}
+
+/* line 12, scss/game.scss */
+.game-wrapper {
+  height: 100%;
+}
+
+/* line 16, scss/game.scss */
+#game-btns {
+  display: inline-block;
+  padding: 10px 20px;
+  position: absolute;
+  left: 150px;
+  top: 12px;
+  border-left: 1px solid #5675af;
+}
+
+/* line 25, scss/game.scss */
+.zone {
+  float: left;
+  width: 80px;
+  height: 100px;
+  margin: 5px;
+  padding: 15px;
+  border: 1px dotted #ccc;
+}
+/* line 33, scss/game.scss */
+.zone.last {
+  float: right;
+}
+
+/* line 38, scss/game.scss */
+.card {
+  margin: 5px;
+}
+/* line 40, scss/game.scss */
+.card.selected {
+  margin-left: 3px;
+  margin-top: 3px;
+  border: 2px solid yellow;
+  -moz-box-shadow: 0px 0px 5px yellow;
+  -webkit-box-shadow: 0px 0px 5px yellow;
+  box-shadow: 0px 0px 5px yellow;
+}
+
+/* line 48, scss/game.scss */
+.stacked {
+  position: relative;
+}
+/* line 50, scss/game.scss */
+.stacked img.card {
+  position: absolute;
+}
+
+/* line 56, scss/game.scss */
+.horizontal-fan img.card {
+  margin-left: -10px;
+}
+/* line 59, scss/game.scss */
+.facing-up .horizontal-fan img.card {
+  margin-right: -10px;
+}
+
+/* line 66, scss/game.scss */
+.vertical-fan img.card {
+  margin-bottom: -68px;
+}
+
+/* line 72, scss/game.scss */
+.facing-top img.card {
+  transform: rotate(180deg);
+}
+
+/* line 78, scss/game.scss */
+.facing-left img.card {
+  transform: rotate(90deg);
+}
+
+/* line 84, scss/game.scss */
+.facing-right img.card {
+  transform: rotate(270deg);
+}
+
+/* line 89, scss/game.scss */
+.row {
+  clear: both;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* line 95, scss/game.scss */
+.hover {
+  position: absolute;
+}
+
+/* line 11, scss/index.scss */
 html, body {
   height: 100%;
 }
 
-/* line 14, scss/index.scss */
+/* line 15, scss/index.scss */
 body {
   font-family: "Lato", Helvetica, San-Serif;
   background-color: #eee;
   background-image: url("images/cream_pixels.png");
 }
 
-/* line 20, scss/index.scss */
+/* line 21, scss/index.scss */
 h1 {
   font-weight: 300;
   font-size: 1.5em;
   margin-bottom: 10px;
 }
-/* line 25, scss/index.scss */
+/* line 26, scss/index.scss */
 h1.bold {
   font-weight: bold;
 }
 
-/* line 30, scss/index.scss */
+/* line 31, scss/index.scss */
 h2 {
   font-weight: 300;
   font-size: 1.3em;
 }
 
-/* line 35, scss/index.scss */
+/* line 36, scss/index.scss */
 input[type="text"] {
   font-family: "Courgette";
   font-size: 1.5em;
@@ -92,7 +194,7 @@ input[type="text"] {
   margin: 10px;
   border: 1px solid #ccc;
 }
-/* line 42, scss/index.scss */
+/* line 43, scss/index.scss */
 input[type="text"]:focus {
   outline: none;
   border: 1px solid #7991bf;
@@ -101,7 +203,7 @@ input[type="text"]:focus {
   box-shadow: #becae0 0px 0px 5px;
 }
 
-/* line 53, scss/index.scss */
+/* line 54, scss/index.scss */
 #header {
   background-color: #7991bf;
   border-bottom: 1px solid #445d8e;
@@ -112,13 +214,13 @@ input[type="text"]:focus {
   box-shadow: rgba(0, 0, 0, 0.4) 0px 5px 10px;
   z-index: 2;
 }
-/* line 61, scss/index.scss */
+/* line 62, scss/index.scss */
 #header #github {
   position: absolute;
   top: 20px;
   right: 40px;
 }
-/* line 67, scss/index.scss */
+/* line 68, scss/index.scss */
 #header #player-names {
   position: absolute;
   top: 53px;
@@ -130,20 +232,20 @@ input[type="text"]:focus {
   -webkit-box-shadow: rgba(0, 0, 0, 0.4) 0px 5px 10px;
   box-shadow: rgba(0, 0, 0, 0.4) 0px 5px 10px;
 }
-/* line 76, scss/index.scss */
+/* line 77, scss/index.scss */
 #header #player-names li {
   padding: 5px;
   border-bottom: 1px solid #adbbd8;
 }
 
-/* line 87, scss/index.scss */
+/* line 88, scss/index.scss */
 #wrapper {
   width: 1200px;
   margin: 0 auto;
   margin-top: 50px;
 }
 
-/* line 92, scss/index.scss */
+/* line 93, scss/index.scss */
 #content {
   background-color: #fff;
   padding: 20px;
@@ -156,72 +258,89 @@ input[type="text"]:focus {
   -webkit-border-radius: 5px;
   border-radius: 5px;
 }
-/* line 100, scss/index.scss */
+/* line 101, scss/index.scss */
 #content .header {
   padding-bottom: 5px;
   margin-bottom: 20px;
   border-bottom: 1px solid #ccc;
 }
 
-/* line 111, scss/index.scss */
+/* line 112, scss/index.scss */
 #open-chat-btn {
   width: 30px;
   padding-bottom: 5px;
   margin-right: 10px;
 }
-/* line 116, scss/index.scss */
+/* line 117, scss/index.scss */
 #open-chat-btn:hover {
   cursor: pointer;
 }
 
-/* line 121, scss/index.scss */
+/* line 122, scss/index.scss */
 #sidebar {
   position: fixed;
   background: white;
-  height: 100%;
-  top: 0px;
-  z-index: 1;
   width: 150px;
+  padding: 5px;
+  top: 0;
+  right: 0;
+  height: 100%;
+  z-index: 1;
   border-right: 1px solid black;
 }
-
-/* line 131, scss/index.scss */
-#chat-box {
-  position: fixed;
-  border: 1px solid black;
-  overflow-y: scroll;
+/* line 133, scss/index.scss */
+#sidebar #sidebar-padding {
+  height: 75px;
 }
 
-/* line 137, scss/index.scss */
+/* line 138, scss/index.scss */
+#chat-box {
+  border: 1px solid black;
+  overflow-y: scroll;
+  padding: 5px;
+  margin-top: 5px;
+  width: 94%;
+}
+
+/* line 147, scss/index.scss */
 span.un {
   font-weight: bold;
 }
 
-/* line 141, scss/index.scss */
+/* line 151, scss/index.scss */
 #chat-input {
-  position: fixed;
   overflow-y: scroll;
+  margin-top: 5px;
+  padding: 5px;
+  width: 100%;
 }
 
-/* line 146, scss/index.scss */
+/* line 159, scss/index.scss */
 #chat-btn {
-  position: fixed;
+  margin-top: 5px;
   overflow-x: hidden;
 }
 
-/* line 155, scss/index.scss */
+/* line 165, scss/index.scss */
+#eventbox {
+  width: 100%;
+  height: 100px;
+  margin-bottom: 10px;
+}
+
+/* line 175, scss/index.scss */
 .logo {
   color: #000;
   font-family: "Courgette";
 }
-/* line 159, scss/index.scss */
+/* line 179, scss/index.scss */
 #header .logo {
   font-size: 2em;
   color: #fff;
   text-shadow: #445d8e 3px 3px 5px;
 }
 
-/* line 166, scss/index.scss */
+/* line 186, scss/index.scss */
 .big-btn {
   color: #fff;
   text-decoration: none;
@@ -253,13 +372,13 @@ span.un {
   color: #fff;
   background-color: #445d8e;
 }
-/* line 168, scss/index.scss */
+/* line 188, scss/index.scss */
 .big-btn div {
   padding: 15px;
   margin: 10px 0;
 }
 
-/* line 174, scss/index.scss */
+/* line 194, scss/index.scss */
 .small-btn {
   color: #fff;
   text-decoration: none;
@@ -291,23 +410,23 @@ span.un {
   color: #fff;
   background-color: #445d8e;
 }
-/* line 176, scss/index.scss */
+/* line 196, scss/index.scss */
 .small-btn div {
   padding: 5px 10px;
 }
 
-/* line 182, scss/index.scss */
+/* line 202, scss/index.scss */
 #player-info h2 {
   color: #fff;
   font-size: 1.0em;
   padding: 5px;
 }
-/* line 187, scss/index.scss */
+/* line 207, scss/index.scss */
 #player-info h2 span.name {
   margin-left: 5px;
   font-size: 1.2em;
 }
-/* line 193, scss/index.scss */
+/* line 213, scss/index.scss */
 #header #player-info {
   display: inline-block;
   margin-top: -10px;
@@ -315,64 +434,31 @@ span.un {
   padding-right: 20px;
   border-right: 1px solid #5675af;
 }
-/* line 200, scss/index.scss */
+/* line 220, scss/index.scss */
 #header #player-info #player-names-btn {
   text-align: right;
   color: #becae0;
   padding: 5px;
   font-size: 1em;
 }
-/* line 206, scss/index.scss */
+/* line 226, scss/index.scss */
 #header #player-info #player-names-btn:hover {
   color: white;
   background-color: #8a9fc7;
   cursor: pointer;
 }
 
-/* line 219, scss/index.scss */
-.game-body {
-  padding-top: 50px;
-  display: table;
-  height: 100%;
-  width: 100%;
-}
-
-/* line 226, scss/index.scss */
-.game-wrapper {
-  height: 100%;
-}
-
-/* line 230, scss/index.scss */
-#game-btns {
-  display: inline-block;
-  padding: 10px 20px;
-  position: absolute;
-  left: 150px;
-  top: 12px;
-  border-left: 1px solid #5675af;
-}
-
 /* line 239, scss/index.scss */
-.card.selected {
-  margin-left: 3px;
-  margin-top: 3px;
-  border: 2px solid yellow;
-  -moz-box-shadow: 0px 0px 5px yellow;
-  -webkit-box-shadow: 0px 0px 5px yellow;
-  box-shadow: 0px 0px 5px yellow;
-}
-
-/* line 251, scss/index.scss */
 .center {
   text-align: center;
 }
 
-/* line 255, scss/index.scss */
+/* line 243, scss/index.scss */
 .right {
   float: right;
 }
 
-/* line 263, scss/index.scss */
+/* line 251, scss/index.scss */
 .vex-dialog-button.vex-dialog-button-primary {
   background-color: #7991bf !important;
 }

@@ -1,36 +1,60 @@
 <div class="layout">
-  <div class="row">
-    <!-- Player 3 -->
-    <div class="other-player facing-up">
-      <div class="stacked zone" id="discard3"></div>
-      <div class="horizontal-fan zone" id="hand3"></div>
-      <div class="stacked zone" id="deck3"></div>
-      <div class="zone" id="play_zone3"></div>
-    </div>
-    <!-- End Player 3 -->
-  </div>
-
-  <div class="row">
+  <div id="other-players">
     <!-- Player 2 -->
-    <div class="other-player facing-left">
-      <div style="float: left;">
-        <div class="stacked zone" id="deck2" style="float: None;"></div>
-        <div class="vertical-fan zone" id="hand2" style="float: None;"></div>
-        <div class="stacked zone" id="discard2" style="float: None;"></div>
+    <div id="player2" class="other-player">
+      <div class="name"></div>
+      <div class="row">
+        <div class="zone stacked discard" id="discard2"></div>
+        <div class="zone play-zone" id="play_zone2"></div>
       </div>
-      <div class="zone" style="float:left; height: 350px;" id="play_zone2"></div>
+      <div class="row">
+        <div class="zone stacked deck" id="deck2"></div>
+        <div class="zone horizontal-fan hand" id="hand2"></div>
+      </div>
     </div>
     <!-- End Player 2 -->
+    <!-- Player 3 -->
+    <div id="player3" class="other-player">
+      <div class="row">
+        <div class="name"></div>
+        <div class="row">
+          <div class="zone stacked discard" id="discard3"></div>
+          <div class="zone play-zone" id="play_zone3"></div>
+        </div>
+        <div class="row">
+          <div class="zone stacked deck" id="deck3"></div>
+          <div class="zone horizontal-fan hand" id="hand3"></div>
+        </div>
+      </div>
+    </div>
+    <!-- End Player 3 -->
+    <!-- Player 4 -->
+    <div id="player4" class="other-player">
+      <div class="name"></div>
+      <div class="row">
+        <div class="zone stacked discard" id="discard4"></div>
+        <div class="zone play-zone" id="play_zone4"></div>
+      </div>
+      <div class="row">
+        <div class="zone stacked deck" id="deck4"></div>
+        <div class="zone horizontal-fan hand" id="hand4"></div>
+      </div>
+    </div>
+    <!-- End Player 4 -->
+  </div>
+  <div class="row">
     <!-- Main board -->
     <div id="main-board">
       <div class="row">
         <div class="victory">
+          <center><span class="label">Victory Cards</span></center>
           <div class="stacked zone supply" id="victory0"></div>
           <div class="stacked zone supply" id="victory1"></div>
           <div class="stacked zone supply" id="victory2"></div>
           <div class="stacked zone supply" id="curses"></div>
         </div>
         <div class="center-board">
+          <center><span class="label">Supply Piles</span></center>
           <div class="row">
             <div class="stacked zone supply" id="kingdom0"></div>
             <div class="stacked zone supply" id="kingdom1"></div>
@@ -49,6 +73,7 @@
           </div>
         </div>
         <div class="treasure">
+          <center><span class="label">Treasure Cards</span></center>
           <div class="stacked zone supply" id="treasure0"></div>
           <div class="stacked zone supply" id="treasure1"></div>
           <div class="stacked zone supply" id="treasure2"></div>
@@ -57,25 +82,37 @@
       </div>
     </div>
     <!-- End Main Board -->
-    <!-- Player 4 -->
-    <div class="other-player facing-left">
-      <div class="zone" style="float:left; height: 350px;" id="play_zone4"></div>
-      <div style="float: left;">
-        <div class="stacked zone" id="deck4" style="float: None;"></div>
-        <div class="vertical-fan zone" id="hand4" style="float: None;"></div>
-        <div class="stacked zone" id="discard4" style="float: None;"></div>
-      </div>
-    </div>
-    <!-- End Player 4 -->
   </div>
   <!-- Player 1 -->
-  <div class="row">
-    <div class="zone" style="width: 450px;" id="play_zone1"></div>
-  </div>
-  <div class="row">
-    <div class="stacked zone" id="deck1"></div>
-    <div class="horizontal-fan zone" id="hand1"></div>
-    <div class="stacked zone" id="discard1"></div>
+  <div id="player1">
+    <div class="row">
+      <div class="player-info">
+        <table>
+          <tr>
+            <td>Buys:</td>
+            <td id="n-buys">0</td>
+          </tr>
+            <td>Actions:</td>
+            <td id="n-actions">0</td>
+          <tr>
+            <td>Treasure:</td>
+            <td id="n-treasure">0</td>
+          </tr>
+        </table>
+      </div>
+      <div class="zone play-zone" id="play_zone1"></div>
+    </div>
+    <div class="row">
+      <div class="zone stacked deck" id="deck1">
+        <center><span class="label">Deck</span></center>
+      </div>
+      <div class="zone horizontal-fan hand" id="hand1">
+        <center><span class="label">Hand</span></center>
+      </div>
+      <div class="zone stacked discard" id="discard1">
+        <center><span class="label">Discard</span></center>
+      </div>
+    </div>
   </div>
   <!-- End Player 1 -->
 </div>

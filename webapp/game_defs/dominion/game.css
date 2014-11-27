@@ -3,16 +3,34 @@
 }
 
 .layout {
-    margin-left: 50px;
+    position: relative;
 }
 
 #main-board {
-    float: left;
-    margin: 50px;
+    width: 495px;
+    margin: 0 auto;
 }
 
-.hover {
-    position: absolute;
+.card {
+    margin: 0px;
+}
+
+.zone {
+    border: 1px dotted #000;
+    width: 60px;
+    height: 97px;
+    margin: 5px;
+    padding: 5px;
+}
+
+.zone.deck, .zone.discard {
+    width: 70px;
+}
+
+span.label {
+    color: #ccc;
+    font-size: 0.75em;
+    margin-bottom: 5px;
 }
 
 .victory {
@@ -26,72 +44,66 @@
 }
 .center-board {
     float: left;
+    background-color: rgba(0,0,0,0.3);
+}
+
+#player1 {
+    width: 560px;
+    margin: 0 auto;
+    margin-top: 20px;
+}
+
+#player1 .zone {
+    height: 110px;
+}
+
+#player1 .hand {
+    padding-left: 15px;
+    width: 335px;
+    overflow-y: scroll;
+}
+
+#player1 .play-zone {
+    width: 435px;
+    float: none;
+    margin: 0 auto;
+    overflow-y: scroll;
+}
+
+#player1 .player-info {
+    background-color: rgba(255,255,255,0.5);
+    float: left;
+    font-size: 0.8em;
+    padding: 5px;
+}
+
+#player1 .player-info td {
+    padding: 5px;
+    /*color: #ccc;*/
 }
 
 .other-player {
-    /*display: none;*/
-}
-
-.zone {
-    float: left;
-    width: 70px;
-    height: 100px;
-    margin: 5px;
-    padding: 15px;
-    border: 1px dotted #ccc;
-}
-
-.vertical-fan {
-    height: 350px;
-}
-
-.horizontal-fan {
-    width: 350px;
-}
-
-.zone.last {
-    float: right;
-}
-
-div.horizontal-fan{
-    padding-left: 85px;
-}
-
-.horizontal-fan img {
-    margin-left: -10px;
-}
-
-.vertical-fan img {
-    margin-bottom: -78px;
-}
-
-.horizontal-fan .facing-up img {
-    margin-right: -10px;
-}
-
-.facing-top img {
-    transform: rotate(180deg);
-}
-
-.facing-left img {
-    transform: rotate(90deg);
-}
-
-.facing-right img {
-    transform: rotate(270deg);
-}
-
-.stacked img {
-    position: absolute
-}
-
-.row {
     clear: both;
-    width: 100%;
-    overflow: hidden;
+    margin-bottom: 5px;
+    border: 1px dotted #000;
 }
 
-.selected {
-    border: solid;
-    border-color: yellow;
+.other-player .zone {
+    border: none;
 }
+
+.other-player .hand {
+    padding-left: 15px;
+}
+
+#other-players {
+    display: table;
+    position: absolute;
+}
+
+#other-players .hand, #other-players .play-zone {
+    float: none;
+    width: 305px;
+    overflow-y: scroll;
+}
+
