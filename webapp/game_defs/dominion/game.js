@@ -265,6 +265,10 @@ function abandonShipOnClick() {
     socket.emit('abandon_ship');
 }
 
+function trashOnClick() {
+    if (expecting_select) sendInfoOnClick();
+}
+
 function sendInfoOnClick() {
     var dict;
     dict = {'action_name': 'send_information'}
@@ -282,12 +286,12 @@ socket.on('textbox_data', onTextboxData);
 socket.on('state', function(data) {
     var click_fn_map = {
         ".card": cardOnClick,
-        ".supply": supplyOnClick
+        ".supply": supplyOnClick,
+        ".trash": trashOnClick,
     };
     setupInitialState(data);
     _.each(data.cards, setupAltText);
     setupClickEvents(click_fn_map); 
-    // addBtn('Abandon Ship', 'abandon-ship-btn', abandonShipOnClick);
     addBtn('Send Info', 'send-info-btn', sendInfoOnClick);
     addBtn('Next Phase', 'next-phase-btn', nextPhaseOnClick);
     updateNextPhaseButton("next-phase-btn");
