@@ -2,6 +2,7 @@ var tricks = [];
 
 function updateEventBoxAddTransition(transition, data, eventbox) {
     var zone_id, card_id, number, card_name;
+
     // IDs start at 0 in dictionary
     zone_id = transition[2] - 1;
     card_id = transition[1] - 1;
@@ -16,7 +17,7 @@ function updateEventBoxAddTransition(transition, data, eventbox) {
     console.log(data.state.zones[zone_id].name);
     
     if(data.state.zones[zone_id].name == "play_zone")
-        addToEventBox(eventbox, nickname + " played " + card_name);
+        addToEventBox(eventbox, data.nickname + " played " + card_name + ".");
     if(data.state.zones[zone_id].name == "discard")
         tricks.push(card_name);
 }
