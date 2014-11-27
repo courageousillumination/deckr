@@ -118,13 +118,13 @@ function onGameOver(data) {
 function onGameError(data) {
     /* Responds to error from server */
     console.log(data);
-    hoverError(data, {
-        autoHide: false,
-        clickOverlay: true,
-        ShowOverlay: true,
-        ColorOverlay: '#000',
-        OpacityOverlay: 0.3,}
-    );
+    // hoverError(data, {
+    //     autoHide: false,
+    //     clickOverlay: true,
+    //     ShowOverlay: true,
+    //     ColorOverlay: '#000',
+    //     OpacityOverlay: 0.3,}
+    // );
 }
 
 function onPlayerNames(players) {
@@ -153,6 +153,7 @@ function onChat(data) {
 
     $('#chat-box').append('<div>'+'<span class="un">'+sender+'</span>'
                             + ': ' + msg+'</div>');
+    $("#chat-box").scrollTop($("#chat-box")[0].scrollHeight);
 
     if (sender === player_mapping[my_game_id])  {
         $('#chat-input').val('');

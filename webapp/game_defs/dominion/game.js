@@ -45,6 +45,7 @@ function setupHoverImages(card) {
     var hover_id, src, big_src, img;
     if (!$("#" + card.id).data("face_up")) return;
     hover_id = card.id + "-hover";
+    if ("#" + hover_id) return;
     // Create big image
     src = card.src;
     big_src = card.src.substring(0, src.length-4) + "-big.jpg";
@@ -124,9 +125,11 @@ function updateEventBoxAddTransition(transition, data, eventbox) {
     if (phase === "action")
         updateEventBoxAddActionTransition(transition, data, eventbox);
     else if (phase === "buy") {
-        msg = verb + card_name + ".";
-        addToEventBox(eventbox, data.nickname + msg);
-        tellCurrentPlayer("You" + msg, {TimeShown: 1500});
+        if (verb) {
+            msg = verb + card_name + ".";
+            addToEventBox(eventbox, data.nickname + msg);
+            tellCurrentPlayer("You" + msg, {TimeShown: 1500});
+        }
     }
 }
 
@@ -151,7 +154,8 @@ function updateEventBoxAddActionTransition(transition, data, eventbox) {
         if (special_text)
             addToEventBox(eventbox, special_text);
     } else {
-        addToEventBox(eventbox, data.nickname + verb + card_name + ".");
+        if (verb)
+            addToEventBox(eventbox, data.nickname + verb + card_name + ".");
     }
 }
 
@@ -252,13 +256,9 @@ function supplyOnClick() {
 function cardOnClick() {
     $(".hover").hide();
     if (!expecting_select) {
-        if (!$(this).parent().hasClass("supply")) {
-            socket.emit('action', {
-                'action_name': 'play_card',
-                'card': $(this).attr('id').substring(4)});
-        } else {
-            console.log("I'm in a supply pile!");
-        }
+        socket.emit('action', {
+            'action_name': 'play_card',
+            'card': $(this).attr('id').substring(4)});
     } else {
         if ($(this).hasClass("selected")) {
             $(this).removeClass("selected");
