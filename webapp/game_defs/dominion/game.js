@@ -58,6 +58,7 @@ function updateEventBoxPhaseTransition(transition, data, eventbox) {
         addToEventBox(eventbox, "---------------------------");
         addToEventBox(eventbox, "It is " + next_player + "\'s turn.");
         addToEventBox(eventbox, "**Action Phase**");
+        if (my_game_id === i+1) hoverInfo("It is your turn!");
 
         // Set the phase for later
         setPhase("action");
@@ -68,10 +69,12 @@ function updateEventBoxPhaseTransition(transition, data, eventbox) {
 }
 
 function updateEventBoxStartTransition(transition, data, eventbox) {
-    var starter = document.getElementById("player-names").children[transition[1]-1].innerHTML;
+    var i = transition[1]-1;
+    var starter = document.getElementById("player-names").children[i].innerHTML;
     addToEventBox(eventbox, data.nickname + " has begun the game.");
     addToEventBox(eventbox, "It is " + starter + "\'s turn.");
     addToEventBox(eventbox, "**Action Phase**");
+    if (my_game_id === i+1) hoverInfo("It is your turn!");
 }
 
 function updateEventBoxAddTransition(transition, data, eventbox) {

@@ -40,21 +40,18 @@ function setupClickEvents(obj) {
 
 function createSidebar() {
     var sidebar = $('#sidebar');
+    var sidebarPadding = $("#sidebar-padding");
     var gameWrapper = $('#game-wrapper');
     var chatBox = $('#chat-box');
     var chatInput = $('#chat-input');
     var header = $('#header');
     var button = $('#chat-btn')
 
-    sidebar.css('right', 0);
-
     sidebar.css('width', Math.floor(gameWrapper.width() * .15) + 'px');
-    sidebar.css('height', '100%');
 
-    var chatBoxFirstTop = 20;
+    // var chatBoxFirstTop = 20;
 
-    chatBox.css('top',(chatBoxFirstTop 
-        + header.outerHeight()) + 'px');
+    sidebarPadding.css('height',(header.outerHeight()) + 'px');
 
     var sidebarWidth = sidebar.width();
     var sidebarHeight = sidebar.height();
@@ -62,24 +59,15 @@ function createSidebar() {
     var offsetV = 10;
 
     var boxWidth = Math.floor(sidebarWidth * .95);
-    var boxOffsetH = Math.floor((sidebarWidth - boxWidth) / 2);
-
     var boxHeight = Math.floor(sidebarHeight * .65);
     var buttonHeight = Math.floor(sidebarHeight * .2);
     var inputHeight = sidebarHeight - boxHeight - offsetV * 3 - buttonHeight;
 
-    chatBox.css('right', boxOffsetH);
-    chatBox.css('width', boxWidth);
+    // chatBox.css('width', boxWidth - 10);
+    chatBox.css('height', boxHeight - $("#eventbox").height());
 
-    chatInput.css('right', boxOffsetH);
-    chatInput.css('width', boxWidth);
-
-    chatBox.css('height', boxHeight);
+    // chatInput.css('width', boxWidth);
     chatInput.css('height', inputHeight);
-    chatInput.css('top', chatBox.offset().top + boxHeight + offsetV);
-
-    button.css('top', chatInput.offset().top + inputHeight + offsetV * 2);
-    button.css('right', Math.floor((sidebarWidth - button.outerWidth()) / 2));
 }
 
 $(document).ready(function() {

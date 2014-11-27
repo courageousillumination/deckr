@@ -1,11 +1,30 @@
 // game-utils.js
 
-function hoverInfo() {
-    return;
+var jNotify_options = {
+    autoHide: true,
+    clickOverlay: true,
+    MinWidth: 250,
+    TimeShown: 3000,
+    ShowTimeEffect: 200,
+    HideTimeEffect: 200,
+    LongTrip: 20,
+    HorizontalPosition: 'center',
+    VerticalPosition: 'top',
+    ShowOverlay: false,
+    ColorOverlay: '#000',
+    OpacityOverlay: 0.3,
+    onClosed: function(){},
+    onCompleted: function(){}
+};
+
+function hoverError(message, opt) {
+    opt = (!opt) ? jNotify_options : opt;
+    jError(message, opt);
 }
 
-function gameAlert(msg, data) {
-    alert(msg);
+function hoverInfo(message, opt) {
+    opt = (!opt) ? jNotify_options : opt;
+    jNotify(message, opt);
 }
 
 function addBtn(label, btnId, fn) {
