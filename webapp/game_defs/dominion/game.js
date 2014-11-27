@@ -255,13 +255,9 @@ function supplyOnClick() {
 function cardOnClick() {
     $(".hover").hide();
     if (!expecting_select) {
-        if (!$(this).parent().hasClass("supply")) {
-            socket.emit('action', {
-                'action_name': 'play_card',
-                'card': $(this).attr('id').substring(4)});
-        } else {
-            console.log("I'm in a supply pile!");
-        }
+        socket.emit('action', {
+            'action_name': 'play_card',
+            'card': $(this).attr('id').substring(4)});
     } else {
         if ($(this).hasClass("selected")) {
             $(this).removeClass("selected");
