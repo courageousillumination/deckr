@@ -79,6 +79,8 @@ class Hearts(Game):
             raise ValueError("2 of clubs was not in any hand")
 
         self.play_zone.suit = None
+
+        self.add_transition(['start']);
         self.is_set_up = True
 
     def is_over(self):
@@ -224,6 +226,8 @@ class Hearts(Game):
         print self.players
         print player_index
         if player_index == (len(self.players) - 1):
+            self.add_transition(['player',self.players[0].game_id])
             return self.players[0]
         else:
+            self.add_transition(['Player',self.players[player_index + 1].game_id])
             return self.players[player_index + 1]

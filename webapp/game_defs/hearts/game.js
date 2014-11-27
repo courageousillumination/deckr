@@ -1,4 +1,5 @@
-var tricks = [];
+var tricks;
+tricks = [];
 
 function updateEventBoxAddTransition(transition, data, eventbox) {
     var zone_id, card_id, number, card_name;
@@ -23,27 +24,36 @@ function updateEventBoxAddTransition(transition, data, eventbox) {
 }
 
 function updateEventBox(data) {
-    var _data, tricks, eventbox, trick_text, trick_len;
+    var _data, eventbox, trick_text, trick_len;
     _data = getEventData(data);
     eventbox = document.getElementById("eventbox");
     tricks = [];
 
     console.log("parsing");
     _.each(_data.transitions, function(transition) {
-        console.log("Cards: ", _data.state.cards);
         if (transition[0] === "add") {
             updateEventBoxAddTransition(transition, _data, eventbox);
+        }
+        if (transition[0] === "start") {
+             addToEventBox(eventbox, _data.nickname + " begun the game.");
+             addToEventBox(eventbox, "Someone needs to play the 2 of Clubs.");
+        }
+        if (transition[0] === "player") {
+            var id = transition[1] - 1;
+            var next = document.getElementById("player-names").children[id].innerHTML;
+             addToEventBox(eventbox, "It is " + next + "'s turn.");
         }
     });
 
     trick_len = tricks.length;
     if (trick_len > 0) {
-        trick_text = nickname + " won ";
+        trick_text = _data.nickname + " won ";
         _.each(tricks, function(card, i) {
-            card += (i < trick_len) ? ", " : " and ";
+            if(i != trick_len - 1)
+                card += (i < trick_len - 2) ? ", " : " and ";
             trick_text += card;
         });
-        addToEventBox(eventbox, trick_text);
+        addToEventBox(eventbox, trick_text + ".");
     }
     scrollEventBoxToBottom(eventbox);
 }
