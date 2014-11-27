@@ -64,7 +64,7 @@ function createSidebar() {
     var inputHeight = sidebarHeight - boxHeight - offsetV * 3 - buttonHeight;
 
     // chatBox.css('width', boxWidth - 10);
-    chatBox.css('height', boxHeight - $("#eventbox").height());
+    chatBox.css('height', boxHeight - $("#eventbox").height() - $("h3").height() - 10);
 
     // chatInput.css('width', boxWidth);
     chatInput.css('height', inputHeight);

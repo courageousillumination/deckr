@@ -58,13 +58,12 @@
 
 .other-player {
     clear: both;
-    display: none;
+    /*display: none;*/
 }
 
 #other-players {
     display: table;
     position: absolute;
-    top: 85px;
 }
 
 #other-players .hand, #other-players .play-zone {
