@@ -45,6 +45,7 @@ function setupHoverImages(card) {
     var hover_id, src, big_src, img;
     if (!$("#" + card.id).data("face_up")) return;
     hover_id = card.id + "-hover";
+    if ("#" + hover_id) return;
     // Create big image
     src = card.src;
     big_src = card.src.substring(0, src.length-4) + "-big.jpg";
