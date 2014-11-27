@@ -92,7 +92,7 @@ function parseAction(data) {
     state = data[2];
 
     tricks = [];
-
+    console.log("parsing");
     for(i = 0; i < transitions.length; i++) {
         transition = transitions[i];
         event_box = document.getElementById("eventbox");

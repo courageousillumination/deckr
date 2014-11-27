@@ -92,7 +92,7 @@ function transitionSet(transition) {
 
 function transitionGameOver(transition) {
     var winner = player_mapping[transition[1][0]];
-    alert("You won " + winner);
+    alert(winner + " won!");
 }
 
 function performTransition(t) {
