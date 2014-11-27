@@ -385,7 +385,7 @@ class GameNamespaceTestCase(SocketTestCase):
         self.namespace.runner.get_state.return_value = state
 
         self.namespace.on_start()
-        self.namespace.emit_to_room.assert_called_with(self.namespace.room,
+        self.namespace.emit_to_room.expect_any_call(self.namespace.room,
                                                        'start')
 
     def test_room_functionality(self):

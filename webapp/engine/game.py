@@ -464,6 +464,8 @@ class Game(HasZones):
         player.
         """
 
+        if(self.expected_action == None):
+            return False
         return player.game_id == self.expected_action[3]
 
     @action(restriction=send_information_restriction)
