@@ -90,7 +90,7 @@ class Dominion(Game):
 
         self.flush_transitions()
         self.add_transition(['start', self.current_player.game_id])
-        
+
         is_set_up = True
 
     def is_over(self):
@@ -562,7 +562,7 @@ class Dominion(Game):
         if "attack" in card.card_type:
             self.for_each_other_player(player, self.reveal_moat_util)
         self.resolve(player, card)
-        
+
         self.add_step(player, self.clear_all_keywords)
 
         if "attack" in card.card_type:
@@ -642,6 +642,8 @@ class Dominion(Game):
     def reveal_moat(self, player, reveal, **kwargs):
         if reveal:
             player.protected = True
+        # This is needed to make this work with some attacks.
+        self.clear_keyword_argument('reveal')
 
     ###############################
     # Individual Card Resolutions #
