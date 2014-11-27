@@ -91,7 +91,7 @@ function updateEventBoxPhaseTransition(transition, data, eventbox) {
         addToEventBox(eventbox, "---------------------------");
         addToEventBox(eventbox, "It is " + next_player + "\'s turn.");
         addToEventBox(eventbox, "**Action Phase**");
-        
+
         changeCurrentPlayerId(i+1, "It is your turn!");
         setPhase("action");
     } else if (transition[1] === "buy") {
@@ -142,7 +142,7 @@ function updateEventBoxAddActionTransition(transition, data, eventbox) {
         "hand": " drew a(n) ",
         "discard": " obtained a(n) "
     }[zone_name];
-    
+
     if (zone_name == "hand") {
         addToEventBox(eventbox, data.nickname + " drew a card.");
     } else if (zone_name === "play_zone") {
@@ -182,11 +182,11 @@ function updateEventBox(data) {
 function validateAddSelected(selected) {
     // Make sure it's of the right type
     var valid_type = false;
-    if (expecting_type === "Card" || "Cards")
+    if (expecting_type == "Card" || expecting_type == "Cards")
       valid_type = selected.hasClass("card");
     else
       valid_type = selected.hasClass(expecting_type.toLowerCase());
-    return !(expecting_select === false || !valid_type)
+    return !(expecting_select == false || !valid_type)
 }
 
 function addSelected(selected) {
@@ -305,7 +305,7 @@ socket.on('state', function(data) {
     setupInitialState(data);
     _.each(data.cards, setupAltText);
     _.each($("img.card"), setupHoverImages);
-    setupClickEvents(click_fn_map); 
+    setupClickEvents(click_fn_map);
     addBtn('Send Info', 'send-info-btn', sendInfoOnClick);
     addBtn('Next Phase', 'next-phase-btn', nextPhaseOnClick);
     updateNextPhaseButton("next-phase-btn");
