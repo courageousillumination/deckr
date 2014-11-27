@@ -23,6 +23,16 @@
     padding: 5px;
 }
 
+.zone.deck, .zone.discard {
+    width: 70px;
+}
+
+span.label {
+    color: #ccc;
+    font-size: 0.75em;
+    margin-bottom: 5px;
+}
+
 .victory {
     float: left;
 }
@@ -38,9 +48,13 @@
 }
 
 #player1 {
-    width: 540px;
+    width: 560px;
     margin: 0 auto;
     margin-top: 20px;
+}
+
+#player1 .zone {
+    height: 110px;
 }
 
 #player1 .hand {
@@ -58,7 +72,16 @@
 
 .other-player {
     clear: both;
-    /*display: none;*/
+    margin-bottom: 5px;
+    border: 1px dotted #000;
+}
+
+.other-player .zone {
+    border: none;
+}
+
+.other-player .hand {
+    padding-left: 15px;
 }
 
 #other-players {
@@ -68,7 +91,7 @@
 
 #other-players .hand, #other-players .play-zone {
     float: none;
-    width: 330px;
+    width: 305px;
     overflow-y: scroll;
 }
 
