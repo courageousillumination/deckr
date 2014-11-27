@@ -89,7 +89,7 @@ function updateEventBoxAddTransition(transition, data, eventbox) {
     card_name = state.cards[card].name;
     zone_name = state.zones[zone].name;
     verb = {
-        "play_zone": " player a ",
+        "play_zone": " played a ",
         "discard": " bought a(n) "
     }[zone_name];
 
