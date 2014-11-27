@@ -2,7 +2,7 @@ var expecting_select = false;
 var expecting_type = null;
 var information_name = null;
 var currently_selected = [];
-var mouse_offset = 5;
+var mouse_offset = 10;
 var phase = "action";
 
 function capitaliseFirstLetter(string) {
@@ -191,10 +191,10 @@ function supplyOnMouseMove(e) {
     ele = $("#"+this.id+"-hover");
     wH = $(window).innerHeight();
     wW = $(window).innerWidth();
-    mY = e.pageY + mouse_offset;
-    mX = e.pageX + mouse_offset;
-    if (mX > (wW/2)) mX -= ele.width();
-    if (mY > (wH/2)) mY -= ele.height();
+    mY = e.clientY + mouse_offset;
+    mX = e.clientX + mouse_offset;
+    if (mX > (wW/2)) mX -= ele.width() + 2*mouse_offset;
+    if (mY > (wH/2)) mY -= ele.height() + 2*mouse_offset;
     ele.css("top", mY + "px").css("left", mX + "px");
 }
 
@@ -214,9 +214,13 @@ function supplyOnClick() {
 
 function cardOnClick() {
     if (!expecting_select) {
-        socket.emit('action', {
-            'action_name': 'play_card',
-            'card': $(this).attr('id').substring(4)});
+        if (!$(this).parent().hasClass("supply")) {
+            socket.emit('action', {
+                'action_name': 'play_card',
+                'card': $(this).attr('id').substring(4)});
+        } else {
+            console.log("I'm in a supply pile!");
+        }
     } else {
         if ($(this).hasClass("selected")) {
             $(this).removeClass("selected");
@@ -257,7 +261,7 @@ socket.on('state', function(data) {
     setupInitialState(data);
     _.each(data.cards, setupAltText);
     setupClickEvents(click_fn_map); 
-    addBtn('Abandon Ship', 'abandon-ship-btn', abandonShipOnClick);
+    // addBtn('Abandon Ship', 'abandon-ship-btn', abandonShipOnClick);
     addBtn('Send Info', 'send-info-btn', sendInfoOnClick);
     addBtn('Next Phase', 'next-phase-btn', nextPhaseOnClick);
     updateNextPhaseButton("next-phase-btn");
