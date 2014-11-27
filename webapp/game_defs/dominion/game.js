@@ -169,12 +169,8 @@ function updateEventBox(data) {
 
 function validateAddSelected(selected) {
     // Make sure it's of the right type
-    console.log(expecting_select);
-    console.log(expecting_type)
-
-    valid_type = false;
-
-    if(expecting_type === "Card" || "Cards")
+    var valid_type = false;
+    if (expecting_type === "Card" || "Cards")
       valid_type = selected.hasClass("card");
     else
       valid_type = selected.hasClass(expecting_type.toLowerCase());
