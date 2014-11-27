@@ -11,6 +11,7 @@ function capitaliseFirstLetter(string) {
 
 function setPhase(new_phase) {
     phase = new_phase;
+    updateNextPhaseButton("next-phase-btn");
 }
 
 function specialEventBoxCardText(card_name) {
@@ -41,6 +42,19 @@ function findTransition(name, transitions) {
     });
 }
 
+function updateNextPhaseButton(btnId) {
+    if (my_game_id === current_player_id) {
+        $("#" + btnId).show();
+        if (phase === "action") {
+            changeBtnLabel(btnId, "Start Buy Phase");
+        } else if (phase === "buy") {
+            changeBtnLabel(btnId, "End turn");
+        }
+    } else {
+        $("#" + btnId).hide();
+    }
+}
+
 function updateEventBoxPhaseTransition(transition, data, eventbox) {
     var i, next_player;
     if (transition[1] === "action") {
@@ -49,9 +63,8 @@ function updateEventBoxPhaseTransition(transition, data, eventbox) {
         addToEventBox(eventbox, "---------------------------");
         addToEventBox(eventbox, "It is " + next_player + "\'s turn.");
         addToEventBox(eventbox, "**Action Phase**");
-        if (my_game_id === i+1) hoverInfo("It is your turn!");
-
-        // Set the phase for later
+        
+        changeCurrentPlayerId(i+1, "It is your turn!");
         setPhase("action");
     } else if (transition[1] === "buy") {
         addToEventBox(eventbox, "**Buy Phase**");
@@ -65,7 +78,7 @@ function updateEventBoxStartTransition(transition, data, eventbox) {
     addToEventBox(eventbox, data.nickname + " has begun the game.");
     addToEventBox(eventbox, "It is " + starter + "\'s turn.");
     addToEventBox(eventbox, "**Action Phase**");
-    if (my_game_id === i+1) hoverInfo("It is your turn!");
+    changeCurrentPlayerId(i+1, "It is your turn!");
 }
 
 function updateEventBoxAddTransition(transition, data, eventbox) {
@@ -247,6 +260,7 @@ socket.on('state', function(data) {
     addBtn('Abandon Ship', 'abandon-ship-btn', abandonShipOnClick);
     addBtn('Send Info', 'send-info-btn', sendInfoOnClick);
     addBtn('Next Phase', 'next-phase-btn', nextPhaseOnClick);
+    updateNextPhaseButton("next-phase-btn");
     $('img.card').hover(supplyOnHover, supplyOnMouseOut);
     $('img.card').mousemove(supplyOnMouseMove);
 });

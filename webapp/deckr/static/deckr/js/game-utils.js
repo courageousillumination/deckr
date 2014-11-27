@@ -51,6 +51,10 @@ function addBtn(label, btnId, fn) {
     }
 }
 
+function changeBtnLabel(btnId, label) {
+    $("#" + btnId + " div").html(label);
+}
+
 function unselectAll() {
     /* Unselects everything that is selected. */
     $('.selected').removeClass('selected');

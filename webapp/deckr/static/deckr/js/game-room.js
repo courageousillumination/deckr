@@ -1,3 +1,10 @@
+var current_player_id = null;
+
+function changeCurrentPlayerId(new_player_id, alertMsg) {
+    current_player_id = new_player_id;
+    if (alertMsg && (my_game_id === current_player_id)) hoverInfo(alertMsg);
+}
+
 function gameIdToPlayerOrderId(game_id) {
   var ordered_game_ids = [my_game_id].concat(
     _.filter(player_ids, function(pid) { return pid > my_game_id; })).concat(
