@@ -16,7 +16,7 @@ function updateEventBoxAddTransition(transition, data, eventbox) {
     }
     card_name = "the " + number + " of " + data.state.cards[card_id].suit;
     console.log(data.state.zones[zone_id].name);
-    
+
     if(data.state.zones[zone_id].name == "play_zone")
         addToEventBox(eventbox, data.nickname + " played " + card_name + ".");
     if(data.state.zones[zone_id].name == "discard")
@@ -64,7 +64,7 @@ function updateEventBox(data) {
 }
 
 function playZoneOnClick() {
-    socket.emit('action', {'action_name': 'take_trick'});   
+    socket.emit('action', {'action_name': 'take_trick'});
 }
 
 function deckOnClick() {
@@ -75,6 +75,9 @@ function deckOnClick() {
 }
 
 function cardOnClick() {
+    if ($(this).parent().hasClass('center-field')) {
+      return;
+    }
     socket.emit(
         'action',
         {'action_name': 'play_card',
