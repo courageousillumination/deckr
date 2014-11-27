@@ -41,6 +41,18 @@ function specialEventBoxCardText(card_name) {
     }[card_name];
 }
 
+function setupHoverImages(card) {
+    var hover_id, src, big_src, img;
+    if (!$("#" + card.id).data("face_up")) return;
+    hover_id = card.id + "-hover";
+    // Create big image
+    src = card.src;
+    big_src = card.src.substring(0, src.length-4) + "-big.jpg";
+    img = '<img id="'+hover_id+'" class="hover" src="'+big_src+'" />';
+    $('body').append(img);
+    $('#'+hover_id).hide();
+}
+
 function setupAltText(cardData) {
     var card = $("#card" + cardData.game_id);
     var alt = "";
@@ -201,11 +213,6 @@ function supplyOnHover(e) {
     var img, src, hover_id;
     if (!$("#" + this.id).data("face_up")) return;
     hover_id = this.id + "-hover";
-    // Create big image
-    src = this.src;
-    big_src = this.src.substring(0, src.length-4) + "-big.jpg";
-    img = '<img id="'+hover_id+'" class="hover" src="'+big_src+'" />';
-    $('body').append(img);
     $("#"+hover_id)
         .css("top", (e.pageY + mouse_offset) + "px")
         .css("left", (e.pageX + mouse_offset) + "px")
@@ -225,7 +232,11 @@ function supplyOnMouseMove(e) {
 }
 
 function supplyOnMouseOut(e) {
-    $("#"+this.id+"-hover").remove();
+    $("#"+this.id+"-hover").hide();
+}
+
+function showHidePlayersOnClick() {
+    $("#other-players").toggle("slide");
 }
 
 function supplyOnClick() {
@@ -239,6 +250,7 @@ function supplyOnClick() {
 }
 
 function cardOnClick() {
+    $(".hover").hide();
     if (!expecting_select) {
         if (!$(this).parent().hasClass("supply")) {
             socket.emit('action', {
@@ -265,6 +277,10 @@ function abandonShipOnClick() {
     socket.emit('abandon_ship');
 }
 
+function trashOnClick() {
+    if (expecting_select) sendInfoOnClick();
+}
+
 function sendInfoOnClick() {
     var dict;
     dict = {'action_name': 'send_information'}
@@ -282,15 +298,18 @@ socket.on('textbox_data', onTextboxData);
 socket.on('state', function(data) {
     var click_fn_map = {
         ".card": cardOnClick,
-        ".supply": supplyOnClick
+        ".supply": supplyOnClick,
+        ".trash": trashOnClick,
+        "#show-hide-other-players-btn": showHidePlayersOnClick
     };
     setupInitialState(data);
     _.each(data.cards, setupAltText);
+    _.each($("img.card"), setupHoverImages);
     setupClickEvents(click_fn_map); 
-    // addBtn('Abandon Ship', 'abandon-ship-btn', abandonShipOnClick);
     addBtn('Send Info', 'send-info-btn', sendInfoOnClick);
     addBtn('Next Phase', 'next-phase-btn', nextPhaseOnClick);
     updateNextPhaseButton("next-phase-btn");
+    $('#show-hide-other-players-btn').show();
     $('img.card').hover(supplyOnHover, supplyOnMouseOut);
     $('img.card').mousemove(supplyOnMouseMove);
 });

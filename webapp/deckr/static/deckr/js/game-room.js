@@ -93,7 +93,7 @@ $(document).ready(function() {
     });
 
     $("#open-chat-btn").click(function () {
-        $("#sidebar").toggle();
+        $("#sidebar").toggle("slide", {direction: 'right'});
         createSidebar();
     });
 

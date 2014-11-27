@@ -6,6 +6,17 @@
     position: relative;
 }
 
+#show-hide-other-players-btn {
+    display: none;
+    position: absolute;
+    top: -30;
+    left: 5;
+}
+
+#show-hide-other-players-btn:hover {
+    cursor: pointer;
+}
+
 #main-board {
     width: 495px;
     margin: 0 auto;

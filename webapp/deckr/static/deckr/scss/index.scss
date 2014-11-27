@@ -129,6 +129,7 @@ input[type="text"] {
     height:  100%;
     z-index: 1;
     border-right: 1px solid black;
+    @include box-shadow(-1px 0px 5px rgba(0,0,0,0.75));
 
     #sidebar-padding {
         height: 75px;
