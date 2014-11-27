@@ -187,7 +187,10 @@ class Hearts(Game):
         if self.play_zone.suit is None:
             self.play_zone.suit = card.suit
 
-        self.current_turn = self.next_player(player)
+        if len(self.play_zone.cards) < len(self.players):
+            self.current_turn = self.next_player(player)
+        else:
+            self.add_transition(["trick"]);
 
         if card.number == 2 and card.suit == 'clubs':
             self.played_two_of_clubs = True
@@ -229,5 +232,5 @@ class Hearts(Game):
             self.add_transition(['player',self.players[0].game_id])
             return self.players[0]
         else:
-            self.add_transition(['Player',self.players[player_index + 1].game_id])
+            self.add_transition(['player',self.players[player_index + 1].game_id])
             return self.players[player_index + 1]

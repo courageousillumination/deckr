@@ -31,6 +31,7 @@ function updateEventBox(data) {
 
     console.log("parsing");
     _.each(_data.transitions, function(transition) {
+        console.log(transition);
         if (transition[0] === "add") {
             updateEventBoxAddTransition(transition, _data, eventbox);
         }
@@ -39,9 +40,12 @@ function updateEventBox(data) {
              addToEventBox(eventbox, "Someone needs to play the 2 of Clubs.");
         }
         if (transition[0] === "player") {
-            var id = transition[1] - 1;
-            var next = document.getElementById("player-names").children[id].innerHTML;
-             addToEventBox(eventbox, "It is " + next + "'s turn.");
+            id = transition[1] - 1;
+            next = document.getElementById("player-names").children[id].innerHTML;
+            addToEventBox(eventbox, "It is " + next + "'s turn.");
+        }
+        if (transition[0] === "trick") {
+             addToEventBox(eventbox, "The winner of the trick may take their cards.");
         }
     });
 
@@ -54,6 +58,7 @@ function updateEventBox(data) {
             trick_text += card;
         });
         addToEventBox(eventbox, trick_text + ".");
+        addToEventBox(eventbox, "It is " + _data.nickname + "\'s turn.");
     }
     scrollEventBoxToBottom(eventbox);
 }
