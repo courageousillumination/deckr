@@ -30,6 +30,46 @@ function updatePlayerInfo(players) {
     $("#n-treasure").html(treasure);
 }
 
+function updatePileNumbers(pileSelector) {
+    _.each($(pileSelector), function (p) {
+        var n = $(p).children(".card").length;
+        $(p).children(".n-supply").show();
+        $(p).children(".n-supply").html(n);
+    });
+}
+
+function setCardCosts(selector) {
+    _.each($(selector), function (p) {
+        var cost = $(p).children(".card").data("cost");
+        $(p).children(".cost").show();
+        $(p).children(".cost").html(cost);
+    });
+}
+
+function highlightPurchasable(players) {
+    var prices, default_color, purchasable, unpurchasable;
+    prices = $(".cost");
+    default_color = "rgba(255,255,0,0.3)";
+    purchasable = "yellow";
+    unpurchasable = "#ccc";
+    // Default
+    prices.css("background-color", default_color);
+    // If you are currently in your buy phase
+    if (my_game_id === current_player_id && phase === "buy") {
+        var me = players[my_game_id-1];
+        if (me.num_buys < 1)
+            prices.css("background-color", unpurchasable);
+        else {
+            var treasure = me.money_pool;
+            var too_expensive = _.filter(prices, function(c) {
+                return c.innerHTML > treasure;
+            });
+            $(too_expensive).css("background-color", unpurchasable);
+            $(_.difference(prices, too_expensive)).css("background-color", purchasable);
+        }
+    }
+}
+
 function specialEventBoxCardText(card_name) {
     return {
         "Bureaucrat": "Waiting for players to reveal a victory card.",
@@ -181,6 +221,8 @@ function updateEventBox(data) {
     }
     scrollEventBoxToBottom(eventbox);
     updatePlayerInfo(_data.state.players);
+    updatePileNumbers(".supply, .deck, .discard");
+    highlightPurchasable(_data.state.players);
 }
 
 function validateAddSelected(selected) {
@@ -254,7 +296,6 @@ function supplyOnClick() {
 }
 
 function cardOnClick() {
-    $(".hover").hide();
     if (!expecting_select) {
         socket.emit('action', {
             'action_name': 'play_card',
@@ -281,6 +322,11 @@ function trashOnClick() {
     if (expecting_select) sendInfoOnClick();
 }
 
+function bodyOnClick() {
+    unselectAll();
+    $(".hover").hide();
+}
+
 function sendInfoOnClick() {
     var dict;
     dict = {'action_name': 'send_information'}
@@ -297,6 +343,7 @@ socket.on('textbox_data', onTextboxData);
 
 socket.on('state', function(data) {
     var click_fn_map = {
+        "body": bodyOnClick,
         ".card": cardOnClick,
         ".supply": supplyOnClick,
         ".trash": trashOnClick,
@@ -308,7 +355,11 @@ socket.on('state', function(data) {
     setupClickEvents(click_fn_map);
     addBtn('Send Info', 'send-info-btn', sendInfoOnClick);
     addBtn('Next Phase', 'next-phase-btn', nextPhaseOnClick);
+    
     updateNextPhaseButton("next-phase-btn");
+    updatePileNumbers(".supply, .deck, .discard");
+    setCardCosts(".supply");
+    
     $('#show-hide-other-players-btn').show();
     $('img.card').hover(supplyOnHover, supplyOnMouseOut);
     $('img.card').mousemove(supplyOnMouseMove);
