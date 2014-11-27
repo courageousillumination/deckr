@@ -17,10 +17,12 @@ function setPhase(new_phase) {
 function updatePlayerInfo(players) {
     var buys, actions, treasure;
     if (my_game_id === current_player_id) {
+        $(".player-info").css("background-color", "rgba(255,255,255,1.0)");
         buys = players[my_game_id-1].num_buys;
         actions = players[my_game_id-1].num_actions;
         treasure = players[my_game_id-1].money_pool;
     } else {
+        $(".player-info").css("background-color", "rgba(255,255,255,0.3)");
         buys = 0;
         actions = 0;
         treasure = 0;
@@ -323,7 +325,6 @@ function trashOnClick() {
 }
 
 function bodyOnClick() {
-    unselectAll();
     $(".hover").hide();
 }
 
