@@ -342,7 +342,7 @@ class Game(HasZones):
         # Register both the player and it's zones with the game.
         self.register([player])
         self.register(player.zones.values())
-        
+
         # Add the per-player zones to our dictionary and add the owner to
         # each zone.
         for name, zone in player.zones.items():
@@ -464,7 +464,7 @@ class Game(HasZones):
         player.
         """
 
-        if(self.expected_action == None):
+        if(self.expected_action is None):
             return False
         return player.game_id == self.expected_action[3]
 

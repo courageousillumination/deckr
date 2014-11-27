@@ -31,7 +31,8 @@ def process_uploaded_file(game_name, fin):
     files = zipped_file.namelist()
     folder = files[0]
 
-    if all([pjoin(folder,f) in files for f in required_files]) and len(files) >= 6:
+    if all([pjoin(folder, f) in files for f in required_files]) and len(
+            files) >= 6:
         zipped_file.extractall(path)
         zipped_file.close()
         return path

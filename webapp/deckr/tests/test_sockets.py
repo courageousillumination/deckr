@@ -384,7 +384,7 @@ class GameNamespaceTestCase(SocketTestCase):
 
         self.namespace.on_start()
         self.namespace.emit_to_room.expect_any_call(self.namespace.room,
-                                                       'start')
+                                                    'start')
 
     def test_room_functionality(self):
         """

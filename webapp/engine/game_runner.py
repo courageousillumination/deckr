@@ -86,7 +86,7 @@ def start_game(game_id):
     game.set_up()
     # We don't actually care about the state transitions
     # during set up. The clients will just request the state.
-    #game.flush_transitions()
+    # game.flush_transitions()
 
 
 def get_game(game_id):
