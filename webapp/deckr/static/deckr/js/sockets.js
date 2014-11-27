@@ -118,13 +118,13 @@ function onGameOver(data) {
 function onGameError(data) {
     /* Responds to error from server */
     console.log(data);
-    // hoverError(data, {
-    //     autoHide: false,
-    //     clickOverlay: true,
-    //     ShowOverlay: true,
-    //     ColorOverlay: '#000',
-    //     OpacityOverlay: 0.3,}
-    // );
+    hoverError(data, {
+        autoHide: false,
+        clickOverlay: true,
+        ShowOverlay: true,
+        ColorOverlay: '#000',
+        OpacityOverlay: 0.3,}
+    );
 }
 
 function onPlayerNames(players) {
