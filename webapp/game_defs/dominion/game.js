@@ -228,6 +228,10 @@ function supplyOnMouseOut(e) {
     $("#"+this.id+"-hover").remove();
 }
 
+function showHidePlayersOnClick() {
+    $("#other-players").toggle("slide");
+}
+
 function supplyOnClick() {
     if (!expecting_select) {
         socket.emit('action', {
@@ -288,6 +292,7 @@ socket.on('state', function(data) {
         ".card": cardOnClick,
         ".supply": supplyOnClick,
         ".trash": trashOnClick,
+        "#show-hide-other-players-btn": showHidePlayersOnClick
     };
     setupInitialState(data);
     _.each(data.cards, setupAltText);
@@ -295,6 +300,7 @@ socket.on('state', function(data) {
     addBtn('Send Info', 'send-info-btn', sendInfoOnClick);
     addBtn('Next Phase', 'next-phase-btn', nextPhaseOnClick);
     updateNextPhaseButton("next-phase-btn");
+    $('#show-hide-other-players-btn').show();
     $('img.card').hover(supplyOnHover, supplyOnMouseOut);
     $('img.card').mousemove(supplyOnMouseMove);
 });
