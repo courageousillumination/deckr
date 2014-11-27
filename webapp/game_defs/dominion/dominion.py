@@ -43,6 +43,9 @@ class Dominion(Game):
         if self.is_set_up:
             return
 
+        if len(self.players) < self.min_players:
+            return
+
         # Cards that are part of every game
         cards_to_zones = [('Curse', 'curses', max((len(self.players) - 1)* 10, 0)),
                           ('Estate', 'victory0', 12),
