@@ -64,10 +64,22 @@ span.label {
 }
 
 #player1 .play-zone {
-    width: 475px;
+    width: 435px;
     float: none;
     margin: 0 auto;
     overflow-y: scroll;
+}
+
+#player1 .player-info {
+    background-color: rgba(255,255,255,0.5);
+    float: left;
+    font-size: 0.8em;
+    padding: 5px;
+}
+
+#player1 .player-info td {
+    padding: 5px;
+    /*color: #ccc;*/
 }
 
 .other-player {

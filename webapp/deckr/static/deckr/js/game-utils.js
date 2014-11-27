@@ -1,38 +1,50 @@
 // game-utils.js
 
-var jNotify_options = {
-    autoHide: true,
-    clickOverlay: true,
-    MinWidth: 250,
-    TimeShown: 3000,
-    ShowTimeEffect: 200,
-    HideTimeEffect: 200,
-    LongTrip: 20,
-    HorizontalPosition: 'center',
-    VerticalPosition: 'top',
-    ShowOverlay: false,
-    ColorOverlay: '#000',
-    OpacityOverlay: 0.3,
-    onClosed: function(){},
-    onCompleted: function(){}
-};
+function setJNotifyOptions(opt) {
+    var jNotify_options = {
+        autoHide: true,
+        clickOverlay: true,
+        MinWidth: 250,
+        TimeShown: 3000,
+        ShowTimeEffect: 200,
+        HideTimeEffect: 200,
+        LongTrip: 20,
+        HorizontalPosition: 'center',
+        VerticalPosition: 'top',
+        ShowOverlay: false,
+        ColorOverlay: '#000',
+        OpacityOverlay: 0.3,
+        onClosed: function(){},
+        onCompleted: function(){}
+    };
+    _.each(_.pairs(opt), function(kv) {
+        var k = kv[0];
+        var v = kv[1];
+       jNotify_options[k] = v;
+    });
+    return jNotify_options;
+}
 
 function hoverError(message, opt) {
-    opt = (!opt) ? jNotify_options : opt;
-    jError(message, opt);
+    jError(message, setJNotifyOptions(opt));
 }
 
 function hoverInfo(message, opt) {
-    opt = (!opt) ? jNotify_options : opt;
-    jNotify(message, opt);
+    jNotify(message, setJNotifyOptions(opt));
+}
+
+function tellCurrentPlayer(message, opt) {
+    if (my_game_id === current_player_id) hoverInfo(message, opt);
 }
 
 function scrollEventBoxToBottom(eventbox) {
     eventbox.scrollTop = eventbox.scrollHeight;
 }
 
-function addToEventBox(eventbox, text, without_newline) {
+function addToEventBox(eventbox, text, without_newline, extra) {
     var n = (without_newline === true) ? "" : "&#13;";
+    if (!text)
+        console.log("Something went wrong!!", extra);
     eventbox.innerHTML += text + n;
 }
 

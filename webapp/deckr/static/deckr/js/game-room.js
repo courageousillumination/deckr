@@ -2,7 +2,7 @@ var current_player_id = null;
 
 function changeCurrentPlayerId(new_player_id, alertMsg) {
     current_player_id = new_player_id;
-    if (alertMsg && (my_game_id === current_player_id)) hoverInfo(alertMsg);
+    if (alertMsg) tellCurrentPlayer(alertMsg);
 }
 
 function gameIdToPlayerOrderId(game_id) {

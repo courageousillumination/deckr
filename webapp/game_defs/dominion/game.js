@@ -14,6 +14,22 @@ function setPhase(new_phase) {
     updateNextPhaseButton("next-phase-btn");
 }
 
+function updatePlayerInfo(players) {
+    var buys, actions, treasure;
+    if (my_game_id === current_player_id) {
+        buys = players[my_game_id-1].num_buys;
+        actions = players[my_game_id-1].num_actions;
+        treasure = players[my_game_id-1].money_pool;
+    } else {
+        buys = 0;
+        actions = 0;
+        treasure = 0;
+    }
+    $("#n-buys").html(buys);
+    $("#n-actions").html(actions);
+    $("#n-treasure").html(treasure);
+}
+
 function specialEventBoxCardText(card_name) {
     return {
         "Bureaucrat": "Waiting for players to reveal a victory card.",
@@ -82,7 +98,7 @@ function updateEventBoxStartTransition(transition, data, eventbox) {
 }
 
 function updateEventBoxAddTransition(transition, data, eventbox) {
-    var card, zone, card_name, state, verbs;
+    var card, zone, card_name, state, verbs, msg;
     state = data.state;
     card = transition[1] - 1;
     zone = transition[2] - 1;
@@ -95,12 +111,15 @@ function updateEventBoxAddTransition(transition, data, eventbox) {
 
     if (phase === "action")
         updateEventBoxAddActionTransition(transition, data, eventbox);
-    else if (phase === "buy")
-        addToEventBox(eventbox, data.nickname + verb + card_name + ".");
+    else if (phase === "buy") {
+        msg = verb + card_name + ".";
+        addToEventBox(eventbox, data.nickname + msg);
+        tellCurrentPlayer("You" + msg, {TimeShown: 1500});
+    }
 }
 
 function updateEventBoxAddActionTransition(transition, data, eventbox) {
-    var card, zone, card_name, state, verbs;
+    var card, zone, card_name, state, verbs, special_text;
     state = data.state;
     card = transition[1] - 1;
     zone = transition[2] - 1;
@@ -116,7 +135,9 @@ function updateEventBoxAddActionTransition(transition, data, eventbox) {
         addToEventBox(eventbox, data.nickname + " drew a card.");
     } else if (zone_name === "play_zone") {
         addToEventBox(eventbox, data.nickname + " played a(n) " + card_name + ".");
-        addToEventBox(eventbox, specialEventBoxCardText(card_name));
+        special_text = specialEventBoxCardText(card_name);
+        if (special_text)
+            addToEventBox(eventbox, special_text);
     } else {
         addToEventBox(eventbox, data.nickname + verb + card_name + ".");
     }
@@ -136,14 +157,14 @@ function updateEventBox(data) {
     if (i > -1) {
         updateEventBoxPhaseTransition(_data.transitions[i], _data, eventbox);
         scrollEventBoxToBottom(eventbox);
-        return;
+    } else {
+        _.each(_data.transitions, function(transition) {
+            if (_.has(transitions, transition[0]))
+                transitions[transition[0]](transition, _data, eventbox);
+        });
     }
-
-    _.each(_data.transitions, function(transition) {
-        if (_.has(transitions, transition[0]))
-            transitions[transition[0]](transition, _data, eventbox);
-    });
     scrollEventBoxToBottom(eventbox);
+    updatePlayerInfo(_data.state.players);
 }
 
 function validateAddSelected(selected) {
