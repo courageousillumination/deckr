@@ -27,6 +27,7 @@ function updateEventBox(data) {
     eventbox = document.getElementById("eventbox");
     tricks = [];
 
+    console.log("parsing");
     _.each(_data.transitions, function(transition) {
         console.log("Cards: ", _data.state.cards);
         if (transition[0] === "add") {
