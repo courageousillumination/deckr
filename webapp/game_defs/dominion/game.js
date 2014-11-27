@@ -13,15 +13,6 @@ function setPhase(new_phase) {
     phase = new_phase;
 }
 
-function addToEventBox(eventbox, text, without_newline) {
-    var n = (without_newline === true) ? "" : "&#13;";
-    eventbox.innerHTML += text + n;
-}
-
-function scrollEventBoxToBottom(eventbox) {
-    eventbox.scrollTop = eventbox.scrollHeight;
-}
-
 function specialEventBoxCardText(card_name) {
     return {
         "Bureaucrat": "Waiting for players to reveal a victory card.",
@@ -121,11 +112,7 @@ function updateEventBoxAddActionTransition(transition, data, eventbox) {
 function updateEventBox(data) {
     var eventbox, _data, transitions, i;
     eventbox = document.getElementById("eventbox");
-    _data = {
-        nickname: data[0],
-        transitions: data[1],
-        state: data[2]
-    };
+    _data = getEventData(data);
     transitions = {
         "start": updateEventBoxStartTransition,
         "add": updateEventBoxAddTransition

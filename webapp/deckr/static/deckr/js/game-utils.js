@@ -27,6 +27,23 @@ function hoverInfo(message, opt) {
     jNotify(message, opt);
 }
 
+function scrollEventBoxToBottom(eventbox) {
+    eventbox.scrollTop = eventbox.scrollHeight;
+}
+
+function addToEventBox(eventbox, text, without_newline) {
+    var n = (without_newline === true) ? "" : "&#13;";
+    eventbox.innerHTML += text + n;
+}
+
+function getEventData(data) {
+    return {
+        nickname: data[0],
+        transitions: data[1],
+        state: data[2]
+    };
+}
+
 function addBtn(label, btnId, fn) {
     if (!document.getElementById(btnId)) {
         $('#game-btns').append('<a href="#" id="'+btnId+'" class="small-btn"><div>'+label+'</div></a> ');
