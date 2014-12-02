@@ -464,7 +464,7 @@ class Game(HasZones):
         player.
         """
 
-        if(self.expected_action is None):
+        if self.expected_action is None:
             return False
         return player.game_id == self.expected_action[3]
 

@@ -31,7 +31,7 @@ function setupSockets() {
 
 function onStart() {
     socket.emit('request_state');
-    // $("#start-btn").hide();
+    $("#start-btn").hide();
 }
 
 function onAddCard(data) {

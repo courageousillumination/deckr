@@ -58,6 +58,7 @@
             );
           {% else %}
             socket.emit('join_as_spectator', "{{game.id}}")
+            socket.emit('request_state');
           {% endif %}
           {{ game_js|safe }}
         </script>
