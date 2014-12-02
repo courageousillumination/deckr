@@ -60,7 +60,18 @@ To initiate a game, navigate to the home page (this can be found [here](http://d
 
 #### Beginning the Game
 
-If you have selected a multiplayer game such as Hearts or Dominion, you will need to wait for other players to join before you may begin the game. To invite other players, simply send them the link you copied in the staging area. If you have lost this link, see the [FAQ](#faq). 
+If you have selected a multiplayer game such as Hearts or Dominion, you will need to wait for other players to join before you may begin the game. To invite other players, simply send them the link you copied in the staging area. If you have lost this link, see the [FAQ](#faq). Once enough players have joined, anyone in the room may press "Start Game" to begin the game.
+
+#### Joining a Game as a Player
+
+Assuming the game has not started yet, navigate to the invite link provided to you by the player who created the game room. Enter a nickname here and press "Choose Nickname". You will be taken to the game room.
+
+#### Joining a Game as a Spectator
+
+You may join as a spectator whether or not a game has begun. To do so, navigate to the invite link provided by the person who created the game room. Without entering a nickname, press "Join as Spectator". You will be taken to the game room, but you will be unable to participate in the game. You may, however, participate in the chat.
+
+#### Playing a Game
+
 
 
 ## What is Implemented
@@ -130,21 +141,21 @@ We were able to allow players to leave the game while allowing other players to 
 
 #### Q: I'm trying to move a card, but it's not working!
 
-A: You cannot drag the cards. To move a card, make sure you first clik the card, then click where you would like to go. Also be sure that you are making a legal action.
+**A:** You cannot drag the cards. To move a card, make sure you first clik the card, then click where you would like to go. Also be sure that you are making a legal action.
 
 #### Q: I'm trying to start the game, but nothing happens when I press "start".
 
-A: To play Hearts or Dominion, there must be at least one other player in the game.
+**A:** To play Hearts or Dominion, there must be at least one other player in the game.
 
 #### Q: I forgot to copy the invite link. Can I get it back?
 
-A: Yes! To figure out your invite link, simply look at the URL at the top of your game room. It should look something like
+**A:** Yes! To figure out your invite link, simply look at the URL at the top of your game room. It should look something like
 
 `(root_address)/game_room/(game_id_number)/?player_id=your_player_id`
 
  What you want is the game_id_number. The invite link that corresponds to your game_id_number is
 
-`(root_address)/game_room_staging_area/(game_id_number)`
+`**(root_address)**/game_room_staging_area/**(game_id_number)**`
 
 Simply replace (root_adress) with the address of the instance you are using (either deckr.mooo.com or localhost:8000) and replace (game_id_number) with the id number from your game room's URL. This is your invite link.
 
@@ -153,3 +164,15 @@ Alternatively, you could just use the "back" button, but if you've already begun
 #### Q: I'm playing Dominion, but I'm not sure how to resolve the action on (some action card).
 
 A: Certain cards require that all of the players discard or reveal something or that you choose cards to discard. To resolve these actions, you need to use the "Send Info" button at the top of the page. Select the cards you want to perform the action on, then press "Send Info" to tell the game that these are the cards you want to use. In the case where all players need to perform an action, no one will be able to proceed until every player has selected cards and pressed "Send Info".
+
+#### Q: Where is the chat?
+
+**A:** At the top right of the game room screen, there is a picture of two chat bubbles. Clicking this will open the chat.
+
+#### Q: How can I see who else is playing?
+
+**A:** Next to the chat icon is some text that reads "Players", followed by the number of players. Clicking this will allow you to see the nicknames of the other players.
+
+#### Q: The website layout looks a little bit off...
+
+**A:** You might want to switch to Chrome.
