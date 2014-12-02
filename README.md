@@ -3,7 +3,9 @@
 1. [Overview](#overview)
 2. [Setup](#setup)
 3. [Writing a Game](#writing-a-game)
+4. [Playing a Game](#playing-a-game) 
 5. [What is Implemented](#what-is-implemented)
+6. [FAQ](#faq)
 
 ## Overview
 
@@ -50,6 +52,17 @@ The webapp also includes a Makefile that makes some general tasks easier.
 
 See the [Writing a Game Guide](https://github.com/courageousillumination/deckr/blob/documentation/docs/game_tutorial.md) for an intro to creating a game definition that can be uploaded to Deckr.
 
+## Playing a Game
+
+#### Creating a Game Room
+
+To initiate a game, navigate to the home page (this can be found [here](http://deckr.mooo.com) for the live instance, or at localhost:8000 for your own instance). Select "Create New Game Room". From the dropdown, select the game you want to play, and click "Create Game Room". You will be taken to a screen where you can set a nickname for yourself. (If you would like to invite other players or spectators, copy the link at the bottom of the screen now.) Enter a name and click "Choose Nickname". You will be taken to the game room you created.
+
+#### Beginning the Game
+
+If you have selected a multiplayer game such as Hearts or Dominion, you will need to wait for other players to join before you may begin the game. To invite other players, simply send them the link you copied in the staging area. If you have lost this link, see the [FAQ](#faq). 
+
+
 ## What is Implemented
 
 ### First Iteration
@@ -66,7 +79,6 @@ See the [Writing a Game Guide](https://github.com/courageousillumination/deckr/b
     * The user makes an action through the UI, and the browser sends a websocket event to the server.
     * The server processes the event and determines if it is legal.
     * If the action is legal, the action is performed.
-
 
 ###Engine
 * Feature: Define game
@@ -113,3 +125,31 @@ We implemented spectators, who are able to request the state of the game from an
 
 ## UI
 We were able to allow players to leave the game while allowing other players to continue. Furthermore, the UI’s design was improved markedly in this iteration. It now includes an expandable/collapsible chatbox, a drop-down informing players of who else is in the game room, a feed detailing what actions have been made in the game, and in the case of Dominion, pop-up images of the cards and alt-text listing the cards’ features. We found that without an action feed and easily readable cards, usability was low, making these improvements necessary.
+
+## FAQ
+
+#### Q: I'm trying to move a card, but it's not working!
+
+A: You cannot drag the cards. To move a card, make sure you first clik the card, then click where you would like to go. Also be sure that you are making a legal action.
+
+#### Q: I'm trying to start the game, but nothing happens when I press "start".
+
+A: To play Hearts or Dominion, there must be at least one other player in the game.
+
+#### Q: I forgot to copy the invite link. Can I get it back?
+
+A: Yes! To figure out your invite link, simply look at the URL at the top of your game room. It should look something like
+
+`(root_address)/game_room/(game_id_number)/?player_id=your_player_id`
+
+ What you want is the game_id_number. The invite link that corresponds to your game_id_number is
+
+`(root_address)/game_room_staging_area/(game_id_number)`
+
+Simply replace (root_adress) with the address of the instance you are using (either deckr.mooo.com or localhost:8000) and replace (game_id_number) with the id number from your game room's URL. This is your invite link.
+
+Alternatively, you could just use the "back" button, but if you've already begun the game and want to invite spectators, this is probably not a good idea.
+
+#### Q: I'm playing Dominion, but I'm not sure how to resolve the action on (some action card).
+
+A: Certain cards require that all of the players discard or reveal something or that you choose cards to discard. To resolve these actions, you need to use the "Send Info" button at the top of the page. Select the cards you want to perform the action on, then press "Send Info" to tell the game that these are the cards you want to use. In the case where all players need to perform an action, no one will be able to proceed until every player has selected cards and pressed "Send Info".
