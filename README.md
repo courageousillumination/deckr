@@ -10,7 +10,13 @@
 
 Deckr is a card game engine for [CMSC 22001](http://people.cs.uchicago.edu/~shanlu/teaching/22001_fa14/) Software Construction. The goal of this project is to create a reusable and extendable system for playing card games. Our system allows a user to define a card game using a combination of simple scripting and card definitions. Ideally our system will support many different types of card games from simple playing card games (Go Fish, War, Hearts) to complex trading card games (Magic: The Gathering, Pokemon, Yu-Gi-Oh!)
 
-###Setup
+
+### Prerequisites
+
+To set up deckr you must have python 2.7, virtualenv, pip, and libevent. All of
+these can be installed using your favorite package manager
+
+### Setup
 
 First clone the repository:
 ```
