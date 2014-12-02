@@ -113,9 +113,14 @@ class GameRunnerTestCase(TestCase):
         are stored.
         """
 
-        game_runner.start_game(self.game_id)
-        self.assertTrue(game_runner.get_game(self.game_id).is_setup)
-        self.assertEqual(game_runner.get_game(self.game_id).transitions, {})
+        game = game_runner.get_game(self.game_id)
+        game.min_players = 2
+
+        self.assertFalse(game_runner.start_game(self.game_id))
+        game.min_players = 0
+        self.assertTrue(game_runner.start_game(self.game_id))
+        self.assertTrue(game.is_setup)
+        self.assertEqual(game.transitions, {})
 
     def test_make_action(self):
         """
