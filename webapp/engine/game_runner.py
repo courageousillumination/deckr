@@ -83,10 +83,10 @@ def start_game(game_id):
     """
 
     game = get_game(game_id)
+    if not game.has_enough_players():
+        return False
     game.set_up()
-    # We don't actually care about the state transitions
-    # during set up. The clients will just request the state.
-    # game.flush_transitions()
+    return True
 
 
 def get_game(game_id):

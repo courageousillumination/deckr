@@ -66,7 +66,9 @@ class GameNamespace(BaseNamespace, BroadcastMixin):
         Starts the game. Can be called by any player.
         """
 
-        self.runner.start_game(self.game_room.room_id)
+        if not self.runner.start_game(self.game_room.room_id):
+            self.emit("error", "Not enough players have joined yet")
+            return
 
         self.emit_to_room(self.room, 'start')
 

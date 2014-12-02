@@ -457,6 +457,13 @@ class Game(HasZones):
         if self.current_kwargs.get(key, None) is not None:
             del self.current_kwargs[key]
 
+    def has_enough_players(self):
+        """
+        Returns true if num players >= min_players
+        """
+
+        return len(self.players) >= self.min_players
+
     # pylint: disable=unused-argument
     def send_information_restriction(self, player, **kwargs):
         """
