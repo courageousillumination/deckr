@@ -14,7 +14,7 @@ Deckr is a card game engine for [CMSC 22001](http://people.cs.uchicago.edu/~shan
 ### Prerequisites
 
 To set up deckr you must have python 2.7, virtualenv, pip, and libevent. All of
-these can be installed using your favorite package manager
+these can be installed using your favorite package manager. If you are running Mac OSX and do not have Xcode installed, you will need to install it.
 
 ### Setup
 
