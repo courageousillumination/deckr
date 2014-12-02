@@ -79,7 +79,8 @@ def destroy_game(game_id):
 
 def start_game(game_id):
     """
-    This will call the set up code for a specific game.
+    This will call the set up code for a specific game. Also, does checking
+    to make sure that enough players have joined
     """
 
     game = get_game(game_id)
