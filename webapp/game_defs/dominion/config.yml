@@ -119,7 +119,7 @@ card_set:
       card_type: ["action"]
       effect: "+2 Coins / You may immediately put your deck into your discard pile."
       kingdom_card: True
-      cost: 2
+      cost: 3
 
     - name: "Village"
       front_face: "/static/deckr/cards/village.jpg"
