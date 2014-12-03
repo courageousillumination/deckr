@@ -1,16 +1,16 @@
+import lettuce_webdriver.django
+import lettuce_webdriver.webdriver
 from lettuce import *
 from lettuce.django import django_url
-
 from selenium import webdriver
-from selenium.common.exceptions import NoSuchElementException, WebDriverException
-
-import lettuce_webdriver.webdriver
-import lettuce_webdriver.django
+from selenium.common.exceptions import (NoSuchElementException,
+                                        WebDriverException)
 
 
 @before.all
 def create_browser():
     world.browser = webdriver.Firefox()
+    world.browser.implicitly_wait(5)
 
 
 @after.all
