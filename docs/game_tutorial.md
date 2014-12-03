@@ -36,33 +36,34 @@ Writing the layout.html
 The layout.html is a html fragment that defines how your game should be laid out.
 In the hearts example the layout looks like this
 
-    <div class="layout">
-        <div class="table">
-            <div class="row">
-                <div class="zone stacked" id="discard3"></div>
-                <div class="zone horizontal-fan facing-up hand" id="hand3"></div>
-                <div class="zone stacked" id="discard4"></div>
-            </div>
+```html
+<div class="layout">
+    <div class="table">
+        <div class="row">
+            <div class="zone stacked" id="discard3"></div>
+            <div class="zone horizontal-fan facing-up hand" id="hand3"></div>
+            <div class="zone stacked" id="discard4"></div>
+        </div>
 
-            <div class="row">
-                <div class="vertical-fan facing-left zone hand" id="hand2"></div>
+        <div class="row">
+            <div class="vertical-fan facing-left zone hand" id="hand2"></div>
 
-                <div class="center-field play_zone zone" id="play_zone"></div>
+            <div class="center-field play_zone zone" id="play_zone"></div>
 
-                <div class="vertical-fan facing-right zone hand" id="hand4"></div>
-            </div>
+            <div class="vertical-fan facing-right zone hand" id="hand4"></div>
+        </div>
 
-            <div class="row">
-                <div class="stacked zone" id="discard2"></div>
-                <div class="horizontal-fan zone hand" id="hand1"></div>
-                <div class="stacked zone" id="discard1"></div>
-            </div>
-            <div class="row">
-                <div class="zone" id="side_zone"></div>
-            </div>
+        <div class="row">
+            <div class="stacked zone" id="discard2"></div>
+            <div class="horizontal-fan zone hand" id="hand1"></div>
+            <div class="stacked zone" id="discard1"></div>
+        </div>
+        <div class="row">
+            <div class="zone" id="side_zone"></div>
         </div>
     </div>
-
+</div>
+```
 
 There are couple things of interest here. First, is that the outer most layer
 should be a div with class layout. What you do inside is mostly up to you. The
