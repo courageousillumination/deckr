@@ -76,10 +76,11 @@ A: Certain cards require that all of the players discard or reveal something or 
 
 ### Q: The website layout looks a little bit off...
 
-**A:** You might want to switch to Chrome.
+**A:** You might want to switch to Chrome. If you can't see any scrollbars in Hearts or Dominion, you may need to try zooming out.
 
 ## Known Issues
 
 * Developers can't upload a set of card images with their game definitions
 * No protection against malicious developers
 * Hearts UI has not been beutified
+* The UI for Hearts or Dominion looks weird when the window size is too small.
