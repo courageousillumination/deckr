@@ -153,7 +153,7 @@ function onPlayerNick(data) {
 
 function onChat(data) {
     /* Responds to chat message from server */
-    var sender = data.sender;
+    var sender = data.sender ? data.sender : "Spectator";
     var msg = data.msg;
 
     $('#chat-box').append('<div>'+'<span class="un">'+sender+'</span>'
