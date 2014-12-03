@@ -144,6 +144,7 @@ span.label {
 }
 
 #other-players {
+    pointer-events: none;
     display: table;
     position: absolute;
 }
