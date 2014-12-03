@@ -1,40 +1,23 @@
+// render.js
+
 function addDiv(parentId, divDict, place) {
-    var parent = document.getElementById(parentId);
     var newDiv = document.createElement('div');
-    var siblings = parent.childNodes;
 
-    if (!divDict["id"]) {
-        var err = "No id attr provided with div.";
-        console.log(err);
-        return err;
-    } else if (document.getElementById(divDict["id"])) {
-        var err = "Duplicate div. Div already exists.";
-        console.log(err);
-        return err;
-    }
-    for (key in divDict) {
-        $(newDiv).attr(key,divDict[key]);
-    }
+    if (!divDict["id"])
+        return logAndReturnMessage("No id attr provided with div.");
+    if (document.getElementById(divDict["id"])) {
+        return logAndReturnMessage("Duplicate div. Div already exists.");
 
-    if (!place) {
-        $('.selected').removeClass('selected');
-        parent.appendChild(newDiv);
-    } else {
-        if (place < siblings.length) {
-                $('.selected').removeClass('selected');
-                toZone.insertBefore(newDiv, siblings[place]);
-        } else {
-            var err = "Place does not exist."
-            console.log(err);
-            return err;
-        }
-    }
-
+    _.each(_.pairs(divDict), function(kv) {
+        var k = kv[0];
+        var v = kv[1];
+        $(newDiv).attr(k, v);
+    });
 }
 
 function removeElementById(id) {
     /* Function to remove element. Currently unused. */
-    element = document.getElementById(id);
-    parent = element.parentElement;
+    var element = document.getElementById(id);
+    var parent = element.parentElement;
     parent.removeChild(element);
 }

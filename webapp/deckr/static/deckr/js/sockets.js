@@ -1,12 +1,13 @@
 // sockets.js
-// Has all the functions for sockets...
 
+// Globals
 var socket = io.connect("/game");
 var player_mapping = {};
 var player_ids = [];
 var my_game_id = 0;
 
 function setupSockets() {
+    // Sets up all socket events.
     console.log('Setting up sockets.');
     var socket_fn_mapping = {
         'start': onStart,
@@ -36,25 +37,21 @@ function onStart() {
 
 function onAddCard(data) {
     /* Responds to add_card message from server */
-    //console.log('Adding new card to ' + data.zoneId);
     addCard(data.cardDict, data.zoneId);
 }
 
 function onRemoveCard(data) {
     /* Responds to remove_card message from server */
-    //console.log('Removing ' + data.cardId + ' from ' + data.zoneId);
     removeCard(data.zoneId, data.cardId);
 }
 
 function onMoveCard(data) {
     /* Responds to move_card message from server */
-    //console.log('Moving ' + data.cardId + ' to ' + data.toZoneId);
     moveCard(data.cardId, data.toZoneId);
 }
 
 function onMakeAction(data) {
     /* Responds to make_action actions */
-    //console.log('Making action ' + data.action);
     // lol what...
     if (data.action === 'move_card') {
         socket.emit('move_card', data);
@@ -62,7 +59,6 @@ function onMakeAction(data) {
 }
 
 function onStateTransitions(data) {
-    //console.log(data);
     _.each(data, performTransition);
 }
 
@@ -143,19 +139,17 @@ function onPlayerNames(players) {
 }
 
 function onPlayerNick(data){
-    // $('#player_nick').html("Welcome " + data.nickname);
     my_game_id = data.id;
 }
 
 function onChat(data) {
-    sender = data.sender;
-    msg = data.msg;
+    var sender = data.sender;
+    var msg = data.msg;
 
     $('#chat-box').append('<div>'+'<span class="un">'+sender+'</span>'
                             + ': ' + msg+'</div>');
     $("#chat-box").scrollTop($("#chat-box")[0].scrollHeight);
 
-    if (sender === player_mapping[my_game_id])  {
+    if (sender === player_mapping[my_game_id])
         $('#chat-input').val('');
-    }
 }

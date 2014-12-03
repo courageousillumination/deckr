@@ -25,6 +25,11 @@ function setJNotifyOptions(opt) {
     return jNotify_options;
 }
 
+function logAndReturnMessage(message) {
+    console.log(message);
+    return message;
+}
+
 function hoverError(message, opt) {
     jError(message, setJNotifyOptions(opt));
 }
