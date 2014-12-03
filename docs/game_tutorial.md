@@ -30,39 +30,39 @@ deckr works through a web client, and one of the goals of deckr is to give the
 developer full control over the enviornement. As such we allow you to specify how
 your game will be laid out, and specify style sheets and javascript.
 
-Writing the layout.html
-~~~~~~~~~~~~~~~~~~~~~~~
+### Writing the layout.html
 
 The layout.html is a html fragment that defines how your game should be laid out.
-In the hearts example the layout looks like this
+In the hearts example the layout looks like this:
 
-    <div class="layout">
-        <div class="table">
-            <div class="row">
-                <div class="zone stacked" id="discard3"></div>
-                <div class="zone horizontal-fan facing-up hand" id="hand3"></div>
-                <div class="zone stacked" id="discard4"></div>
-            </div>
+```html
+<div class="layout">
+    <div class="table">
+        <div class="row">
+            <div class="zone stacked" id="discard3"></div>
+            <div class="zone horizontal-fan facing-up hand" id="hand3"></div>
+            <div class="zone stacked" id="discard4"></div>
+        </div>
 
-            <div class="row">
-                <div class="vertical-fan facing-left zone hand" id="hand2"></div>
+        <div class="row">
+            <div class="vertical-fan facing-left zone hand" id="hand2"></div>
 
-                <div class="center-field play_zone zone" id="play_zone"></div>
+            <div class="center-field play_zone zone" id="play_zone"></div>
 
-                <div class="vertical-fan facing-right zone hand" id="hand4"></div>
-            </div>
+            <div class="vertical-fan facing-right zone hand" id="hand4"></div>
+        </div>
 
-            <div class="row">
-                <div class="stacked zone" id="discard2"></div>
-                <div class="horizontal-fan zone hand" id="hand1"></div>
-                <div class="stacked zone" id="discard1"></div>
-            </div>
-            <div class="row">
-                <div class="zone" id="side_zone"></div>
-            </div>
+        <div class="row">
+            <div class="stacked zone" id="discard2"></div>
+            <div class="horizontal-fan zone hand" id="hand1"></div>
+            <div class="stacked zone" id="discard1"></div>
+        </div>
+        <div class="row">
+            <div class="zone" id="side_zone"></div>
         </div>
     </div>
-
+</div>
+```
 
 There are couple things of interest here. First, is that the outer most layer
 should be a div with class layout. What you do inside is mostly up to you. The
@@ -83,8 +83,7 @@ Backend Files
 In addition to the frontend files, there are two main files that are needed
 for the backend: the configuration and the game rules.
 
-Writing your configuration
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+### Writing your configuration
 
 Configuration must be stored in a config.yml file. This file must contain at least a 'game_file', and a 'game_class' attribute. Here we will briefly explore
 the possible options in a configuration file.
@@ -117,8 +116,7 @@ zones:
 
 This shows us that the game can be found in the Hearts class in hearts.py, that it requiers 2 - 4 players, that ecah player has a hand and a discard, and that there is a shared play_zone and side_zone.
 
-Writing the rules
-~~~~~~~~~~~~~~~~~
+### Writing the rules
 
 Your game should live in a python class that inherits from Game deckr.engine.game. A Game is required to have a set_up, is_over, and winners function.
 
