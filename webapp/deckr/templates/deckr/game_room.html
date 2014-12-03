@@ -57,9 +57,10 @@
                 player_id: {{player.id}}}
             );
           {% else %}
-            socket.emit('join_as_spectator', "{{game.id}}")
-            socket.emit('request_state');
+            socket.emit('join_as_spectator', "{{game.id}}");
           {% endif %}
+          // Try to request the state if possible
+          socket.emit('request_state');
           {{ game_js|safe }}
         </script>
     </div>
