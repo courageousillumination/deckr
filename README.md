@@ -64,7 +64,7 @@ If you have selected a multiplayer game such as Hearts or Dominion, you will nee
 
 #### Joining a Game as a Player
 
-Assuming the game has not started yet, navigate to the invite link provided to you by the player who created the game room. Enter a nickname here and press "Choose Nickname". You will be taken to the game room.
+Assuming the game has not started yet, navigate to the invite link provided to you by the player who created the game room. Enter a nickname here and press "Choose Nickname". Make sure that you pick a nickname that no other player in the game room has already chosen. Also, make sure there is room for you to join in the game.
 
 #### Joining a Game as a Spectator
 
@@ -202,7 +202,7 @@ From here you can run `make run`, `make test`, and so on.
 
 ##### Q: I'm trying to move a card, but it's not working!
 
-**A:** You cannot drag the cards. To move a card, make sure you first clik the card, then click where you would like to go. Also be sure that you are making a legal action.
+**A:** You cannot drag the cards. To move a card, make sure you first click the card, then click where you would like to go. Also be sure that you are making a legal action.
 
 ##### Q: I'm trying to start the game, but nothing happens when I press "start".
 
@@ -214,9 +214,13 @@ From here you can run `make run`, `make test`, and so on.
 
 `(root_address)/game_room/(game_id_number)/?player_id=your_player_id`
 
+An example is deckr.mooo.com/game_room/160/?player_id=3
+
  What you want is the game_id_number. The invite link that corresponds to your game_id_number is
 
 `(root_address)/game_room_staging_area/(game_id_number)`
+
+An example is deckr.mooo.com/game_room_staging_area/160
 
 Simply replace (root_adress) with the address of the instance you are using (either deckr.mooo.com or localhost:8000) and replace (game_id_number) with the id number from your game room's URL. This is your invite link.
 
