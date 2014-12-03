@@ -54,7 +54,7 @@ Check out [Writing a Game Guide](https://github.com/courageousillumination/deckr
 
 ## Playing a Game
 
-Check out [Playing a Game](https://github.com/courageousillumination/deckr/blob/documentation/docs/playing_a_game.md) for instructions and other information on how to play a game.
+Check out [Playing a Game](https://github.com/courageousillumination/deckr/blob/documentation/docs/playing_a_game.md) for instructions and other information on how to play a game. Also feel free to check out our [Acceptance Tests](https://github.com/courageousillumination/deckr/blob/documentation/docs/acceptance_tests.md) if you're interested in doing some testing!
 
 ## What is Implemented
 
