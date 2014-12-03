@@ -77,10 +77,13 @@ player zones. In this example, hand and discard are per player zones. These are
 numbered from 1 to max players; each player will have the same perspective, with
 player1 always being in the same position.
 
-Writing the javascript
-~~~~~~~~~~~~~~~~~~~~~~
+<!-- TODO
 
-TODO
+Writing the javascript
+
+~~~~~~~~~~~~~~~~~~~~~~
+-->
+
 
 Backend Files
 -------------
