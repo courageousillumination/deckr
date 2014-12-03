@@ -64,7 +64,7 @@ If you have selected a multiplayer game such as Hearts or Dominion, you will nee
 
 #### Joining a Game as a Player
 
-Assuming the game has not started yet, navigate to the invite link provided to you by the player who created the game room. Enter a nickname here and press "Choose Nickname". You will be taken to the game room.
+Assuming the game has not started yet, navigate to the invite link provided to you by the player who created the game room. Enter a nickname here and press "Choose Nickname". Make sure that you pick a nickname that no other player in the game room has already chosen. Also, make sure there is room for you to join in the game.
 
 #### Joining a Game as a Spectator
 
@@ -106,6 +106,31 @@ To chat with other players, select the chat icon at the top right of the game ro
 ## What is Implemented
 
 ### First Iteration
+
+###UI
+* Feature: Render game
+  * Use Case: Render new game
+    * Use Case: Defining the layou
+    * Client receives HTML from server
+    * Client receives all card images for current game
+    * The client renders the HTML.
+  * Use Case: Render changed state
+    * The server pushes a new state to the client
+    * The client renders the changes
+    * The developer writes an HTML file and optional CSS file, and uploads
+    them in a .zip archive.
+    * The HTML file consists entirely of divs that form regions and zones.
+* Feature: Provide basic card game functionality
+  * Use Case: Ability to select card
+    * User clicks on card.
+    * Client registers click.
+    * (In solitaire) Card is highlighted.
+  * Use Case: Ability to move card
+    * User clicks on second card.
+    * Client registers click as second click.
+    * Client sends move request to server.
+    * Server replies with move instructions.
+    * Client renders new state.
 
 #### Webapp
 * Feature: Game Room
@@ -166,6 +191,12 @@ We implemented spectators, who are able to request the state of the game from an
 ### UI
 We were able to allow players to leave the game while allowing other players to continue. Furthermore, the UI’s design was improved markedly in this iteration. It now includes an expandable/collapsible chatbox, a drop-down informing players of who else is in the game room, a feed detailing what actions have been made in the game, and in the case of Dominion, pop-up images of the cards and alt-text listing the cards’ features. We found that without an action feed and easily readable cards, usability was low, making these improvements necessary.
 
+## Known Issues
+
+* Developers can't upload a set of card images with their game definitions
+* No protection against malicious developers
+* Hearts UI has not been beutified
+
 ## FAQ
 
 ##### Q: How do I get [package name]?
@@ -202,7 +233,7 @@ From here you can run `make run`, `make test`, and so on.
 
 ##### Q: I'm trying to move a card, but it's not working!
 
-**A:** You cannot drag the cards. To move a card, make sure you first clik the card, then click where you would like to go. Also be sure that you are making a legal action.
+**A:** You cannot drag the cards. To move a card, make sure you first click the card, then click where you would like to go. Also be sure that you are making a legal action.
 
 ##### Q: I'm trying to start the game, but nothing happens when I press "start".
 
@@ -214,9 +245,13 @@ From here you can run `make run`, `make test`, and so on.
 
 `(root_address)/game_room/(game_id_number)/?player_id=your_player_id`
 
+An example is deckr.mooo.com/game_room/160/?player_id=3
+
  What you want is the game_id_number. The invite link that corresponds to your game_id_number is
 
 `(root_address)/game_room_staging_area/(game_id_number)`
+
+An example is deckr.mooo.com/game_room_staging_area/160
 
 Simply replace (root_adress) with the address of the instance you are using (either deckr.mooo.com or localhost:8000) and replace (game_id_number) with the id number from your game room's URL. This is your invite link.
 
