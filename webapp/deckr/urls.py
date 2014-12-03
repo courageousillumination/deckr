@@ -26,10 +26,6 @@ UPLOAD_GAME_DEFINITION = url(r'^upload_game_definition/',
                              'deckr.views.upload_game_definition',
                              name='deckr.upload_game_definition')
 
-TEST_GAME = url(r'test_game/',
-                'deckr.views.test_game',
-                name='deckr.test_game')
-
 SOCKETS = url(r'^socket\.io', include(socketio.sdjango.urls))
 
 urlpatterns = patterns(  # pylint: disable=C0103
@@ -39,5 +35,4 @@ urlpatterns = patterns(  # pylint: disable=C0103
     STAGING_AREA,
     CREATE_GAME_ROOM,
     UPLOAD_GAME_DEFINITION,
-    GAME_ROOM,
-    TEST_GAME)
+    GAME_ROOM)

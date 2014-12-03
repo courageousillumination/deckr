@@ -1,51 +1,56 @@
+import lettuce_webdriver.django
+import lettuce_webdriver.webdriver
 from lettuce import *
 from lettuce.django import django_url
-
 from selenium import webdriver
-from selenium.common.exceptions import NoSuchElementException, WebDriverException
-
-import lettuce_webdriver.webdriver
-import lettuce_webdriver.django
+from selenium.common.exceptions import (NoSuchElementException,
+                                        WebDriverException)
 
 
 @before.all
 def create_browser():
     world.browser = webdriver.Firefox()
-
+    world.browser.implicitly_wait(1)
 
 @after.all
 def destroy_browser(results):
     world.browser.close()
 
-# Note that all the functions with "pass" are integration tests, which is why
-# they aren't filled out.
+@step(u'I create a game room for "([^"]*)"')
+def create_game_room(step, game):
+    step.given('I visit site page "/new_game_room/"')
+    step.given('I select "{0}" from "game_id"'.format(game))
+    step.given('I click "Create game room"')
+    world.game_room_id = world.browser.current_url.split('/')[-2]
+
+@world.absorb
+@step(u'I enter game with nickname "([^"]*)"')
+def enter_game(step, nickname):
+    step.given('I fill in "nickname" with "{0}"'.format(nickname))
+    step.given('I click "Choose nickname"')
+
+@step(u'I start the game')
+def start_game(step):
+    step.given('I click "Start"')
 
 
-@step("I create a game room")
-def create_game_room(step):
-    pass
+@step(u'my friend joins my game with nickname "([^"]*)"')
+def my_friend_joins_my_game(step, nickname):
+    step.given('I visit site page "/game_room_staging_area/{0}"'.format(
+        world.game_room_id))
+    enter_game(step, "Tester2")
 
 
-@step(u'my friend should be able to join my game room')
-def check_my_friend_can_join_my_game_room(step):
-    my_friend_joins_my_game_room(step)
+@step(u'number of players in my game room should be "([^"]*)"')
+def confirm_connected_players(step, n):
+    player_names = world.browser.find_element_by_id("player-names")
+    n_players = len(player_names.find_elements_by_tag_name("li"))
+    assert n_players == int(n)
 
-
-@step(u'my friend joins my game room')
-def my_friend_joins_my_game_room(step):
-    pass
-
-
-@step(u'my friend should see "([^"]*)"')
-def my_friend_should_see_group1(step, text):
-    pass
-
-
-@step(
-    u'javascript adds a div to "([^"]*)" with class "([^"]*)" and id "([^"]*)"')
-def js_add_div(step, parentid, classname, elementid):
-    world.browser.execute_script('addDiv("{0}", {{"id":"{1}", "class":"{2}"}});'
-                                 .format(parentid, elementid, classname))
+@step(u'Then "([^"]*)" cards should be rendered')
+def n_cards_should_be_rendered(step, n):
+    n_cards = len(world.browser.find_elements_by_class_name('card'))
+    assert n_cards == int(n)
 
 
 @step(u'the element with id "([^"]*)" does( not)? exist')
@@ -76,38 +81,12 @@ def is_child_of(step, childid, negation, parentid):
             raise NoSuchElementException("Could not find {0} as child of {1}"
                                          .format(childid, parentid))
 
-# The "attributes" is the lesser of two evils. Takes a dict with
-# keys: id, class, src, among other optionals.
-
 
 @step(u'the element with id "([^"]*)" has the texture "([^"]*)"')
 def card_has_texture(step, card_id, texture):
     e = world.browser.find_element_by_id(card_id)
     src = e.get_attribute('src').split('/')[-1]
     # assert src == texture, (texture, src)
-
-
-@step(u'javascript adds a card to "([^"]*)" with attributes "([^"]*)"')
-def js_add_card(step, zoneid, card):
-    world.browser.execute_script('addCard({0},"{1}");'.format(card, zoneid))
-
-
-@step(
-    u'javascript (does not move|moves) the card "([^"]*)" to the zone "([^"]*)"')
-def js_move_card(step, condition, cardid, zoneid):
-    try:
-        world.browser.execute_script(
-            'moveCard("{0}","{1}");'.format(
-                cardid,
-                zoneid))
-    except WebDriverException:
-        if condition != "does not move":
-            raise
-
-
-@step(u'javascript removes the element with id "([^"]*)"')
-def js_remove_element_by_id(step, elementid):
-    world.browser.execute_script('removeElementById("{0}");'.format(elementid))
 
 
 @step(u'I upload "([^"]*)"')

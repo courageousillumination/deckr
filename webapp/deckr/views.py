@@ -28,15 +28,6 @@ def index(request):
     return render(request, "deckr/index.html", {})
 
 
-def test_game(request):
-    """
-    A test game page
-    """
-    sub_template = Template(open("game_defs/testgame/layout.html").read())
-    return render(request, "deckr/test_game.html",
-                  {'sub_template': sub_template})
-
-
 def game_room_staging_area(request, game_room_id):
     """
     This view will present the staging game room page for

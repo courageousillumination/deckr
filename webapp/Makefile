@@ -1,6 +1,6 @@
 all: 
 verify: test lint
-test:
+test: setup
 	mkdir -p reports;
 	coverage erase;
 	coverage run -p --branch --source=deckr,engine --omit='*/management/*','*/migrations/*' manage.py test --with-xunit --xunit-file=reports/unit.xml;
