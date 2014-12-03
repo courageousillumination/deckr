@@ -72,7 +72,26 @@ You may join as a spectator whether or not a game has begun. To do so, navigate 
 
 #### Playing a Game
 
+Once you have selected "Start Game", cards will be dealt to all the players. What happens next depends on the game.
 
+###### Solitaire
+
+To move a card, first click the card, then click where you would like to place the card. To move a stack of cards, click the highest card in the stack. For example, if you have a stack of cards 4♦-3♠︎-2♥︎, you should select the 4♦.
+
+To flip over a card from the deck at the top left, click the deck. If all of the cards in the deck have been flipped, click the empty space where the deck was to restore it.
+
+###### Hearts
+
+Rules [here](http://www.bicyclecards.com/card-games/rule/hearts).
+
+To play a card, click the card you would like to play, then click the large board in the center of the game. The game's action feed will notify you when it is your turn. It will also notify you when special actions need to be made.
+
+To take the cards in the center when you win a trick, simply click the board in the center or any of the cards there. All cards will be awarded to you.
+
+###### Dominion
+
+Rules [here](http://riograndegames.com/getFile.php?id=348).
+Card information [here](http://dominionstrategy.com/card-lists/dominion-card-list/).
 
 ## What is Implemented
 
@@ -155,7 +174,7 @@ We were able to allow players to leave the game while allowing other players to 
 
  What you want is the game_id_number. The invite link that corresponds to your game_id_number is
 
-`**(root_address)**/game_room_staging_area/**(game_id_number)**`
+`**(root_address)**/game_room_staging_area/(game_id_number)`
 
 Simply replace (root_adress) with the address of the instance you are using (either deckr.mooo.com or localhost:8000) and replace (game_id_number) with the id number from your game room's URL. This is your invite link.
 
