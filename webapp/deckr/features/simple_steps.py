@@ -17,10 +17,6 @@ def create_browser():
 def destroy_browser(results):
     world.browser.close()
 
-@after.each_step
-def print_something(step):
-    pass
-
 @step(u'I create a game room for "([^"]*)"')
 def create_game_room(step, game):
     step.given('I visit site page "/new_game_room/"')
