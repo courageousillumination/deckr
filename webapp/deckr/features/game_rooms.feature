@@ -3,7 +3,7 @@ Feature: Game Room
     Scenario: Create a game room
         Given I create a game room for "Solitaire"
         Then I should see "Your Game Room for Solitaire has been created!"
-    
+
     Scenario: Start a game
         Given I create a game room for "Solitaire"
         And I enter game with nickname "Tester"
@@ -14,14 +14,14 @@ Feature: Game Room
         Given I create a game room for "Solitaire"
         And I enter game with nickname "Tester"
         When I click "End Game"
-        Then I should see "Welcome to Deckr"
-    
+        Then I should see "Welcome to Deckr" within 2 seconds
+
     # Probably want to test that the game room still exists
     Scenario: Leave game room
         Given I create a game room for "Solitaire"
         And I enter game with nickname "Tester"
         When I click "End Game"
-        Then I should see "Welcome to Deckr"
+        Then I should see "Welcome to Deckr" within 2 seconds
 
     Scenario: Multiple players in a room
         Given I create a game room for "Hearts"
