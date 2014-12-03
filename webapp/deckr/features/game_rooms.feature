@@ -9,12 +9,11 @@ Feature: Game Room
         And I start game
         Then The browser's URL should contain "?player_id="
 
-    @skip
     Scenario: Destroy a game room
         Given I create a game room for "Solitaire"
         And I start game
         When I click "End Game"
-        Then I should be at "/"
+        Then I should see "Welcome to Deckr"
     
     @skip    
     Scenario: Multiple players in a room
