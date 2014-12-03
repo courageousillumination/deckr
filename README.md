@@ -30,7 +30,6 @@ First clone the repository:
 After cloning the repository run the following commands:
 ```
   cd deckr
-  pip install virtualenv
   virtualenv venv
   source venv/bin/activate
   pip install -r requirements.txt
