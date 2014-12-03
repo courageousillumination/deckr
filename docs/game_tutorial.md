@@ -36,7 +36,6 @@ Writing the layout.html
 The layout.html is a html fragment that defines how your game should be laid out.
 In the hearts example the layout looks like this
 
-
     <div class="layout">
         <div class="table">
             <div class="row">
