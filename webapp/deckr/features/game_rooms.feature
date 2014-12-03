@@ -1,11 +1,10 @@
 Feature: Game Room
 
-    @skip
     Scenario: Create a game room
-        Given I visit site page "/create_game/"
-        When I select "Test Game" from "Games"
-        And I press "Submit"
-        Then the browser's URL should contain "room/"
+        Given I visit site page "/new_game_room/"
+        When I select "Solitaire" from "game_id"
+        And I click "Create game room"
+        Then I should see "Your Game Room for Solitaire has been created!"
     
     @skip
     Scenario: Destroy a game room
