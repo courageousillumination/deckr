@@ -7,7 +7,7 @@ var player_ids = [];
 var my_game_id = 0;
 
 function setupSockets() {
-    // Sets up all socket events.
+    /* Sets up all socket events. */
     console.log('Setting up sockets.');
     var socket_fn_mapping = {
         'start': onStart,
@@ -31,6 +31,7 @@ function setupSockets() {
 }
 
 function onStart() {
+    /* Responds to start message from server */
     socket.emit('request_state');
     $("#start-btn").hide();
 }
@@ -52,21 +53,25 @@ function onMoveCard(data) {
 
 function onMakeAction(data) {
     /* Responds to make_action actions */
-    // lol what...
+    // MUST: Change this to be modular.
     if (data.action === 'move_card') {
         socket.emit('move_card', data);
     }
 }
 
 function onStateTransitions(data) {
+    /* Responds to state_transitions message from server */
     _.each(data, performTransition);
 }
 
 function transitionAdd(transition) {
+    /* Performs add state transition */
     moveCard("card" + transition[1], "zone" + transition[2]);
 }
 
 function transitionSet(transition) {
+    /* Performs set state transition */
+    
     // Could we make transition objects, instead of just magically knowing
     // which indices means what?
 
@@ -87,11 +92,13 @@ function transitionSet(transition) {
 }
 
 function transitionGameOver(transition) {
+    /* Performs is_over transition */
     var winner = player_mapping[transition[1][0]];
     alert(winner + " won!");
 }
 
 function performTransition(t) {
+    /* Performs the appropriate transition for t */
     var fn = t[0];
     var transition_fn_map = {
         'add': transitionAdd,
@@ -102,6 +109,7 @@ function performTransition(t) {
 }
 
 function onLeaveGame(data) {
+    /* Responds to leave_game message from server */
     window.location = '/';
 }
 
@@ -125,7 +133,7 @@ function onGameError(data) {
 
 function onPlayerNames(players) {
     /* Responds to list of players names from server
-     and replaces player list dynamically */
+       and replaces player list dynamically */
     innerHTML = "";
     player_ids = [];
     _.each(players, function(player) {
@@ -138,11 +146,13 @@ function onPlayerNames(players) {
     $('#n-players').html(players.length);
 }
 
-function onPlayerNick(data){
+function onPlayerNick(data) {
+    /* Responds to player_nick message from server */
     my_game_id = data.id;
 }
 
 function onChat(data) {
+    /* Responds to chat message from server */
     var sender = data.sender;
     var msg = data.msg;
 

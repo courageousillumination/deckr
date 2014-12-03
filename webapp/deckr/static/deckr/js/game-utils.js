@@ -25,11 +25,6 @@ function setJNotifyOptions(opt) {
     return jNotify_options;
 }
 
-function logAndReturnMessage(message) {
-    console.log(message);
-    return message;
-}
-
 function hoverError(message, opt) {
     jError(message, setJNotifyOptions(opt));
 }
@@ -38,8 +33,14 @@ function hoverInfo(message, opt) {
     jNotify(message, setJNotifyOptions(opt));
 }
 
+function logAndReturnMessage(message) {
+    console.log(message);
+    return message;
+}
+
 function tellCurrentPlayer(message, opt) {
-    if (my_game_id === current_player_id) hoverInfo(message, opt);
+    if (my_game_id === current_player_id)
+        hoverInfo(message, opt);
 }
 
 function scrollEventBoxToBottom(eventbox) {
@@ -62,9 +63,13 @@ function getEventData(data) {
 }
 
 function addBtn(label, btnId, fn) {
+    var btn;
     if (!document.getElementById(btnId)) {
-        $('#game-btns').append('<a href="#" id="'+btnId+'" class="small-btn"><div>'+label+'</div></a> ');
-        if (fn) $('#'+btnId).click(fn);
+        btn = '<a href="#" id="'+btnId;
+        btn += '" class="small-btn"><div>'+label+'</div></a> ';
+        $('#game-btns').append(btn);
+        if (fn)
+            $('#'+btnId).click(fn);
     }
 }
 
@@ -83,27 +88,20 @@ function getZoneById(zoneId) {
     var zone, err;
     zone = document.getElementById(zoneId);
     // Validate zoneId
-    if (zone == null) {
-        err = "Zone not found: " + zoneId;
-        console.log(err);
-        return err;
-    }
-    return zone;
+    if (zone == null)
+        return logAndReturnMessage("Zone not found: " + zoneId);
+    return (zone != null) ? zone : logAndReturnMessage("Zone not found: " + zoneId);
 }
 
 function invalidCardDict(cardDict) {
     /* Given a cardDict, returns false if the cardDict is valid
        (i.e. if the cardDict is not invalid). Otherwise, if the
        card dict is invalid, it returns an error string. */
-    var err = false;
-    if (!cardDict['id']) {
-        err = "No id attribute provided with card."
-        return err;
-    } else if (document.getElementById(cardDict['id'])) {
-        err = "Duplicate add. Card already in play.";
-    }
-    if (err) console.log(err);
-    return err;
+    if (!cardDict['id'])
+        return logAndReturnMessage("No id attribute provided with card.");
+    else if (document.getElementById(cardDict['id']))
+        return logAndReturnMessage("Duplicate add. Card already in play.");
+    return false;
 }
 
 function createNewCard(cardDict) {
@@ -148,8 +146,8 @@ function addCard(cardDict, zoneId) {
 function moveCard(cardId, toZoneId) {
     /* Moves card with id cardId to zone with id toZoneId. If the zoneId
        is invalid, an error string is returned. */
-    //console.log("Moving card", cardId, toZoneId);
     var card, fromZone, toZone, err;
+    
     card = document.getElementById(cardId);
     fromZone = card.parentElement;
     toZone = getZoneById(toZoneId);
@@ -161,8 +159,6 @@ function moveCard(cardId, toZoneId) {
 
 function requestMoveCard(cardId, toZoneId) {
     /* Sends a request to the server to perform moveCard. */
-    //console.log("Sending move request to server.");
-    //console.log(cardId, cardId.substring(4));
     socket.emit('action', {'action_name': 'move_cards',
                            'card': cardId.substring(4),
                            'target_zone': toZoneId.substring(4)});
@@ -170,4 +166,5 @@ function requestMoveCard(cardId, toZoneId) {
 
 function gameOver(results) {
     /* Handles game_over */
+    console.log(results);
 }
