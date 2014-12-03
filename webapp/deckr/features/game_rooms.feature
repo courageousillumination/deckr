@@ -6,11 +6,9 @@ Feature: Game Room
         And I click "Create game room"
         Then I should see "Your Game Room for Solitaire has been created!"
     
-    @skip
     Scenario: Destroy a game room
-        Give I create a game room for "Test Game"
+        Give I create a game room for "Solitaire"
         When I press "Destroy Room"
-        And I confirm
         Then I should be at site page "/"
     
     @skip    
