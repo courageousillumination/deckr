@@ -40,8 +40,8 @@ class Hearts(Game):
         super(Hearts, self).__init__()
         self.current_turn = None
         self.hearts_broken = False
-        self.played_two_of_clubs = False
         self.is_set_up = False
+        self.is_first_turn = True
 
     def set_up(self):
         import random
@@ -80,7 +80,7 @@ class Hearts(Game):
 
         self.play_zone.suit = None
 
-        self.add_transition(['start']);
+        self.add_transition(['start'])
         self.is_set_up = True
 
     def is_over(self):
@@ -121,8 +121,6 @@ class Hearts(Game):
         Make sure that a player can play a card.
         """
 
-        # TODO: Can't break hearts on first turn
-
         # Make sure we own the card an it's in our hand
         if card not in player.hand:
             return False
@@ -131,9 +129,14 @@ class Hearts(Game):
         if self.current_turn != player:
             return False
 
-        if (not self.played_two_of_clubs and
-            not (card.number == 2 and card.suit == 'clubs')):
-            return False
+        # Check for special rules on the first turn
+        if self.is_first_turn:
+            if (self.play_zone.get_num_cards() == 0 and
+                not (card.number == 2 and card.suit == 'clubs')):
+                return False
+            if (card.suit == 'hearts' or (card.number == 12 and
+                card.suit == 'spades')):
+                return False
 
         # If everybody has already played then we can't play any more
         if self.play_zone.get_num_cards() == len(self.players):
@@ -153,12 +156,12 @@ class Hearts(Game):
         return True
 
     def can_take_trick(self, player):
+        """
+        Check that a player can take a trick.
+        """
 
-        print "Checking if you can take trick"
         if self.play_zone.get_num_cards() != len(self.players):
             return False
-
-        print "There are enough cards in there."
 
         # Find the highest card
         valid_cards = [x for x in self.play_zone.get_cards()
@@ -172,8 +175,6 @@ class Hearts(Game):
 
         if max_card.owner != player.game_id:
             return False
-
-        print "The maximum card is owned by the current player"
 
         return True
 
@@ -190,10 +191,7 @@ class Hearts(Game):
         if len(self.play_zone.cards) < len(self.players):
             self.current_turn = self.next_player(player)
         else:
-            self.add_transition(["trick"]);
-
-        if card.number == 2 and card.suit == 'clubs':
-            self.played_two_of_clubs = True
+            self.add_transition(["trick"])
 
 
     @action(restriction=can_take_trick)
@@ -204,7 +202,7 @@ class Hearts(Game):
             card.face_up = False
             card.set_value("face_up",
                            False,
-                           self.get_object_with_id("Player", 
+                           self.get_object_with_id("Player",
                                                    card.owner))
             player.discard.push(card)
 
@@ -217,6 +215,9 @@ class Hearts(Game):
 
         self.play_zone.suit = None
         self.current_turn = player
+
+        if self.is_first_turn:
+            self.is_first_turn = False
 
         # Check if we need to take anything from the side_zone
         if self.side_zone.get_num_cards() > 0 and contains_point_card:

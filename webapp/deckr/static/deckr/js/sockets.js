@@ -81,10 +81,10 @@ function transitionSet(transition) {
         card = $('#card' + transition[2]);
         if (transition[4]) {
             card.attr('src', card.data('front_face'));
-            card.attr('face_up', 'true');
+            card.data('face_up', true);
         } else {
             card.attr('src', card.data('back_face'));
-            card.attr('face_up', 'false');
+            card.data('face_up', false);
         }
     } else if (transition[1] === 'Player') {
         // something...
