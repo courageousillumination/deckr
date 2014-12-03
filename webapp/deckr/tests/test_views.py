@@ -210,11 +210,22 @@ class UploadGameDefTestCase(TestCase):
     def setUp(self):
         self.client = Client()
 
+    def test_can_access(self):
+        """
+        Make sure we can access the page.
+        """
+
+        response = self.client.get(reverse('deckr.upload_game_definition'))
+        self.assertEqual(response.status_code, 200)
+
+
     @override_settings(GAME_DEFINITION_PATH=tempfile.mkdtemp())
     def test_can_upload(self):
         """
         Make sure the form submits or displays validation
         """
+
+
 
         old_count = GameDefinition.objects.all().count()
         form_data = {'game_name': 'Solitaire',

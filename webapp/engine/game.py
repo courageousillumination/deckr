@@ -131,6 +131,7 @@ class Game(HasZones):
         self.max_players = 0
         self.min_players = 0
         self.players = []
+        self.is_set_up = False
         self.card_set = CardSet()
 
         # transitions is a dictionary of lists of tuples. The dictionary keys
@@ -352,6 +353,8 @@ class Game(HasZones):
 
         if len(self.players) >= self.max_players:
             raise ValueError("Too many players.")
+        if self.is_set_up:
+            raise ValueError("Unable to join a game in progress")
 
         player = Player()
         player.add_zones(self.player_zones)
@@ -481,6 +484,18 @@ class Game(HasZones):
         """
 
         return len(self.players) >= self.min_players
+
+    def set_up_wrapper(self):
+        """
+        This will simply wrap the subclass set_up, but also perform some
+        validation and book keeping. This should be called from the game runner.
+        """
+
+        if (not self.has_enough_players()) or self.is_set_up:
+            return False
+        self.set_up()
+        self.is_set_up = True
+        return True
 
     # pylint: disable=unused-argument
     def send_information_restriction(self, player, **kwargs):

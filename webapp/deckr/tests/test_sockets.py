@@ -379,9 +379,12 @@ class GameNamespaceTestCase(SocketTestCase):
         Make sure that the socket can start a game.
         """
 
-        state = {"foo": "bar"}
-        self.namespace.runner.get_state.return_value = state
+        self.namespace.runner.start_game.return_value = False
+        self.namespace.on_start()
+        self.namespace.emit.any_call("error",
+                                     "Not enough players have joined yet")
 
+        self.namespace.runner.start_game.return_value = True
         self.namespace.on_start()
         self.namespace.emit_to_room.expect_any_call(self.namespace.room,
                                                     'start')

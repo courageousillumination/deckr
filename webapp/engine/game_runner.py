@@ -83,11 +83,7 @@ def start_game(game_id):
     to make sure that enough players have joined
     """
 
-    game = get_game(game_id)
-    if not game.has_enough_players():
-        return False
-    game.set_up()
-    return True
+    return get_game(game_id).set_up_wrapper()
 
 
 def get_game(game_id):
