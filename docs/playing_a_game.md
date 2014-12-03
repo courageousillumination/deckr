@@ -45,6 +45,8 @@ To end your current phase and move to the next phase, press the button at the to
 
 Certain action cards require more information. This may be information from the player who has played the card (for instance, choosing a card to trash), from the other players (for instance, requiring them to discard or reveal cards), or from both. To resolve these cards, select the cards you would like to perform the action on, then press "Send Info" to tell the game that you have chosen. The game will wait until everyone has sent info, if necessary. The action feed with notify players when further action is required.
 
+Some action cards will require input from other players (such as revealing a Moat when playing an attack). At the moment, the UI doesn't notify the attacking player that a moat has been revealed, despite the server knowing this. The easiest way to verify that your moat has worked is to open the chat and ask other players, or to try to move on with other actions or switching to your buy phase.
+
 ## Chatting
 
 To chat with other players, select the chat icon at the top right of the game room screen. Enter whatever you'd like to say into the bottom-most box, then press "Send Message".
