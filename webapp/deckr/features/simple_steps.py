@@ -17,14 +17,18 @@ def create_browser():
 def destroy_browser(results):
     world.browser.close()
 
-# Note that all the functions with "pass" are integration tests, which is why
-# they aren't filled out.
+@step(u'I create a game room for "([^"]*)"')
+def create_game_room(step, game):
+    step.given('I visit site page "/new_game_room/"')
+    step.given('I select "{0}" from "game_id"'.format(game))
+    step.given('I click "Create game room"')
 
 
-@step("I create a game room")
-def create_game_room(step):
-    pass
-
+@step(u'I start game')
+def start_game(step):
+    step.given('I fill in "nickname" with "Tester"')
+    step.given('I click "Choose nickname"')
+    step.given('The browser\'s URL should contain "?player_id="')
 
 @step(u'my friend should be able to join my game room')
 def check_my_friend_can_join_my_game_room(step):

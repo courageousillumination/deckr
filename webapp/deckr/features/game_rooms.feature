@@ -1,15 +1,20 @@
 Feature: Game Room
 
     Scenario: Create a game room
-        Given I visit site page "/new_game_room/"
-        When I select "Solitaire" from "game_id"
-        And I click "Create game room"
+        Given I create a game room for "Solitaire"
         Then I should see "Your Game Room for Solitaire has been created!"
     
+    Scenario: Start a game
+        Given I create a game room for "Solitaire"
+        And I start game
+        Then The browser's URL should contain "?player_id="
+
+    @skip
     Scenario: Destroy a game room
-        Give I create a game room for "Solitaire"
-        When I press "Destroy Room"
-        Then I should be at site page "/"
+        Given I create a game room for "Solitaire"
+        And I start game
+        When I click "End Game"
+        Then I should be at "/"
     
     @skip    
     Scenario: Multiple players in a room
