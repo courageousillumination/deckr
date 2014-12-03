@@ -97,6 +97,12 @@ When you start the game, a player will be selected to go first. The acion feed w
 
 To end your current phase and move to the next phase, press the button at the top of the screen that reads either "Buy Phase" or "End Turn". 
 
+Certain action cards require more information. This may be information from the player who has played the card (for instance, choosing a card to trash), from the other players (for instance, requiring them to discard or reveal cards), or from both. To resolve these cards, select the cards you would like to perform the action on, then press "Send Info" to tell the game that you have chosen. The game will wait until everyone has sent info, if necessary. The action feed with notify players when further action is required.
+
+#### Chatting
+
+To chat with other players, select the chat icon at the top right of the game room screen. Enter whatever you'd like to say into the bottom-most box, then press "Send Message".
+
 ## What is Implemented
 
 ### First Iteration
@@ -162,6 +168,38 @@ We were able to allow players to leave the game while allowing other players to 
 
 ## FAQ
 
+#### Q: How do I get [package name]?
+
+Make sure you have pip. To get pip, navigate [here](https://pip.pypa.io/en/latest/installing.html). Right-click the link to get-pip.py and save the target. In your shell, navigate to the folder where you downloaded the file and run
+
+```
+  python get-pip.py
+```
+
+Now you're ready to install other packages. To install one, simply run
+
+```
+  pip install [package-name]
+```
+
+You may need to use `sudo` to complete the install.
+ 
+#### Q: `pip install [name]` isn't working.
+
+**A:** Try running `sudo pip install [name]` instead. You might have to enter your password.
+
+#### Q: I successfully installed everything and was able to run `make run`, but I later quit the shell. Which exact commands do I need to use to get the server running again?
+
+**A:** Type the following into your shell:
+
+```
+  cd location_of_deckr_folder/deckr
+  source venv/bin/activate
+  cd webapp
+```
+
+From here you can run `make run`, `make test`, and so on.
+
 #### Q: I'm trying to move a card, but it's not working!
 
 **A:** You cannot drag the cards. To move a card, make sure you first clik the card, then click where you would like to go. Also be sure that you are making a legal action.
@@ -178,7 +216,7 @@ We were able to allow players to leave the game while allowing other players to 
 
  What you want is the game_id_number. The invite link that corresponds to your game_id_number is
 
-`**(root_address)**/game_room_staging_area/(game_id_number)`
+`(root_address)/game_room_staging_area/(game_id_number)`
 
 Simply replace (root_adress) with the address of the instance you are using (either deckr.mooo.com or localhost:8000) and replace (game_id_number) with the id number from your game room's URL. This is your invite link.
 
@@ -191,6 +229,10 @@ A: Certain cards require that all of the players discard or reveal something or 
 #### Q: Where is the chat?
 
 **A:** At the top right of the game room screen, there is a picture of two chat bubbles. Clicking this will open the chat.
+
+#### Q: Where is the chat?
+
+**A:** Follow the directions above to open the chat. The action feed is displayed above the box where messages appear.
 
 #### Q: How can I see who else is playing?
 
