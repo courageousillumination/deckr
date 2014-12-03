@@ -6,19 +6,28 @@ Feature: Game Room
     
     Scenario: Start a game
         Given I create a game room for "Solitaire"
-        And I start game
+        And I enter game with nickname "Tester"
         Then The browser's URL should contain "?player_id="
 
+    # Probably want to test that the game room no longer exists
     Scenario: Destroy a game room
         Given I create a game room for "Solitaire"
-        And I start game
+        And I enter game with nickname "Tester"
         When I click "End Game"
         Then I should see "Welcome to Deckr"
     
-    @skip    
+    # Probably want to test that the game room still exists
+    Scenario: Leave game room
+        Given I create a game room for "Solitaire"
+        And I enter game with nickname "Tester"
+        When I click "End Game"
+        Then I should see "Welcome to Deckr"
+
     Scenario: Multiple players in a room
-        Given I create a game room for "Test Game"
-        Then My friend should be able to visit my room
+        Given I create a game room for "Hearts"
+        And I enter game with nickname "Tester1"
+        And my friend joins my game with nickname "Tester2"
+        Then the number of players in my game room should be "2"
         
     @skip
     Scenario: Make valid game action

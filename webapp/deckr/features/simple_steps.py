@@ -17,32 +17,36 @@ def create_browser():
 def destroy_browser(results):
     world.browser.close()
 
+@after.each_step
+def print_something(step):
+    pass
+
 @step(u'I create a game room for "([^"]*)"')
 def create_game_room(step, game):
     step.given('I visit site page "/new_game_room/"')
     step.given('I select "{0}" from "game_id"'.format(game))
     step.given('I click "Create game room"')
+    world.game_room_id = world.browser.current_url.split('/')[-2]
 
-
-@step(u'I start game')
-def start_game(step):
-    step.given('I fill in "nickname" with "Tester"')
+@world.absorb
+@step(u'I enter game with nickname "([^"]*)"')
+def enter_game(step, nickname):
+    step.given('I fill in "nickname" with "{0}"'.format(nickname))
     step.given('I click "Choose nickname"')
-    step.given('The browser\'s URL should contain "?player_id="')
-
-@step(u'my friend should be able to join my game room')
-def check_my_friend_can_join_my_game_room(step):
-    my_friend_joins_my_game_room(step)
 
 
-@step(u'my friend joins my game room')
-def my_friend_joins_my_game_room(step):
-    pass
+@step(u'my friend joins my game with nickname "([^"]*)"')
+def my_friend_joins_my_game(step, nickname):
+    step.given('I visit site page "/game_room_staging_area/{0}"'.format(
+        world.game_room_id))
+    enter_game(step, "Tester2")
 
 
-@step(u'my friend should see "([^"]*)"')
-def my_friend_should_see_group1(step, text):
-    pass
+@step(u'number of players in my game room should be "([^"]*)"')
+def confirm_connected_players(step, n):
+    player_names = world.browser.find_element_by_id("player-names")
+    n_players = len(player_names.find_elements_by_tag_name("li"))
+    assert n_players == int(n)
 
 
 @step(u'the element with id "([^"]*)" does( not)? exist')
