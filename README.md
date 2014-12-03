@@ -230,7 +230,7 @@ A: Certain cards require that all of the players discard or reveal something or 
 
 **A:** At the top right of the game room screen, there is a picture of two chat bubbles. Clicking this will open the chat.
 
-##### Q: Where is the chat?
+##### Q: Where is the action feed?
 
 **A:** Follow the directions above to open the chat. The action feed is displayed above the box where messages appear.
 
