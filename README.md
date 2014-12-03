@@ -74,13 +74,13 @@ You may join as a spectator whether or not a game has begun. To do so, navigate 
 
 Once you have selected "Start Game", cards will be dealt to all the players. What happens next depends on the game.
 
-###### Solitaire
+##### Solitaire
 
 To move a card, first click the card, then click where you would like to place the card. To move a stack of cards, click the highest card in the stack. For example, if you have a stack of cards 4♦-3♠︎-2♥︎, you should select the 4♦.
 
 To flip over a card from the deck at the top left, click the deck. If all of the cards in the deck have been flipped, click the empty space where the deck was to restore it.
 
-###### Hearts
+##### Hearts
 
 Rules [here](http://www.bicyclecards.com/card-games/rule/hearts).
 
@@ -88,16 +88,20 @@ To play a card, click the card you would like to play, then click the large boar
 
 To take the cards in the center when you win a trick, simply click the board in the center or any of the cards there. All cards will be awarded to you.
 
-###### Dominion
+##### Dominion
 
 Rules [here](http://riograndegames.com/getFile.php?id=348).
 Card information [here](http://dominionstrategy.com/card-lists/dominion-card-list/).
+
+When you start the game, a player will be selected to go first. The acion feed with indicate this, and the game will notify the player.
+
+To end your current phase and move to the next phase, press the button at the top of the screen that reads either "Buy Phase" or "End Turn". 
 
 ## What is Implemented
 
 ### First Iteration
 
-### Webapp
+#### Webapp
 * Feature: Game Room
   * Use Case: Create a game room
     * The player navigates to the "Select Game Type" page.
@@ -110,7 +114,7 @@ Card information [here](http://dominionstrategy.com/card-lists/dominion-card-lis
     * The server processes the event and determines if it is legal.
     * If the action is legal, the action is performed.
 
-###Engine
+#### Engine
 * Feature: Define game
   * Use Case: Defining the game logic.
     * A developer writes a Python script (game.py) that interfaces with pre-defined functions to effect state changes in the card game.
@@ -138,7 +142,7 @@ Card information [here](http://dominionstrategy.com/card-lists/dominion-card-lis
 
 ## Second Iteration
 
-## Games
+### Games
 In addition to the solitaire game we presented in the first iteration we implemented two new games in this iteration: Hearts and Dominion.
 
 #### Hearts
@@ -147,13 +151,13 @@ Hearts was our first multiplayer game. It shares the same cards with Solitaire, 
 #### Dominion
 Dominion is a more complex card game involving 2 to 4 people. The base rules can be found [here](http://riograndegames.com/getFile.php?id=348) and the cards from the base set (all of which are implemented) can be found [here](http://dominionstrategy.com/card-lists/dominion-card-list/). This game illustrates additional complexity such as resolving cards, multi step actions, etc.
 
-## Engine
+### Engine
 We added in multiplayer functionality, namely the ability to remove players from games, as well as a way to track if an insufficient number of players was present (so the game could not start).  We were able to implement zones that belong to players, as well as a multiplicity of zones, which is a feature that greatly reduces the amount of repetition involved in setting up the zones by allowing us to specify types of zones that everyone has a certain number of.  We were able to create user_state_transitions, as these were absolutely required for multiplayer functionality. These transitions target specific players with specific transition information, rather than broadcasting the same transition to the entire room. We were also able to capture input from the UI and allow players to make required actions following other players. Finally, we were able to implement YAML definitions for cards.
 
-## Webapp
+### Webapp
 We implemented spectators, who are able to request the state of the game from another player’s perspective and watch the movement of cards and zones. Spectators cannot start the game, end the game or make any card moves. Users can also upload game definitions to the server via the interface, and assuming that their code is valid, should be able to play the game they have designed. The form provides information about how each file functions and where to find example game definitions to copy their format.
 
-## UI
+### UI
 We were able to allow players to leave the game while allowing other players to continue. Furthermore, the UI’s design was improved markedly in this iteration. It now includes an expandable/collapsible chatbox, a drop-down informing players of who else is in the game room, a feed detailing what actions have been made in the game, and in the case of Dominion, pop-up images of the cards and alt-text listing the cards’ features. We found that without an action feed and easily readable cards, usability was low, making these improvements necessary.
 
 ## FAQ
