@@ -1,6 +1,7 @@
 Feature: Render game
 
-    @skip
-    Scenario: Render new game
-        Given I create a game room
-        Then I should see the game
+    Scenario: Render Solitaire
+        Given I create a game room for "Solitaire"
+        And I enter game with nickname "Tester"
+        And I start the game
+        Then "52" cards should be rendered

@@ -34,6 +34,10 @@ def enter_game(step, nickname):
     step.given('I fill in "nickname" with "{0}"'.format(nickname))
     step.given('I click "Choose nickname"')
 
+@step(u'I start the game')
+def start_game(step):
+    step.given('I click "Start"')
+
 
 @step(u'my friend joins my game with nickname "([^"]*)"')
 def my_friend_joins_my_game(step, nickname):
@@ -47,6 +51,11 @@ def confirm_connected_players(step, n):
     player_names = world.browser.find_element_by_id("player-names")
     n_players = len(player_names.find_elements_by_tag_name("li"))
     assert n_players == int(n)
+
+@step(u'Then "([^"]*)" cards should be rendered')
+def n_cards_should_be_rendered(step, n):
+    n_cards = len(world.browser.find_elements_by_class_name('card'))
+    assert n_cards == int(n)
 
 
 @step(u'the element with id "([^"]*)" does( not)? exist')

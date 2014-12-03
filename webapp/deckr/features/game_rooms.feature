@@ -28,15 +28,3 @@ Feature: Game Room
         And I enter game with nickname "Tester1"
         And my friend joins my game with nickname "Tester2"
         Then the number of players in my game room should be "2"
-        
-    @skip
-    Scenario: Make valid game action
-        Given I create a game room for "Test Game"
-        When I make a valid move
-        Then I should see "Made action" within 2 seconds
-        
-    @skip
-    Scenario: Make invalid game action
-        Given I create a game room for "Test Game"
-        When I make an invalid move
-        Then I should see "Error" within 2 seconds
