@@ -17,7 +17,7 @@ This application currently offers 3 games: Solitaire, Hearts, and Dominion.
 
 #### Prerequisites
 
-To set up deckr you must have python 2.7, virtualenv, pip, and libevent. All of these can be installed using your favorite package manager. If you are running Mac OSX and do not have Xcode installed, you will need to install it. (DISCLAIMER: These have been tested on Ubuntu 14.10; your milage may vary)
+To set up deckr you must have python 2.7, virtualenv, pip, and libevent. All of these can be installed using your favorite package manager. If you are running Mac OSX and do not have Xcode installed, you will need to install it. (DISCLAIMER: These have been tested on Ubuntu 14.10; your mileage may vary)
 
 #### Installation
 
