@@ -84,7 +84,7 @@ card_set:
       back_face: "/static/deckr/cards/b1fv.png"
       card_type: ["curse"]
       kingdom_card: False
-      effect: "Provides -1 VP." 
+      effect: "Provides -1 VP."
       cost: 0
       victory_points: -1
 
@@ -276,7 +276,7 @@ card_set:
     - name: "Witch"
       front_face: "/static/deckr/cards/witch.jpg"
       back_face: "/static/deckr/cards/b1fv.png"
-      card_type: ["action"]
+      card_type: ["action", "attack"]
       kingdom_card: True
       effect: "+2 Cards, Each other player gains a Curse card."
       cost: 5
