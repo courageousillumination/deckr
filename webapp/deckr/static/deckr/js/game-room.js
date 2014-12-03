@@ -3,19 +3,20 @@ var my_game_id = null;
 
 function changeCurrentPlayerId(new_player_id, alertMsg) {
     current_player_id = new_player_id;
-    if (alertMsg) tellCurrentPlayer(alertMsg);
+    if (alertMsg)
+        tellCurrentPlayer(alertMsg);
 }
 
 function gameIdToPlayerOrderId(game_id) {
-  if (my_game_id == null) {
-    var ordered_game_ids = player_ids;
-  }
-  else {
-    var ordered_game_ids = [my_game_id].concat(
-      _.filter(player_ids, function(pid) { return pid > my_game_id; })).concat(
-      _.filter(player_ids, function(pid) { return pid < my_game_id; }));
-  }
-  return ordered_game_ids.indexOf(game_id) + 1;
+    var ordered_game_ids;
+    if (my_game_id == null)
+        ordered_game_ids = player_ids;
+    else {
+        var ordered_game_ids = [my_game_id].concat(
+        _.filter(player_ids, function(i) { return i > my_game_id; })).concat(
+        _.filter(player_ids, function(i) { return i < my_game_id; }));
+    }
+    return ordered_game_ids.indexOf(game_id) + 1;
 }
 
 function addCardsToStagingArea(cards) {
@@ -85,9 +86,7 @@ function createSidebar() {
     chatInput.css('height', inputHeight);
 }
 
-$(document).ready(function() {
-    setupSockets();
-
+function setupDefaultClickEvents() {
     $("#player-names-btn").click(function() {
         $("#player-names").fadeToggle();
     });
@@ -105,15 +104,20 @@ $(document).ready(function() {
         createSidebar();
     });
 
+    $('#chat-btn').click(function(){
+        socket.emit('chat', {'msg': $('#chat-input').val(),
+                            'sender': player_mapping[my_game_id] });
+    });
+}
+
+$(document).ready(function() {
+    setupSockets();
+    setupDefaultClickEvents();
+
     $('#chat-input').keypress(function(input){
         if (input.keyCode == 13 && !input.shiftKey) {
             $('#chat-btn').click();
         }
-    })
-
-    $('#chat-btn').click(function(){
-        socket.emit('chat', {'msg': $('#chat-input').val(),
-                            'sender': player_mapping[my_game_id] });
     });
 
     createSidebar();
