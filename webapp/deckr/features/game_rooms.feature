@@ -14,14 +14,14 @@ Feature: Game Room
         Given I create a game room for "Solitaire"
         And I enter game with nickname "Tester"
         When I click "End Game"
-        Then I should see "Welcome to Deckr" within 2 seconds
+        Then I should see "Welcome to Deckr"
 
     # Probably want to test that the game room still exists
     Scenario: Leave game room
         Given I create a game room for "Solitaire"
         And I enter game with nickname "Tester"
         When I click "End Game"
-        Then I should see "Welcome to Deckr" within 2 seconds
+        Then I should see "Welcome to Deckr"
 
     Scenario: Multiple players in a room
         Given I create a game room for "Hearts"

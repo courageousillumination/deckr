@@ -10,8 +10,7 @@ from selenium.common.exceptions import (NoSuchElementException,
 @before.all
 def create_browser():
     world.browser = webdriver.Firefox()
-    world.browser.implicitly_wait(5)
-
+    world.browser.implicitly_wait(1)
 
 @after.all
 def destroy_browser(results):
