@@ -30,11 +30,10 @@ deckr works through a web client, and one of the goals of deckr is to give the
 developer full control over the enviornement. As such we allow you to specify how
 your game will be laid out, and specify style sheets and javascript.
 
-Writing the layout.html
-~~~~~~~~~~~~~~~~~~~~~~~
+### Writing the layout.html
 
 The layout.html is a html fragment that defines how your game should be laid out.
-In the hearts example the layout looks like this
+In the hearts example the layout looks like this:
 
 ```html
 <div class="layout">
@@ -84,8 +83,7 @@ Backend Files
 In addition to the frontend files, there are two main files that are needed
 for the backend: the configuration and the game rules.
 
-Writing your configuration
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+### Writing your configuration
 
 Configuration must be stored in a config.yml file. This file must contain at least a 'game_file', and a 'game_class' attribute. Here we will briefly explore
 the possible options in a configuration file.
@@ -118,8 +116,7 @@ zones:
 
 This shows us that the game can be found in the Hearts class in hearts.py, that it requiers 2 - 4 players, that ecah player has a hand and a discard, and that there is a shared play_zone and side_zone.
 
-Writing the rules
-~~~~~~~~~~~~~~~~~
+### Writing the rules
 
 Your game should live in a python class that inherits from Game deckr.engine.game. A Game is required to have a set_up, is_over, and winners function.
 
