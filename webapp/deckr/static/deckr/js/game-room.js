@@ -1,4 +1,5 @@
 var current_player_id = null;
+var my_game_id = null;
 
 function changeCurrentPlayerId(new_player_id, alertMsg) {
     current_player_id = new_player_id;
@@ -6,9 +7,14 @@ function changeCurrentPlayerId(new_player_id, alertMsg) {
 }
 
 function gameIdToPlayerOrderId(game_id) {
-  var ordered_game_ids = [my_game_id].concat(
-    _.filter(player_ids, function(pid) { return pid > my_game_id; })).concat(
-    _.filter(player_ids, function(pid) { return pid < my_game_id; }));
+  if (my_game_id == null) {
+    var ordered_game_ids = player_ids;
+  }
+  else {
+    var ordered_game_ids = [my_game_id].concat(
+      _.filter(player_ids, function(pid) { return pid > my_game_id; })).concat(
+      _.filter(player_ids, function(pid) { return pid < my_game_id; }));
+  }
   return ordered_game_ids.indexOf(game_id) + 1;
 }
 
@@ -32,6 +38,8 @@ function addCardsToProperZones(zones) {
 }
 
 function setupInitialState(data) {
+    // Make sure we have a list of player ids
+    player_ids = _.map(data.players, function(x) { return x.game_id; })
     addCardsToStagingArea(data.cards);
     addCardsToProperZones(data.zones);
 }
@@ -52,7 +60,7 @@ function createSidebar() {
     var chatBox = $('#chat-box');
     var chatInput = $('#chat-input');
     var header = $('#header');
-    var button = $('#chat-btn')
+    var button = $('#chat-btn');
 
     sidebar.css('width', Math.floor(gameWrapper.width() * .15) + 'px');
 
@@ -79,7 +87,7 @@ function createSidebar() {
 
 $(document).ready(function() {
     setupSockets();
-    
+
     $("#player-names-btn").click(function() {
         $("#player-names").fadeToggle();
     });
@@ -98,9 +106,7 @@ $(document).ready(function() {
     });
 
     $('#chat-input').keypress(function(input){
-        console.log("Hi I'm here");
         if (input.keyCode == 13 && !input.shiftKey) {
-            console.log("Now I'm here");
             $('#chat-btn').click();
         }
     })

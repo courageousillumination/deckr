@@ -131,6 +131,7 @@ class Game(HasZones):
         self.max_players = 0
         self.min_players = 0
         self.players = []
+        self.is_set_up = False
         self.card_set = CardSet()
 
         # transitions is a dictionary of lists of tuples. The dictionary keys
@@ -168,6 +169,41 @@ class Game(HasZones):
         # Register all zones
         self.register(self.zones.values())
 
+    def substitute_kwargs(self, kwargs):
+        """
+        This function will perform some keyword argument substitutions. All the
+        client knows about is GameIds, but here we only really care about
+        objects. Instead of having to manually run self.get_object_with_id for
+        every keyword argument we wanted to simplify the process. Thus, we
+        automatically run these substitutions for some specific keyword
+        arguments. Specifically:
+
+            * If the keyword argument is card, cards or contains _card, _cards
+              then it will be replaced with the corresponding Card object
+            * If the keyword argument contains "zone" it will be replaced with
+              a Zone object.
+            * If the keyword argument contains "player" it will be replaced with
+              a Player object.
+        If the undelying object is a list it will try to perform the
+        substitutions on each item of the list.
+        """
+
+        for key, value in kwargs.items():
+            if ("card" == key or "_card" in key or
+                    "cards" == key or "_cards" in key):
+                object_type = "Card"
+            elif "zone" in key:
+                object_type = "Zone"
+            elif "player" in key:
+                object_type = "Player"
+            else:
+                continue
+            if isinstance(kwargs[key], list):
+                kwargs[key] = [self.get_object_with_id(object_type, int(x))
+                               for x in kwargs[key]]
+            else:
+                kwargs[key] = self.get_object_with_id(object_type, int(value))
+
     def make_action(self, action_name, **kwargs):
         """
         This will try to make an action with the specified
@@ -184,23 +220,7 @@ class Game(HasZones):
                  action_name != self.expected_action[0])):
             raise InvalidMoveException
 
-        # We make some substitutions in the kwargs. These can be a little
-        # dangerous, but generally make life a lot easier later on.
-        for key, value in kwargs.items():
-            if ("card" == key or "_card" in key or
-                    "cards" == key or "_cards" in key):
-                object_type = "Card"
-            elif "zone" in key:
-                object_type = "Zone"
-            elif "player" in key:
-                object_type = "Player"
-            else:
-                continue
-            if isinstance(kwargs[key], list):
-                kwargs[key] = [self.get_object_with_id(object_type, int(x))
-                               for x in kwargs[key]]
-            else:
-                kwargs[key] = self.get_object_with_id(object_type, int(value))
+        self.substitute_kwargs(kwargs)
         getattr(self, action_name)(**kwargs)
 
         # Run any steps that we can
@@ -208,6 +228,22 @@ class Game(HasZones):
 
         if self.is_over():
             self.add_transition(('is_over', self.winners()))
+
+    def convert_type_to_string(self, obj):
+        """
+        This will return a string representation of the given object. It has
+        special handeling for objects that inherit from Card, Zone, and Player.
+        Otherwise it just returns the class name.
+        """
+
+        if isinstance(obj, Card):
+            return"Card"
+        elif isinstance(obj, Zone):
+            return "Zone"
+        elif isinstance(obj, Player):
+            return "Player"
+        else:
+            return type(obj).__name__
 
     def deregister(self, objects):
         """
@@ -219,15 +255,7 @@ class Game(HasZones):
             if obj.game_id is None:
                 continue
 
-            if isinstance(obj, Card):
-                object_type = "Card"
-            elif isinstance(obj, Zone):
-                object_type = "Zone"
-            elif isinstance(obj, Player):
-                object_type = "Player"
-            else:
-                object_type = type(obj).__name__
-
+            object_type = self.convert_type_to_string(obj)
             if object_type in self.registered_objects:
                 del self.registered_objects[object_type][1][obj.game_id]
                 self.registered_objects[object_type][0] -= 1
@@ -244,16 +272,7 @@ class Game(HasZones):
             if obj.game_id is not None:
                 continue
 
-            if isinstance(obj, Card):
-                object_type = "Card"
-            elif isinstance(obj, Zone):
-                object_type = "Zone"
-            elif isinstance(obj, Player):
-                object_type = "Player"
-            else:
-                # If it's not one of the above we just
-                # use the class name.
-                object_type = type(obj).__name__
+            object_type = self.convert_type_to_string(obj)
 
             if object_type not in self.registered_objects:
                 self.registered_objects[object_type] = [2, {1: obj}]
@@ -334,6 +353,8 @@ class Game(HasZones):
 
         if len(self.players) >= self.max_players:
             raise ValueError("Too many players.")
+        if self.is_set_up:
+            raise ValueError("Unable to join a game in progress")
 
         player = Player()
         player.add_zones(self.player_zones)
@@ -456,6 +477,25 @@ class Game(HasZones):
 
         if self.current_kwargs.get(key, None) is not None:
             del self.current_kwargs[key]
+
+    def has_enough_players(self):
+        """
+        Returns true if num players >= min_players
+        """
+
+        return len(self.players) >= self.min_players
+
+    def set_up_wrapper(self):
+        """
+        This will simply wrap the subclass set_up, but also perform some
+        validation and book keeping. This should be called from the game runner.
+        """
+
+        if (not self.has_enough_players()) or self.is_set_up:
+            return False
+        self.set_up()
+        self.is_set_up = True
+        return True
 
     # pylint: disable=unused-argument
     def send_information_restriction(self, player, **kwargs):

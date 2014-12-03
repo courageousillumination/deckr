@@ -336,7 +336,6 @@ function sendInfoOnClick() {
 }
 
 function onTextboxData(data){
-    console.log(data);
     updateEventBox(data);
 }
 
@@ -356,11 +355,11 @@ socket.on('state', function(data) {
     setupClickEvents(click_fn_map);
     addBtn('Send Info', 'send-info-btn', sendInfoOnClick);
     addBtn('Next Phase', 'next-phase-btn', nextPhaseOnClick);
-    
+
     updateNextPhaseButton("next-phase-btn");
     updatePileNumbers(".supply, .deck, .discard");
     setCardCosts(".supply");
-    
+
     $('#show-hide-other-players-btn').show();
     $('img.card').hover(supplyOnHover, supplyOnMouseOut);
     $('img.card').mousemove(supplyOnMouseMove);
