@@ -733,6 +733,7 @@ class Dominion(Game):
         # Otherwise we trash
         player.hand.remove_card(copper)
         self.trash.push(copper)
+        copper.face_up = True
 
         player.money_pool += 3
 
