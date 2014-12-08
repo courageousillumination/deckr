@@ -10,6 +10,9 @@ class ManaTestCase(TestCase):
     Test the Mana object.
     """
 
+    def test_negative_creation(self):
+        self.assertRaises(ValueError, Mana, red = -1)
+
     def test_creation_from_string(self):
         mana = create_mana_from_string("RWGBU")
 
@@ -32,6 +35,16 @@ class ManaTestCase(TestCase):
         mana1 += mana2
         self.assertEqual(mana1.blue, 4)
         self.assertEqual(mana1.white, 1)
+
+    def test_subtraction(self):
+        mana1 = Mana(blue = 3)
+        mana2 = Mana(blue = 1)
+
+        result_mana = mana1 - mana2
+        self.assertEqual(result_mana.blue, 2)
+
+        mana1 -= mana2
+        self.assertEqual(mana1.blue, 2)
 
     def test_cmc(self):
         mana = create_mana_from_string("RWGBU")

@@ -47,6 +47,14 @@ class Mana(object):
 
     def __init__(self, red = 0, blue = 0, green = 0,
                  white = 0, black = 0, colorless = 0):
+        """
+        Creates a Mana object with the given values. Will raise a ValueError
+        exception if any of the numbers are negative.
+        """
+
+        if red < 0 or blue < 0 or green < 0 or white < 0 or black < 0 or colorless < 0:
+            raise ValueError("Mana can only be created with a positive number")
+            
         self.red = red
         self.blue = blue
         self.green = green
