@@ -40,7 +40,7 @@ def create_mana_from_string(mana_string):
     #colorless = mana_string.count('U')
     return Mana(red, blue, green, white, black)
 
-class Mana(object):
+class Mana(StatefulGameObject):
     """
     Represents a mana cost, pool, etc.
     """
@@ -51,6 +51,8 @@ class Mana(object):
         Creates a Mana object with the given values. Will raise a ValueError
         exception if any of the numbers are negative.
         """
+
+        super(Mana, self).__init__()
 
         if red < 0 or blue < 0 or green < 0 or white < 0 or black < 0 or colorless < 0:
             raise ValueError("Mana can only be created with a positive number")
@@ -127,6 +129,7 @@ class Magic(Game):
 
             for card in deck:
                 card.tapped = False
+                card.face_up = True
 
             self.register(deck)
             player.library.set_cards(deck)
@@ -137,12 +140,21 @@ class Magic(Game):
                 self.draw_card(player)
 
             player.life = 20
+
+            # This needs to not be here...
+
+            player.no_track_attributes.add("mana_pool")
+            player.exclude_from_dict.add("mana_pool")
             player.mana_pool = Mana()
+
 
         self.phase = "beginning"
         self.step = "upkeep"
         self.active_player = self.players[0]
         self.has_priority_player = self.players[0]
+
+        # BEGIN HACK
+        self.phase = "precombat_main"
 
     def is_over(self):
         return False # TODO
@@ -155,6 +167,7 @@ class Magic(Game):
     ###########
 
     def play_card_restriction(self, player, card):
+
         if not self.has_priority_player == player:
             return False
 
@@ -191,7 +204,18 @@ class Magic(Game):
             self.has_priority_player = next_player
 
 
-    @action(restriction = has_priority)
+    def can_activate_ability(self, player, card):
+        if not self.has_priority(player):
+            return False
+
+        cost, _ = card.ability.split(':')
+
+        if (cost == "{T}" and card.tapped):
+            return False
+
+        return True
+
+    @action(restriction = can_activate_ability)
     def activate_ability(self, player, card):
         """
         Activates the ability for a specific card.

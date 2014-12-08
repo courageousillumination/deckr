@@ -88,6 +88,10 @@ function transitionSet(transition) {
     } else if (transition[1] === 'Player') {
         // something...
     }
+    // Make a callback
+    if (setValueCallback != null) {
+      setValueCallback(transition);
+    }
 }
 
 function transitionGameOver(transition) {
