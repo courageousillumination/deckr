@@ -1,6 +1,41 @@
-from unittest import TestCase
+from unittest import skip, TestCase
 
+from engine.game import InvalidMoveException
 from engine.game_runner import load_game_definition
+from magic import create_mana_from_string, Mana
+
+
+class ManaTestCase(TestCase):
+    """
+    Test the Mana object.
+    """
+
+    def test_creation_from_string(self):
+        mana = create_mana_from_string("RWGBU")
+
+        self.assertEqual(mana.red, 1)
+        self.assertEqual(mana.blue, 1)
+        self.assertEqual(mana.green, 1)
+        self.assertEqual(mana.white, 1)
+        self.assertEqual(mana.black, 1)
+
+        self.assertEqual("WUBRG", mana.__str__())
+
+    def test_addition(self):
+        mana1 = Mana(blue = 3)
+        mana2 = Mana(blue = 1, white = 1)
+
+        result_mana = mana1 + mana2
+        self.assertEqual(result_mana.blue, 4)
+        self.assertEqual(result_mana.white, 1)
+
+        mana1 += mana2
+        self.assertEqual(mana1.blue, 4)
+        self.assertEqual(mana1.white, 1)
+
+    def test_cmc(self):
+        mana = create_mana_from_string("RWGBU")
+        self.assertEqual(mana.converted_mana(), 5)
 
 
 class MagicTestCase(TestCase):
@@ -13,7 +48,6 @@ class MagicTestCase(TestCase):
         self.player2 = self.game.get_object_with_id("Player",
                                                     self.game.add_player())
 
-    def test_set_up(self):
         deck1 = [("Forest", 30)]
         deck2 = [("Island", 30)]
 
@@ -22,6 +56,7 @@ class MagicTestCase(TestCase):
 
         self.game.set_up()
 
+    def test_set_up(self):
         # Make sure both players have the right cards in hand and library
         self.assertEqual(self.game.players[0].library.get_num_cards(), 23)
         self.assertEqual(self.game.players[1].library.get_num_cards(), 23)
@@ -103,3 +138,33 @@ class MagicTestCase(TestCase):
 
         self.assertEqual(self.game.step, "cleanup")
         self.assertEqual(self.game.phase, "end")
+
+    def test_play_land(self):
+        # First we'll cheat and say that it's the precombat main phase
+        self.game.phase = "precombat_main"
+        self.game.step = None
+
+        card = self.player1.hand.get_cards()[0]
+
+        # Now we try to play one of the lands in our hand
+        self.game.play_card(self.player1, card)
+
+        # It should be on the battlefield
+        self.assertIn(card, self.player1.battlefield)
+
+        # Make sure we can't play another one
+        self.assertRaises(InvalidMoveException, self.game.play_card,
+                          self.player1,
+                          self.player1.hand.get_cards()[0])
+
+    @skip
+    def test_activate_land(self):
+
+        self.game.phase = "precombat_main"
+        self.game.step = None
+
+        card = self.player1.hand.get_cards()[0]
+        self.game.play_card(self.player1, card)
+
+        # Now try to activate the cards ability
+        self.game.activate_ability(self.player1, card)

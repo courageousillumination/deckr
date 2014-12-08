@@ -26,6 +26,63 @@ PHASE_ORDER = [
     ("end", "cleanup")
 ]
 
+
+def create_mana_from_string(mana_string):
+    """
+    Creates a Mana object from a string.
+    """
+
+    blue = mana_string.count('U')
+    white = mana_string.count('W')
+    black = mana_string.count('B')
+    red = mana_string.count('R')
+    green = mana_string.count('G')
+    #colorless = mana_string.count('U')
+    return Mana(red, blue, green, white, black)
+
+class Mana(StatefulGameObject):
+    """
+    Represents a mana cost, pool, etc.
+    """
+
+    def __init__(self, red = 0, blue = 0, green = 0,
+                 white = 0, black = 0, colorless = 0):
+        self.red = red
+        self.blue = blue
+        self.green = green
+        self.white = white
+        self.black = black
+        self.colorless = colorless
+
+    def converted_mana(self):
+        return (self.red + self.blue + self.green + self.white + self.black +
+                self.colorless)
+
+    def __add__(self, other):
+        """
+        Here we override add to just combine two mana objects.
+        """
+
+        return Mana(red = self.red + other.red,
+                    blue = self.blue + other.blue,
+                    green = self.green + other.green,
+                    white = self.white + other.white,
+                    black = self.black + other.black,
+                    colorless = self.colorless + other.colorless)
+
+    def __iadd__(self, other):
+        self.red += other.red
+        self.blue += other.blue
+        self.green += other.green
+        self.white += other.white
+        self.black += other.black
+        self.colorless += other.colorless
+        return self
+
+    def __str__(self):
+        return ("W" * self.white + "U" * self.blue + "B" * self.black +
+                "R" * self.red + "G" * self.green)
+
 class Magic(Game):
     """
     Magic: The Gathering.
@@ -41,6 +98,7 @@ class Magic(Game):
         self.active_player = None
         self.has_priority_player = None
         self.attacking = False
+        self.has_played_land = False
 
     ##################
     # Base functions #
@@ -64,6 +122,7 @@ class Magic(Game):
                 self.draw_card(player)
 
             player.life = 20
+            player.mana_pool = Mana()
 
         self.phase = "beginning"
         self.step = "upkeep"
@@ -79,6 +138,26 @@ class Magic(Game):
     ###########
     # Actions #
     ###########
+
+    def play_card_restriction(self, player, card):
+        if not self.has_priority_player == player:
+            return False
+
+        if "Land" in card.types:
+            if not (not self.has_played_land and
+                    "main" in self.phase and
+                    self.stack.get_num_cards() == 0):
+                return False
+
+        return True
+
+    @action(restriction = play_card_restriction)
+    def play_card(self, player, card):
+
+        # Deal with Lands since they're a special case.
+        if "Land" in card.types:
+            self.move_card(card, player.battlefield)
+            self.has_played_land = True
 
     def has_priority(self, player):
         return self.has_priority_player == player
@@ -109,13 +188,14 @@ class Magic(Game):
 
         # TODO: This should probably use a game_step or something so we can
         # insert triggers (when that's working....)
-        
+
         # Deal with edge cases
         if self.step == "declare_attackers" and not self.attacking:
             self.step = "end_of_combat"
         elif self.step == "cleanup":
-            # Change active player here
-            pass
+            # Clean up all global state
+            self.has_played_land = False
+            self.attacking = False
         else:
             next_phase, next_step = PHASE_ORDER[index + 1]
             self.step = next_step
