@@ -24,24 +24,24 @@ card_set:
       front_face: "/static/deckr/cards/magic/forest.jpg"
       back_face: "/static/deckr/cards/magic/back.jpg"
       types: ["Land"]
-      ability: "{T}: add {G}"
+      ability: "{T}: {G}"
     - name: "Island"
       front_face: "/static/deckr/cards/magic/island.jpg"
       back_face: "/static/deckr/cards/magic/back.jpg"
       types: ["Land"]
-      ability: "{T}: add {U}"
+      ability: "{T}: {U}"
     - name: "Mountain"
       front_face: "/static/deckr/cards/magic/mountain.jpg"
       back_face: "/static/deckr/cards/magic/back.jpg"
       types: ["Land"]
-      ability: "{T}: add {R}"
+      ability: "{T}: {R}"
     - name: "Swamp"
       front_face: "/static/deckr/cards/magic/swamp.jpg"
       back_face: "/static/deckr/cards/magic/back.jpg"
       types: ["Land"]
-      ability: "{T}: add {B}"
+      ability: "{T}: {B}"
     - name: "Plains"
       front_face: "/static/deckr/cards/magic/plains.jpg"
       back_face: "/static/deckr/cards/magic/back.jpg"
       types: ["Land"]
-      ability: "{T}: add {W}"
+      ability: "{T}: {W}"

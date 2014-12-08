@@ -54,7 +54,7 @@ class Mana(object):
 
         if red < 0 or blue < 0 or green < 0 or white < 0 or black < 0 or colorless < 0:
             raise ValueError("Mana can only be created with a positive number")
-            
+
         self.red = red
         self.blue = blue
         self.green = green
@@ -81,7 +81,7 @@ class Mana(object):
 
     def __sub__(self, other):
         """
-        Here we override add to just combine two mana objects.
+        Here we override subtract to work on a component by component basis
         """
 
         return Mana(red = self.red - other.red,
@@ -124,6 +124,9 @@ class Magic(Game):
             deck = []
             for card, num in deck_list:
                 deck += self.card_set.create(card, num)
+
+            for card in deck:
+                card.tapped = False
 
             self.register(deck)
             player.library.set_cards(deck)
@@ -171,7 +174,7 @@ class Magic(Game):
             self.move_card(card, player.battlefield)
             self.has_played_land = True
 
-    def has_priority(self, player):
+    def has_priority(self, player, *args, **kwargs):
         return self.has_priority_player == player
 
     @action(restriction = has_priority)
@@ -186,6 +189,24 @@ class Magic(Game):
             self.next_phase_or_step()
         else:
             self.has_priority_player = next_player
+
+
+    @action(restriction = has_priority)
+    def activate_ability(self, player, card):
+        """
+        Activates the ability for a specific card.
+        """
+
+        # First we have to pay the cost
+        cost, result = card.ability.split(':')
+
+        if (cost == "{T}"):
+            card.tapped = True
+
+        # Then we resolve the ability
+        if ("Land" in card.types):
+            player.mana_pool += create_mana_from_string(result)
+
 
     ###############
     # Other stuff #

@@ -170,7 +170,6 @@ class MagicTestCase(TestCase):
                           self.player1,
                           self.player1.hand.get_cards()[0])
 
-    @skip
     def test_activate_land(self):
 
         self.game.phase = "precombat_main"
@@ -181,3 +180,6 @@ class MagicTestCase(TestCase):
 
         # Now try to activate the cards ability
         self.game.activate_ability(self.player1, card)
+
+        self.assertEqual(self.player1.mana_pool.green, 1)
+        self.assertTrue(card.tapped)
