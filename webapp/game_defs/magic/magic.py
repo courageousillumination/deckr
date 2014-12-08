@@ -40,7 +40,7 @@ def create_mana_from_string(mana_string):
     #colorless = mana_string.count('U')
     return Mana(red, blue, green, white, black)
 
-class Mana(StatefulGameObject):
+class Mana(object):
     """
     Represents a mana cost, pool, etc.
     """
@@ -70,14 +70,18 @@ class Mana(StatefulGameObject):
                     black = self.black + other.black,
                     colorless = self.colorless + other.colorless)
 
-    def __iadd__(self, other):
-        self.red += other.red
-        self.blue += other.blue
-        self.green += other.green
-        self.white += other.white
-        self.black += other.black
-        self.colorless += other.colorless
-        return self
+
+    def __sub__(self, other):
+        """
+        Here we override add to just combine two mana objects.
+        """
+
+        return Mana(red = self.red - other.red,
+                    blue = self.blue - other.blue,
+                    green = self.green - other.green,
+                    white = self.white - other.white,
+                    black = self.black - other.black,
+                    colorless = self.colorless - other.colorless)
 
     def __str__(self):
         return ("W" * self.white + "U" * self.blue + "B" * self.black +
