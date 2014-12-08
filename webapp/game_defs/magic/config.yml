@@ -1,0 +1,20 @@
+---
+game_file: "magic"
+game_class: "Magic"
+max_players: 2
+min_players: 2
+zones:
+    - name: "hand"
+      owner: "player"
+    - name: "library"
+      owner: "player"
+    - name: "graveyard"
+      owner: "player"
+    - name: "battlefield"
+      owner: "player"
+    # Command zone (not yet implemented)
+    #- name: "command"
+    #  owner: "player"
+
+    - name: "stack"
+    - name: "exile"
