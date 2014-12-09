@@ -4,109 +4,10 @@ This module defines everything needed for the base Game class.
 
 from engine.card import Card
 from engine.card_set import CardSet
+from engine.exceptions import InvalidMoveException, NeedsMoreInfo
 from engine.has_zones import HasZones
 from engine.player import Player
 from engine.zone import Zone
-
-
-class InvalidMoveException(Exception):
-
-    """
-    This will be raised whenever a player makes an invalid move.
-    """
-
-    def __init__(self, value=None):
-        super(InvalidMoveException, self).__init__()
-        self.value = value
-
-    def __str__(self):
-        return repr(self.value)
-
-
-class NeedsMoreInfo(Exception):
-
-    """
-    This can be thrown by a step that needs more information before it can
-    continue.
-    """
-
-    def __init__(self, requirement=None):
-        super(NeedsMoreInfo, self).__init__()
-        self.requirement = requirement
-
-    def __str__(self):
-        return "Need more information for {0}".format(self.requirement)
-
-
-def action(restriction=None):
-    """
-    This is a decorator that can be put around actions in Game subclasses.
-    restrictions is an optional function that takes the same arguments as
-    the original function and returns a bool. If restrictions returns false
-    the action will raise an exception.
-    """
-
-    def wrapper(func):
-        """
-        Part of the wrapper to make the decorator work.
-        """
-
-        def inner(*args, **kwargs):
-            """
-            Yet another part of the decorator.
-            """
-
-            if restriction is None or restriction(*args, **kwargs):
-                return func(*args, **kwargs)
-            else:
-                raise InvalidMoveException("Invalid Move")
-        return inner
-    return wrapper
-
-
-def game_step(requires=None):
-    """
-    A step is a subcomponent of an action. Actions are things that the user can
-    do while, steps are things that result from actions. An action ought to have
-    one or more steps. A step can require more input, in which case the user
-    is prompted. Once the user returns with more input the step continues where
-    it left off.
-
-    If requires is None will just run the step; otherwise it checks to see if
-    it has the required values. If it doesn't it throws a NeedsMoreInfo
-    exception.
-
-    Each argument to requires should be a tuple of the following form:
-
-        parameter_name, expected_type, test, (String)
-
-    The final argument is optional. If given it will be returned to the client
-    to give them some idea of what is being asked for.
-    """
-
-    def wrapper(func):
-        """
-        Part of the wrapper to make the decorator work.
-        """
-
-        def inner(*args, **kwargs):
-            """
-            Yet another part of the decorator.
-            """
-
-            if requires is not None:
-                for requirement in requires:
-                    # Check if we have it in kwargs
-                    value = kwargs.get(requirement[0], None)
-                    if value is None:
-                        raise NeedsMoreInfo(requirement)
-                    # Make sure we pass the test
-                    if not requirement[2](*args, **kwargs):
-                        raise NeedsMoreInfo(requirement)
-
-            return func(*args, **kwargs)
-        return inner
-    return wrapper
 
 
 class Game(HasZones):
@@ -120,6 +21,10 @@ class Game(HasZones):
     def __init__(self):
         super(Game, self).__init__()
 
+        ######################
+        # Complex Attributes #
+        ######################
+
         # registered_objects is a dictionary of all objects that have been
         # registered with this game. It takes the following form.
         # { class1 : [next_id, {1 : object1, ...}],
@@ -127,12 +32,15 @@ class Game(HasZones):
         #   ...
         # }
         self.registered_objects = {}
-        self.player_zones = []
-        self.max_players = 0
-        self.min_players = 0
-        self.players = []
-        self.is_set_up = False
+
+        # The card set is only used in more complex games; it provides the
+        # ability to generate cards on the fly easily.
         self.card_set = CardSet()
+
+        # Playre zones is a list of all zones that should be give to every
+        # player. This includes things like hands, decks, discards, etc.
+        self.player_zones = []
+
 
         # transitions is a dictionary of lists of tuples. The dictionary keys
         # are player_ids and the values are lists of transitions that should be
@@ -143,10 +51,30 @@ class Game(HasZones):
 
         # steps are atomic units of what happens in a game.
         self.steps = []
-        self.expected_action = None
+
         # This will store something akin to a state as we work our way through
         # the steps.
         self.current_kwargs = {}
+
+
+        #####################
+        # Simple attributes #
+        #####################
+        self.players = []
+        self.max_players = 0
+        self.min_players = 0
+        self.is_set_up = False
+
+        
+
+    def load_values_from_config(self, config, values):
+        """
+        Reads values out of a configuration. Values should be a list of
+        value name, default tuples.
+        """
+
+        for name, default in values:
+            setattr(self, name, config.get(name, default))
 
     def load_config(self, config):
         """
@@ -155,18 +83,17 @@ class Game(HasZones):
         that defines the configuration of the game.
         """
 
-        self.max_players = config.get('max_players', 0)
-        self.min_players = config.get('min_players', 0)
+        self.load_required_values_from_config(('max_players', 0),
+                                              ('min_players', 0))
 
-        zones = config.get('zones', [])
+        # Load the card list
         self.card_set.load_from_list(config.get('card_set', []))
 
+        # Get the zones
+        zones = config.get('zones', [])
         game_zones = [x for x in zones if x.get('owner', None) is None]
-        player_zones = [x for x in zones if x.get('owner', None) == 'player']
+        self.player_zones = [x for x in zones if x.get('owner', None) == 'player']
         self.add_zones(game_zones)
-        self.player_zones = player_zones
-
-        # Register all zones
         self.register(self.zones.values())
 
     def substitute_kwargs(self, kwargs):
