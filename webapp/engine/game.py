@@ -4,13 +4,16 @@ This module defines everything needed for the base Game class.
 
 from engine.card import Card
 from engine.card_set import CardSet
+from engine.decorators import game_serialize
 from engine.exceptions import InvalidMoveException, NeedsMoreInfo
-from engine.has_zones import HasZones
+from engine.game_object import GameObject
+from engine.mixins.configurable import Configurable
+from engine.mixins.has_zones import HasZones
 from engine.player import Player
 from engine.zone import Zone
 
 
-class Game(HasZones):
+class Game(HasZones, Configurable):
 
     """
     A game is one of the core classes of the engine. It contains logic to run
@@ -21,6 +24,7 @@ class Game(HasZones):
     def __init__(self):
         super(Game, self).__init__()
 
+        """
         ######################
         # Complex Attributes #
         ######################
@@ -64,37 +68,186 @@ class Game(HasZones):
         self.max_players = 0
         self.min_players = 0
         self.is_set_up = False
-
-        
-
-    def load_values_from_config(self, config, values):
-        """
-        Reads values out of a configuration. Values should be a list of
-        value name, default tuples.
         """
 
-        for name, default in values:
-            setattr(self, name, config.get(name, default))
+        #: Each element of this list is a dictionary representation of a zone
+        #: that belongs to a player.
+        self.player_zones = []
+        #: Stores all registered objects.
+        self.registered_objects = {}
+        #: Stores the next avaliable game ID.
+        self.next_game_id = 1
+        #: All game transitions
+        self.transitions = {}
 
-    def load_config(self, config):
+    #############
+    # Callbacks #
+    #############
+
+    def post_config_callback(self):
         """
-        This will load a game from a configuration_file.
-        Somebody else should do the parsing and pass the config a dictionary
-        that defines the configuration of the game.
+        After we load the configuration we need to actually set up
+        our card_set and zones.
         """
 
-        self.load_required_values_from_config(('max_players', 0),
-                                              ('min_players', 0))
+        self.card_set.load_from_list(self.card_set)
 
-        # Load the card list
-        self.card_set.load_from_list(config.get('card_set', []))
-
-        # Get the zones
-        zones = config.get('zones', [])
-        game_zones = [x for x in zones if x.get('owner', None) is None]
-        self.player_zones = [x for x in zones if x.get('owner', None) == 'player']
+        game_zones = [x for x in self.zones if x.get('owner', None) is None]
         self.add_zones(game_zones)
-        self.register(self.zones.values())
+
+    def add_zone_callback(self, new_zone):
+        """
+        Whenever we add a zone we need to register it.
+        """
+
+        self.register(new_zone)
+
+    #####################
+    # Registration code #
+    #####################
+
+    def register_single(self, obj):
+        """
+        Registers a single object.
+        """
+
+        if isinstance(obj, GameObject):
+            obj.game_id = self.next_game_id
+            obj.game = self
+
+            self.registered_objects[self.next_game_id] = obj
+            self.next_game_id += 1
+
+    def deregister_single(self, obj):
+        """
+        Dergisters a single object.
+        """
+
+        if isinstance(obj, GameObject) and obj.game == self:
+            del self.registered_objects[obj.game_id]
+
+    def register(self, obj):
+        """
+        Registers an object by giving it a game_id. This will only
+        allow you to register game objects. Can take either an iterable
+        or a single object.
+        """
+
+        if hasattr(obj, '__iter__'):
+            for o in obj:
+                self.register_single(o)
+        else:
+            self.register_single(obj)
+
+    def deregister(self, obj):
+        """
+        Removes either a single object or a list of objects.
+        """
+
+        if hasattr(obj, '__iter__'):
+            for o in obj:
+                self.deregister_single(o)
+        else:
+            self.deregister_single(obj)
+
+    def get_object_with_id(self, game_id):
+        """
+        Gets an object with the given game_id. Returns None if no object is
+        found.
+        """
+
+        return self.registered_objects.get(game_id, None)
+
+    #############################
+    # State and Transition code #
+    #############################
+
+    def add_transition(self, trans, player=None):
+        """
+        Add a transition to the current game state. If player is specified the
+        transition will only apply to that player. Otherwise it will apply to
+        all players.
+        """
+
+        if player is None:
+            for p in self.players:
+                self.transitions.setdefault(p, []).append(trans)
+        else:
+            self.transitions.setdefault(player, []).append(trans)
+
+    def flush_transitions(self):
+        """
+        Flush all transitions. This should only be called in dire circumstances.
+        """
+
+        self.transitions = {}
+
+    @game_serialize
+    def get_transitions(self, player_id):
+        """
+        Requests the transitions for a specific player. This will implicitly
+        flush the transitions for this player to ensure that we don't get
+        duplicate transitions (although really they should be idempotent....)
+        """
+
+        result = self.transitions.get(player_id, [])
+        self.transitions[player_id] = []
+        return result
+
+    @game_serialize
+    def get_state(self, player_id=None):
+        """
+        This will return a list of all registerd objects in the game. This
+        should be sufficent to reconstruct the entire game state.
+        """
+
+        return self.registerd_objects.values()
+
+    ############################
+    # Player manipulation code #
+    ############################
+
+    def check_can_add_player(self):
+        if len(self.players) >= self.max_players:
+            raise ValueError("Too many players.")
+        if self.is_set_up:
+            raise ValueError("Unable to join a game in progress")
+
+
+    @game_serialize
+    def add_player(self):
+        """
+        Adds a player if possible, returning the newly added player
+        """
+
+        self.check_can_add_player()
+
+        player = Player()
+        player.add_zones(self.player_zones)
+
+        # Update all the game state.
+        self.register(player)
+        self.register(player.zones.values())
+        self.players.append(player)
+
+        return player
+
+    def remove_player(self, player_id):
+        """
+        Removes a player if possible and returns a
+        boolean denoting success or failure
+        """
+
+        player = self.get_object_with_id(player_id)
+        if player is not None and isinstace(player, Player):
+            self.deregister(player)
+            self.deregister(player.zones.values())
+            self.players.remove(player)
+            return True
+
+        return False
+
+    # TODO: Fix everything after this
 
     def substitute_kwargs(self, kwargs):
         """
@@ -156,177 +309,7 @@ class Game(HasZones):
         if self.is_over():
             self.add_transition(('is_over', self.winners()))
 
-    def convert_type_to_string(self, obj):
-        """
-        This will return a string representation of the given object. It has
-        special handeling for objects that inherit from Card, Zone, and Player.
-        Otherwise it just returns the class name.
-        """
 
-        if isinstance(obj, Card):
-            return"Card"
-        elif isinstance(obj, Zone):
-            return "Zone"
-        elif isinstance(obj, Player):
-            return "Player"
-        else:
-            return type(obj).__name__
-
-    def deregister(self, objects):
-        """
-        This function will deregister objects in the game, cleaning up anything
-        that register created.
-        """
-
-        for obj in objects:
-            if obj.game_id is None:
-                continue
-
-            object_type = self.convert_type_to_string(obj)
-            if object_type in self.registered_objects:
-                del self.registered_objects[object_type][1][obj.game_id]
-                self.registered_objects[object_type][0] -= 1
-
-    def register(self, objects):
-        """
-        This function will register objects in the game. Each object will
-        be given a unique id (unique within its class). Objects that already
-        have an id will not be assigned a new one.
-        """
-
-        for obj in objects:
-            # Don't bother re registering
-            if obj.game_id is not None:
-                continue
-
-            object_type = self.convert_type_to_string(obj)
-
-            if object_type not in self.registered_objects:
-                self.registered_objects[object_type] = [2, {1: obj}]
-                obj.game_id = 1
-            else:
-                next_id = self.registered_objects[object_type][0]
-                self.registered_objects[object_type][1][next_id] = obj
-                self.registered_objects[object_type][0] = next_id + 1
-                obj.game_id = next_id
-
-            obj.game = self
-
-    def get_object_with_id(self, klass, game_id):
-        """
-        Gets an internal object of the given class with the given id. If
-        the object isn't found this just return None.
-        """
-
-        try:
-            return self.registered_objects[klass][1][game_id]
-        except KeyError:
-            return None
-
-    def add_transition(self, trans, player=None):
-        """
-        Add a tuple to the current list of transitions. If player is given it
-        will register it as a player specific transition. Otherwise it registers
-        as a global transition.
-        """
-
-        if player is None:
-            key = None
-        else:
-            key = player.game_id
-
-        self.transitions.setdefault(key, []).append(trans)
-
-    def get_public_transitions(self):
-        """
-        Get all the transitions that have been registered without a player.
-        """
-
-        return self.transitions.get(None, [])
-
-    def get_player_transitions(self, player_id):
-        """
-        Get all the transitions that have been registered for a specific player.
-        """
-
-        return self.transitions.get(player_id, [])
-
-    def flush_transitions(self):
-        """
-        Get rid of all the current transitions.
-        """
-
-        self.transitions = {}
-
-    def remove_player(self, player_id):
-        """
-        Removes a player if possible and returns a
-        boolean denoting success or failure
-        """
-        player = self.get_object_with_id("Player", player_id)
-        if player is None:
-            return False
-        self.deregister([player])
-        self.deregister(player.zones.values())
-        for name in player.zones:
-            del self.zones[name + '_' + str(player.game_id)]
-        self.players.remove(player)
-        return True
-
-    def add_player(self):
-        """
-        Adds a player if possible and returns the player id
-        """
-
-        if len(self.players) >= self.max_players:
-            raise ValueError("Too many players.")
-        if self.is_set_up:
-            raise ValueError("Unable to join a game in progress")
-
-        player = Player()
-        player.add_zones(self.player_zones)
-        self.players.append(player)
-
-        # Register both the player and it's zones with the game.
-        self.register([player])
-        self.register(player.zones.values())
-
-        # Add the per-player zones to our dictionary and add the owner to
-        # each zone.
-        for name, zone in player.zones.items():
-            zone.owner = player
-            zone_name = name + '_' + str(player.game_id)
-            self.zones[zone_name] = zone
-            setattr(self, zone_name, zone)
-        return player.game_id
-
-    def get_state(self, player_id=None):
-        """
-        This will return a dictonary containg the game state. This includes
-        all cards and all their data, all zones, all players and their
-        attributes, etc.
-        """
-
-        if player_id is not None:
-            player = self.get_object_with_id("Player", player_id)
-        else:
-            player = None
-
-        # Get all of my objects
-        _, cards = self.registered_objects.get("Card", (1, {}))
-        _, zones = self.registered_objects.get("Zone", (1, {}))
-        _, players = self.registered_objects.get("Player", (1, {}))
-
-        # Convert to a dictionary
-        result = {}
-
-        result['cards'] = [x.to_dict(player) for x in cards.values()]
-        result['players'] = [x.to_dict(player) for x in players.values()]
-        # Note that zones aren't StatefulGameObjects but just base game
-        # objects.
-        result['zones'] = [x.to_dict() for x in zones.values()]
-
-        return result
 
     def add_step(self, player, step, save_result_as=None, kwargs=None):
         """

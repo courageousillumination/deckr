@@ -47,3 +47,16 @@ def game_step(requires=None):
             return func(*args, **kwargs)
         return inner
     return wrapper
+
+def game_seralize(func):
+    """
+    This will take the return value of the wrapped function and do it's
+    very best to replace all game objects with their IDs. This should be put
+    on every function that interacts with the outside world.
+    """
+
+    def inner(serialize, *args, **kwargs):
+        result = func(*args, **kwargs)
+        # TODO: Correct here.
+        return result
+    return inner

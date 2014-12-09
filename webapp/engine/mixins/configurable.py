@@ -18,7 +18,7 @@ class Configurable(object):
         # Optional values should be a dictionary of key to default value
         self.optional_values = {}
 
-    def load_from_config(self, config):
+    def load_config(self, config):
         """
         First we make sure that all reuired values are present. If they are
         then we add all values. Otherwise, we throw a KeyError.
@@ -36,3 +36,13 @@ class Configurable(object):
         for optional in self.optional_values:
             if optional not in config:
                 setattr(self, optional, self.optional_values[optional])
+
+        self.post_config_callback()
+
+    def post_config_callback(self):
+        """
+        This can be overriden by subclasses that need to perform some kind
+        of extra configuration after the configuration has been loaded.
+        """
+
+        pass
