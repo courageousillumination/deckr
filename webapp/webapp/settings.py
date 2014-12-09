@@ -104,4 +104,4 @@ LETTUCE_APPS = (
 
 JENKINS_TASKS = ('django_jenkins.tasks.run_pylint',)
 
-GAME_DEFINITION_PATH = 'game_defs'
+GAME_DEFINITION_PATH = 'game_defs/'

@@ -231,6 +231,14 @@ class UploadGameDefTestCase(TestCase):
                                     form_data)
         self.assertEqual(GameDefinition.objects.all().count(), old_count + 1)
 
+        # Test a game name must be unique
+        form_data = {'game_name': 'Solitaire',
+                     'file': open('deckr/tests/solitaire.zip')}
+        response = self.client.post(reverse('deckr.upload_game_definition',),
+                                    form_data)
+        self.assertFormError(response, 'form', 'game_name',
+                             'Game Definition already exists')
+
         old_count = GameDefinition.objects.all().count()
         response = self.client.post(reverse('deckr.upload_game_definition',),
                                     {})
@@ -238,11 +246,18 @@ class UploadGameDefTestCase(TestCase):
                              'This field is required.')
         self.assertEqual(GameDefinition.objects.all().count(), old_count)
 
-        old_count = GameDefinition.objects.all().count()
-
         # Test a zipped file that is missing the layout.html
-        form_data = {'game_name': 'Solitaire',
+        form_data = {'game_name': 'Solitaire2',
                      'file': open('deckr/tests/failing_solitaire.zip')}
         response = self.client.post(reverse('deckr.upload_game_definition',),
                                     form_data)
         self.assertEqual(GameDefinition.objects.all().count(), old_count)
+
+        # Test a non-zipped file
+        form_data = {'game_name': 'Solitaire2',
+                     'file': open('deckr/tests/test_models.py')}
+        response = self.client.post(reverse('deckr.upload_game_definition',),
+                                    form_data)
+        self.assertEqual(GameDefinition.objects.all().count(), old_count)
+        self.assertFormError(response, 'form', 'file',
+                             'File is not a zip file')
