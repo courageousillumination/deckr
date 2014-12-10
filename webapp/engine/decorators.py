@@ -6,7 +6,7 @@ to do with game steps and actions.
 from engine.exceptions import InvalidMoveException, NeedsMoreInfo
 
 
-def action(restriction=None):
+def action(parameter_types, restriction=None):
     """
     This is a decorator that can be put around actions in Game subclasses.
     restrictions is an optional function that takes the same arguments as
@@ -26,6 +26,8 @@ def action(restriction=None):
 
     def wrapper(func):
         def inner(*args, **kwargs):
+            # Clean up paramater types here
+
             if restriction is None or restriction(*args, **kwargs):
                 return func(*args, **kwargs)
             else:
@@ -48,15 +50,20 @@ def game_step(requires=None):
         return inner
     return wrapper
 
-def game_seralize(func):
+def game_serialize(func):
     """
     This will take the return value of the wrapped function and do it's
     very best to replace all game objects with their IDs. This should be put
     on every function that interacts with the outside world.
     """
 
-    def inner(serialize, *args, **kwargs):
+    def inner(*args, **kwargs):
+        # Check for the serialize keyword
+        serialize = kwargs.get('serialize', None)
+        if serialize is not None:
+            del kwargs['serialize']
         result = func(*args, **kwargs)
-        # TODO: Correct here.
+        if serialize:
+            pass
         return result
     return inner

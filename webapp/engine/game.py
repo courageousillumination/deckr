@@ -2,18 +2,15 @@
 This module defines everything needed for the base Game class.
 """
 
-from engine.card import Card
 from engine.card_set import CardSet
 from engine.decorators import game_serialize
-from engine.exceptions import InvalidMoveException, NeedsMoreInfo
 from engine.game_object import GameObject
 from engine.mixins.configurable import Configurable
 from engine.mixins.has_zones import HasZones
 from engine.player import Player
-from engine.zone import Zone
 
 
-class Game(HasZones, Configurable):
+class Game(GameObject, HasZones, Configurable):
 
     """
     A game is one of the core classes of the engine. It contains logic to run
@@ -24,61 +21,28 @@ class Game(HasZones, Configurable):
     def __init__(self):
         super(Game, self).__init__()
 
-        """
-        ######################
-        # Complex Attributes #
-        ######################
-
-        # registered_objects is a dictionary of all objects that have been
-        # registered with this game. It takes the following form.
-        # { class1 : [next_id, {1 : object1, ...}],
-        #   class2 : [next_id, {1 : object1, ...}]
-        #   ...
-        # }
-        self.registered_objects = {}
-
-        # The card set is only used in more complex games; it provides the
-        # ability to generate cards on the fly easily.
-        self.card_set = CardSet()
-
-        # Playre zones is a list of all zones that should be give to every
-        # player. This includes things like hands, decks, discards, etc.
-        self.player_zones = []
-
-
-        # transitions is a dictionary of lists of tuples. The dictionary keys
-        # are player_ids and the values are lists of transitions that should be
-        # visible to that player.
-        # (< action >, < args >)
-        # Where action is one of "move", "add", "remove", "set", "over"
-        self.transitions = {}
-
-        # steps are atomic units of what happens in a game.
-        self.steps = []
-
-        # This will store something akin to a state as we work our way through
-        # the steps.
-        self.current_kwargs = {}
-
-
-        #####################
-        # Simple attributes #
-        #####################
-        self.players = []
-        self.max_players = 0
-        self.min_players = 0
-        self.is_set_up = False
-        """
-
         #: Each element of this list is a dictionary representation of a zone
         #: that belongs to a player.
         self.player_zones = []
         #: Stores all registered objects.
         self.registered_objects = {}
         #: Stores the next avaliable game ID.
-        self.next_game_id = 1
+        self.next_game_id = 0
         #: All game transitions
         self.transitions = {}
+        #: This stores the cardset for this Game. Can be None if the game
+        #: doesn't define a card set.
+        self.card_set = None
+
+        self.players = []
+        self.max_players = 0
+        self.min_players = 0
+        self.is_set_up = False
+
+        # Note that since a game is a GameObject we need to make sure it
+        # starts off in the right state. Having a node point to itself is
+        # pretty ugly, but necessary here.
+        self.register(self)
 
     #############
     # Callbacks #
@@ -90,7 +54,7 @@ class Game(HasZones, Configurable):
         our card_set and zones.
         """
 
-        self.card_set.load_from_list(self.card_set)
+        self.card_set = CardSet().load_from_list(self.card_set)
 
         game_zones = [x for x in self.zones if x.get('owner', None) is None]
         self.add_zones(game_zones)
@@ -123,7 +87,8 @@ class Game(HasZones, Configurable):
         Dergisters a single object.
         """
 
-        if isinstance(obj, GameObject) and obj.game == self:
+        if (isinstance(obj, GameObject) and obj.game == self and
+            obj.game_id in self.registered_objects):
             del self.registered_objects[obj.game_id]
 
     def register(self, obj):
@@ -150,37 +115,35 @@ class Game(HasZones, Configurable):
         else:
             self.deregister_single(obj)
 
-    def get_object_with_id(self, game_id):
+    def get_object_with_id(self, game_id, klass = None):
         """
         Gets an object with the given game_id. Returns None if no object is
-        found.
+        found. Takes in an optional klass argument. If the object is expected
+        to be of the given class but it is not then it returns None.
         """
 
-        return self.registered_objects.get(game_id, None)
+        result = self.registered_objects.get(game_id, None)
+        if (result is not None and
+            (klass is None or isinstance(result, klass))):
+            return result
+        return None
 
     #############################
     # State and Transition code #
     #############################
 
-    def add_transition(self, trans, player=None):
+    def add_transition(self, trans, player_id=None):
         """
         Add a transition to the current game state. If player is specified the
         transition will only apply to that player. Otherwise it will apply to
         all players.
         """
 
-        if player is None:
+        if player_id is None:
             for p in self.players:
-                self.transitions.setdefault(p, []).append(trans)
+                self.transitions.setdefault(p.game_id, []).append(trans)
         else:
-            self.transitions.setdefault(player, []).append(trans)
-
-    def flush_transitions(self):
-        """
-        Flush all transitions. This should only be called in dire circumstances.
-        """
-
-        self.transitions = {}
+            self.transitions.setdefault(player_id, []).append(trans)
 
     @game_serialize
     def get_transitions(self, player_id):
@@ -191,6 +154,7 @@ class Game(HasZones, Configurable):
         """
 
         result = self.transitions.get(player_id, [])
+        # In theory these could be flushed somewhere for future playback
         self.transitions[player_id] = []
         return result
 
@@ -201,7 +165,7 @@ class Game(HasZones, Configurable):
         should be sufficent to reconstruct the entire game state.
         """
 
-        return self.registerd_objects.values()
+        return self.registered_objects.values()
 
     ############################
     # Player manipulation code #
@@ -214,7 +178,6 @@ class Game(HasZones, Configurable):
             raise ValueError("Unable to join a game in progress")
 
 
-    @game_serialize
     def add_player(self):
         """
         Adds a player if possible, returning the newly added player
@@ -230,59 +193,23 @@ class Game(HasZones, Configurable):
         self.register(player.zones.values())
         self.players.append(player)
 
-        return player
+        return player.game_id
 
     def remove_player(self, player_id):
         """
-        Removes a player if possible and returns a
-        boolean denoting success or failure
+        Removes a player if possible. If the player is not currently registered
+        then it fails silently.
         """
 
-        player = self.get_object_with_id(player_id)
-        if player is not None and isinstace(player, Player):
+        player = self.get_object_with_id(player_id, Player)
+        if player is not None:
             self.deregister(player)
             self.deregister(player.zones.values())
             self.players.remove(player)
-            return True
 
-        return False
-
-    # TODO: Fix everything after this
-
-    def substitute_kwargs(self, kwargs):
-        """
-        This function will perform some keyword argument substitutions. All the
-        client knows about is GameIds, but here we only really care about
-        objects. Instead of having to manually run self.get_object_with_id for
-        every keyword argument we wanted to simplify the process. Thus, we
-        automatically run these substitutions for some specific keyword
-        arguments. Specifically:
-
-            * If the keyword argument is card, cards or contains _card, _cards
-              then it will be replaced with the corresponding Card object
-            * If the keyword argument contains "zone" it will be replaced with
-              a Zone object.
-            * If the keyword argument contains "player" it will be replaced with
-              a Player object.
-        If the undelying object is a list it will try to perform the
-        substitutions on each item of the list.
-        """
-
-        for key, value in kwargs.items():
-            if ("card" == key or "_card" in key or
-                    "cards" == key or "_cards" in key):
-                object_type = "Card"
-            elif "zone" in key:
-                object_type = "Zone"
-            elif "player" in key:
-                object_type = "Player"
-            else:
-                continue
-            if isinstance(kwargs[key], list):
-                kwargs[key] = [self.get_object_with_id(object_type, int(x))
-                               for x in kwargs[key]]
-            else:
-                kwargs[key] = self.get_object_with_id(object_type, int(value))
+    ##################################
+    # Code for running Actions/Steps #
+    ##################################
 
     def make_action(self, action_name, **kwargs):
         """
@@ -292,101 +219,42 @@ class Game(HasZones, Configurable):
         matches. If the action is invalid this could throw an exception.
         """
 
-        # Flush the old transitions
-        self.flush_transitions()
+        # Make sure the action is expected right now.
 
-        if (not hasattr(self, action_name) or
-                (self.expected_action is not None and
-                 action_name != self.expected_action[0])):
-            raise InvalidMoveException
-
-        self.substitute_kwargs(kwargs)
+        # Run the action
         getattr(self, action_name)(**kwargs)
 
-        # Run any steps that we can
+        # Run any steps that have been created by the action
         self.run()
 
+        # Finally check if we're over and respond appropriatly.
         if self.is_over():
             self.add_transition(('is_over', self.winners()))
 
-
-
-    def add_step(self, player, step, save_result_as=None, kwargs=None):
-        """
-        Registers a step that should be run.
-        """
-
-        self.steps.append((step, player, save_result_as, kwargs))
-
     def run(self):
         """
-        This will run all steps until it is impossible to do so anymore. The
-        output of the step can be stored, and we pass in the current list of
-        all my keyword argumnets to the step. This allows steps to communicate
-        with one another.
+        TODO: Update this
         """
 
         while len(self.steps) > 0:
-            step, player, save_result_as, kwargs = self.steps[0]
-            # See if the step has any specific arguments that should
-            # be passed in.
-            if kwargs is None:
-                all_kwargs = self.current_kwargs
-            else:
-                all_kwargs = dict(kwargs.items() + self.current_kwargs.items())
-            # Try to run the step, catching any NeedsMoreInfo execptions that
-            # are raised
-            try:
-                result = step(player, **all_kwargs)
-            except NeedsMoreInfo as exception:
-                if len(exception.requirement) > 3:
-                    message = exception.requirement[3]
-                else:
-                    message = "Need more information"
-                self.expected_action = ("send_information",
-                                        exception.requirement[0],
-                                        exception.requirement[1],
-                                        player.game_id,
-                                        message)
-                return
-
-            if save_result_as is not None:
-                self.current_kwargs[save_result_as] = result
-            # Now that it's actually been resovled we can clear it
+            current_step = self.steps[0]
+            current_step.run(self)
             self.steps.pop(0)
 
-        # If we get down here we're not really expecting any action and we can
-        # clear out all of the state.
-        self.expected_action = None
-        self.current_kwargs = {}
+        # Clear out everything at the end
 
     def abandon_ship(self):
         """
-        Clear all kwargs and steps. Reset to a blank state. This should really
-        only be used in development.
+        Clear all kwargs and steps. Reset to a blank state. This can be used
+        when something goes terribly wrong.
         """
 
-        self.expected_action = None
-        self.current_kwargs = {}
-        self.steps = []
+        pass
 
-    def get_expected_action(self):
-        """
-        This can give the client a hint about what is supposed to happen
-        next.
-        """
 
-        return self.expected_action
-
-    def clear_keyword_argument(self, key):
-        """
-        Remove a keyword argument from the current arguments being passed into
-        the steps. This can be needed when a step needs to get the value
-        multiple times.
-        """
-
-        if self.current_kwargs.get(key, None) is not None:
-            del self.current_kwargs[key]
+    ###############
+    # Set up code #
+    ###############
 
     def has_enough_players(self):
         """
@@ -407,53 +275,22 @@ class Game(HasZones, Configurable):
         self.is_set_up = True
         return True
 
-    # pylint: disable=unused-argument
-    def send_information_restriction(self, player, **kwargs):
-        """
-        We can only send information if the server is expecting it from this
-        player.
-        """
+    #############################
+    # Default actions and steps #
+    #############################
 
-        if self.expected_action is None:
-            return False
-        return player.game_id == self.expected_action[3]
 
-    @action(restriction=send_information_restriction)
-    def send_information(self, player, **kwargs):
-        """
-        This is a bulit in action to send more information. This will update
-        the current information and then return, hoping that self.run will
-        continue where it left off.
-        """
+    ####################################
+    # Functions that must be overriden #
+    ####################################
 
-        for key, value in kwargs.items():
-            self.current_kwargs[key] = value
-
-    @game_step(requires=None)
-    def clear_keyword_step(self, player, key, **kwargs):
-        """
-        Sometimes we need to clean up the kwargs in the steps. This facilitates
-        that.
-        """
-
-        self.clear_keyword_argument(key)
-
-    @game_step(requires=None)
-    def clear_all_keywords(self, player, **kwargs):
-        """
-        This will allow the entire dictionary to be cleared at some point.
-        """
-
-        self.current_kwargs = {}
-
-    # Actions after this point should be implemented by subclasses
     def set_up(self):
         """
         This will set up the actual game. This includes dealing cards, setting
         up state, etc. This should be used over __init__.
         """
 
-        pass
+        raise NotImplementedError
 
     def is_over(self):
         """
@@ -461,4 +298,11 @@ class Game(HasZones, Configurable):
         is over.
         """
 
-        pass
+        raise NotImplementedError
+
+    def winners(self):
+        """
+        This should return the list of winners assuming that the game is over.
+        """
+
+        raise NotImplementedError
