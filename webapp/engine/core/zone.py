@@ -4,7 +4,7 @@ This module provides the Zone class.
 
 import random
 
-from engine.game_object import GameObject
+from engine.core.game_object import GameObject
 
 
 class Zone(GameObject):

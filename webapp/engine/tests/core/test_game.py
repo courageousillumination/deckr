@@ -4,9 +4,9 @@ This module contains all test for the Game class.
 
 from unittest import TestCase
 
-from engine.game import Game
-from engine.game_object import GameObject
-from engine.transition import Transition
+from engine.core.game import Game
+from engine.core.game_object import GameObject
+from engine.core.transition import Transition
 
 
 class TestGameObject(GameObject):

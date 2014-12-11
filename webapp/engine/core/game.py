@@ -2,12 +2,11 @@
 This module defines everything needed for the base Game class.
 """
 
-from engine.card_set import CardSet
-from engine.decorators import game_serialize
-from engine.game_object import GameObject
+from engine.core.decorators import game_serialize
+from engine.core.game_object import GameObject
+from engine.core.player import Player
 from engine.mixins.configurable import Configurable
 from engine.mixins.has_zones import HasZones
-from engine.player import Player
 
 
 class Game(GameObject, HasZones, Configurable):
@@ -53,8 +52,6 @@ class Game(GameObject, HasZones, Configurable):
         After we load the configuration we need to actually set up
         our card_set and zones.
         """
-
-        self.card_set = CardSet().load_from_list(self.card_set)
 
         game_zones = [x for x in self.zones if x.get('owner', None) is None]
         self.add_zones(game_zones)

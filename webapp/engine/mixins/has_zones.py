@@ -4,7 +4,7 @@ This module exports the HasZones mixin.
 
 from copy import copy
 
-from engine.zone import Zone
+from engine.core.zone import Zone
 
 
 class HasZones(object):

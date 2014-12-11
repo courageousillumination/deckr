@@ -3,7 +3,7 @@ This file provides all of the decorators for the engine. Most of these have
 to do with game steps and actions.
 """
 
-from engine.exceptions import InvalidMoveException, NeedsMoreInfo
+from engine.core.exceptions import InvalidMoveException, NeedsMoreInfo
 
 
 def action(parameter_types, restriction=None):

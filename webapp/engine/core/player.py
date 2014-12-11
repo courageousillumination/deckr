@@ -2,11 +2,11 @@
 This module defines the player class.
 """
 
+from engine.core.game_object import GameObject
 from engine.mixins.has_zones import HasZones
-from engine.stateful_game_object import StatefulGameObject
 
 
-class Player(StatefulGameObject, HasZones):
+class Player(GameObject, HasZones):
 
     """
     This class basically represents a player in the game.
