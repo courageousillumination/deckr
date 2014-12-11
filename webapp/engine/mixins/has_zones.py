@@ -4,8 +4,6 @@ This module exports the HasZones mixin.
 
 from copy import copy
 
-from engine.core.zone import Zone
-
 
 class HasZones(object):
 
@@ -22,7 +20,8 @@ class HasZones(object):
     def add_zones(self, zones):
         """
         Takes in a list of zone configs and adds them all in one go.
-        Includes code for dealing with multiplicity.
+        Includes code for dealing with multiplicity. Note that this doesn't
+        allow you to add zone __objects__ only zone configurations.
         """
 
         for zone in zones:
@@ -45,10 +44,14 @@ class HasZones(object):
         dictionary.
         """
 
-        zone_object = Zone(zone_config)
+        from engine.core.zone import create_zone
+
+        zone_object = create_zone(zone_config)
         self.zones[zone_object.name] = zone_object
         setattr(self, zone_object.name, zone_object)
         self.add_zone_callback(zone_object)
+
+        return zone_object
 
     def add_zone_callback(self, new_zone):
         """
