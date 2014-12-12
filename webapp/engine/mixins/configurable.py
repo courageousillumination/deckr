@@ -14,28 +14,30 @@ class Configurable(object):
 
         # These values are required and will throw an exception if the value
         # is missing.
-        self.required_values = set()
+        self.required_fields = set()
         # Optional values should be a dictionary of key to default value
-        self.optional_values = {}
+        self.default_values = {}
 
-    def load_config(self, config):
+    def load_config(self, config, ignore_keys = None):
         """
         First we make sure that all reuired values are present. If they are
         then we add all values. Otherwise, we throw a KeyError.
         """
 
-        for required in self.required_values:
+        for required in self.required_fields:
             if required not in config:
-                raise KeyError
+                err = "Configuration missing field {0}".format(required)
+                raise ValueError(err)
 
         # Load everything that we can out of the configuration
         for key in config:
-            setattr(self, key, config[key])
+            if ignore_keys is None or key not in ignore_keys:
+                setattr(self, key, config[key])
 
         # Load up all optional vaule that haven't been accounted for
-        for optional in self.optional_values:
+        for optional in self.default_values:
             if optional not in config:
-                setattr(self, optional, self.optional_values[optional])
+                setattr(self, optional, self.default_values[optional])
 
         self.post_config_callback()
 
