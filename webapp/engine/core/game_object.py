@@ -95,4 +95,4 @@ class GameObject(object):
             return
 
         if self.game is not None and name in self.game_attributes:
-            self.game.add_transition('set', self, name, value)
+            self.game.add_transition(None)

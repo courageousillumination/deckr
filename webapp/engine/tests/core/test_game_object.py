@@ -4,7 +4,6 @@ Contains any tests around the base stateful game object.
 
 from unittest import TestCase
 
-from engine.core import Transition
 from engine.core.game_object import GameObject
 
 
@@ -126,7 +125,7 @@ class GameObjectTestCase(TestCase):
             def __init__(self):
                 self.transitions = []
 
-            def add_transition(self, object):
+            def add_transition(self, transition):
                 self.transitions.append(transition)
 
         mock_game = MockGame()
