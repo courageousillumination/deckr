@@ -37,35 +37,76 @@ class Zone(GameObject, Configurable):
         self.objects = []
 
     def add(self, obj):
+        """
+        Add an object to a zone. This is an unordered operation.
+        """
+
         self.objects.append(obj)
 
     def remove(self, obj):
-        self.objects.remove(obj)
+        """
+        Remove a specified object from a zone. Fails silently if the
+        object is not in the list.
+        """
+
+        try:
+            self.objects.remove(obj)
+        except ValueError:
+            pass
 
     def __contains__(self, obj):
+        """
+        Check if a zone contains the specified object.
+        """
+
         return obj in self.objects
 
     def __iter__(self):
+        """
+        Returns an iterable of the objects in this zone.
+        """
+
         return iter(self.objects)
 
     def __len__(self):
+        """
+        Count the number of objects in this zone.
+        """
+
         return len(self.objects)
 
 class OrderedZone(Zone):
 
     def push(self, obj):
+        """
+        Push an object on to this zone. This is an ordered operation.
+        """
+
         self.objects.append(obj)
 
     def pop(self):
+        """
+        Pop the top element of this zone. If no object exists return None.
+        """
+
         try:
             return self.objects.pop()
         except IndexError:
             return None
 
     def insert(self, obj, index):
+        """
+        Insert an object into the zone at the specified index.
+        """
+
         self.objects.insert(index, obj)
 
     def shuffle(self):
+        """
+        Shuffle an ordered zone. This will randomize the order of the objects
+        in the zone.
+        """
+        
         import random
 
         random.shuffle(self.objects)
