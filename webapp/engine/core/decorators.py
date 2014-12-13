@@ -4,6 +4,7 @@ to do with game steps and actions.
 """
 
 from engine.core.exceptions import InvalidMoveException, NeedsMoreInfo
+from engine.core.game_object import GameObject
 
 
 def game_action(restriction=None, parameter_types=None):
@@ -87,13 +88,16 @@ def game_step(requires=None):
 
                     # Check the type
                     if container == 'list':
+                        if not isinstance(kwargs[name], list):
+                            raise NeedsMoreInfo("Improper container",
+                                                requirement)
                         for x in kwargs[name]:
-                            if not isinstance(x, expeted_type):
+                            if not isinstance(x, expected_type):
                                 raise NeedsMoreInfo('Argument is improper type',
                                                     requirement)
                     elif not isinstance(kwargs[name], expected_type):
                         raise NeedsMoreInfo('Argument is improper type',
-                                            requirment)
+                                            requirement)
 
                     # Finally try the test
                     if test is not None and not test(*args, **kwargs):
@@ -112,6 +116,32 @@ def game_serialize(func):
     on every function that interacts with the outside world.
     """
 
+    def serialize_list(result):
+        """
+        Seralize a list of objects.
+        """
+
+        new_result = []
+        for x in result:
+            if isinstance(x, GameObject):
+                new_result.append(x.serialize())
+            else:
+                new_result.append(x)
+        return new_result
+
+    def seralize_dict(result):
+        """
+        Seralize a dictionary of objects.
+        """
+
+        new_result = {}
+        for key, value in result.items():
+            if isinstance(value, GameObject):
+                new_result[key] = value.serialize()
+            else:
+                new_result[key] = value
+        return new_result
+
     # pylint: disable=missing-docstring
     def inner(*args, **kwargs):
         # Check for the serialize keyword
@@ -119,7 +149,13 @@ def game_serialize(func):
         if serialize is not None:
             del kwargs['serialize']
         result = func(*args, **kwargs)
-        if serialize:
-            pass
+        if serialize == True:
+            # Check for a list
+            if isinstance(result, list):
+                return serialize_list(result)
+            elif isinstance(result, dict):
+                return seralize_dict(result)
+            elif isinstance(result, GameObject):
+                return result.serialize()
         return result
     return inner

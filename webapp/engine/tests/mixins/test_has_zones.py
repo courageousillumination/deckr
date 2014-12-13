@@ -63,3 +63,6 @@ class HasZonesTestCase(TestCase):
 
         self.assertEqual(len(self.has_zones.zones_added), 1)
         self.assertIn('test_zone', self.has_zones.zones_added)
+
+        # For coverage reasons run the default callback
+        HasZones().add_zone_callback(None)

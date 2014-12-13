@@ -197,6 +197,57 @@ class BaseGameTestCase(TestCase):
         # registered with the game.
         self.assertEqual(self.game, self.game.test_zone.game)
 
+    def test_add_step(self):
+        """
+        Make sure that we can add a step on both sides.
+        """
+
+        self.game.add_step(player=1, step='foo')
+        self.assertEqual(self.game.steps[0], {'player': 1, 'step': 'foo',
+                                              'save_as': None, 'args': None,
+                                              'using': None})
+        self.game.add_step(player=2, step='bar', prepend=True)
+        self.assertEqual(self.game.steps[0], {'player': 2, 'step': 'bar',
+                                              'save_as': None, 'args': None,
+                                              'using': None})
+
+    def test_requires_info(self):
+        """
+        Make sure that we can set and get the required_info.
+        """
+
+        self.assertIsNone(self.game.get_requires_information())
+        self.game.set_requires_information(1,
+                                           {'name': 'foo', 'type': GameObject})
+        self.assertDictEqual(self.game.get_requires_information(),
+                             {'name': 'foo', 'type': 'GameObject', 'player': 1})
+        self.game.set_requires_information(1,
+                                           {'name': 'foo', 'type': str})
+        self.assertDictEqual(self.game.get_requires_information(),
+                             {'name': 'foo', 'type': 'str', 'player': 1})
+
+    def test_send_information(self):
+        """
+        Make sure that we can send information and that the type is properly
+        set.
+        """
+
+        object1 = GameObject()
+        player = self.game.add_player()
+        self.game.register(object1)
+
+        self.game.set_requires_information(player,
+                                           {'name': 'foo', 'type': GameObject})
+
+        self.game.send_information(player, foo=object1.game_id)
+        self.assertEqual(self.game.step_state.current_state['foo'],
+                         object1)
+
+        self.game.set_requires_information(player,
+                                           {'name': 'foo', 'type': int})
+        self.game.send_information(player, foo=1)
+        self.assertEqual(self.game.step_state.current_state['foo'], 1)
+
     def test_abstract_methods(self):
         """
         Make sure our methods are abstract (mainly for coverage)
