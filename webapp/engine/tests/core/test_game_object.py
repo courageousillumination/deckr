@@ -19,7 +19,6 @@ class GameObjectTestCase(TestCase):
         self.game_object.game_id = 1
         self.game_object.game_object_type = 'simple_object'
 
-
     def test_serialize_simple(self):
         """
         Make sure that we can properly serialize a simple game_object
@@ -52,22 +51,22 @@ class GameObjectTestCase(TestCase):
         self.game_object.subobject = subobject
         self.game_object.game_attributes.add('subobject')
 
-        self.assertDictEqual(self.game_object.serialize(full = True),
+        self.assertDictEqual(self.game_object.serialize(full=True),
                              {'game_id': 1,
                               'game_object_type': 'simple_object',
                               'subobject': {
-                                'game_id': 2,
-                                'game_object_type': 'subobject',
-                                'foo': 'foo'
+                                  'game_id': 2,
+                                  'game_object_type': 'subobject',
+                                  'foo': 'foo'
                               }})
 
-        self.assertDictEqual(self.game_object.serialize(full = False),
+        self.assertDictEqual(self.game_object.serialize(full=False),
                              {'game_id': 1,
                               'game_object_type': 'simple_object',
-                               'subobject': {
-                                 'game_id': 2,
-                                 'game_object_type': 'subobject'
-                               }})
+                              'subobject': {
+                                  'game_id': 2,
+                                  'game_object_type': 'subobject'
+                              }})
 
     def test_serialize_containers(self):
         """
@@ -88,32 +87,32 @@ class GameObjectTestCase(TestCase):
         self.game_object.objects = object_list
         self.game_object.game_attributes.add('objects')
 
-        self.assertDictEqual(self.game_object.serialize(full = True),
+        self.assertDictEqual(self.game_object.serialize(full=True),
                              {'game_id': 1,
                               'game_object_type': 'simple_object',
-                               'objects': [{
-                                 'game_id': 2,
-                                 'game_object_type': 'sample_object'
-                                  },
+                              'objects': [{
+                                  'game_id': 2,
+                                  'game_object_type': 'sample_object'
+                              },
                                   {
                                   'game_id': 3,
                                   'game_object_type': 'sample_object'
-                               }]})
+                              }]})
 
         object_dict = {'foo': object1, 'bar': object2}
         self.game_object.objects = object_dict
 
-        self.assertDictEqual(self.game_object.serialize(full = True),
+        self.assertDictEqual(self.game_object.serialize(full=True),
                              {'game_id': 1,
                               'game_object_type': 'simple_object',
-                               'objects': {'foo':{
-                                 'game_id': 2,
-                                 'game_object_type': 'sample_object'
-                                  },
-                                  'bar':{
+                              'objects': {'foo': {
+                                  'game_id': 2,
+                                  'game_object_type': 'sample_object'
+                              },
+                                  'bar': {
                                   'game_id': 3,
                                   'game_object_type': 'sample_object'
-                               }}})
+                              }}})
 
     def test_set_attribute(self):
         """
@@ -122,6 +121,7 @@ class GameObjectTestCase(TestCase):
         """
 
         class MockGame(object):
+
             def __init__(self):
                 self.transitions = []
 

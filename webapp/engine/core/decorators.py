@@ -6,7 +6,7 @@ to do with game steps and actions.
 from engine.core.exceptions import InvalidMoveException, NeedsMoreInfo
 
 
-def game_action(restriction = None, parameter_types = None):
+def game_action(restriction=None, parameter_types=None):
     """
     This is a decorator that can be put around "actions" in Game. actions are
     defined as anything that the user can do. This could include playing a card,
@@ -31,6 +31,7 @@ def game_action(restriction = None, parameter_types = None):
                  as a singleton.
     """
 
+    # pylint: disable=missing-docstring
     def wrapper(func):
         def inner(self, *args, **kwargs):
             # Fix up the parameter types
@@ -50,6 +51,7 @@ def game_action(restriction = None, parameter_types = None):
         return inner
     return wrapper
 
+
 def game_step(requires=None):
     """
     A game step represents an atomic set of state transitions it the game.
@@ -68,6 +70,7 @@ def game_step(requires=None):
           the step itself (usually you can get away with *args, and **kwargs)
     """
 
+    # pylint: disable=missing-docstring
     def wrapper(func):
         def inner(*args, **kwargs):
             if requires is not None:
@@ -101,6 +104,7 @@ def game_step(requires=None):
         return inner
     return wrapper
 
+
 def game_serialize(func):
     """
     This will take the return value of the wrapped function and do it's
@@ -108,6 +112,7 @@ def game_serialize(func):
     on every function that interacts with the outside world.
     """
 
+    # pylint: disable=missing-docstring
     def inner(*args, **kwargs):
         # Check for the serialize keyword
         serialize = kwargs.get('serialize', None)

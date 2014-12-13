@@ -3,6 +3,7 @@ This file holds any exceptions that we create for the
 game engine.
 """
 
+
 class InvalidMoveException(Exception):
 
     """
@@ -27,6 +28,8 @@ class NeedsMoreInfo(Exception):
     def __init__(self, message, requirement=None):
         super(NeedsMoreInfo, self).__init__()
         self.requirement = requirement
+        self.message = message
 
     def __str__(self):
-        return "Need more information for {0}".format(self.requirement)
+        return "Need more information for {0} '{1}'".format(self.requirement,
+                                                            self.message)

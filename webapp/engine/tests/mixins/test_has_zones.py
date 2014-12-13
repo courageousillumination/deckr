@@ -9,12 +9,14 @@ from engine.mixins.has_zones import HasZones
 
 
 class MockHasZones(HasZones):
+
     def __init__(self):
         super(MockHasZones, self).__init__()
         self.zones_added = []
 
     def add_zone_callback(self, new_zone):
         self.zones_added.append(new_zone.name)
+
 
 class HasZonesTestCase(TestCase):
 

@@ -8,6 +8,7 @@ from engine.mixins.configurable import Configurable
 
 
 class MockConfigurable(Configurable):
+
     def __init__(self):
         super(MockConfigurable, self).__init__()
         self.callback_called = False
@@ -15,7 +16,9 @@ class MockConfigurable(Configurable):
     def post_config_callback(self):
         self.callback_called = True
 
+
 class ConfigurableTestCase(TestCase):
+
     def setUp(self):
         self.configurable = MockConfigurable()
 
@@ -60,7 +63,7 @@ class ConfigurableTestCase(TestCase):
         self.configurable.load_config({'foo': 'bar',
                                        'ignore_me': 'secret',
                                        'ignore_me_too': 'top_secret'},
-                                       ignore_keys = ignore_keys)
+                                      ignore_keys=ignore_keys)
 
         self.assertEqual(self.configurable.foo, 'bar')
         self.assertFalse(hasattr(self.configurable, 'ignore_me'))

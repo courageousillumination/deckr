@@ -9,6 +9,7 @@ from engine.core.zone import Zone
 
 
 class ZoneTestCase(TestCase):
+
     """
     Test the base zone class. Most of this pertains to the
     list like functionality.
@@ -29,7 +30,6 @@ class ZoneTestCase(TestCase):
 
         self.zone.add(self.object1)
         self.assertIn(self.object1, self.zone)
-
 
     def test_iteration(self):
         """
@@ -59,7 +59,6 @@ class ZoneTestCase(TestCase):
 
         self.zone.add(self.object1)
         self.assertEqual(1, len(self.zone))
-
 
     def test_remove(self):
         """

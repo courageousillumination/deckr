@@ -15,7 +15,9 @@ from engine.core.transition import Transition
 class TestGameObject(GameObject):
     pass
 
+
 class BaseGameTestCase(TestCase):
+
     """
     Test functionality provided by the base game. The tests in this test case
     should not depend on anything outside of the base game.
@@ -32,7 +34,7 @@ class BaseGameTestCase(TestCase):
         """
 
         object1 = GameObject()
-        object2 = "Foo" # Test with non game object.
+        object2 = "Foo"  # Test with non game object.
         object_list = [GameObject(), GameObject()]
 
         self.game.register(object1)
@@ -93,7 +95,7 @@ class BaseGameTestCase(TestCase):
         self.game.deregister(object1)
         self.game.deregister(object_list)
         self.game.deregister(non_game_object)
-        self.game.deregister(object1) # Double deregister
+        self.game.deregister(object1)  # Double deregister
 
         self.assertIsNone(self.game.get_object_with_id(object1.game_id))
         self.assertIsNone(self.game.get_object_with_id(object2.game_id))
@@ -111,7 +113,7 @@ class BaseGameTestCase(TestCase):
         self.game.register(object1)
         self.game.register(object2)
 
-        game_state = self.game.get_state(serialize = False)
+        game_state = self.game.get_state(serialize=False)
 
         self.assertEqual(len(game_state), 3)
         self.assertIn(self.game, game_state)
@@ -132,15 +134,15 @@ class BaseGameTestCase(TestCase):
         self.game.add_transition(transition1)
         self.game.add_transition(transition2, player1)
 
-        self.assertEqual(self.game.get_transitions(player1, serialize = False),
+        self.assertEqual(self.game.get_transitions(player1, serialize=False),
                          [transition1, transition2])
 
-        self.assertEqual(self.game.get_transitions(player2, serialize = False),
+        self.assertEqual(self.game.get_transitions(player2, serialize=False),
                          [transition1])
 
-        self.assertEqual(self.game.get_transitions(player1, serialize = False),
+        self.assertEqual(self.game.get_transitions(player1, serialize=False),
                          [])
-        self.assertEqual(self.game.get_transitions(player2, serialize = False),
+        self.assertEqual(self.game.get_transitions(player2, serialize=False),
                          [])
 
     def test_add_player(self):
@@ -184,7 +186,9 @@ class BaseGameTestCase(TestCase):
         # Need min players
         self.assertRaises(ValueError, self.game.load_config, {})
         # Need max players
-        self.assertRaises(ValueError, self.game.load_config, {'min_players': 0})
+        self.assertRaises(
+            ValueError, self.game.load_config, {
+                'min_players': 0})
 
         self.game.load_config({'min_players': 0,
                                'max_players': 0,
@@ -193,7 +197,6 @@ class BaseGameTestCase(TestCase):
         # This will test that the zone exists and that it was properly
         # registered with the game.
         self.assertEqual(self.game, self.game.test_zone.game)
-
 
     def test_abstract_methods(self):
         """
@@ -206,6 +209,8 @@ class BaseGameTestCase(TestCase):
 
 # After this point we have code that tests a very simple game. This is to
 # test and make sure that actions, etc. all work as expected.
+
+
 class SimpleGame(Game):
 
     def __init__(self):
@@ -225,21 +230,21 @@ class SimpleGame(Game):
     def winners(self):
         return []
 
-    @game_action(parameter_types = None, restriction = None)
+    @game_action(parameter_types=None, restriction=None)
     def simple_action(self, player):
         self.result = True
 
-    @game_action(parameter_types = None,
-                 restriction = lambda self, player: not self.restricted)
+    @game_action(parameter_types=None,
+                 restriction=lambda self, player: not self.restricted)
     def restricted_action(self, player):
         self.result = True
 
-    @game_action(restriction = None,
-                 parameter_types = [{'name': 'player1'}])
+    @game_action(restriction=None,
+                 parameter_types=[{'name': 'player1'}])
     def paramter_types_action(self, player, player1):
         self.result = player1
 
-    @game_action(parameter_types = None, restriction = None)
+    @game_action(parameter_types=None, restriction=None)
     def end_game(self, player):
         self.game_over = True
 
@@ -247,34 +252,33 @@ class SimpleGame(Game):
     # Testing steps #
     #################
 
-    @game_action(parameter_types = None, restriction = None)
+    @game_action(parameter_types=None, restriction=None)
     def simple_step_action(self, player):
-        self.add_step(player = player,
-                      step = self.simple_step)
+        self.add_step(player=player,
+                      step=self.simple_step)
 
-    @game_step(requires = None)
+    @game_step(requires=None)
     def simple_step(self, player):
         self.result = True
 
+    @game_action(parameter_types=None, restriction=None)
+    def requires_more_step_action(self, player, extra_args=None):
+        self.add_step(player=player,
+                      step=self.requires_more_step,
+                      args=extra_args)
 
-    @game_action(parameter_types = None, restriction = None)
-    def requires_more_step_action(self, player, extra_args = None):
-        self.add_step(player = player,
-                      step = self.requires_more_step,
-                      args = extra_args)
-
-    @game_step(requires = [{'name': 'foo', 'type': Player}])
+    @game_step(requires=[{'name': 'foo', 'type': Player}])
     def requires_more_step(self, player, foo):
         self.result = foo
 
-    @game_action(parameter_types = None, restriction = None)
+    @game_action(parameter_types=None, restriction=None)
     def pass_through_step_action(self, player):
-        self.add_step(player = player,
-                      step = self.pass_through_step1,
-                      save_as = 'step1_result')
-        self.add_step(player = player,
-                      step = self.pass_through_step2,
-                      using = {'foo': 'step1_result'})
+        self.add_step(player=player,
+                      step=self.pass_through_step1,
+                      save_as='step1_result')
+        self.add_step(player=player,
+                      step=self.pass_through_step2,
+                      using={'foo': 'step1_result'})
 
     @game_step(requires=None)
     def pass_through_step1(self, player):
@@ -283,6 +287,7 @@ class SimpleGame(Game):
     @game_step(requires=[{'name': 'foo', 'type': str}])
     def pass_through_step2(self, player, foo):
         self.result = foo
+
 
 class SimpleGameTestCase(TestCase):
 
@@ -331,10 +336,10 @@ class SimpleGameTestCase(TestCase):
 
         self.assertRaises(InvalidMoveException, self.game.make_action,
                           'paramter_types_action', self.player_id,
-                          player1 = -1)
+                          player1=-1)
 
         self.game.make_action('paramter_types_action',
-                              self.player_id, player1 = self.player_id)
+                              self.player_id, player1=self.player_id)
 
         self.assertTrue(isinstance(self.game.result, Player))
         self.assertEqual(self.game.players[0], self.game.result)
@@ -370,7 +375,7 @@ class SimpleGameTestCase(TestCase):
                           'player': self.player_id})
         self.assertIsNone(self.game.result)
 
-        self.game.make_action('send_information', self.player_id, foo = 1)
+        self.game.make_action('send_information', self.player_id, foo=1)
         self.assertEqual(self.game.result, self.game.players[0])
 
     def test_specify_args(self):
@@ -379,7 +384,7 @@ class SimpleGameTestCase(TestCase):
         """
 
         self.game.make_action('requires_more_step_action', self.player_id,
-                              extra_args = {'foo': self.game.players[0]})
+                              extra_args={'foo': self.game.players[0]})
         self.assertEqual(self.game.result, self.game.players[0])
 
     def test_pass_through_step(self):

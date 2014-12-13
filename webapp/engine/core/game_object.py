@@ -2,6 +2,7 @@
 This module defines the GameObject.
 """
 
+
 class GameObject(object):
 
     """
@@ -25,7 +26,6 @@ class GameObject(object):
         # NOTE: This has to be the last attribute set in __init__. After this
         # is set the __setattr__ will start checking all attributes.
         self.game = None
-
 
     ######################
     # Serialization code #
@@ -64,7 +64,7 @@ class GameObject(object):
         else:
             return self.serialize_single(obj, full)
 
-    def serialize(self, full = True):
+    def serialize(self, full=True):
         """
         This will serialize this object for consumption by the outside
         world. This will basically construct a dictionary that contains

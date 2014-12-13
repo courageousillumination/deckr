@@ -2,7 +2,7 @@
 This module defines everything needed for the base Game class.
 """
 
-from engine.core.decorators import game_action, game_serialize, game_step
+from engine.core.decorators import game_action, game_serialize
 from engine.core.exceptions import NeedsMoreInfo
 from engine.core.game_object import GameObject
 from engine.core.player import Player
@@ -93,7 +93,7 @@ class Game(GameObject, HasZones, Configurable):
         Dergisters a single object.
         """
 
-        if (obj.game == self and obj.game_id in self.registered_objects):
+        if obj.game == self and obj.game_id in self.registered_objects:
             del self.registered_objects[obj.game_id]
 
     def register(self, obj):
@@ -106,10 +106,9 @@ class Game(GameObject, HasZones, Configurable):
         if isinstance(obj, GameObject):
             self.register_single(obj)
         elif hasattr(obj, '__iter__'):
-            for o in obj:
-                if isinstance(o, GameObject):
-                    self.register_single(o)
-
+            for single_obj in obj:
+                if isinstance(single_obj, GameObject):
+                    self.register_single(single_obj)
 
     def deregister(self, obj):
         """
@@ -119,11 +118,11 @@ class Game(GameObject, HasZones, Configurable):
         if isinstance(obj, GameObject):
             self.deregister_single(obj)
         elif hasattr(obj, '__iter__'):
-            for o in obj:
-                if isinstance(o, GameObject):
-                    self.deregister_single(o)
+            for single_obj in obj:
+                if isinstance(single_obj, GameObject):
+                    self.deregister_single(single_obj)
 
-    def get_object_with_id(self, game_id, klass = None):
+    def get_object_with_id(self, game_id, klass=None):
         """
         Gets an object with the given game_id. Returns None if no object is
         found. Takes in an optional klass argument. If the object is expected
@@ -132,7 +131,7 @@ class Game(GameObject, HasZones, Configurable):
 
         result = self.registered_objects.get(game_id, None)
         if (result is not None and
-            (klass is None or isinstance(result, klass))):
+                (klass is None or isinstance(result, klass))):
             return result
         return None
 
@@ -148,8 +147,8 @@ class Game(GameObject, HasZones, Configurable):
         """
 
         if player_id is None:
-            for p in self.players:
-                self.transitions.setdefault(p.game_id, []).append(trans)
+            for player in self.players:
+                self.transitions.setdefault(player.game_id, []).append(trans)
         else:
             self.transitions.setdefault(player_id, []).append(trans)
 
@@ -180,11 +179,14 @@ class Game(GameObject, HasZones, Configurable):
     ############################
 
     def check_can_add_player(self):
+        """
+        Make sure that it is legal to add a player. Raises a ValueError
+        if it is not legal.
+        """
         if len(self.players) >= self.max_players:
             raise ValueError("Too many players.")
         if self.is_set_up:
             raise ValueError("Unable to join a game in progress")
-
 
     def add_player(self):
         """
@@ -228,17 +230,17 @@ class Game(GameObject, HasZones, Configurable):
         """
 
         # Run the action
-        getattr(self, action_name)(player = player, **kwargs)
+        getattr(self, action_name)(player=player, **kwargs)
         # Run any steps that the action may have created.
         self.run()
 
         # Check for the end conditions.
         if self.is_over():
-               self.add_transition({'name': 'is_over',
-                                    'winners': self.winners()})
+            self.add_transition({'name': 'is_over',
+                                 'winners': self.winners()})
 
-    def add_step(self, player, step, args = None, save_as = None,
-                  prepend = False, using = None):
+    def add_step(self, player, step, args=None, save_as=None,
+                 prepend=False, using=None):
         """
         Registers a specific step that should be run. Allows for a number of
         optional keyword arguments:
@@ -255,13 +257,12 @@ class Game(GameObject, HasZones, Configurable):
         """
 
         step_dict = {'player': player, 'step': step, 'args': args,
-                     'save_as': save_as, 'using': using }
+                     'save_as': save_as, 'using': using}
 
         if prepend == True:
             self.steps.insert(0, step_dict)
         else:
             self.steps.append(step_dict)
-
 
     def set_requires_information(self, player, requirement):
         """
@@ -300,19 +301,19 @@ class Game(GameObject, HasZones, Configurable):
             using = current_step['using']
             args = current_step['args']
 
-            self.step_state.start_step(args, using = using)
+            self.step_state.start_step(args, using=using)
 
             try:
                 result = step(player, **self.step_state.get_kwargs())
-            except NeedsMoreInfo as e:
-                self.set_requires_information(player, e.requirement)
+            except NeedsMoreInfo as more_info:
+                self.set_requires_information(player, more_info.requirement)
                 return
 
             self.step_state.finish_step()
 
             # Try to save it in case save_as is not null
             # NOTE: Does this actually need to be gloabl?
-            self.step_state.add_argument(save_as, result, add_global = True)
+            self.step_state.add_argument(save_as, result, add_global=True)
 
             self.steps.pop(0)
 
@@ -345,7 +346,7 @@ class Game(GameObject, HasZones, Configurable):
     # Default actions and steps #
     #############################
 
-    @game_action(parameter_types = None, restriction = None)
+    @game_action(parameter_types=None, restriction=None)
     def send_information(self, player, **kwargs):
         """
         This function will be called whenever a user wants to send additional
@@ -363,7 +364,6 @@ class Game(GameObject, HasZones, Configurable):
             value = kwargs[name]
 
         self.step_state.add_argument(name, value)
-
 
     ####################################
     # Functions that must be overriden #

@@ -2,9 +2,6 @@
 This module exports the HasZones mixin.
 """
 
-from copy import copy
-
-
 class HasZones(object):
 
     """

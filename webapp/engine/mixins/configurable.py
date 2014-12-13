@@ -2,7 +2,9 @@
 This file provides the configurable mixin.
 """
 
+
 class Configurable(object):
+
     """
     A configurable object can take in a configuration
     (in the form of a dictionary) and perform some
@@ -18,7 +20,7 @@ class Configurable(object):
         # Optional values should be a dictionary of key to default value
         self.default_values = {}
 
-    def load_config(self, config, ignore_keys = None):
+    def load_config(self, config, ignore_keys=None):
         """
         First we make sure that all reuired values are present. If they are
         then we add all values. Otherwise, we throw a KeyError.

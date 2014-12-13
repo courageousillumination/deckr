@@ -12,9 +12,11 @@ def create_browser():
     world.browser = webdriver.Firefox()
     world.browser.implicitly_wait(1)
 
+
 @after.all
 def destroy_browser(results):
     world.browser.close()
+
 
 @step(u'I create a game room for "([^"]*)"')
 def create_game_room(step, game):
@@ -23,11 +25,13 @@ def create_game_room(step, game):
     step.given('I click "Create game room"')
     world.game_room_id = world.browser.current_url.split('/')[-2]
 
+
 @world.absorb
 @step(u'I enter game with nickname "([^"]*)"')
 def enter_game(step, nickname):
     step.given('I fill in "nickname" with "{0}"'.format(nickname))
     step.given('I click "Choose nickname"')
+
 
 @step(u'I start the game')
 def start_game(step):
@@ -46,6 +50,7 @@ def confirm_connected_players(step, n):
     player_names = world.browser.find_element_by_id("player-names")
     n_players = len(player_names.find_elements_by_tag_name("li"))
     assert n_players == int(n)
+
 
 @step(u'Then "([^"]*)" cards should be rendered')
 def n_cards_should_be_rendered(step, n):
