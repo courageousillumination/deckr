@@ -53,6 +53,40 @@ def game_action(restriction=None, parameter_types=None):
     return wrapper
 
 
+def verify_requirement(requirement, *args, **kwargs):
+    """
+    Makes sure that a requirement is met.
+    """
+    # Parse everything out of the dictionary
+    expected_type = requirement.get('type', None)
+    name = requirement['name']
+    container = requirement.get('container', None)
+    test = requirement.get('test', None)
+
+    # Make sure the argument is present
+    if name not in kwargs:
+        raise NeedsMoreInfo('Missing required argument',
+                            requirement)
+
+    # Check the type
+    if container == 'list':
+        if not isinstance(kwargs[name], list):
+            raise NeedsMoreInfo("Improper container",
+                                requirement)
+        for x in kwargs[name]:
+            if not isinstance(x, expected_type):
+                raise NeedsMoreInfo('Argument is improper type',
+                                    requirement)
+    elif not isinstance(kwargs[name], expected_type):
+        raise NeedsMoreInfo('Argument is improper type',
+                            requirement)
+
+    # Finally try the test
+    if test is not None and not test(*args, **kwargs):
+        raise NeedsMoreInfo('Failed Test',
+                            requirement)
+
+
 def game_step(requires=None):
     """
     A game step represents an atomic set of state transitions it the game.
@@ -76,37 +110,38 @@ def game_step(requires=None):
         def inner(*args, **kwargs):
             if requires is not None:
                 for requirement in requires:
-                    expected_type = requirement.get('type', None)
-                    name = requirement['name']
-                    container = requirement.get('container', None)
-                    test = requirement.get('test', None)
-
-                    # Make sure the argument is present
-                    if name not in kwargs:
-                        raise NeedsMoreInfo('Missing required argument',
-                                            requirement)
-
-                    # Check the type
-                    if container == 'list':
-                        if not isinstance(kwargs[name], list):
-                            raise NeedsMoreInfo("Improper container",
-                                                requirement)
-                        for x in kwargs[name]:
-                            if not isinstance(x, expected_type):
-                                raise NeedsMoreInfo('Argument is improper type',
-                                                    requirement)
-                    elif not isinstance(kwargs[name], expected_type):
-                        raise NeedsMoreInfo('Argument is improper type',
-                                            requirement)
-
-                    # Finally try the test
-                    if test is not None and not test(*args, **kwargs):
-                        raise NeedsMoreInfo('Failed Test',
-                                            requirement)
-
+                    verify_requirement(requirement, *args, **kwargs)
             return func(*args, **kwargs)
         return inner
     return wrapper
+
+
+def serialize_list(result):
+    """
+    Seralize a list of objects.
+    """
+
+    new_result = []
+    for x in result:
+        if isinstance(x, GameObject):
+            new_result.append(x.serialize())
+        else:
+            new_result.append(x)
+    return new_result
+
+
+def seralize_dict(result):
+    """
+    Seralize a dictionary of objects.
+    """
+
+    new_result = {}
+    for key, value in result.items():
+        if isinstance(value, GameObject):
+            new_result[key] = value.serialize()
+        else:
+            new_result[key] = value
+    return new_result
 
 
 def game_serialize(func):
@@ -115,32 +150,6 @@ def game_serialize(func):
     very best to replace all game objects with their IDs. This should be put
     on every function that interacts with the outside world.
     """
-
-    def serialize_list(result):
-        """
-        Seralize a list of objects.
-        """
-
-        new_result = []
-        for x in result:
-            if isinstance(x, GameObject):
-                new_result.append(x.serialize())
-            else:
-                new_result.append(x)
-        return new_result
-
-    def seralize_dict(result):
-        """
-        Seralize a dictionary of objects.
-        """
-
-        new_result = {}
-        for key, value in result.items():
-            if isinstance(value, GameObject):
-                new_result[key] = value.serialize()
-            else:
-                new_result[key] = value
-        return new_result
 
     # pylint: disable=missing-docstring
     def inner(*args, **kwargs):
