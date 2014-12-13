@@ -158,18 +158,18 @@ class ZoneTestCase(TestCase):
 
         self.zone.remove(self.object1)
         self.assertDictEqual(mock_game.get_and_pop_transition(),
-                              {'name': 'remove',
-                               'object': self.object1.game_id,
-                               'zone': self.zone.game_id})
+                             {'name': 'remove',
+                              'object': self.object1.game_id,
+                              'zone': self.zone.game_id})
 
         self.zone.push(self.object1)
         self.assertDictEqual(mock_game.get_and_pop_transition(),
-                              {'name': 'add',
-                               'object': self.object1.game_id,
-                               'zone': self.zone.game_id})
+                             {'name': 'add',
+                              'object': self.object1.game_id,
+                              'zone': self.zone.game_id})
 
         self.zone.pop()
         self.assertDictEqual(mock_game.get_and_pop_transition(),
-                              {'name': 'remove',
-                               'object': self.object1.game_id,
-                               'zone': self.zone.game_id})
+                             {'name': 'remove',
+                              'object': self.object1.game_id,
+                              'zone': self.zone.game_id})

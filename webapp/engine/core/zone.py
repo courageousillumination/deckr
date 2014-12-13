@@ -31,7 +31,6 @@ class Zone(GameObject, Configurable):
                                       'object': obj.game_id,
                                       'zone': self.game_id})
 
-
     def add(self, obj):
         """
         Add an object to a zone. This is an unordered operation.

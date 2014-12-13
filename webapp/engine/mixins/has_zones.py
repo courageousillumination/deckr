@@ -2,6 +2,7 @@
 This module exports the HasZones mixin.
 """
 
+
 class HasZones(object):
 
     """
