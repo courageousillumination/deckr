@@ -9,7 +9,6 @@ from engine.core.exceptions import InvalidMoveException
 from engine.core.game import Game
 from engine.core.game_object import GameObject
 from engine.core.player import Player
-from engine.core.transition import Transition
 
 
 class TestGameObject(GameObject):
@@ -125,8 +124,8 @@ class BaseGameTestCase(TestCase):
         Make sure we can add and get transitions properly.
         """
 
-        transition1 = Transition()
-        transition2 = Transition()
+        transition1 = {'name': 'foo'}
+        transition2 = {'name': 'bar'}
 
         player1 = self.game.add_player()
         player2 = self.game.add_player()

@@ -132,11 +132,11 @@ class GameObjectTestCase(TestCase):
         self.game_object.game = mock_game
         self.game_object.game_attributes.add('foo')
 
-        self.game_object.foo = 'foo'
-        self.game_object.no_track = "bar"
+        self.game_object.foo = 'baz'
+        self.game_object.no_track = 'bar'
         self.assertEqual(len(mock_game.transitions), 1)
 
-        # Make sure that what was added is actually of the
-        # correct form
-        transition = mock_game.transitions[0]
-        #self.assertTrue(isinstance(transition, Transition))
+        self.assertDictEqual(mock_game.transitions[0],
+                             {'name': 'set', 'class': 'simple_object',
+                              'game_id': self.game_object.game_id,
+                              'attribute': 'foo', 'value': 'baz'})

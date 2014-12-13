@@ -21,12 +21,24 @@ class Zone(GameObject, Configurable):
 
         self.objects = []
 
+    def add_transition(self, transition_type, obj):
+        """
+        Add a transition whenever an object is added or removed from this zone.
+        """
+
+        if self.game is not None:
+            self.game.add_transition({'name': transition_type,
+                                      'object': obj.game_id,
+                                      'zone': self.game_id})
+
+
     def add(self, obj):
         """
         Add an object to a zone. This is an unordered operation.
         """
 
         self.objects.append(obj)
+        self.add_transition('add', obj)
 
     def remove(self, obj):
         """
@@ -36,6 +48,7 @@ class Zone(GameObject, Configurable):
 
         try:
             self.objects.remove(obj)
+            self.add_transition('remove', obj)
         except ValueError:
             pass
 
@@ -49,6 +62,7 @@ class Zone(GameObject, Configurable):
         """
 
         self.objects.append(obj)
+        self.add_transition('add', obj)
 
     def pop(self):
         """
@@ -56,7 +70,9 @@ class Zone(GameObject, Configurable):
         """
 
         try:
-            return self.objects.pop()
+            obj = self.objects.pop()
+            self.add_transition('remove', obj)
+            return obj
         except IndexError:
             return None
 
@@ -66,6 +82,7 @@ class Zone(GameObject, Configurable):
         """
 
         self.objects.insert(index, obj)
+        self.add_transition('add', obj)
 
     def shuffle(self):
         """

@@ -21,6 +21,10 @@ class ZoneTestCase(TestCase):
         self.object2 = GameObject()
         self.subzone = {'name': 'subzone'}
 
+        self.zone.game_id = 1
+        self.object1.game_id = 2
+        self.object2.game_id = 3
+
     def test_in(self):
         """
         Make sure we can use the 'in' operator on a zone.
@@ -124,3 +128,48 @@ class ZoneTestCase(TestCase):
 
         self.zone.shuffle()
         self.assertNotEqual(current, self.zone.objects)
+
+    def test_registers_transitions(self):
+        """
+        Make sure that when we add/remove cards that a transiton is registered
+        with our game.
+        """
+
+        class MockGame(object):
+
+            def __init__(self):
+                self.transitions = []
+
+            def add_transition(self, transition):
+                self.transitions.append(transition)
+
+            def get_and_pop_transition(self):
+                return self.transitions.pop()
+
+        mock_game = MockGame()
+        self.zone.game = mock_game
+
+        # Try adding a game object
+        self.zone.add(self.object1)
+        self.assertDictEqual(mock_game.get_and_pop_transition(),
+                             {'name': 'add',
+                              'object': self.object1.game_id,
+                              'zone': self.zone.game_id})
+
+        self.zone.remove(self.object1)
+        self.assertDictEqual(mock_game.get_and_pop_transition(),
+                              {'name': 'remove',
+                               'object': self.object1.game_id,
+                               'zone': self.zone.game_id})
+
+        self.zone.push(self.object1)
+        self.assertDictEqual(mock_game.get_and_pop_transition(),
+                              {'name': 'add',
+                               'object': self.object1.game_id,
+                               'zone': self.zone.game_id})
+
+        self.zone.pop()
+        self.assertDictEqual(mock_game.get_and_pop_transition(),
+                              {'name': 'remove',
+                               'object': self.object1.game_id,
+                               'zone': self.zone.game_id})
