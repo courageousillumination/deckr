@@ -238,15 +238,24 @@ class Game(GameObject, HasZones, Configurable):
                                     'winners': self.winners()})
 
     def add_step(self, player, step, args = None, save_as = None,
-                  prepend = False):
+                  prepend = False, using = None):
         """
-        Registers a specific step that should be run. By default this goes
-        in FIFO order; if prepend is set to True it will instead insert it
-        at the head.
+        Registers a specific step that should be run. Allows for a number of
+        optional keyword arguments:
+            * prepend (default: False): If true will put step at start of
+              step list instead of at the end.
+            * args (default: None): Extra arguments that should be passed to
+              this step.
+            * save_as (default: None): If not none, save the result using this
+              string in the global state. This will only exists for the lifetime
+              of this step run, but can be accessed by later steps.
+            * using (default: None): Use some arguments from the gloabl state
+              as local arguments. Should be a dictionary mapping from local :
+              global name.
         """
 
         step_dict = {'player': player, 'step': step, 'args': args,
-                     'save_as': save_as}
+                     'save_as': save_as, 'using': using }
 
         if prepend == True:
             self.steps.insert(0, step_dict)
@@ -288,8 +297,10 @@ class Game(GameObject, HasZones, Configurable):
             step = current_step['step']
             player = current_step['player']
             save_as = current_step['save_as']
+            using = current_step['using']
+            args = current_step['args']
 
-            self.step_state.start_step(current_step['args'])
+            self.step_state.start_step(args, using = using)
 
             try:
                 result = step(player, **self.step_state.get_kwargs())

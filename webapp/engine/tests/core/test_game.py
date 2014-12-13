@@ -267,6 +267,22 @@ class SimpleGame(Game):
     def requires_more_step(self, player, foo):
         self.result = foo
 
+    @game_action(parameter_types = None, restriction = None)
+    def pass_through_step_action(self, player):
+        self.add_step(player = player,
+                      step = self.pass_through_step1,
+                      save_as = 'step1_result')
+        self.add_step(player = player,
+                      step = self.pass_through_step2,
+                      using = {'foo': 'step1_result'})
+
+    @game_step(requires=None)
+    def pass_through_step1(self, player):
+        return 'bar'
+
+    @game_step(requires=[{'name': 'foo', 'type': str}])
+    def pass_through_step2(self, player, foo):
+        self.result = foo
 
 class SimpleGameTestCase(TestCase):
 
@@ -365,3 +381,11 @@ class SimpleGameTestCase(TestCase):
         self.game.make_action('requires_more_step_action', self.player_id,
                               extra_args = {'foo': self.game.players[0]})
         self.assertEqual(self.game.result, self.game.players[0])
+
+    def test_pass_through_step(self):
+        """
+        Make sure that we can pass from one step to another.
+        """
+
+        self.game.make_action('pass_through_step_action', self.player_id)
+        self.assertEqual(self.game.result, 'bar')

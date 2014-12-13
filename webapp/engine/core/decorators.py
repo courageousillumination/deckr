@@ -72,7 +72,7 @@ def game_step(requires=None):
         def inner(*args, **kwargs):
             if requires is not None:
                 for requirement in requires:
-                    expected_type = requirement['type']
+                    expected_type = requirement.get('type', None)
                     name = requirement['name']
                     container = requirement.get('container', None)
                     test = requirement.get('test', None)

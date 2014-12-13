@@ -15,10 +15,14 @@ class StepState(object):
             else:
                 self.current_state[name] = value
 
-    def start_step(self, args):
+    def start_step(self, args, using = None):
         if args is not  None:
             for key in args:
                 self.current_state[key] = args[key]
+
+        if using is not None:
+            for key, value in using.items():
+                self.current_state[key] = self.global_state[value]
 
     def get_kwargs(self):
         """
@@ -27,8 +31,6 @@ class StepState(object):
         """
 
         result = {}
-        for key in self.global_state:
-            result[key] = self.global_state[key]
 
         for key in self.current_state:
             result[key] = self.current_state[key]
