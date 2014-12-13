@@ -73,6 +73,9 @@ class ZoneTestCase(TestCase):
         self.zone.remove(self.object1)
         self.assertNotIn(self.object1, self.zone)
 
+        # Test the silent failure
+        self.zone.remove(self.object1)
+
     def test_push(self):
         """
         Make sure that when we push items ordering is perserved.

@@ -4,29 +4,16 @@ This module contains all test for the Game class.
 
 from unittest import TestCase
 
+from engine.core.decorators import game_action
+from engine.core.exceptions import InvalidMoveException
 from engine.core.game import Game
 from engine.core.game_object import GameObject
+from engine.core.player import Player
 from engine.core.transition import Transition
 
 
 class TestGameObject(GameObject):
     pass
-
-class SimpleGame(Game):
-
-    def __init__(self):
-        super(SimpleGame, self).__init__()
-        self.min_players = 1
-        self.max_players = 1
-
-    def set_up(self):
-        pass
-
-    def is_over(self):
-        return False
-
-    def winners(self):
-        return []
 
 class BaseGameTestCase(TestCase):
     """
@@ -188,21 +175,6 @@ class BaseGameTestCase(TestCase):
 
         self.game.remove_player(player)
 
-    def test_setup_wrapper(self):
-        """
-        Make sure that the setup wrapper prevents double set ups or other
-        invalid configurations.
-        """
-
-        simple_game = SimpleGame()
-
-        self.assertFalse(simple_game.set_up_wrapper())
-
-        simple_game.add_player()
-
-        self.assertTrue(simple_game.set_up_wrapper())
-        self.assertFalse(simple_game.set_up_wrapper())
-
     def test_config(self):
         """
         Make sure that we have set up the game so that it is properly
@@ -231,3 +203,107 @@ class BaseGameTestCase(TestCase):
         self.assertRaises(NotImplementedError, self.game.set_up)
         self.assertRaises(NotImplementedError, self.game.is_over)
         self.assertRaises(NotImplementedError, self.game.winners)
+
+# After this point we have code that tests a very simple game. This is to
+# test and make sure that actions, etc. all work as expected.
+class SimpleGame(Game):
+
+    def __init__(self):
+        super(SimpleGame, self).__init__()
+        self.min_players = 1
+        self.max_players = 2
+        self.result = None
+        self.restricted = True
+        self.game_over = False
+
+    def set_up(self):
+        pass
+
+    def is_over(self):
+        return self.game_over
+
+    def winners(self):
+        return []
+
+    @game_action(parameter_types = None, restriction = None)
+    def simple_action(self, player):
+        self.result = True
+
+    @game_action(parameter_types = None,
+                 restriction = lambda self, player: not self.restricted)
+    def restricted_action(self, player):
+        self.result = True
+
+    @game_action(restriction = None,
+                 parameter_types = [{'name': 'player1'}])
+    def paramter_types_action(self, player, player1):
+        self.result = player1
+
+    @game_action(parameter_types = None, restriction = None)
+    def end_game(self, player):
+        self.game_over = True
+
+
+class SimpleGameTestCase(TestCase):
+
+    def setUp(self):
+        self.game = SimpleGame()
+        self.player_id = self.game.add_player()
+
+    def test_setup_wrapper(self):
+        """
+        Make sure that the setup wrapper prevents double set ups or other
+        invalid configurations (not enough players)
+        """
+
+        self.game.min_players = 2
+        self.assertFalse(self.game.set_up_wrapper())
+        self.game.add_player()
+        self.assertTrue(self.game.set_up_wrapper())
+        self.assertFalse(self.game.set_up_wrapper())
+
+    def test_simple_action(self):
+        """
+        Make sure that we can run a simple action.
+        """
+
+        self.game.make_action('simple_action', self.player_id)
+        self.assertTrue(self.game.result)
+
+    def test_restricted_action(self):
+        """
+        Make sure we can run a restricted action, and that things break
+        properly if the action is invalid.
+        """
+
+        self.assertRaises(InvalidMoveException, self.game.make_action,
+                          'restricted_action', self.player_id)
+
+        self.game.restricted = False
+        self.game.make_action('restricted_action', self.player_id)
+        self.assertTrue(self.game.result)
+
+    def test_parameter_correction(self):
+        """
+        Make sure that we can properly get objects from their ids using
+        the parameter_types list.
+        """
+
+        self.assertRaises(InvalidMoveException, self.game.make_action,
+                          'paramter_types_action', self.player_id,
+                          player1 = -1)
+
+        self.game.make_action('paramter_types_action',
+                              self.player_id, player1 = self.player_id)
+
+        self.assertTrue(isinstance(self.game.result, Player))
+        self.assertEqual(self.game.players[0], self.game.result)
+
+    def test_game_ending_action(self):
+        """
+        Make sure that we pick up the fact that the game is over.
+        """
+
+        self.game.make_action('end_game', self.player_id)
+        self.assertDictEqual(self.game.transitions[self.player_id][0],
+                             {'name': 'is_over', 'winners': []})

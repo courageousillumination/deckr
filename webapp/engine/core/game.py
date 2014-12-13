@@ -216,7 +216,7 @@ class Game(GameObject, HasZones, Configurable):
     # Code for running Actions/Steps #
     ##################################
 
-    def make_action(self, action_name, **kwargs):
+    def make_action(self, action_name, player, **kwargs):
         """
         This will try to make an action with the specified
         keyword arguments. It will look at all internal functions
@@ -224,17 +224,13 @@ class Game(GameObject, HasZones, Configurable):
         matches. If the action is invalid this could throw an exception.
         """
 
-        # Make sure the action is expected right now.
-
         # Run the action
-        getattr(self, action_name)(**kwargs)
+        getattr(self, action_name)(player = player, **kwargs)
 
-        # Run any steps that have been created by the action
-        self.run()
-
-        # Finally check if we're over and respond appropriatly.
+        # Check for the end conditions.
         if self.is_over():
-            self.add_transition(('is_over', self.winners()))
+               self.add_transition({'name': 'is_over',
+                                    'winners': self.winners()})
 
     def run(self):
         """
