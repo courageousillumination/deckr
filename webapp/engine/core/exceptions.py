@@ -24,7 +24,7 @@ class NeedsMoreInfo(Exception):
     continue.
     """
 
-    def __init__(self, requirement=None):
+    def __init__(self, message, requirement=None):
         super(NeedsMoreInfo, self).__init__()
         self.requirement = requirement
 

@@ -41,7 +41,7 @@ def game_action(restriction = None, parameter_types = None):
                     if obj is None:
                         raise InvalidMoveException("Got bad parameter")
                     kwargs[param['name']] = obj
-                    
+
             # Check the actual restriction
             if restriction is None or restriction(self, *args, **kwargs):
                 return func(self, *args, **kwargs)
@@ -52,15 +52,51 @@ def game_action(restriction = None, parameter_types = None):
 
 def game_step(requires=None):
     """
-    TODO: Update this doc string
+    A game step represents an atomic set of state transitions it the game.
+    Each step can require specifc arguments; if these are not provided then
+    an exception will be raised and the clients will be notified. Each
+    requirement should be a dictionary with the following keys
+
+        * name: The name of the required parameter.
+        * type: A class specification of the required parameter type
+        * container (optional): If the required parameter should come in a
+          'list' mark that here.
+        * prompt (optional): This string will be sent to the end user to give
+          them a sense of what is required.
+        * test (optional): If there is some requirement for this parameter
+          that should be included here. This must take the same parameters as
+          the step itself (usually you can get away with *args, and **kwargs)
     """
 
     def wrapper(func):
         def inner(*args, **kwargs):
             if requires is not None:
                 for requirement in requires:
-                    if not requirement.verify_kwargs(*args, **kwargs):
-                        raise NeedsMoreInfo(requirement)
+                    expected_type = requirement['type']
+                    name = requirement['name']
+                    container = requirement.get('container', None)
+                    test = requirement.get('test', None)
+
+                    # Make sure the argument is present
+                    if name not in kwargs:
+                        raise NeedsMoreInfo('Missing required argument',
+                                            requirement)
+
+                    # Check the type
+                    if container == 'list':
+                        for x in kwargs[name]:
+                            if not isinstance(x, expeted_type):
+                                raise NeedsMoreInfo('Argument is improper type',
+                                                    requirement)
+                    elif not isinstance(kwargs[name], expected_type):
+                        raise NeedsMoreInfo('Argument is improper type',
+                                            requirment)
+
+                    # Finally try the test
+                    if test is not None and not test(*args, **kwargs):
+                        raise NeedsMoreInfo('Failed Test',
+                                            requirement)
+
             return func(*args, **kwargs)
         return inner
     return wrapper

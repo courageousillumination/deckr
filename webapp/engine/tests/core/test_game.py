@@ -4,7 +4,7 @@ This module contains all test for the Game class.
 
 from unittest import TestCase
 
-from engine.core.decorators import game_action
+from engine.core.decorators import game_action, game_step
 from engine.core.exceptions import InvalidMoveException
 from engine.core.game import Game
 from engine.core.game_object import GameObject
@@ -243,6 +243,30 @@ class SimpleGame(Game):
     def end_game(self, player):
         self.game_over = True
 
+    #################
+    # Testing steps #
+    #################
+
+    @game_action(parameter_types = None, restriction = None)
+    def simple_step_action(self, player):
+        self.add_step(player = player,
+                      step = self.simple_step)
+
+    @game_step(requires = None)
+    def simple_step(self, player):
+        self.result = True
+
+
+    @game_action(parameter_types = None, restriction = None)
+    def requires_more_step_action(self, player, extra_args = None):
+        self.add_step(player = player,
+                      step = self.requires_more_step,
+                      args = extra_args)
+
+    @game_step(requires = [{'name': 'foo', 'type': Player}])
+    def requires_more_step(self, player, foo):
+        self.result = foo
+
 
 class SimpleGameTestCase(TestCase):
 
@@ -307,3 +331,37 @@ class SimpleGameTestCase(TestCase):
         self.game.make_action('end_game', self.player_id)
         self.assertDictEqual(self.game.transitions[self.player_id][0],
                              {'name': 'is_over', 'winners': []})
+
+    def test_simple_step(self):
+        """
+        Make sure that we can add simple steps to the game.
+        """
+
+        self.game.make_action('simple_step_action', self.player_id)
+        self.assertTrue(self.game.result)
+
+    def test_step_requires_more(self):
+        """
+        Make sure that if a step requires more information then we are
+        properly prompted and that, upon sending more information, the step
+        proceeds.
+        """
+
+        self.game.make_action('requires_more_step_action', self.player_id)
+
+        self.assertEqual(self.game.get_requires_information(),
+                         {'name': 'foo', 'type': 'Player',
+                          'player': self.player_id})
+        self.assertIsNone(self.game.result)
+
+        self.game.make_action('send_information', self.player_id, foo = 1)
+        self.assertEqual(self.game.result, self.game.players[0])
+
+    def test_specify_args(self):
+        """
+        Make sure that we can explicitly pass in arguments.
+        """
+
+        self.game.make_action('requires_more_step_action', self.player_id,
+                              extra_args = {'foo': self.game.players[0]})
+        self.assertEqual(self.game.result, self.game.players[0])

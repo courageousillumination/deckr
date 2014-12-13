@@ -2,9 +2,11 @@
 This module defines everything needed for the base Game class.
 """
 
-from engine.core.decorators import game_serialize
+from engine.core.decorators import game_action, game_serialize, game_step
+from engine.core.exceptions import NeedsMoreInfo
 from engine.core.game_object import GameObject
 from engine.core.player import Player
+from engine.core.step_state import StepState
 from engine.mixins.configurable import Configurable
 from engine.mixins.has_zones import HasZones
 
@@ -29,14 +31,15 @@ class Game(GameObject, HasZones, Configurable):
         self.next_game_id = 0
         #: All game transitions
         self.transitions = {}
-        #: This stores the cardset for this Game. Can be None if the game
-        #: doesn't define a card set.
-        self.card_set = None
 
         self.players = []
         self.max_players = 0
         self.min_players = 0
         self.is_set_up = False
+        self.requires_information = None
+
+        self.steps = []
+        self.step_state = StepState()
 
         # Note that since a game is a GameObject we need to make sure it
         # starts off in the right state. Having a node point to itself is
@@ -56,7 +59,7 @@ class Game(GameObject, HasZones, Configurable):
     def post_config_callback(self):
         """
         After we load the configuration we need to actually set up
-        our card_set and zones.
+        our zones.
         """
 
         self.add_zones(self.game_zones)
@@ -226,32 +229,83 @@ class Game(GameObject, HasZones, Configurable):
 
         # Run the action
         getattr(self, action_name)(player = player, **kwargs)
+        # Run any steps that the action may have created.
+        self.run()
 
         # Check for the end conditions.
         if self.is_over():
                self.add_transition({'name': 'is_over',
                                     'winners': self.winners()})
 
+    def add_step(self, player, step, args = None, save_as = None,
+                  prepend = False):
+        """
+        Registers a specific step that should be run. By default this goes
+        in FIFO order; if prepend is set to True it will instead insert it
+        at the head.
+        """
+
+        step_dict = {'player': player, 'step': step, 'args': args,
+                     'save_as': save_as}
+
+        if prepend == True:
+            self.steps.insert(0, step_dict)
+        else:
+            self.steps.append(step_dict)
+
+
+    def set_requires_information(self, player, requirement):
+        """
+        Set the requires more information. This will be checked by external
+        services to make sure that the server isn't expecting more information.
+        """
+
+        self.requires_information = {'player': player,
+                                     'name': requirement['name'],
+                                     'type': requirement['type']}
+
+    def get_requires_information(self):
+        """
+        Get the serialized version of what is required (if anything).
+        """
+
+        if self.requires_information is None:
+            return None
+
+        result = {k: v for k, v in self.requires_information.items()}
+        result['type'] = result['type'].__name__
+        return result
+
     def run(self):
         """
-        TODO: Update this
+        This function will attempt to run as many steps as possible. If it
+        encounters a step that doesn't have all of the parameters, it will
+        set the requires_information attribute and retun
         """
 
         while len(self.steps) > 0:
             current_step = self.steps[0]
-            current_step.run(self)
+            step = current_step['step']
+            player = current_step['player']
+            save_as = current_step['save_as']
+
+            self.step_state.start_step(current_step['args'])
+
+            try:
+                result = step(player, **self.step_state.get_kwargs())
+            except NeedsMoreInfo as e:
+                self.set_requires_information(player, e.requirement)
+                return
+
+            self.step_state.finish_step()
+
+            # Try to save it in case save_as is not null
+            # NOTE: Does this actually need to be gloabl?
+            self.step_state.add_argument(save_as, result, add_global = True)
+
             self.steps.pop(0)
 
-        # Clear out everything at the end
-
-    def abandon_ship(self):
-        """
-        Clear all kwargs and steps. Reset to a blank state. This can be used
-        when something goes terribly wrong.
-        """
-
-        pass
-
+        self.step_state.flush()
 
     ###############
     # Set up code #
@@ -279,6 +333,25 @@ class Game(GameObject, HasZones, Configurable):
     #############################
     # Default actions and steps #
     #############################
+
+    @game_action(parameter_types = None, restriction = None)
+    def send_information(self, player, **kwargs):
+        """
+        This function will be called whenever a user wants to send additional
+        information to the game. Generally this will be information that is
+        required by one or more steps.
+        """
+
+        # First we try to fix the argument (convert from game_id to a game
+        # object if necessary).
+        required_type = self.requires_information['type']
+        name = self.requires_information['name']
+        if issubclass(required_type, GameObject):
+            value = self.get_object_with_id(int(kwargs[name]), required_type)
+        else:
+            value = kwargs[name]
+
+        self.step_state.add_argument(name, value)
 
 
     ####################################
