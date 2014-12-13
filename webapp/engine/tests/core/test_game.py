@@ -203,6 +203,26 @@ class BaseGameTestCase(TestCase):
         self.assertTrue(simple_game.set_up_wrapper())
         self.assertFalse(simple_game.set_up_wrapper())
 
+    def test_config(self):
+        """
+        Make sure that we have set up the game so that it is properly
+        configurable.
+        """
+
+        # Need min players
+        self.assertRaises(ValueError, self.game.load_config, {})
+        # Need max players
+        self.assertRaises(ValueError, self.game.load_config, {'min_players': 0})
+
+        self.game.load_config({'min_players': 0,
+                               'max_players': 0,
+                               'game_zones': [{'name': 'test_zone'}]})
+
+        # This will test that the zone exists and that it was properly
+        # registered with the game.
+        self.assertEqual(self.game, self.game.test_zone.game)
+
+
     def test_abstract_methods(self):
         """
         Make sure our methods are abstract (mainly for coverage)

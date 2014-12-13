@@ -43,6 +43,12 @@ class Game(GameObject, HasZones, Configurable):
         # pretty ugly, but necessary here.
         self.register(self)
 
+        # Set up the configuration for a game.
+        self.required_fields.add('min_players')
+        self.required_fields.add('max_players')
+        self.default_values['game_zones'] = []
+        self.default_values['player_zones'] = []
+
     #############
     # Callbacks #
     #############
@@ -53,14 +59,14 @@ class Game(GameObject, HasZones, Configurable):
         our card_set and zones.
         """
 
-        game_zones = [x for x in self.zones if x.get('owner', None) is None]
-        self.add_zones(game_zones)
+        self.add_zones(self.game_zones)
 
     def add_zone_callback(self, new_zone):
         """
         Whenever we add a zone we need to register it.
         """
 
+        print new_zone
         self.register(new_zone)
 
     #####################
@@ -69,23 +75,22 @@ class Game(GameObject, HasZones, Configurable):
 
     def register_single(self, obj):
         """
-        Registers a single object.
+        Registers a single object. Input should be checked elsewher to make
+        sure that it is a GameObject
         """
 
-        if isinstance(obj, GameObject):
-            obj.game_id = self.next_game_id
-            obj.game = self
+        obj.game_id = self.next_game_id
+        obj.game = self
 
-            self.registered_objects[self.next_game_id] = obj
-            self.next_game_id += 1
+        self.registered_objects[self.next_game_id] = obj
+        self.next_game_id += 1
 
     def deregister_single(self, obj):
         """
         Dergisters a single object.
         """
 
-        if (isinstance(obj, GameObject) and obj.game == self and
-            obj.game_id in self.registered_objects):
+        if (obj.game == self and obj.game_id in self.registered_objects):
             del self.registered_objects[obj.game_id]
 
     def register(self, obj):
@@ -95,22 +100,25 @@ class Game(GameObject, HasZones, Configurable):
         or a single object.
         """
 
-        if hasattr(obj, '__iter__'):
-            for o in obj:
-                self.register_single(o)
-        else:
+        if isinstance(obj, GameObject):
             self.register_single(obj)
+        elif hasattr(obj, '__iter__'):
+            for o in obj:
+                if isinstance(o, GameObject):
+                    self.register_single(o)
+
 
     def deregister(self, obj):
         """
         Removes either a single object or a list of objects.
         """
 
-        if hasattr(obj, '__iter__'):
-            for o in obj:
-                self.deregister_single(o)
-        else:
+        if isinstance(obj, GameObject):
             self.deregister_single(obj)
+        elif hasattr(obj, '__iter__'):
+            for o in obj:
+                if isinstance(o, GameObject):
+                    self.deregister_single(o)
 
     def get_object_with_id(self, game_id, klass = None):
         """
