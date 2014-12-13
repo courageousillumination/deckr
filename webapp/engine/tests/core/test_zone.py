@@ -5,30 +5,7 @@ This module contains all the code needed to test a Zone.
 from unittest import TestCase
 
 from engine.core.game_object import GameObject
-from engine.core.zone import create_zone, OrderedZone, Zone
-
-
-class TestUtils(TestCase):
-    """
-    Test all utilites for zones.
-    """
-
-    def test_create_zone(self):
-        """
-        Make sure the create zone function works properly.
-        """
-
-        ordered_config = {'ordered': True, 'foo': 10}
-        unordered_config = {'bar': 5}
-
-        zone1 = create_zone(ordered_config)
-        zone2 = create_zone(unordered_config)
-
-        self.assertTrue(isinstance(zone1, OrderedZone))
-        self.assertTrue(isinstance(zone2, Zone))
-
-        self.assertEqual(zone1.foo, 10)
-        self.assertEqual(zone2.bar, 5)
+from engine.core.zone import Zone
 
 
 class ZoneTestCase(TestCase):
@@ -95,17 +72,6 @@ class ZoneTestCase(TestCase):
         self.assertIn(self.object1, self.zone)
         self.zone.remove(self.object1)
         self.assertNotIn(self.object1, self.zone)
-
-
-class OrderedZoneTestCase(TestCase):
-    """
-    Test the functionality on an ordered zone.
-    """
-
-    def setUp(self):
-        self.zone = OrderedZone()
-        self.object1 = GameObject()
-        self.object2 = GameObject()
 
     def test_push(self):
         """

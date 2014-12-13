@@ -17,41 +17,55 @@ class HasZones(object):
 
         self.zones = {}
 
-    def add_zones(self, zones):
+    def add_zones(self, zone_list):
         """
-        Takes in a list of zone configs and adds them all in one go.
-        Includes code for dealing with multiplicity. Note that this doesn't
-        allow you to add zone __objects__ only zone configurations.
+        This is mainly a utility function. It takes in a list of zone
+        configuratons that should be added and calls add_zone for each.
         """
 
-        for zone in zones:
-            multiplicity = zone.get('multiplicity', None)
-            if multiplicity is not None:
-                base_name = zone['name']
-                # We need to make a copy here since we mutate the name element
-                # below.
-                zone_copy = copy(zone)
-                for i in range(multiplicity):
-                    zone_copy['name'] = base_name + str(i)
-                    self.add_zone(zone_copy)
-            else:
-                self.add_zone(zone)
+        for zone in zone_list:
+            self.add_zone(zone)
 
     def add_zone(self, zone_config):
         """
-        Takes in a single zone configuration and sets it up. This includes
-        setting an attribute with that zone name and adding it to the zones
-        dictionary.
+        Adds a zone to the current object. The zone_config should be a dictonary
+        with the following keys:
+
+            * name: The name of the zone. This means you will be able to aacess
+              the zone via self.{name}
+            * multiplicity (optional): If this is specified this determines how
+              many copies of this zone should be added. Each zone will be given
+              the name self.{base_name}{number} with the number being 0 indexed.
+              For example, if multiplicity is 2 and name is foo then we will
+              create zones foo0 and foo1.
+        All other keys are passed through to the zone configuration.
         """
 
-        from engine.core.zone import create_zone
+        multiplicity = zone_config.get('multiplicity', None)
+        name = zone_config['name']
+        if multiplicity is not None:
+            multiplicity = int(multiplicity)
+            for i in range(multiplicity):
+                self.add_zone_internal(name + str(i), zone_config)
+        else:
+            self.add_zone_internal(name, zone_config)
 
-        zone_object = create_zone(zone_config)
-        self.zones[zone_object.name] = zone_object
-        setattr(self, zone_object.name, zone_object)
+    def add_zone_internal(self, name, zone_config):
+        """
+        An internal function for adding a zone. Generally, calls should go
+        through the add_zone. This allows an explicitly specified name to
+        work around some complications with multiplicity.
+        """
+
+        from engine.core.zone import Zone
+
+        zone_object = Zone()
+        zone_object.name = name
+        zone_object.load_config(zone_config, ignore_keys=['name',
+                                                          'multiplicity'])
+        self.zones[name] = zone_object
+        setattr(self, name, zone_object)
         self.add_zone_callback(zone_object)
-
-        return zone_object
 
     def add_zone_callback(self, new_zone):
         """

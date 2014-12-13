@@ -7,28 +7,13 @@ from engine.core.game_object import GameObject
 from engine.mixins.configurable import Configurable
 
 
-def create_zone(config):
-    """
-    This will create a zone from a specified configuration. If
-    the 'ordered' attribute is set to True an ordered zone will be created
-    otherwise we will create an unordered zone.
-    """
-
-    is_ordered = config.get('ordered', None)
-    if is_ordered == True:
-        zone_object = OrderedZone()
-    else:
-        zone_object = Zone()
-    zone_object.load_config(config)
-    return zone_object
-
-
 class Zone(GameObject, Configurable):
 
     """
     A zone represents any region in a game. For the most part zones
     wrap lists, but they provide some additional functionality such
-    as nested containment.
+    as nested containment. Note that zones expose both unordered and ordered
+    functionality; it is advised that you don't mix these.
     """
 
     def __init__(self):
@@ -54,28 +39,9 @@ class Zone(GameObject, Configurable):
         except ValueError:
             pass
 
-    def __contains__(self, obj):
-        """
-        Check if a zone contains the specified object.
-        """
-
-        return obj in self.objects
-
-    def __iter__(self):
-        """
-        Returns an iterable of the objects in this zone.
-        """
-
-        return iter(self.objects)
-
-    def __len__(self):
-        """
-        Count the number of objects in this zone.
-        """
-
-        return len(self.objects)
-
-class OrderedZone(Zone):
+    ######################
+    # Ordered Operations #
+    ######################
 
     def push(self, obj):
         """
@@ -106,7 +72,32 @@ class OrderedZone(Zone):
         Shuffle an ordered zone. This will randomize the order of the objects
         in the zone.
         """
-        
+
         import random
 
         random.shuffle(self.objects)
+
+    #######################
+    # Iterable operations #
+    #######################
+
+    def __contains__(self, obj):
+        """
+        Check if a zone contains the specified object.
+        """
+
+        return obj in self.objects
+
+    def __iter__(self):
+        """
+        Returns an iterable of the objects in this zone.
+        """
+
+        return iter(self.objects)
+
+    def __len__(self):
+        """
+        Count the number of objects in this zone.
+        """
+
+        return len(self.objects)
