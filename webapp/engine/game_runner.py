@@ -4,22 +4,18 @@ game engine. Any outside service can access running games by making calls
 into this module.
 """
 
-# Disable unused arguments. We'll use them. This should be removed later.
-# pylint: disable=W0613
-
 # We use globals here because this is a stateful module. It's not super great
 # but it's what we've got right now. No need to yell at us for it.
-# pylint: disable=W0603
+# pylint: disable=global-statement
 
 import os.path
 import sys
 
 import yaml
-from engine.game import InvalidMoveException
+from engine.core.exceptions import InvalidMoveException
 
 CACHE = {}
 MAX_ID = 0
-
 
 def create_game(game_definition):
     """
@@ -32,11 +28,12 @@ def create_game(game_definition):
 
     game, config = load_game_definition(game_definition)
     game.load_config(config)
-    CACHE[MAX_ID] = game
+    game_id = MAX_Id
+    CACHE[game_id] = game
 
     MAX_ID = MAX_ID + 1
 
-    return MAX_ID - 1
+    return game_id
 
 
 def load_game_definition(game_definition):
@@ -71,10 +68,20 @@ def load_game_definition(game_definition):
 def destroy_game(game_id):
     """
     Destroys a game and all of its players, zones, cards,
-    etc. Throws an exception if the game doesn't exist.
+    etc. Fails silently if the game doesn't exist.
     """
 
-    del CACHE[game_id]
+    try:
+        del CACHE[game_id]
+    except KeyError:
+        pass
+
+def get_game(game_id):
+    """
+    Returns a game based on the id.
+    """
+
+    return CACHE.get(game_id, None)
 
 
 def start_game(game_id):
@@ -84,14 +91,6 @@ def start_game(game_id):
     """
 
     return get_game(game_id).set_up_wrapper()
-
-
-def get_game(game_id):
-    """
-    Returns a game based on the id.
-    """
-
-    return CACHE.get(game_id, None)
 
 
 def get_state(game_id, player_id=None):

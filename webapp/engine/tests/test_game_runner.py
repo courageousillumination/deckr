@@ -1,17 +1,18 @@
 """
-This module contains any tests around the GameRunner. This is a harder
-class to test because it's stateful, so make sure you're careful about
-that. Note that the game runner is a __module__ not a class (this is
-the best way we could think of to implement the singleton pattern).
+This module contains any tests around the GameRunner.
+
+NOTE: These are not intgeration tests. Games are generally mocked out.
+
 """
 
 from unittest import TestCase
 
 from engine import game_runner
-from engine.game import Game
-from engine.player import Player
-from engine.tests.mock_game.mock_game import MockGame
+from mock import MagicMock
 
+
+class MockGame(object):
+    pass
 
 class GameRunnerTestCase(TestCase):
 
@@ -20,156 +21,68 @@ class GameRunnerTestCase(TestCase):
     """
 
     def setUp(self):
-        self.valid_game_def = "engine/tests/mock_game"
-        self.game_id = game_runner.create_game(self.valid_game_def)
+        # Add a single game using game_id = 1
+        self.game_id = 1
+        self.mock_game = MockGame()
+        self.mock_game.get_state = MagicMock()
+        self.mock_game.add_player = MagicMock()
+        self.mock_game.remove_player = MagicMock()
+        self.mock_game.set_up_wrapper = MagicMock()
+
+        game_runner.CACHE[self.game_id] = self.mock_game
+
+        #self.valid_game_def = "engine/tests/mock_game"
+        #self.game_id = game_runner.create_game(self.valid_game_def)
 
     def tearDown(self):
         game_runner.flush()
 
-    def test_load_game_definition(self):
+    def test_get_game(self):
         """
-        Makes sure we can load a game definition. A definition should
-        minimally consisty of a game.py and a config.yml.
-        """
-
-        game, config = game_runner.load_game_definition(self.valid_game_def)
-        self.assertDictEqual(config, {"game_file": "mock_game",
-                                      "game_class": "MockGame",
-                                      "max_players": 1})
-        self.assertTrue(isinstance(game, Game))
-        # This has been disabled due to namespacing issues. It really is a
-        # mock_game but python doesn't belive it. Instead I've put in MAGIC
-        # test.
-        # self.assertTrue(type(game, MockGame))
-        self.assertEqual(game.get_magic(), MockGame().get_magic())
-
-        # Make sure we fail properly if we give it a bad folder
-        self.assertRaises(IOError, game_runner.load_game_definition, "foo")
-
-        # Make sure we get a value error if it's misconfigured
-        self.assertRaises(ValueError, game_runner.load_game_definition,
-                          "engine/tests/invalid_game_config")
-
-    def test_create_room(self):
-        """
-        Test the ability to create a game room.
+        Make sure we can get a game by id.
         """
 
-        self.assertRaises(IOError, game_runner.create_game,
-                          "invalid file")
+        self.assertEqual(self.mock_game, game_runner.get_game(self.game_id))
+        self.assertIsNone(game_runner.get_game(-1))
 
-        game_id = game_runner.create_game(self.valid_game_def)
-        self.assertTrue(game_id > 0)
 
-        # Make sure IDs are unique
-        game_id_1 = game_runner.create_game(self.valid_game_def)
-        self.assertNotEqual(game_id, game_id_1)
-
-    def test_destroy_room(self):
+    def test_destroy_game(self):
         """
-        Make sure that we can destroy a game room.
+        Make sure that we can destroy a game.
         """
 
-        game_id = game_runner.create_game(self.valid_game_def)
-        game_runner.destroy_game(game_id)
-        self.assertFalse(game_runner.has_game(game_id))
+        game_runner.destroy_game(self.game_id)
+        self.assertFalse(game_runner.has_game(self.game_id))
+
+        # Make sure it fails silently if we delete a nonexistent game.
+        game_runner.destroy_game(-1)
 
     def test_get_state(self):
         """
         Makes sure we can get the state out of a game.
         """
-        expected_state = {'cards': [], 'zones': [], 'players': []}
+        expected_state = [{'foo': 'bar'}]
+        self.mock_game.get_state.return_value = expected_state
 
-        game_id = game_runner.create_game(self.valid_game_def)
-        state = game_runner.get_state(game_id)
+        state = game_runner.get_state(self.game_id)
         self.assertEqual(state, expected_state)
-
-    def test_add_player(self):
-        """
-        Makes sure that we can add a player and get back a valid
-        id.
-        """
-
-        game_runner.get_game(self.game_id).max_players = 2
-        player_id = game_runner.add_player(self.game_id)
-        self.assertTrue(player_id > 0)
-        self.assertNotEqual(player_id,
-                            game_runner.add_player(self.game_id))
-
-    def test_remove_player(self):
-        """
-        Makes sure we can remove a player and it informs
-        if we are successful or not
-        """
-
-        player_id = game_runner.add_player(self.game_id)
-        self.assertTrue(game_runner.remove_player(self.game_id, player_id))
-        self.assertFalse(game_runner.remove_player(self.game_id, player_id))
-        player_id = game_runner.add_player(self.game_id)
+        self.mock_game.get_state.ssert_called_with()
 
     def test_start_game(self):
         """
-        Make sure that we can start a game and when we do so no transitions
-        are stored.
+        Make sure we can start the game.
         """
 
-        game = game_runner.get_game(self.game_id)
-        game.min_players = 2
+        game_runner.start_game(self.game_id)
+        self.mock_game.set_up_wrapper.ssert_called_with()
 
-        self.assertFalse(game_runner.start_game(self.game_id))
-        game.min_players = 0
-        self.assertTrue(game_runner.start_game(self.game_id))
-        self.assertTrue(game.is_setup)
-        self.assertEqual(game.transitions, {})
-
-    def test_make_action(self):
+    def test_add_remove_player(self):
         """
-        Make sure that we can make actions through the GameRunner.
+        Make sure we can add and remove a player.
         """
 
-        game1 = game_runner.get_game(self.game_id)
-        game1.phase = "restricted"
-        player = Player()
-        game1.register([player])
-        action = "restricted_action"
+        player = game_runner.add_player(self.game_id)
+        self.mock_game.add_player.ssert_called_with()
 
-        valid, message = game_runner.make_action(self.game_id,
-                                                 action_name=action,
-                                                 player_id=player.game_id)
-        self.assertFalse(valid)
-        self.assertEqual(message, "Illegal Action")
-
-        game1.phase = "unrestricted"
-
-        self.assertEqual((True, None),
-                         game_runner.make_action(self.game_id,
-                                                 action_name=action,
-                                                 player_id=player.game_id))
-
-    def test_get_transitions(self):
-        """
-        Make sure that we can get public and private transitions
-        """
-
-        game1 = game_runner.get_game(self.game_id)
-        game1.max_players = 2
-        player1 = Player()
-        player2 = Player()
-        action_name = "private_public_action"
-
-        game1.register((player1, player2))
-        self.assertTrue(game_runner.make_action(self.game_id,
-                                                action_name=action_name,
-                                                player=player1.game_id))
-
-        # Now we expect a list of public transitions
-        self.assertListEqual([("public", "foobar")],
-                             game_runner.get_public_transitions(self.game_id))
-
-        # We also expect player1 to have a private list
-        transitions = game_runner.get_player_transitions(self.game_id,
-                                                         player1.game_id)
-        self.assertListEqual([("private", "foobaz")], transitions)
-        transitions = game_runner.get_player_transitions(self.game_id,
-                                                         player2.game_id)
-        self.assertListEqual([], transitions)
+        game_runner.remove_player(self.game_id, player)
+        self.mock_game.remove_player.ssert_called_with(player)
