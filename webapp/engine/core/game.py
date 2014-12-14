@@ -45,6 +45,7 @@ class Game(GameObject, HasZones, Configurable):
         # starts off in the right state. Having a node point to itself is
         # pretty ugly, but necessary here.
         self.register(self)
+        self.game_object_type = 'Game'
 
         # Set up the configuration for a game.
         self.required_fields.add('min_players')
@@ -64,12 +65,14 @@ class Game(GameObject, HasZones, Configurable):
 
         self.add_zones(self.game_zones)
 
+        for _, zone in self.zones.items():
+            zone.owner = self.game_id
+
     def add_zone_callback(self, new_zone):
         """
         Whenever we add a zone we need to register it.
         """
 
-        print new_zone
         self.register(new_zone)
 
     #####################
@@ -196,12 +199,13 @@ class Game(GameObject, HasZones, Configurable):
         self.check_can_add_player()
 
         player = Player()
-        player.add_zones(self.player_zones)
-
-        # Update all the game state.
         self.register(player)
-        self.register(player.zones.values())
         self.players.append(player)
+
+        player.add_zones(self.player_zones)
+        for _, zone in player.zones.items():
+            zone.owner = player.game_id
+        self.register(player.zones.values())
 
         return player.game_id
 
@@ -221,7 +225,7 @@ class Game(GameObject, HasZones, Configurable):
     # Code for running Actions/Steps #
     ##################################
 
-    def make_action(self, action_name, player, **kwargs):
+    def make_action(self, action_name, player_id, **kwargs):
         """
         This will try to make an action with the specified
         keyword arguments. It will look at all internal functions
@@ -230,6 +234,7 @@ class Game(GameObject, HasZones, Configurable):
         """
 
         # Run the action
+        player = self.get_object_with_id(player_id, Player)
         getattr(self, action_name)(player=player, **kwargs)
         # Run any steps that the action may have created.
         self.run()
@@ -270,7 +275,7 @@ class Game(GameObject, HasZones, Configurable):
         services to make sure that the server isn't expecting more information.
         """
 
-        self.requires_information = {'player': player,
+        self.requires_information = {'player': player.game_id,
                                      'name': requirement['name'],
                                      'type': requirement['type']}
 

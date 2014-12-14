@@ -216,12 +216,15 @@ class BaseGameTestCase(TestCase):
         Make sure that we can set and get the required_info.
         """
 
+        player = GameObject()
+        player.game_id = 1
+
         self.assertIsNone(self.game.get_requires_information())
-        self.game.set_requires_information(1,
+        self.game.set_requires_information(player,
                                            {'name': 'foo', 'type': GameObject})
         self.assertDictEqual(self.game.get_requires_information(),
                              {'name': 'foo', 'type': 'GameObject', 'player': 1})
-        self.game.set_requires_information(1,
+        self.game.set_requires_information(player,
                                            {'name': 'foo', 'type': str})
         self.assertDictEqual(self.game.get_requires_information(),
                              {'name': 'foo', 'type': 'str', 'player': 1})
@@ -236,14 +239,14 @@ class BaseGameTestCase(TestCase):
         player = self.game.add_player()
         self.game.register(object1)
 
-        self.game.set_requires_information(player,
+        self.game.set_requires_information(self.game.get_object_with_id(player),
                                            {'name': 'foo', 'type': GameObject})
 
         self.game.send_information(player, foo=object1.game_id)
         self.assertEqual(self.game.step_state.current_state['foo'],
                          object1)
 
-        self.game.set_requires_information(player,
+        self.game.set_requires_information(self.game.get_object_with_id(player),
                                            {'name': 'foo', 'type': int})
         self.game.send_information(player, foo=1)
         self.assertEqual(self.game.step_state.current_state['foo'], 1)

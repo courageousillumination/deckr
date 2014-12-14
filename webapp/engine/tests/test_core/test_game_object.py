@@ -30,7 +30,7 @@ class GameObjectTestCase(TestCase):
         self.game_object.game_attributes.add('foo')
         self.game_object.game_attributes.add('bar')
 
-        serialized = self.game_object.serialize()
+        serialized = self.game_object.serialize(None)
         self.assertDictEqual(serialized, {'game_id': 1,
                                           'game_object_type': 'simple_object',
                                           'foo': 'foo',
@@ -51,7 +51,8 @@ class GameObjectTestCase(TestCase):
         self.game_object.subobject = subobject
         self.game_object.game_attributes.add('subobject')
 
-        self.assertDictEqual(self.game_object.serialize(full=True),
+        self.assertDictEqual(self.game_object.serialize(player_id = None,
+                                                        full=True),
                              {'game_id': 1,
                               'game_object_type': 'simple_object',
                               'subobject': {
@@ -60,7 +61,8 @@ class GameObjectTestCase(TestCase):
                                   'foo': 'foo'
                               }})
 
-        self.assertDictEqual(self.game_object.serialize(full=False),
+        self.assertDictEqual(self.game_object.serialize(player_id = None,
+                                                        full=False),
                              {'game_id': 1,
                               'game_object_type': 'simple_object',
                               'subobject': {
@@ -87,7 +89,8 @@ class GameObjectTestCase(TestCase):
         self.game_object.objects = object_list
         self.game_object.game_attributes.add('objects')
 
-        self.assertDictEqual(self.game_object.serialize(full=True),
+        self.assertDictEqual(self.game_object.serialize(player_id = None,
+                                                        full=True),
                              {'game_id': 1,
                               'game_object_type': 'simple_object',
                               'objects': [{
@@ -102,7 +105,8 @@ class GameObjectTestCase(TestCase):
         object_dict = {'foo': object1, 'bar': object2}
         self.game_object.objects = object_dict
 
-        self.assertDictEqual(self.game_object.serialize(full=True),
+        self.assertDictEqual(self.game_object.serialize(player_id = None,
+                                                        full=True),
                              {'game_id': 1,
                               'game_object_type': 'simple_object',
                               'objects': {'foo': {
@@ -125,7 +129,7 @@ class GameObjectTestCase(TestCase):
             def __init__(self):
                 self.transitions = []
 
-            def add_transition(self, transition):
+            def add_transition(self, transition, player_id = None):
                 self.transitions.append(transition)
 
         mock_game = MockGame()
@@ -140,3 +144,23 @@ class GameObjectTestCase(TestCase):
                              {'name': 'set', 'class': 'simple_object',
                               'game_id': self.game_object.game_id,
                               'attribute': 'foo', 'value': 'baz'})
+
+    def test_player_overrides(self):
+        """
+        Make sure that player overrides work as we exepect them to.
+        """
+
+
+        player1 = GameObject()
+        player1.game_id = 1
+        player2 = GameObject()
+        player2.game_id = 2
+
+        self.game_object.foo = 'bar'
+        self.game_object.set_player_override('foo', 'baz', player1)
+
+        self.assertEqual(self.game_object.get_value_for_player_id('foo', 1),
+                         'baz')
+        self.assertEqual(self.game_object.get_value_for_player_id('foo',2),
+                         'bar')
+        self.assertIsNone(self.game_object.get_value_for_player_id('bar', None))

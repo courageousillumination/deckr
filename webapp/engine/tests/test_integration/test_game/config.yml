@@ -1,0 +1,9 @@
+---
+game_file: "test_game"
+game_class: "TestGame"
+max_players: 2
+min_players: 1
+game_zones:
+  - name: 'game_zone'
+player_zones:
+  - name: 'player_zone'

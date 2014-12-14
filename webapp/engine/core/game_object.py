@@ -27,6 +27,8 @@ class GameObject(object):
         # is set the __setattr__ will start checking all attributes.
         self.game = None
 
+        self.player_overrides = {}
+
     ######################
     # Serialization code #
     ######################
@@ -64,7 +66,7 @@ class GameObject(object):
         else:
             return self.serialize_single(obj, full)
 
-    def serialize(self, full=True):
+    def serialize(self, player_id, full=True):
         """
         This will serialize this object for consumption by the outside
         world. This will basically construct a dictionary that contains
@@ -77,18 +79,37 @@ class GameObject(object):
         result = {}
         for key in self.game_attributes:
             if hasattr(self, key):
-                result[key] = self.process_for_serialize(getattr(self, key),
-                                                         full)
+                value = self.get_value_for_player_id(key, player_id)
+                result[key] = self.process_for_serialize(value, full)
         return result
 
     ################################################
     # Code to ensure attribute changes are tracked #
     ################################################
 
-    def __setattr__(self, name, value):
+    def get_value_for_player_id(self, name, player_id):
+        """
+        Gets a value for a specific player. If an override is present, uses
+        the override. Otherwise it falls back on any default attributes. If no
+        default attribute is present it returns None.
+        """
+        if (player_id is not None and
+            (name, player_id) in self.player_overrides):
+            return self.player_overrides[(name, player_id)]
 
-        super(GameObject, self).__setattr__(name, value)
+        if hasattr(self, name):
+            return getattr(self, name)
+        return None
 
+    def set_player_override(self, name, value, player):
+        """
+        Sets the override for a specific player.
+        """
+
+        self.player_overrides[(name, player.game_id)] = value
+        self.add_changed_value_transition(name, value, player.game_id)
+
+    def add_changed_value_transition(self, name, value, player_id = None):
         # This is ugly but gets around that this will be called when we set game
         # in __init__
         if not hasattr(self, 'game'):
@@ -99,4 +120,9 @@ class GameObject(object):
                                       'class': self.game_object_type,
                                       'game_id': self.game_id,
                                       'attribute': name,
-                                      'value': value})
+                                      'value': value}, player_id = player_id)
+
+
+    def __setattr__(self, name, value):
+        super(GameObject, self).__setattr__(name, value)
+        self.add_changed_value_transition(name, value)

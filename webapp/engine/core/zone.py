@@ -19,6 +19,10 @@ class Zone(GameObject, Configurable):
     def __init__(self):
         super(Zone, self).__init__()
 
+        self.game_object_type = 'Zone'
+        self.game_attributes.add('name')
+        self.game_attributes.add('owner')
+
         self.objects = []
 
     def add_transition(self, transition_type, obj):

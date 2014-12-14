@@ -116,21 +116,23 @@ def game_step(requires=None):
     return wrapper
 
 
-def serialize_list(result):
+def serialize_list(result, player_id):
     """
     Seralize a list of objects.
     """
 
+    print player_id
+
     new_result = []
     for x in result:
         if isinstance(x, GameObject):
-            new_result.append(x.serialize())
+            new_result.append(x.serialize(player_id))
         else:
             new_result.append(x)
     return new_result
 
 
-def seralize_dict(result):
+def seralize_dict(result, player_id):
     """
     Seralize a dictionary of objects.
     """
@@ -138,7 +140,7 @@ def seralize_dict(result):
     new_result = {}
     for key, value in result.items():
         if isinstance(value, GameObject):
-            new_result[key] = value.serialize()
+            new_result[key] = value.serialize(player_id)
         else:
             new_result[key] = value
     return new_result
@@ -157,14 +159,16 @@ def game_serialize(func):
         serialize = kwargs.get('serialize', None)
         if serialize is not None:
             del kwargs['serialize']
+        player_id = kwargs.get('player_id', None)
+
         result = func(*args, **kwargs)
         if serialize == True:
             # Check for a list
             if isinstance(result, list):
-                return serialize_list(result)
+                return serialize_list(result, player_id)
             elif isinstance(result, dict):
-                return seralize_dict(result)
+                return seralize_dict(result, player_id)
             elif isinstance(result, GameObject):
-                return result.serialize()
+                return result.serialize(player_id)
         return result
     return inner

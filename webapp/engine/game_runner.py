@@ -24,11 +24,21 @@ def create_game(game_definition):
     error creating the game.
     """
 
+
+    klass, config = load_game_definition(game_definition)
+    return create_game_internal(klass, config)
+
+def create_game_internal(klass, config):
+    """
+    Used for internal creation of a game. Requires a game class
+    and a configuration that should be applied to that class.
+    """
+
     global MAX_ID
 
-    game, config = load_game_definition(game_definition)
+    game = klass()
     game.load_config(config)
-    game_id = MAX_Id
+    game_id = MAX_ID
     CACHE[game_id] = game
 
     MAX_ID = MAX_ID + 1
@@ -62,7 +72,7 @@ def load_game_definition(game_definition):
     # Get the actual game class out of the module.
     klass = getattr(game_module, config["game_class"])
 
-    return (klass(), config)
+    return (klass, config)
 
 
 def destroy_game(game_id):
@@ -93,12 +103,12 @@ def start_game(game_id):
     return get_game(game_id).set_up_wrapper()
 
 
-def get_state(game_id, player_id=None):
+def get_state(game_id, player_id):
     """
     Returns the state of the given game.
     """
 
-    return get_game(game_id).get_state(player_id)
+    return get_game(game_id).get_state(player_id = player_id, serialize = True)
 
 
 def add_player(game_id):
@@ -130,32 +140,25 @@ def make_action(game_id, **kwargs):
     try:
         get_game(game_id).make_action(**kwargs)
         return True, None
-    except InvalidMoveException:
-        return False, "Illegal Action"
+    except InvalidMoveException as exception:
+        return False, exception.value
 
 
-def get_public_transitions(game_id):
-    """
-    Get all of the public transitions from the game.
-    """
-
-    return get_game(game_id).get_public_transitions()
-
-
-def get_player_transitions(game_id, player_id):
+def get_transitions(game_id, player_id):
     """
     Get all the transitions for a specific player.
     """
 
-    return get_game(game_id).get_player_transitions(player_id)
+    return get_game(game_id).get_transitions(player_id = player_id,
+                                             serialize = True)
 
 
-def get_expected_action(game_id):
+def get_requires_information(game_id):
     """
     Returns the expected action for a specific game.
     """
 
-    return get_game(game_id).get_expected_action()
+    return get_game(game_id).get_requires_information()
 
 
 def has_game(game_id):
@@ -165,14 +168,6 @@ def has_game(game_id):
     """
 
     return game_id in CACHE
-
-
-def abandon_ship(game_id):
-    """
-    Flush all current steps from a game.
-    """
-
-    return get_game(game_id).abandon_ship()
 
 
 def flush():
