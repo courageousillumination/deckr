@@ -94,7 +94,7 @@ class GameObject(object):
         default attribute is present it returns None.
         """
         if (player_id is not None and
-            (name, player_id) in self.player_overrides):
+                (name, player_id) in self.player_overrides):
             return self.player_overrides[(name, player_id)]
 
         if hasattr(self, name):
@@ -109,7 +109,12 @@ class GameObject(object):
         self.player_overrides[(name, player.game_id)] = value
         self.add_changed_value_transition(name, value, player.game_id)
 
-    def add_changed_value_transition(self, name, value, player_id = None):
+    def add_changed_value_transition(self, name, value, player_id=None):
+        """
+        Whenever we change a value we may want to track it. If we do this
+        function will add a transition on our game.
+        """
+
         # This is ugly but gets around that this will be called when we set game
         # in __init__
         if not hasattr(self, 'game'):
@@ -120,8 +125,7 @@ class GameObject(object):
                                       'class': self.game_object_type,
                                       'game_id': self.game_id,
                                       'attribute': name,
-                                      'value': value}, player_id = player_id)
-
+                                      'value': value}, player_id=player_id)
 
     def __setattr__(self, name, value):
         super(GameObject, self).__setattr__(name, value)

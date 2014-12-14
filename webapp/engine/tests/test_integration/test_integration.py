@@ -12,6 +12,10 @@ from engine import game_runner
 
 class IntegrationTestCase(TestCase):
 
+    """
+    Run several integration tests.
+    """
+
     @classmethod
     def setUpClass(cls):
         """
@@ -97,9 +101,9 @@ class IntegrationTestCase(TestCase):
 
         self.game.transitions = {}
 
-        game_runner.make_action(self.game_id, action_name = 'change_foo',
-                                player_id = self.player1_id,
-                                new_foo_value = 'woo!')
+        game_runner.make_action(self.game_id, action_name='change_foo',
+                                player_id=self.player1_id,
+                                new_foo_value='woo!')
         player1_transitions = game_runner.get_transitions(self.game_id,
                                                           self.player1_id)
         player2_transitions = game_runner.get_transitions(self.game_id,

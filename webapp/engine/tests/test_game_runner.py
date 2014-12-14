@@ -13,7 +13,13 @@ from mock import MagicMock
 
 
 class MockGame(object):
+
+    """
+    Used instead of a real game.
+    """
+
     pass
+
 
 class GameRunnerTestCase(TestCase):
 
@@ -49,7 +55,6 @@ class GameRunnerTestCase(TestCase):
         self.assertEqual(self.mock_game, game_runner.get_game(self.game_id))
         self.assertIsNone(game_runner.get_game(-1))
 
-
     def test_destroy_game(self):
         """
         Make sure that we can destroy a game.
@@ -70,7 +75,7 @@ class GameRunnerTestCase(TestCase):
 
         state = game_runner.get_state(self.game_id, 1)
         self.assertEqual(state, expected_state)
-        self.mock_game.get_state.assert_called_with(player_id = 1,
+        self.mock_game.get_state.assert_called_with(player_id=1,
                                                     serialize=True)
 
     def test_start_game(self):
@@ -97,9 +102,8 @@ class GameRunnerTestCase(TestCase):
         Make sure we can run an action.
         """
 
-        game_runner.make_action(self.game_id, foo = 'bar')
-        self.mock_game.make_action.assert_called_with(foo = 'bar')
-
+        game_runner.make_action(self.game_id, foo='bar')
+        self.mock_game.make_action.assert_called_with(foo='bar')
 
         self.mock_game.make_action.side_effect = InvalidMoveException("Bad")
         success, message = game_runner.make_action(self.game_id)
@@ -113,8 +117,8 @@ class GameRunnerTestCase(TestCase):
         """
 
         game_runner.get_transitions(self.game_id, 1)
-        self.mock_game.get_transitions.assert_called_with(player_id = 1,
-                                                          serialize = True)
+        self.mock_game.get_transitions.assert_called_with(player_id=1,
+                                                          serialize=True)
 
     def test_get_requires_information(self):
         """

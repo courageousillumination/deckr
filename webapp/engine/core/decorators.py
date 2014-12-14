@@ -73,8 +73,8 @@ def verify_requirement(requirement, *args, **kwargs):
         if not isinstance(kwargs[name], list):
             raise NeedsMoreInfo("Improper container",
                                 requirement)
-        for x in kwargs[name]:
-            if not isinstance(x, expected_type):
+        for arg in kwargs[name]:
+            if not isinstance(arg, expected_type):
                 raise NeedsMoreInfo('Argument is improper type',
                                     requirement)
     elif not isinstance(kwargs[name], expected_type):
@@ -124,11 +124,11 @@ def serialize_list(result, player_id):
     print player_id
 
     new_result = []
-    for x in result:
-        if isinstance(x, GameObject):
-            new_result.append(x.serialize(player_id))
+    for obj in result:
+        if isinstance(obj, GameObject):
+            new_result.append(obj.serialize(player_id))
         else:
-            new_result.append(x)
+            new_result.append(obj)
     return new_result
 
 

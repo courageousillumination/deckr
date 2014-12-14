@@ -17,6 +17,7 @@ from engine.core.exceptions import InvalidMoveException
 CACHE = {}
 MAX_ID = 0
 
+
 def create_game(game_definition):
     """
     Creates a new game. Returns the game id for the
@@ -24,9 +25,9 @@ def create_game(game_definition):
     error creating the game.
     """
 
-
     klass, config = load_game_definition(game_definition)
     return create_game_internal(klass, config)
+
 
 def create_game_internal(klass, config):
     """
@@ -86,6 +87,7 @@ def destroy_game(game_id):
     except KeyError:
         pass
 
+
 def get_game(game_id):
     """
     Returns a game based on the id.
@@ -108,7 +110,7 @@ def get_state(game_id, player_id):
     Returns the state of the given game.
     """
 
-    return get_game(game_id).get_state(player_id = player_id, serialize = True)
+    return get_game(game_id).get_state(player_id=player_id, serialize=True)
 
 
 def add_player(game_id):
@@ -149,8 +151,8 @@ def get_transitions(game_id, player_id):
     Get all the transitions for a specific player.
     """
 
-    return get_game(game_id).get_transitions(player_id = player_id,
-                                             serialize = True)
+    return get_game(game_id).get_transitions(player_id=player_id,
+                                             serialize=True)
 
 
 def get_requires_information(game_id):

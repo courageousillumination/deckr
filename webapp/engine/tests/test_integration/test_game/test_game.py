@@ -12,6 +12,7 @@ class FooObject(GameObject):
         self.game_object_type = 'FooObject'
         self.game_attributes.add('foo')
 
+
 class TestGame(Game):
 
     def set_up(self):
@@ -26,6 +27,6 @@ class TestGame(Game):
     def winners(self):
         return []
 
-    @game_action(parameter_types = None, restriction = None)
+    @game_action(parameter_types=None, restriction=None)
     def change_foo(self, player, new_foo_value):
         self.foo_object.set_player_override('foo', new_foo_value, player)
