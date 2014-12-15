@@ -72,17 +72,6 @@ class GameNamespace(BaseNamespace, BroadcastMixin):
 
         self.emit_to_room(self.room, 'start')
 
-        trans = self.runner.get_public_transitions(self.game_room.room_id)
-        state = self.runner.get_state(self.game_room.room_id,
-                                      self.player.player_id)
-
-        self.emit_to_room(
-            self.room,
-            'textbox_data',
-            (self.player.nickname,
-             trans,
-             state))
-
     def recv_disconnect(self):
         """
         Make sure we explicitly call disconnect.
@@ -187,7 +176,7 @@ class GameNamespace(BaseNamespace, BroadcastMixin):
 
         try:
             valid, msg = self.runner.make_action(self.game_room.room_id,
-                                                 player=self.player.player_id,
+                                                 player_id=self.player.player_id,
                                                  **data)
         except:
             traceback.print_exc()
@@ -198,28 +187,16 @@ class GameNamespace(BaseNamespace, BroadcastMixin):
             self.emit("error", msg)
             return False
 
-        trans = self.runner.get_public_transitions(self.game_room.room_id)
-        self.emit_to_room(self.room, 'state_transitions', trans)
-
-        state = self.runner.get_state(self.game_room.room_id,
-                                      self.player.player_id)
-        self.emit_to_room(
-            self.room,
-            'textbox_data',
-            (self.player.nickname,
-             trans,
-             state))
-
-        # Get all the private transitions for all players
+        # Get all transitions for all players
         for ns in ROOMS[self.room]:
             if ns.player is not None:
-                trans = self.runner.get_player_transitions(ns.game_room.room_id,
-                                                           ns.player.player_id)
+                trans = self.runner.get_transitions(ns.game_room.room_id,
+                                                    ns.player.player_id)
                 ns.emit('state_transitions', trans)
 
         # Broadcast what the Game is expecting
-        expected = self.runner.get_expected_action(self.game_room.room_id)
-        self.emit_to_room(self.room, 'expected_action', expected)
+        #expected = self.runner.get_(self.game_room.room_id)
+        #self.emit_to_room(self.room, 'expected_action', expected)
 
         return True
 
@@ -316,15 +293,7 @@ class GameNamespace(BaseNamespace, BroadcastMixin):
             self.player = None
 
         return True
-
-    def on_abandon_ship(self):
-        """
-        This should be called if there was an internal engine error and we
-        want to flush the current state of the engine.
-        """
-
-        self.runner.abandon_ship(self.game_room.room_id)
-
+        
     def on_chat(self, data):
         """
         Receive chat message from client.
