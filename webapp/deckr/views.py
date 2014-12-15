@@ -18,6 +18,7 @@ from deckr.models import GameDefinition, GameRoom, Player
 from deckr.sockets import ChatNamespace  # pylint: disable=unused-import
 from deckr.utils import process_uploaded_file
 from engine import game_runner
+from zipfile import BadZipfile, LargeZipFile
 
 
 def index(request):
@@ -92,24 +93,32 @@ def upload_game_definition(request):
     """
     Returns the view to upload a new game.
     """
-
     if request.method == "POST":
         form = UploadGameDefinitionForm(request.POST, request.FILES)
+
         if form.is_valid():
-            # Save the file to the game_defs folder
             game_name = form.cleaned_data['game_name']
             try:
-                path = process_uploaded_file(game_name,
-                                             request.FILES['file'])
-                # Create a new GameDefinition
-                GameDefinition.objects.create(name=game_name,
-                                              path=path)
-                # Return to the index
-                return redirect(reverse('deckr.index'))
-            except ValueError as exception:
-                # If there was an error with the zipped file we catch it and
+                GameDefinition.objects.get(name=game_name)
+                form.add_error('game_name', "Game Definition already exists")
+            except GameDefinition.DoesNotExist:
+                try:
+                    path = process_uploaded_file(game_name,
+                                                 request.FILES['file'])
+                    # Create a new GameDefinition
+                    GameDefinition.objects.create(name=game_name,
+                                                  path=path)
+                    # Return to the index
+                    return redirect(reverse('deckr.index'))
+                # If there was an error with the file we catch it and
                 # add it as an error to the form.
-                form.add_error('file', exception.args[0])
+                except ValueError as exception:
+                    form.add_error('file', exception.args[0])
+                except BadZipfile as exception:
+                    form.add_error('file', exception.args[0])
+                except LargeZipFile as exception:
+                    form.add_error('file', exception.args[0])
+
     else:
         form = UploadGameDefinitionForm()
     return render(request, "deckr/upload_game_definition.html", {'form': form})
