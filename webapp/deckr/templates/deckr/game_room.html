@@ -1,10 +1,18 @@
 {% extends "deckr/base.html" %}
 {% block morejs %}
 {% load staticfiles %}
-<script type="text/javascript" src="{% static 'deckr/js/sockets.js' %}"></script>
-<script type="text/javascript" src="{% static 'deckr/js/render.js' %}"></script>
+<script type="text/javascript" src="{% static 'deckr/js/core/sockets.js' %}"></script>
+<script type="text/javascript" src="{% static 'deckr/js/core/game.js' %}"></script>
+<script type="text/javascript" src="{% static 'deckr/js/core/game_object.js' %}"></script>
+<script type="text/javascript" src="{% static 'deckr/js/card_game/card.js' %}"></script>
+<!--<script type="text/javascript" src="{% static 'deckr/js/render.js' %}"></script>
 <script type="text/javascript" src="{% static 'deckr/js/game-utils.js' %}"></script>
-<script type="text/javascript" src="{% static 'deckr/js/game-room.js' %}"></script>
+<script type="text/javascript" src="{% static 'deckr/js/game-room.js' %}"></script>-->
+<script>
+  var game = new Game({{ game.id }}, {{ player.id }});
+  var socket = new SocketWrapper(game);
+  socket.initialize();
+</script>
 {% endblock %}
 {% block morecss %}
 <style type="text/css">{{ game_css|safe }}</style>
@@ -12,7 +20,7 @@
 {% block header %}
 <div id="game-btns">
     {% if player %}
-      <a href="#" id="start-btn" onclick="socket.emit('start');" class="small-btn light"><div>Start</div></a>
+      <a href="#" id="start-btn" class="small-btn light"><div>Start</div></a>
       <a href="#" class="small-btn light" id="destroy-game-room"><div>End Game</div></a>
     {% endif %}
     <a href="#" class="small-btn light" id="leave-game-room"><div>Leave Game</div></a>
@@ -46,23 +54,9 @@
             </div>
                 <textarea id="chat-input"></textarea>
                 <a class="big-btn" id='chat-btn'><div>Send message</div></a>
-          </div>
-
+        </div>
         {% include sub_template %}
         {% block game-wrapper %}{% endblock %}
-        <script>
-          {% if player %}
-            socket.emit('join', {
-                game_room_id: "{{game.id}}",
-                player_id: {{player.id}}}
-            );
-          {% else %}
-            socket.emit('join_as_spectator', "{{game.id}}");
-          {% endif %}
-          // Try to request the state if possible
-          socket.emit('request_state');
-          {{ game_js|safe }}
-        </script>
     </div>
 </div>
 {% endblock %}

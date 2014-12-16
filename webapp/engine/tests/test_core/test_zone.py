@@ -173,3 +173,14 @@ class ZoneTestCase(TestCase):
                              {'name': 'remove',
                               'object': self.object1.game_id,
                               'zone': self.zone.game_id})
+
+    def test_serialize(self):
+        """
+        Make sure that the custom serialization for zones works.
+        """
+
+        self.zone.push(self.object1)
+        self.zone.push(self.object2)
+
+        serialized = self.zone.serialize(0, True)
+        self.assertEqual(serialized['objects'], [2, 3])

@@ -1,59 +1,102 @@
 // sockets.js
-// Has all the functions for sockets...
+// This has all functionality related to dealing with websockets and
+// communication with the server.
 
-var socket = io.connect("/game");
-var player_mapping = {};
-var player_ids = [];
-var my_game_id = 0;
+function SocketWrapper(game) {
+  // The socket wrapper provides a simple namespace for all socket
+  // functionality.
+  this.socket = null;
+  this.game = game;
 
-function setupSockets() {
+  this.initialize = function() {
     console.log('Setting up sockets.');
+
+    // Connect the actual socket and join the game room.
+    this.socket = io.connect("/game");
+    this.socket.emit('join',  {game_room_id: game.game_id,
+                               player_id: game.player_id});
+    // Set up all callbacks
     var socket_fn_mapping = {
-        'start': onStart,
-        'add_card': onAddCard,
-        'remove_card': onRemoveCard,
-        'move_card': onMoveCard,
-        'make_action': onMakeAction,
-        'state_transitions': onStateTransitions,
-        'leave_game': onLeaveGame,
-        'game_over': onGameOver,
-        'error': onGameError,
-        'player_names': onPlayerNames,
-        'player_nick': onPlayerNick,
-        'chat': onChat
+      'error': _.bind(this.on_error, this),
+      'state': _.bind(this.on_state, this),
+      'start': _.bind(this.on_start, this),
+      'state_transitions': _.bind(this.on_state_transitions, this),
+
+      /*'leave_game': this.onLeaveGame,
+      'game_over': this.onGameOver,
+
+      'player_names': this.onPlayerNames,
+      'player_nick': this.onPlayerNick,
+      'chat': this.onChat*/
     };
+
+
+    var s = this.socket;
     _.each(_.pairs(socket_fn_mapping), function (kv) {
-        var event = kv[0];
-        var fn = kv[1];
-        socket.on(event, fn);
+      var event = kv[0];
+      var fn = kv[1];
+      s.on(event, fn);
     });
+  };
+
+  this.start = function() {
+    this.socket.emit('start');
+  };
+
+  this.request_state = function() {
+    this.socket.emit('request_state');
+  };
+
+  this.make_action = function(name, extra_args) {
+    if (extra_args === null) {
+      extra_args = {};
+    }
+    extra_args.action_name = name;
+    this.socket.emit('action', extra_args);
+  };
+
+  // Callbacks
+  this.on_error = function(error_message) {
+    console.log(error_message);
+  };
+
+  this.on_state = function(state) {
+    // State will be a list of all game objects that currently exist.
+    console.log("Recieved state from game: " + state.length + " objects.");
+    this.game.create_game_objects(state);
+  };
+
+  this.on_start = function() {
+    // When one player starts the game the game will send out a start message.
+    // Generally all we need to do is request the current game state.
+    console.log("Game has started, requesting state.");
+    this.socket.emit('request_state');
+  };
+
+  this.on_state_transitions = function (transitions) {
+    console.log("Applying " + transitions.length + " transitios");
+    this.game.apply_transitions(transitions);
+  };
 }
 
-function onStart() {
-    socket.emit('request_state');
-    $("#start-btn").hide();
-}
 
+/*
 function onAddCard(data) {
-    /* Responds to add_card message from server */
-    //console.log('Adding new card to ' + data.zoneId);
+      //console.log('Adding new card to ' + data.zoneId);
     addCard(data.cardDict, data.zoneId);
 }
 
 function onRemoveCard(data) {
-    /* Responds to remove_card message from server */
     //console.log('Removing ' + data.cardId + ' from ' + data.zoneId);
     removeCard(data.zoneId, data.cardId);
 }
 
 function onMoveCard(data) {
-    /* Responds to move_card message from server */
     //console.log('Moving ' + data.cardId + ' to ' + data.toZoneId);
     moveCard(data.cardId, data.toZoneId);
 }
 
 function onMakeAction(data) {
-    /* Responds to make_action actions */
     //console.log('Making action ' + data.action);
     // lol what...
     if (data.action === 'move_card') {
@@ -62,7 +105,6 @@ function onMakeAction(data) {
 }
 
 function onStateTransitions(data) {
-    //console.log(data);
     _.each(data, performTransition);
 }
 
@@ -110,13 +152,13 @@ function onLeaveGame(data) {
 }
 
 function onGameOver(data) {
-    /* Responds to a game_over message from server.*/
+    // Responds to a game_over message from server.
     console.log('Game over!');
     gameOver(data);
 }
 
 function onGameError(data) {
-    /* Responds to error from server */
+  // Responds to error from server
     console.log(data);
     // hoverError(data, {
     //     autoHide: false,
@@ -128,8 +170,7 @@ function onGameError(data) {
 }
 
 function onPlayerNames(players) {
-    /* Responds to list of players names from server
-     and replaces player list dynamically */
+    // Responds to list of players names from server and replaces player list dynamically
     innerHTML = "";
     player_ids = [];
     _.each(players, function(player) {
@@ -158,4 +199,4 @@ function onChat(data) {
     if (sender === player_mapping[my_game_id])  {
         $('#chat-input').val('');
     }
-}
+}*/

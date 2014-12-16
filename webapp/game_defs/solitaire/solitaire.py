@@ -2,16 +2,30 @@
 This module provides an implementation of a game of Solitaire
 """
 
-from engine.card import Card
-from engine.game import action, Game
+from engine.core.decorators import game_action
+from engine.core.game import Game
+from engine.core.game_object import GameObject
 
 SUITS = ["clubs", "spades", "hearts", "diamonds"]
-img_location = '/static/deckr/cards/'
+
+
+
+class Card(GameObject):
+
+    def __init__(self):
+        super(Card, self).__init__()
+
+        self.game_object_type = 'Card'
+        self.front_face = None
+        self.back_face = None
+        self.face_up = False
+        self.game_attributes.add('front_face')
+        self.game_attributes.add('back_face')
+        self.game_attributes.add('face_up')
 
 def get_file_name(suit, number):
     if number == 1:
         return str(SUITS.index(suit) + 1) + ".png"
-
     dist_from_top = (13 - number) + 1
     offset = dist_from_top * 4 + 1 + SUITS.index(suit)
     return str(offset) + ".png"
@@ -20,8 +34,8 @@ def create_playing_card(suit, number):
     card = Card()
     card.suit = suit
     card.number = number
-    card.front_face = img_location + get_file_name(suit, number)
-    card.back_face = img_location + "b1fv.png"
+    card.front_face = get_file_name(suit, number)
+    card.back_face = "b1fv.png"
     return card
 
 def compare_color(card1, card2):
@@ -35,52 +49,69 @@ class Solitaire(Game):
     """
     Solitaire is a simple one player game
     """
-    
-    def set_up(self):
-        """
-        """
 
+    def set_up(self):
         # Create our deck of cards
-        if(not len(self.deck.get_cards())):
-            cards = [create_playing_card(x, y) for x in SUITS for y in range(1, 14)]
-            self.register(cards)
-            self.deck.set_cards(cards)
-            self.deck.shuffle()
-            for i in range(1, 8):
-                zone = self.zones["play_zone"+str(i)]
-                for _ in range(0, i):
-                    zone.push(self.deck.pop())
-                card = zone.peek()
-                card.face_up = True
+        import random
+        cards = [create_playing_card(x, y) for x in SUITS for y in range(1, 14)]
+        self.register(cards)
+        random.shuffle(cards)
+
+        for card in cards:
+            self.deck.push(card)
+
+        for i in range(1, 8):
+            zone = self.zones["play_zone"+str(i)]
+            for _ in range(0, i):
+                zone.push(self.deck.pop())
+            zone.objects[-1].face_up = True
 
     def is_over(self):
-        """
-        Just looks at the internal over variable.
-        """
-
-        for i in range(1, 5):
-            # For an easy win
-            # if self.zones["victory_zone" + str(i)].get_num_cards() == 0:
-            #     return True
-            if self.zones["victory_zone" + str(i)].get_num_cards() != 13:
-                return False
-
-        # TODO: Need to also check for losing here...
-
-        return True
+        pass
 
     def winners(self):
+        pass
+
+    @game_action(restriction = None)
+    def draw(self, player):
+        card = self.deck.pop()
+        card.face_up = True
+        self.deck_flipped.push(card)
+
+    """@game_action(restriction=None)
+    def move_cards(self, player, card, target_zone):
+        source_zone = card.zone
+        # Pull all of the cards below the selected card.
+        popped_card = None
+        cards = []
+        while popped_card != card:
+            popped_card = source_zone.pop()
+            cards.append(popped_card)
+
+        for _ in range(len(cards)):
+            target_zone.push(cards.pop())
+
+
+        source_zone = card.zone
+        popped_card = None
+        cards = []
+        while popped_card != card:
+            popped_card = source_zone.pop()
+            cards.append(popped_card)
+
+        for i in range(len(cards)):
+            target_zone.push(cards.pop())
+
+        last_card = source_zone.peek()
+        if last_card is not None and last_card.face_up == False:
+            last_card.face_up = True
         """
-        Returns the internal winners_list.
-        """
 
-        if self.is_over():
-            return [x.game_id for x in self.players]
-
-        return []
-
-    def move_card_restrictons(self, player, card, target_zone):
-
+    #def move_card_restrictons(self, player, card, target_zone):
+    """
+        Requires the following:
+            1) The card is face up.
+            2)
         if card.zone.zone_type == "victory" or card.face_up == False:
             return False
         elif (target_zone.zone_type == "victory"):
@@ -115,9 +146,7 @@ class Solitaire(Game):
 
     @action(restriction=move_card_restrictons)
     def move_cards(self, player, card, target_zone):
-        """
-        Move the top card from one zone to another.
-        """
+
 
         source_zone = card.zone
 
@@ -146,3 +175,4 @@ class Solitaire(Game):
         card = self.deck.pop()
         card.face_up = True
         self.deck_flipped.push(card)
+    """

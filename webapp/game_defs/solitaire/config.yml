@@ -2,7 +2,8 @@
 game_file: "solitaire"
 game_class: "Solitaire"
 max_players: 1
-zones:
+min_players: 1
+game_zones:
     - name: "victory_zone1"
       zone_type: "victory"
     - name: "victory_zone2"

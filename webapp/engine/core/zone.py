@@ -97,6 +97,17 @@ class Zone(GameObject, Configurable):
 
         random.shuffle(self.objects)
 
+    def serialize(self, player_id, full = True):
+        """
+        We override serialize because we only want to include ids in the objs
+        and don't always want to track it's changes.
+        """
+
+        result = super(Zone, self).serialize(player_id, full)
+        result['objects'] = [x.game_id for x in self.objects]
+        return result
+
+
     #######################
     # Iterable operations #
     #######################

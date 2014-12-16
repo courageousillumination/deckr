@@ -62,13 +62,13 @@ class IntegrationTestCase(TestCase):
             {'game_object_type': 'Player', 'game_id': self.player2_id},
             # Both players can see the game zone
             {'game_object_type': 'Zone', 'owner': 0, 'name': 'game_zone',
-             'game_id': self.game.game_zone.game_id},
+             'game_id': self.game.game_zone.game_id, 'objects': []},
             # Both players can see each other's zones
             {'game_object_type': 'Zone', 'owner': self.player1_id,
-             'name': 'player_zone',
+             'name': 'player_zone', 'objects': [],
              'game_id': self.player1.player_zone.game_id},
             {'game_object_type': 'Zone', 'owner': self.player2_id,
-             'name': 'player_zone',
+             'name': 'player_zone', 'objects': [],
              'game_id': self.player2.player_zone.game_id},
         ]
 
