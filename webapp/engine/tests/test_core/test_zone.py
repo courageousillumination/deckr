@@ -90,6 +90,16 @@ class ZoneTestCase(TestCase):
         self.assertListEqual(self.zone.objects, [self.object1,
                                                  self.object2])
 
+    def test_push_iterable(self):
+        """
+        Make sure we can push an iterable on to a zone.
+        """
+
+        self.zone.push_all([self.object1, self.object2])
+        self.assertListEqual(self.zone.objects, [self.object1,
+                                                 self.object2])
+
+
     def test_pop(self):
         """
         Make sure things pop off in the right order.
@@ -184,3 +194,17 @@ class ZoneTestCase(TestCase):
 
         serialized = self.zone.serialize(0, True)
         self.assertEqual(serialized['objects'], [2, 3])
+
+    def test_index(self):
+        """
+        Make sure we can index into a zone. It should return none instead of
+        throwing an indexerror when there is an error.
+        """
+
+        self.zone.push(self.object1)
+        self.zone.push(self.object2)
+
+        self.assertEqual(self.zone[0], self.object1)
+        self.assertEqual(self.zone[1], self.object2)
+        self.assertEqual(self.zone[-1], self.object2)
+        self.assertIsNone(self.zone[2])

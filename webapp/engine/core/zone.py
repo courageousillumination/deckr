@@ -42,6 +42,7 @@ class Zone(GameObject, Configurable):
 
         self.objects.append(obj)
         self.add_transition('add', obj)
+        obj.zone = self
 
     def remove(self, obj):
         """
@@ -66,6 +67,15 @@ class Zone(GameObject, Configurable):
 
         self.objects.append(obj)
         self.add_transition('add', obj)
+        obj.zone = self
+
+    def push_all(self, objs):
+        """
+        Push an iterable of objects on to this zone.
+        """
+
+        for obj in objs:
+            self.push(obj)
 
     def pop(self):
         """
@@ -132,3 +142,13 @@ class Zone(GameObject, Configurable):
         """
 
         return len(self.objects)
+
+    def __getitem__(self, index):
+        """
+        Make sure we can use get item on a zone.
+        """
+        
+        try:
+            return self.objects[index]
+        except IndexError:
+            return None

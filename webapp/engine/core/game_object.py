@@ -27,6 +27,13 @@ class GameObject(object):
         # is set the __setattr__ will start checking all attributes.
         self.game = None
 
+        # Any game object can be placed in a zone. When it is this will point
+        # to it's zone. Don't make this a game attribute or there could be
+        # significant trouble (infinite loops possibly). Note that it is the
+        # Zone's responsibility to set this. It may not be entirely accurate,
+        # since a Zone only updates on adds, not removes.
+        self.zone = None
+
         self.player_overrides = {}
 
     ######################

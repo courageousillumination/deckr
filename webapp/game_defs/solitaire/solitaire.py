@@ -1,49 +1,14 @@
 """
 This module provides an implementation of a game of Solitaire
 """
+from random import shuffle
 
+from engine.card_game.card import Card
+from engine.card_game.playing_card import create_deck
 from engine.core.decorators import game_action
 from engine.core.game import Game
-from engine.core.game_object import GameObject
+from engine.core.zone import Zone
 
-SUITS = ["clubs", "spades", "hearts", "diamonds"]
-
-
-
-class Card(GameObject):
-
-    def __init__(self):
-        super(Card, self).__init__()
-
-        self.game_object_type = 'Card'
-        self.front_face = None
-        self.back_face = None
-        self.face_up = False
-        self.game_attributes.add('front_face')
-        self.game_attributes.add('back_face')
-        self.game_attributes.add('face_up')
-
-def get_file_name(suit, number):
-    if number == 1:
-        return str(SUITS.index(suit) + 1) + ".png"
-    dist_from_top = (13 - number) + 1
-    offset = dist_from_top * 4 + 1 + SUITS.index(suit)
-    return str(offset) + ".png"
-
-def create_playing_card(suit, number):
-    card = Card()
-    card.suit = suit
-    card.number = number
-    card.front_face = get_file_name(suit, number)
-    card.back_face = "b1fv.png"
-    return card
-
-def compare_color(card1, card2):
-    if card1.suit == "hearts" or card1.suit == "diamonds":
-        return card2.suit == "spades" or card2.suit == "clubs"
-
-    if card1.suit == "spades" or card1.suit == "clubs":
-        return card2.suit == "hearts" or card2.suit == "diamonds"
 
 class Solitaire(Game):
     """
@@ -51,128 +16,120 @@ class Solitaire(Game):
     """
 
     def set_up(self):
-        # Create our deck of cards
-        import random
-        cards = [create_playing_card(x, y) for x in SUITS for y in range(1, 14)]
-        self.register(cards)
-        random.shuffle(cards)
-
-        for card in cards:
-            self.deck.push(card)
-
-        for i in range(1, 8):
-            zone = self.zones["play_zone"+str(i)]
-            for _ in range(0, i):
-                zone.push(self.deck.pop())
-            zone.objects[-1].face_up = True
-
-    def is_over(self):
-        pass
-
-    def winners(self):
-        pass
-
-    @game_action(restriction = None)
-    def draw(self, player):
-        card = self.deck.pop()
-        card.face_up = True
-        self.deck_flipped.push(card)
-
-    """@game_action(restriction=None)
-    def move_cards(self, player, card, target_zone):
-        source_zone = card.zone
-        # Pull all of the cards below the selected card.
-        popped_card = None
-        cards = []
-        while popped_card != card:
-            popped_card = source_zone.pop()
-            cards.append(popped_card)
-
-        for _ in range(len(cards)):
-            target_zone.push(cards.pop())
-
-
-        source_zone = card.zone
-        popped_card = None
-        cards = []
-        while popped_card != card:
-            popped_card = source_zone.pop()
-            cards.append(popped_card)
-
-        for i in range(len(cards)):
-            target_zone.push(cards.pop())
-
-        last_card = source_zone.peek()
-        if last_card is not None and last_card.face_up == False:
-            last_card.face_up = True
+        """
+        Create cards, and deal them out.
         """
 
-    #def move_card_restrictons(self, player, card, target_zone):
-    """
-        Requires the following:
-            1) The card is face up.
-            2)
-        if card.zone.zone_type == "victory" or card.face_up == False:
-            return False
-        elif (target_zone.zone_type == "victory"):
-            return self.victory_zone_restrictions(card, target_zone)
-        elif (target_zone.zone_type == "play"):
-            return self.play_zone_restrictions(card, target_zone)
-        else:
-            return False
+        # Create our deck of cards
+        cards = create_deck()
+        shuffle(cards)
+        self.register(cards)
+        self.deck.push_all(cards)
+        for i in range(7):
+            zone = self.zones["play_zone"+str(i)]
+            for _ in range(i):
+                zone.push(self.deck.pop())
+            zone[-1].face_up = True
 
-    def victory_zone_restrictions(self, card, target_zone):
+    def is_over(self):
+        """
+        Simply checks if you have moved all the cards to the victory zone.
+        NOTE: Does not detect if there are no valid moves left.
+        """
 
-        card_b = target_zone.peek()
+        victory_zones = [self.zones["victory_zone" + str(i)] for i in range(4)]
+        return [len(x) for x in victory_zones].count(14) == 4
 
-        if card_b is None:
-            return card.number == 1
+    def winners(self):
+        """
+        Since the only way for the game to end is by victory we just return
+        the players list.
+        """
 
-        return card_b.suit == card.suit and card_b.number == card.number - 1
+        return self.players
 
-    def play_zone_restrictions(self, card, target_zone):
+    #######################
+    # Define game actions #
+    #######################
 
-        card_b = target_zone.peek()
-
-        if card_b is None:
-            return card.number == 13
-
-        return compare_color(card, card_b) and card_b.number == card.number + 1
+    # pylint: disable=unused-argument
 
     def draw_restrictions(self, player):
-        return (self.deck.get_num_cards() +
-                self.deck_flipped.get_num_cards()) > 0
+        """
+        Make sure there are still cards left somewher to draw.
+        """
+        return len(self.deck) + len(self.deck_flipped) > 0
 
+    @game_action(restriction = draw_restrictions)
+    def draw(self, player):
+        """
+        Draw a card from the deck. Will also flip over the discard if
+        necessary.
+        """
 
-    @action(restriction=move_card_restrictons)
-    def move_cards(self, player, card, target_zone):
+        if len(self.deck) == 0:
+            # Add logic here.
+            print "Moving from discard to deck"
 
+        card = self.deck.pop()
+        card.face_up = True
+        self.deck_flipped.push(card)
+
+    def move_card_restrictions(self, player, card, target_zone):
+        """
+        Checks the following conditions:
+
+        1) The card is face up.
+        2a) If target_zone is a victory zone:
+            i) The number is one below.
+            ii) The suit is the same.
+            iii) The card is at the bottom of the current zone.
+        2b) If the target_zone is a play_zone:
+            i) The number is one above or a king.
+            ii) The suit is the opposite color.
+        2c) If the zone is something else it is illegal.
+
+        """
+
+        if not card.face_up:
+            return False
+        if target_zone.zone_type == 'victory':
+            if len(target_zone) == 0:
+                if card.number != 1:
+                    return False
+            elif (target_zone[-1].number != card.number - 1 or
+                  target_zone[-1].suit != card.suit):
+                return False
+            if card.zone[-1] != card:
+                return False
+        elif target_zone.zone_type == 'play':
+            if len(target_zone) == 0:
+                if card.number != 13:
+                    return False
+            elif (target_zone[-1].number != card.number + 1 or
+                  target_zone[-1].get_color() == card.get_color()):
+                return False
+        else:
+            return False
+        return True
+
+    @game_action(restriction = move_card_restrictions,
+                 parameter_types = [{'name': 'card', 'type': Card},
+                                    {'name': 'target_zone', 'type': Zone}])
+    def move_card(self, player, card, target_zone):
+        """
+        Move a card from one zone to another, along with all trailing cards
+        if possible.
+        """
 
         source_zone = card.zone
-
         popped_card = None
         cards = []
         while popped_card != card:
             popped_card = source_zone.pop()
             cards.append(popped_card)
 
-        for i in range(len(cards)):
-            target_zone.push(cards.pop())
-
-        last_card = source_zone.peek()
+        target_zone.push_all(cards)
+        last_card = source_zone[-1]
         if last_card is not None and last_card.face_up == False:
             last_card.face_up = True
-
-    @action(restriction=draw_restrictions)
-    def draw(self, player):
-
-        if self.deck.get_num_cards() == 0:
-            self.deck.set_cards(self.deck_flipped.get_cards())
-            self.deck_flipped.set_cards([])
-            for card in self.deck.get_cards():
-                card.face_up = False
-
-        card = self.deck.pop()
-        card.face_up = True
-        self.deck_flipped.push(card)
-    """
