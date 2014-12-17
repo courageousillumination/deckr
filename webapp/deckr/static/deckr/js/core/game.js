@@ -1,11 +1,23 @@
 function Game(game_id, player_id) {
   this.game_id = game_id;
   this.player_id = player_id;
+  this.callbacks = {};
+  this.post_state_change_callback = null;
 
   var players = [];
   var zones = [];
   var all_objects = {};
   var game = this;
+
+  this.add_callback = function(event, klass, callback) {
+    /* Adds a callback to anything with a given class. These will
+       be added after we create all objects. */
+       this.callbacks[klass + "." + event] = callback;
+  };
+
+  this.set_post_state_change_callback = function(callback) {
+    this.post_state_change_callback = callback;
+  };
 
   this.register = function(game_object) {
     all_objects[game_object.game_id] = game_object;
@@ -32,6 +44,17 @@ function Game(game_id, player_id) {
     // We set up zones last, since other objects should be added to zones.
     zones = _.map(zone_objs, function(x) { return new Zone(game, x); });
     _.map(zones, this.register);
+
+    // Now we can add callbacks.
+    for (var klass_event in this.callbacks) {
+      l = klass_event.split(".");
+      $("." + l[0]).off(l[1]);
+      $("." + l[0]).on(l[1], this.callbacks[klass_event]);
+    }
+    // Finally we call our callbacks
+    if (this.post_state_change_callback !== null) {
+      this.post_state_change_callback();
+    }
   };
 
   this.apply_transitions = function(transitions) {
@@ -54,6 +77,9 @@ function Game(game_id, player_id) {
         console.log("Got unexpected transition");
         console.log(transition);
       }
+    }
+    if (this.post_state_change_callback !== null) {
+      this.post_state_change_callback();
     }
   };
 }

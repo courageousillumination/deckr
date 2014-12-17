@@ -89,6 +89,19 @@ class Zone(GameObject, Configurable):
         except IndexError:
             return None
 
+    def pop_all(self):
+        """
+        Returns an ordered list of all items in this zone. They have now been
+        removed.
+        """
+
+        result = []
+        obj = self.pop()
+        while obj != None:
+            result.append(obj)
+            obj = self.pop()
+        return result
+
     def insert(self, obj, index):
         """
         Insert an object into the zone at the specified index.
@@ -147,7 +160,7 @@ class Zone(GameObject, Configurable):
         """
         Make sure we can use get item on a zone.
         """
-        
+
         try:
             return self.objects[index]
         except IndexError:

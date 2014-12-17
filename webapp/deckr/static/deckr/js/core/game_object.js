@@ -33,6 +33,7 @@ function Zone(game, dict) {
     expected_id = dict.name;
   }
   this.element = $("#" + expected_id);
+  this.element.data('game_id', this.game_id);
   // Add all objects that belong to this zone.
   for (var i = 0; i < dict.objects.length; i++) {
     game.get_object(dict.objects[i]).add_to_zone(this);

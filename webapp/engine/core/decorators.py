@@ -120,9 +120,7 @@ def serialize_list(result, player_id):
     """
     Seralize a list of objects.
     """
-
-    print player_id
-
+    
     new_result = []
     for obj in result:
         if isinstance(obj, GameObject):

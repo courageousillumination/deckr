@@ -293,7 +293,7 @@ class GameNamespace(BaseNamespace, BroadcastMixin):
             self.player = None
 
         return True
-        
+
     def on_chat(self, data):
         """
         Receive chat message from client.

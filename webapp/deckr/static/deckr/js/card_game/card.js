@@ -8,6 +8,7 @@ function Card(game, dict) {
 
   // Create the image
   this.element = $(document.createElement('img'));
+  this.element.data('game_id', this.game_id);
   this.element.addClass('card');
   this.update_face();
 

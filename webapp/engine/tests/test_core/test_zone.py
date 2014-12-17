@@ -113,6 +113,17 @@ class ZoneTestCase(TestCase):
 
         self.assertIsNone(self.zone.pop())
 
+    def test_pop_all(self):
+        """
+        Make sure we can pop all of the items off a zone.
+        """
+
+        self.zone.push(self.object1)
+        self.zone.push(self.object2)
+
+        self.assertEqual(self.zone.pop_all(), [self.object2, self.object1])
+        self.assertEqual(len(self.zone), 0)
+
     def test_insert(self):
         """
         Make sure that when we can insert into a specific position

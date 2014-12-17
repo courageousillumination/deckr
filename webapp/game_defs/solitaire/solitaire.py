@@ -27,7 +27,7 @@ class Solitaire(Game):
         self.deck.push_all(cards)
         for i in range(7):
             zone = self.zones["play_zone"+str(i)]
-            for _ in range(i):
+            for _ in range(i+1):
                 zone.push(self.deck.pop())
             zone[-1].face_up = True
 
@@ -68,9 +68,11 @@ class Solitaire(Game):
         """
 
         if len(self.deck) == 0:
-            # Add logic here.
-            print "Moving from discard to deck"
-
+            cards = self.deck_flipped.pop_all()
+            for card in cards:
+                card.face_up = False
+            self.deck.push_all(cards)
+            
         card = self.deck.pop()
         card.face_up = True
         self.deck_flipped.push(card)
@@ -128,6 +130,7 @@ class Solitaire(Game):
         while popped_card != card:
             popped_card = source_zone.pop()
             cards.append(popped_card)
+        cards.reverse()
 
         target_zone.push_all(cards)
         last_card = source_zone[-1]

@@ -12,6 +12,9 @@
   var game = new Game({{ game.id }}, {{ player.id }});
   var socket = new SocketWrapper(game);
   socket.initialize();
+  socket.request_state();
+
+  {{ game_js|safe }}
 </script>
 {% endblock %}
 {% block morecss %}
@@ -20,7 +23,7 @@
 {% block header %}
 <div id="game-btns">
     {% if player %}
-      <a href="#" id="start-btn" class="small-btn light"><div>Start</div></a>
+      <a href="#" id="start-btn" class="small-btn light" onclick="socket.start();"><div>Start</div></a>
       <a href="#" class="small-btn light" id="destroy-game-room"><div>End Game</div></a>
     {% endif %}
     <a href="#" class="small-btn light" id="leave-game-room"><div>Leave Game</div></a>
