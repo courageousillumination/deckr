@@ -9,8 +9,8 @@
 <script type="text/javascript" src="{% static 'deckr/js/game-utils.js' %}"></script>
 <script type="text/javascript" src="{% static 'deckr/js/game-room.js' %}"></script>-->
 <script>
-  var game = new Game({{ game.id }}, {{ player.id }});
-  var socket = new SocketWrapper(game);
+  var game = new Game({{ game.id }}, {{ player.player_id }});
+  var socket = new SocketWrapper(game, {{ player.id }});
   socket.initialize();
   socket.request_state();
 

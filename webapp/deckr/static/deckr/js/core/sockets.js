@@ -2,7 +2,7 @@
 // This has all functionality related to dealing with websockets and
 // communication with the server.
 
-function SocketWrapper(game) {
+function SocketWrapper(game, player_id) {
   // The socket wrapper provides a simple namespace for all socket
   // functionality.
   this.socket = null;
@@ -14,7 +14,7 @@ function SocketWrapper(game) {
     // Connect the actual socket and join the game room.
     this.socket = io.connect("/game");
     this.socket.emit('join',  {game_room_id: game.game_id,
-                               player_id: game.player_id});
+                               player_id: player_id});
     // Set up all callbacks
     var socket_fn_mapping = {
       'error': _.bind(this.on_error, this),

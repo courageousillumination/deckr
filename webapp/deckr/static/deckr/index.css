@@ -83,7 +83,7 @@ table {
 .zone {
   float: left;
   width: 80px;
-  height: 100px;
+  min-height: 100px;
   margin: 5px;
   padding: 15px;
   border: 1px dotted #ccc;
@@ -127,7 +127,7 @@ table {
 
 /* line 66, scss/game.scss */
 .vertical-fan img.card {
-  margin-bottom: -68px;
+  margin-bottom: -80px;
 }
 
 /* line 72, scss/game.scss */

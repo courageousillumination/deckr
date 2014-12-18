@@ -27,6 +27,23 @@ function Game(game_id, player_id) {
     return all_objects[game_id];
   };
 
+  this.get_local_player_id = function(pid) {
+    /* We will always return local id 0. We then return local ids in increasing
+       order. Thus, if the game_ids we get are [1, 5, 8] and we are player 5
+       we set up the following mapping:
+        1 -> 1
+        5 -> 0
+        8 -> 2
+    */
+    player_ids = _.map(players, function(o) { return o.game_id; });
+
+    ordered_game_ids = [player_id].concat(
+      _.filter(player_ids, function(o) { return o > player_id; })).concat(
+      _.filter(player_ids, function(o) { return o < player_id; }));
+    console.log(ordered_game_ids);
+    return ordered_game_ids.indexOf(pid);
+  };
+
   this.create_game_objects = function(all_objects) {
     // This will take in a list of dicts representing game objects and attempt
     // to actually make the game objects that these dicts are for.

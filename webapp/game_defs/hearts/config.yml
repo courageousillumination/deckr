@@ -2,11 +2,10 @@
 game_file: "hearts"
 game_class: "Hearts"
 max_players: 4
-min_players: 2
-zones:
-    - name: "hand"
-      owner: "player"
-    - name: "discard"
-      owner: "player"
+min_players: 3
+game_zones:
     - name: "play_zone"
-    - name: "side_zone"
+    - name: "pocket"
+player_zones:
+    - name: "hand"
+    - name: "discard"

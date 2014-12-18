@@ -1,0 +1,101 @@
+@import url("http://fonts.googleapis.com/css?family=Courgette|Patua+One|Lato:300,400,700");
+/* line 5, scss/game.scss */
+.game-body {
+  padding-top: 50px;
+  display: table;
+  height: 100%;
+  width: 100%;
+}
+
+/* line 12, scss/game.scss */
+.game-wrapper {
+  height: 100%;
+}
+
+/* line 16, scss/game.scss */
+#game-btns {
+  display: inline-block;
+  padding: 10px 20px;
+  position: absolute;
+  left: 150px;
+  top: 12px;
+  border-left: 1px solid #5675af;
+}
+
+/* line 25, scss/game.scss */
+.zone {
+  float: left;
+  width: 80px;
+  min-height: 100px;
+  margin: 5px;
+  padding: 15px;
+  border: 1px dotted #ccc;
+}
+/* line 33, scss/game.scss */
+.zone.last {
+  float: right;
+}
+
+/* line 38, scss/game.scss */
+.card {
+  margin: 5px;
+}
+/* line 40, scss/game.scss */
+.card.selected {
+  margin-left: 3px;
+  margin-top: 3px;
+  border: 2px solid yellow;
+  -moz-box-shadow: 0px 0px 5px yellow;
+  -webkit-box-shadow: 0px 0px 5px yellow;
+  box-shadow: 0px 0px 5px yellow;
+}
+
+/* line 48, scss/game.scss */
+.stacked {
+  position: relative;
+}
+/* line 50, scss/game.scss */
+.stacked img.card {
+  position: absolute;
+}
+
+/* line 56, scss/game.scss */
+.horizontal-fan img.card {
+  margin-left: -10px;
+}
+/* line 59, scss/game.scss */
+.facing-up .horizontal-fan img.card {
+  margin-right: -10px;
+}
+
+/* line 66, scss/game.scss */
+.vertical-fan img.card {
+  margin-bottom: -80px;
+}
+
+/* line 72, scss/game.scss */
+.facing-top img.card {
+  transform: rotate(180deg);
+}
+
+/* line 78, scss/game.scss */
+.facing-left img.card {
+  transform: rotate(90deg);
+}
+
+/* line 84, scss/game.scss */
+.facing-right img.card {
+  transform: rotate(270deg);
+}
+
+/* line 89, scss/game.scss */
+.row {
+  clear: both;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* line 95, scss/game.scss */
+.hover {
+  position: absolute;
+}

@@ -25,11 +25,11 @@
 .zone {
     float: left;
     width: 80px;
-    height: 100px;
+    min-height: 100px;
     margin: 5px;
     padding: 15px;
     border: 1px dotted #ccc;
-    
+
     &.last {
         float: right;
     }
@@ -64,7 +64,7 @@
 
 .vertical-fan {
     img.card {
-        margin-bottom: -68px;
+        margin-bottom: -80px;
     }
 }
 

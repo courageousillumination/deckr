@@ -29,6 +29,7 @@ function Zone(game, dict) {
   // Check if we're owned by the game or by a specific player
   if (dict.owner !== 0) {
     // TODO: Per player zone logic here
+    expected_id = dict.name + game.get_local_player_id(dict.owner);
   } else {
     expected_id = dict.name;
   }
