@@ -266,6 +266,7 @@ class BaseGameTestCase(TestCase):
 
 class SimpleGame(Game):
 
+    # pylint: disable=unused-argument
     def __init__(self):
         super(SimpleGame, self).__init__()
         self.min_players = 1
@@ -340,6 +341,22 @@ class SimpleGame(Game):
     @game_step(requires=[{'name': 'foo', 'type': str}])
     def pass_through_step2(self, player, foo):
         self.result = foo
+
+    @game_action(restriction=None, parameter_types=None)
+    def noop_action(self, player):
+        self.add_step(player=player,
+                      step=self.noop)
+
+    @game_step(requires=None)
+    def noop(self, player):
+        pass
+
+    ############
+    # Triggers #
+    ############
+
+    def trigger1(self, player, **kwargs):
+        self.result = 'triggered'
 
 
 class SimpleGameTestCase(TestCase):
@@ -447,3 +464,39 @@ class SimpleGameTestCase(TestCase):
 
         self.game.make_action('pass_through_step_action', self.player_id)
         self.assertEqual(self.game.result, 'bar')
+
+    def test_add_and_remove_trigger(self):
+        """
+        Make sure we can add and remove triggers from specific steps.
+        """
+
+        self.game.add_trigger(self.game.simple_step, self.game.trigger1)
+        self.assertEqual(self.game.pre_triggers['simple_step'],
+                         [self.game.trigger1])
+        self.game.remove_trigger(self.game.simple_step, self.game.trigger1)
+        self.assertEqual(self.game.pre_triggers['simple_step'], [])
+
+        self.game.add_trigger(self.game.simple_step, self.game.trigger1, True)
+        self.assertEqual(self.game.post_triggers['simple_step'],
+                         [self.game.trigger1])
+        self.game.remove_trigger(self.game.simple_step, self.game.trigger1)
+        self.assertEqual(self.game.post_triggers['simple_step'], [])
+
+    def test_pre_triggers(self):
+        """
+        Make sure that triggers actually work.
+        """
+
+        self.game.add_trigger(self.game.noop, self.game.trigger1)
+        self.game.make_action('noop_action', self.player_id)
+        self.assertEqual(self.game.result, 'triggered')
+
+    def test_post_triggers(self):
+        """
+        Make sure that we can add triggers after the step.
+        """
+
+        self.game.add_trigger(self.game.simple_step, self.game.trigger1,
+                              post=True)
+        self.game.make_action('simple_step_action', self.player_id)
+        self.assertEqual(self.game.result, 'triggered')

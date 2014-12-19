@@ -2,7 +2,8 @@ from engine.card_game.card import Card
 
 SUITS = ["clubs", "spades", "hearts", "diamonds"]
 
-def create_deck(num = 1):
+
+def create_deck(num=1):
     """
     Creates num decks of playing cards returning them as a single array.
     """
@@ -12,7 +13,9 @@ def create_deck(num = 1):
             for number in range(1, 14)
             for _ in range(num)]
 
+
 class PlayingCard(Card):
+
     """
     This represents a simple playing card.
     """

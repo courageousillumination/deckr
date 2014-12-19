@@ -4,14 +4,27 @@ Contains any tests around card sets
 
 from unittest import TestCase
 
-from engine.card_game.playing_card import PlayingCard
+from engine.card_game.playing_card import create_deck, PlayingCard
 
+
+class PlayingCardUtilTestCase(TestCase):
+    """
+    Test all utilities for playing cards.
+    """
+
+    def test_create_deck(self):
+        """
+        Make sure we can create a deck.
+        """
+
+        deck = create_deck()
+        self.assertEqual(len(deck), 52)
 
 class PlayingCardTestCase(TestCase):
+
     """
     This tests playing cards and all the functionality related to them.
     """
-
 
     def test_get_file_name(self):
         """

@@ -40,6 +40,8 @@ class Game(GameObject, HasZones, Configurable):
 
         self.steps = []
         self.step_state = StepState()
+        self.pre_triggers = {}
+        self.post_triggers = {}
 
         # Note that since a game is a GameObject we need to make sure it
         # starts off in the right state. Having a node point to itself is
@@ -346,6 +348,54 @@ class Game(GameObject, HasZones, Configurable):
         self.set_up()
         self.is_set_up = True
         return True
+
+    ################
+    # Trigger code #
+    ################
+
+    def get_underlying_name(self, step):
+        """
+        Gets the real name out of a function.
+        """
+
+        current_fun = step
+        print dir(current_fun)
+        print step.__name__
+        while (hasattr(current_fun, 'im_func')):
+            current_fun = current_fun.im_func
+        print current_fun
+        return current_fun.__name__
+
+    def add_trigger(self, step, trigger, post=False):
+        """
+        Adds a specific trigger to a step. Can either add a pre or post
+        trigger depending on the post flag.
+        """
+
+        if not post:
+            self.pre_triggers.setdefault(self.get_underlying_name(step),
+                                         []).append(trigger)
+        else:
+            self.post_triggers.setdefault(self.get_underlying_name(step),
+                                          []).append(trigger)
+
+    def remove_trigger(self, step, trigger):
+        """
+        Removes a specific trigger from a step. Will remove both post and
+        pre triggers.
+        """
+
+        try:
+            self.pre_triggers.get(self.get_underlying_name(step),
+                                  []).remove(trigger)
+        except ValueError:
+            pass
+
+        try:
+            self.post_triggers.get(self.get_underlying_name(step),
+                                   []).remove(trigger)
+        except ValueError:
+            pass
 
     #############################
     # Default actions and steps #

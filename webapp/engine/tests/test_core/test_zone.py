@@ -99,7 +99,6 @@ class ZoneTestCase(TestCase):
         self.assertListEqual(self.zone.objects, [self.object1,
                                                  self.object2])
 
-
     def test_pop(self):
         """
         Make sure things pop off in the right order.

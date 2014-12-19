@@ -97,7 +97,7 @@ class Zone(GameObject, Configurable):
 
         result = []
         obj = self.pop()
-        while obj != None:
+        while obj is not None:
             result.append(obj)
             obj = self.pop()
         return result
@@ -120,7 +120,7 @@ class Zone(GameObject, Configurable):
 
         random.shuffle(self.objects)
 
-    def serialize(self, player_id, full = True):
+    def serialize(self, player_id, full=True):
         """
         We override serialize because we only want to include ids in the objs
         and don't always want to track it's changes.
@@ -129,7 +129,6 @@ class Zone(GameObject, Configurable):
         result = super(Zone, self).serialize(player_id, full)
         result['objects'] = [x.game_id for x in self.objects]
         return result
-
 
     #######################
     # Iterable operations #

@@ -91,39 +91,54 @@ class GameStepTestCase(TestCase):
         Make sure that we can require a list.
         """
 
-        @game_step(requires=[{'name': 'foo', 'type': str,
-                              'container': 'list'}])
-        def requires_list(foo):
-            return True
+        class Foo(object):
+            def __init__(self):
+                self.pre_triggers = {}
+                self.post_triggers = {}
 
-        self.assertRaises(NeedsMoreInfo, requires_list, foo='foo')
-        self.assertRaises(NeedsMoreInfo, requires_list, foo=['foo', 1])
-        self.assertTrue(requires_list(foo=['foo']))
+            @game_step(requires=[{'name': 'foo', 'type': str,
+                                  'container': 'list'}])
+            def requires_list(self, foo):
+                return True
+
+        self.assertRaises(NeedsMoreInfo, Foo().requires_list, foo='foo')
+        self.assertRaises(NeedsMoreInfo, Foo().requires_list, foo=['foo', 1])
+        self.assertTrue(Foo().requires_list(foo=['foo']))
 
     def test_requirement_improper_type(self):
         """
         Make sure that we do type checking on the requirements.
         """
 
-        @game_step(requires=[{'name': 'foo', 'type': str}])
-        def requires_string(foo):
-            return True
+        class Foo(object):
+            def __init__(self):
+                self.pre_triggers = {}
+                self.post_triggers = {}
 
-        self.assertRaises(NeedsMoreInfo, requires_string, foo=1)
-        self.assertTrue(requires_string(foo='foo'))
+            @game_step(requires=[{'name': 'foo', 'type': str}])
+            def requires_string(self, foo):
+                return True
+
+        self.assertRaises(NeedsMoreInfo, Foo().requires_string, foo=1)
+        self.assertTrue(Foo().requires_string(foo='foo'))
 
     def test_requirement_with_test(self):
         """
         Make sure that the test runs.
         """
 
-        def simple_test(foo):
-            return foo == 'foo'
+        class Foo(object):
+            def __init__(self):
+                self.pre_triggers = {}
+                self.post_triggers = {}
 
-        @game_step(requires=[{'name': 'foo', 'type': str,
-                              'test': simple_test}])
-        def step_with_test(foo):
-            return True
+            def simple_test(self, foo):
+                return foo == 'foo'
 
-        self.assertRaises(NeedsMoreInfo, step_with_test, foo='bar')
-        self.assertTrue(step_with_test(foo='foo'))
+            @game_step(requires=[{'name': 'foo', 'type': str,
+                                  'test': simple_test}])
+            def step_with_test(self, foo):
+                return True
+
+        self.assertRaises(NeedsMoreInfo, Foo().step_with_test, foo='bar')
+        self.assertTrue(Foo().step_with_test(foo='foo'))

@@ -53,7 +53,7 @@ def game_action(restriction=None, parameter_types=None):
     return wrapper
 
 
-def verify_requirement(requirement, *args, **kwargs):
+def verify_requirement(requirement, self, *args, **kwargs):
     """
     Makes sure that a requirement is met.
     """
@@ -82,7 +82,7 @@ def verify_requirement(requirement, *args, **kwargs):
                             requirement)
 
     # Finally try the test
-    if test is not None and not test(*args, **kwargs):
+    if test is not None and not test(self, *args, **kwargs):
         raise NeedsMoreInfo('Failed Test',
                             requirement)
 
@@ -107,11 +107,24 @@ def game_step(requires=None):
 
     # pylint: disable=missing-docstring
     def wrapper(func):
-        def inner(*args, **kwargs):
+        def inner(self, *args, **kwargs):
             if requires is not None:
                 for requirement in requires:
-                    verify_requirement(requirement, *args, **kwargs)
-            return func(*args, **kwargs)
+                    verify_requirement(requirement, self, *args, **kwargs)
+            # Run any pre triggers
+            for trigger in self.pre_triggers.get(func.__name__, []):
+                trigger(*args, **kwargs)
+
+            ret_value = func(self, *args, **kwargs)
+
+            for trigger in self.post_triggers.get(func.__name__, []):
+                trigger(*args, **kwargs)
+
+            return ret_value
+
+        # This is kind of a hack, but we want the inner to have the same name
+        # as the outer. This makes it easier to install triggers.
+        inner.__name__ = func.__name__
         return inner
     return wrapper
 
@@ -120,7 +133,7 @@ def serialize_list(result, player_id):
     """
     Seralize a list of objects.
     """
-    
+
     new_result = []
     for obj in result:
         if isinstance(obj, GameObject):

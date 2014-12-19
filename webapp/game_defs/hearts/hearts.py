@@ -127,7 +127,7 @@ class Hearts(Game):
         return True
 
 
-    @game_action(parameter_types = [{'name': 'card', 'type': Card}],
+    @game_action(parameter_types=[{'name': 'card', 'type': Card}],
                  restriction=can_play_card)
     def play_card(self, player, card):
         """
